@@ -13,7 +13,6 @@ public enum License {
     CC_BY_NC_SA_3_0("http://creativecommons.org/licenses/by-nc-sa/3.0/"),
     CC_BY_NC_ND_3_0("http://creativecommons.org/licenses/by-nc-nd/3.0/");
 
-
     private final String key;
 
     License(String key) {

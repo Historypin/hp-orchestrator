@@ -8,17 +8,20 @@ import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
-public class ApiTokenFactory {
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 
-    private String apiSecret;
+public class ApiTokenFactory {
 
     private Mac hmac;
 
     public ApiTokenFactory(String apiSecret) {
-        this.apiSecret = apiSecret;
         try {
+            if (isEmpty(apiSecret)) {
+                throw new InvalidKeyException("Provided key cannot be empty or null!");
+            }
             this.hmac = Mac.getInstance("HmacSHA256");
             final SecretKeySpec secretKey = new SecretKeySpec(apiSecret.getBytes("UTF-8"), "HmacSHA256");
             hmac.init(secretKey);
@@ -28,9 +31,10 @@ public class ApiTokenFactory {
     }
 
     public String getApiToken(final Map<String, String> data) {
+        Map<String, String> sortedMap = new TreeMap<>(data);
         final String body =
                 String.join("&",
-                        data.entrySet().stream().map(
+                        sortedMap.entrySet().stream().map(
                                 e -> String.format("%s=%s", e.getKey(), e.getValue())
                         ).collect(Collectors.toList()));
         try {

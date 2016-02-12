@@ -13,8 +13,8 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.Response;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 
 public class HPClientImpl implements HPClient {
 
@@ -46,7 +46,7 @@ public class HPClientImpl implements HPClient {
     @Override
     public Response getPins(String projectSlug) {
         WebTarget target = client.target(baseURL).path("en").path("api").path(projectSlug).path("pin").path("get_gallery.json").queryParam("limit", 10000);
-        return  target.request().get();
+        return target.request().get();
     }
 
     @Override
@@ -59,16 +59,15 @@ public class HPClientImpl implements HPClient {
     public Response createProject(String title, String owner, String lat, String lng, String range) {
         WebTarget target = client.target(baseURL).path("en").path("api").path("projects").path("save.json");
 
-        Map<String, String> data = new TreeMap<>();
+        Map<String, String> data = new HashMap<>();
         data.put("title", title);
 
         data.put("owners[0][id]", owner);
 
-
         data.put("timemap[lat]", lat);
         data.put("timemap[lng]", lng);
         data.put("timemap[range]", range);
-        data.put("timemap[zoom]", "0");
+        data.put("timemap[zoom]", "0"); // TODO: temporary workaround, we need to provide default value, otherwise the project will not be valid
 
         data.put("new_project", "true");
         data.put("api_key", apiKey);
@@ -83,7 +82,7 @@ public class HPClientImpl implements HPClient {
     public Response createPin(String caption, Long projectId, String lat, String lng, String range, String date, License license, PinnerType pinnerType, String content) {
         WebTarget target = client.target(baseURL).path("en").path("api").path("pin").path("save.json");
 
-        Map<String, String> data = new TreeMap<>();
+        Map<String, String> data = new HashMap<>();
         data.put("caption", caption);
 
         data.put("repinned_projects[0][id]", projectId.toString());
@@ -93,12 +92,40 @@ public class HPClientImpl implements HPClient {
         data.put("timemap[range]", range);
 
         data.put("date", date);
-        data.put("license",license.getKey());
+        data.put("license", license.getKey());
         data.put("pinner_type", pinnerType.name().toLowerCase());
         data.put("display[content]", content);
 
         data.put("api_key", apiKey);
-        data.put("api_path","pin/save.json");
+        data.put("api_path", "pin/save.json");
+
+        data.put("api_token", apiTokenFactory.getApiToken(data));
+
+        return target.request(MediaType.TEXT_PLAIN_TYPE).post(Entity.form(new MultivaluedHashMap<>(data)));
+    }
+
+    @Override
+    public Response deleteProject(String projectId) {
+        WebTarget target = client.target(baseURL).path("en").path("api").path("projects").path("delete.json").queryParam("id", projectId);
+
+        Map<String, String> data = new HashMap<>();
+        data.put("api_key", apiKey);
+        data.put("api_path", "projects/delete.json");
+        data.put("id", projectId);
+
+        data.put("api_token", apiTokenFactory.getApiToken(data));
+
+        return target.request(MediaType.TEXT_PLAIN_TYPE).post(Entity.form(new MultivaluedHashMap<>(data)));
+    }
+
+    @Override
+    public Response deletePin(String pinId) {
+        WebTarget target = client.target(baseURL).path("en").path("api").path("pin").path("delete.json").queryParam("id", pinId);
+
+        Map<String, String> data = new HashMap<>();
+        data.put("api_key", apiKey);
+        data.put("api_path", "pin/delete.json");
+        data.put("id", pinId);
 
         data.put("api_token", apiTokenFactory.getApiToken(data));
 

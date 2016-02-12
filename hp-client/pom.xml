@@ -38,8 +38,6 @@
         </dependency>
 
 
-
-
         <!-- LOGGING dependencies -->
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -77,10 +75,38 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.5</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>2.19.1</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.surefire</groupId>
+                        <artifactId>surefire-junit4</artifactId>
+                        <version>2.19.1</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <groups>sk.eea.td.hp_client.impl.IntegrationTest</groups>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                        </goals>
+                        <configuration>
+                            <includes>
+                                <include>**/*.class</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
 </project>
