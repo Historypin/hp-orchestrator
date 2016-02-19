@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>TD console</title>
+</head>
+<body>
+    <p>Welcome to the Technical Demostrator Admin console!</p>
+    <table>
+        <thead>
+        <tr>
+            <th>Property</th>
+            <th>Value</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>profile</td>
+            <td th:text="${profile}"></td>
+        </tr>
+        <tr>
+            <td>defaultExample</td>
+            <td th:text="${defaultExample}"></td>
+        </tr>
+        <tr>
+            <td>databaseURL</td>
+            <td th:text="${databaseURL}"></td>
+        </tr>
+        </tbody>
+    </table>
+</body>
+</html>

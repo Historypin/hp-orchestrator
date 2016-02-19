@@ -6,12 +6,23 @@
     <groupId>sk.eea.td</groupId>
     <artifactId>technical-demonstrator</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+
     <packaging>pom</packaging>
     <name>Technical demonstrator</name>
+
     <scm>
         <url>ssh://git@vcs.eea.sk/efad/td.git</url>
     </scm>
+
+    <properties>
+        <java.version>1.8</java.version>
+        <jersey.version>2.22.1</jersey.version>
+        <spring.version>4.2.4.RELEASE</spring.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
     <modules>
         <module>hp-client</module>
+        <module>console</module>
     </modules>
 </project>
