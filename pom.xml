@@ -24,6 +24,6 @@
     <modules>
         <module>hp-client</module>
         <module>console</module>
-	<module>oclc-harvester</module>
+        <module>oclc-harvester</module>
     </modules>
 </project>
