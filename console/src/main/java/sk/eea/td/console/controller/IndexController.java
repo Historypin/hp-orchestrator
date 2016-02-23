@@ -10,15 +10,9 @@ public class IndexController {
 
     @Value("${spring.profiles.active:null}") String profile;
 
-    @Value("${some.default.property}") String defaultExample;
-
-    @Value("${database.url}") String databaseURL;
-
     @RequestMapping("/")
     public String index(Model model) {
         model.addAttribute("profile", profile);
-        model.addAttribute("defaultExample", defaultExample);
-        model.addAttribute("databaseURL", databaseURL);
         return "index";
     }
 }
