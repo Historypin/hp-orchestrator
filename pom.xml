@@ -23,9 +23,10 @@
 
     <modules>
         <module>hp-client</module>
-        <module>console</module>
-        <module>oclc-harvester</module>
+        <module>oai-client</module>
         <module>eu-client</module>
+
+        <module>console</module>
     </modules>
 
     <build>
