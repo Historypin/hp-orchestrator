@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.xml.sax.SAXException;
 import sk.eea.td.rest.model.HarvestRequest;
 import sk.eea.td.rest.model.HarvestResponse;
+import sk.eea.td.rest.service.EuropeanaHarvestService;
 import sk.eea.td.rest.service.HistorypinHarvestService;
 import sk.eea.td.rest.service.OaipmhHarvestService;
 
@@ -34,11 +35,16 @@ public class HarvestController {
 
     private static final ExecutorService historypinExecutorService = Executors.newSingleThreadExecutor();
 
+    private static final ExecutorService europeanaExecutorService = Executors.newSingleThreadExecutor();
+
     @Autowired
     private OaipmhHarvestService oaipmhHarvestService;
 
     @Autowired
     private HistorypinHarvestService historypinHarvestService;
+
+    @Autowired
+    private EuropeanaHarvestService europeanaHarvestService;
 
     @ApiOperation(value = "Triggers harvest operation",
             response = HarvestResponse.class)
@@ -46,6 +52,13 @@ public class HarvestController {
     public HarvestResponse harvest(@Valid @RequestBody HarvestRequest request) {
         switch (request.getConnector()) {
             case EUROPEANA:
+                europeanaExecutorService.submit(() -> {
+                    try {
+                        europeanaHarvestService.harvest(request.getLuceneQuery());
+                    } catch (IOException | InterruptedException e) {
+                        LOG.error("Exception at Europeana harvest job.", e);
+                    }
+                });
                 break;
             case HISTORYPIN:
                 historypinExecutorService.submit(() -> {
@@ -73,9 +86,9 @@ public class HarvestController {
     }
 
     @PreDestroy
-    public void destroy() throws InterruptedException{
-        List<ExecutorService> executors = Arrays.asList(oaipmhExecutorService, historypinExecutorService);
-        for(ExecutorService executor : executors) {
+    public void destroy() throws InterruptedException {
+        List<ExecutorService> executors = Arrays.asList(oaipmhExecutorService, historypinExecutorService, europeanaExecutorService);
+        for (ExecutorService executor : executors) {
             executor.shutdown();
             if (!executor.awaitTermination(500, TimeUnit.MILLISECONDS)) {
                 LOG.error("Executor did not terminate in the specified time.");

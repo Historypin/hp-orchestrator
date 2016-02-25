@@ -35,6 +35,12 @@
         </dependency>
 
         <dependency>
+            <groupId>sk.eea.td</groupId>
+            <artifactId>eu-client</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
             <version>${spring.version}</version>
@@ -56,6 +62,7 @@
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
             <version>${swagger.springfox.version}</version>
+            <scope>runtime</scope>
         </dependency>
 
         <dependency>
@@ -80,12 +87,14 @@
             <groupId>org.codehaus.janino</groupId>
             <artifactId>janino</artifactId>
             <version>2.7.8</version>
+            <scope>runtime</scope>
         </dependency>
 
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>2.7.1-1</version>
+            <scope>runtime</scope>
         </dependency>
 
         <dependency>

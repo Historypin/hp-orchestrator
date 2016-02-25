@@ -28,12 +28,15 @@
 			<artifactId>commons-io</artifactId>
 		</dependency>
 
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.7.7</version>
-        </dependency>
+		<!-- LOGGING dependencies -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.16</version>
+			<scope>compile</scope>
+		</dependency>
 
+		<!-- TESTING dependencies -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

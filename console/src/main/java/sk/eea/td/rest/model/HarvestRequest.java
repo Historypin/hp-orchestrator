@@ -23,7 +23,7 @@ public class HarvestRequest {
     private String filePath;
 
     @NotNull
-    @ApiModelProperty(value = "type of connector", allowableValues = "EUROPEANA, HISTORYPIN", required = true)
+    @ApiModelProperty(value = "type of connector", allowableValues = "EUROPEANA, HISTORYPIN, OAIPMH", required = true)
     private Connector connector;
 
     @NotNull(message = "Lucene query is mandatory for EUROPEANA connector.", groups = { EuropeanaValidation.class})
