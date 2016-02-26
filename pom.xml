@@ -27,6 +27,7 @@
         <module>eu-client</module>
 
         <module>console</module>
+        <module>onto-client</module>
     </modules>
 
     <build>
