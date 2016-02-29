@@ -259,6 +259,10 @@ public class OaipmhHarvestService {
         CANCELLED.set(true);
     }
 
+    public void setOutputDirectory(String outputDirectory) {
+        this.outputDirectory = outputDirectory;
+    }
+
     static class HarvestingResult {
 
         private int harvestedFiles;

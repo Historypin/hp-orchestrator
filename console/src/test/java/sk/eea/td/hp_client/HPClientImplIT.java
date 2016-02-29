@@ -1,4 +1,4 @@
-package sk.eea.td.hp_client.impl;
+package sk.eea.td.hp_client;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -7,11 +7,17 @@ import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
-import sk.eea.td.hp_client.IntegrationTest;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import sk.eea.td.IntegrationTest;
+import sk.eea.td.config.TestPropertiesConfig;
 import sk.eea.td.hp_client.api.HPClient;
 import sk.eea.td.hp_client.api.License;
 import sk.eea.td.hp_client.api.PinnerType;
+import sk.eea.td.hp_client.impl.HPClientImpl;
 
 import javax.ws.rs.core.Response;
 import java.time.LocalDate;
@@ -27,20 +33,26 @@ import static org.hamcrest.Matchers.*;
  * Integration test consists of basic CRUD operations. Because of that we need to assure the execution order of the test methods.
  */
 @Category(IntegrationTest.class)
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = TestPropertiesConfig.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class HPClientImplIT {
 
-    private static final String URL = "http://v76-beta-1.historypin-hrd.appspot.com";
+    @Value("${historypin.base.url}")
+    private String baseURL;
 
-    private static final String API_KEY = "d82e14f622f1fbd475da1ff2fba8b118f4756f368fd7f7a5a30f8beb705d743a";
+    @Value("${historypin.api.key}")
+    private String apiKey;
 
-    private static final String API_SECRET = "c61b9a9ad72b02264ac1997165309316";
+    @Value("${historypin.api.secret}")
+    private String apiSecret;
+
+    @Value("${historypin.user}")
+    private String user;
 
     private static final String PROJECT_NAME = "My test collection";
 
     private static final String PIN_NAME = "My test pin";
-
-    private static final String USER_ID = "65543";
 
     private static String projectSlug;
 
@@ -54,14 +66,14 @@ public class HPClientImplIT {
 
     @Before
     public void init() {
-        this.client = new HPClientImpl(URL, API_KEY, API_SECRET);
+        this.client = new HPClientImpl(baseURL, apiKey, apiSecret);
         this.jsonParser = new JSONParser();
     }
 
     /* CREATE */
     @Test
     public void test_AA_CreateProject() throws Exception {
-        Response response = client.createProject(PROJECT_NAME, USER_ID, "42", "23", "2000");
+        Response response = client.createProject(PROJECT_NAME, user, "42", "23", "2000");
         assertThat(response.getStatus(), is(equalTo(Response.Status.OK.getStatusCode())));
 
         String responseMessage = response.readEntity(String.class);
@@ -144,7 +156,7 @@ public class HPClientImplIT {
         String caption = (String) jsonObject.get("caption");
         Long user_id = (Long) jsonObject.get("user_id");
         assertThat(caption, is(equalTo(PIN_NAME)));
-        assertThat(user_id.toString(), is(equalTo(USER_ID)));
+        assertThat(user_id.toString(), is(equalTo(user)));
     }
 
     @Test
@@ -174,7 +186,7 @@ public class HPClientImplIT {
         String projectName = (String) jsonObject.get("title");
         String ownerId = (String) jsonObject.get("owner_id");
         assertThat(projectName, is(equalTo(PROJECT_NAME)));
-        assertThat(ownerId, is(equalTo(USER_ID)));
+        assertThat(ownerId, is(equalTo(user)));
     }
 
     /* UPDATE */
