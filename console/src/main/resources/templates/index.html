@@ -2,7 +2,13 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>TD console</title>
+    <title>Orcherstrator</title>
+
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+          th:href="@{/webjars/bootstrap/3.3.6/css/bootstrap.min.css}" rel="stylesheet" />
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css"
+          th:href="@{/webjars/font-awesome/4.5.0/css/font-awesome.min.css}" rel="stylesheet" />
 </head>
 <body>
     <p>Welcome to the Technical Demostrator Admin console!</p>
@@ -28,5 +34,8 @@
         </tr>
         </tbody>
     </table>
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" th:src="@{/webjars/bootstrap/3.3.6/js/bootstrap.min.js}"></script>
+    <script src="https://code.jquery.com/jquery-2.2.1.min.js" th:src="@{/webjars/jquery/2.2.1/jquery.min.js}"></script>
 </body>
 </html>
