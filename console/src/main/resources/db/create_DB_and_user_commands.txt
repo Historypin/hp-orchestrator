@@ -1,0 +1,5 @@
+create user console with password 'z3whcTuyZoRYlNhr2kCJ';
+
+create database console;
+
+grant all privileges on database console to console;
