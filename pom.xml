@@ -25,5 +25,6 @@
         <module>hp-client</module>
         <module>console</module>
         <module>oclc-harvester</module>
+	<module>mule-app</module>
     </modules>
 </project>

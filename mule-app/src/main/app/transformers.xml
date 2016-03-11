@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw" xmlns:metadata="http://www.mulesoft.org/schema/mule/metadata" xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+    <flow name="transformersFlow">
+        <http:listener config-ref="HTTP_Harvester_Test" path="/transformData" metadata:id="8cf2fa52-d597-4163-b766-a0a002d288a7" doc:name="HTTP"/>
+        <message-properties-transformer scope="session" doc:name="Message Properties">
+            <add-message-property key="processId" value="#[message.inboundProperties.get('http.query.params').get('processId')]"/>
+            <add-message-property key="transformation" value="#[message.inboundProperties.get('http.query.params').get('transformation')]"/>
+        </message-properties-transformer>
+        <choice doc:name="Choice">
+            <when expression="#[sessionVars.transformation==&quot;edm2hp&quot;]">
+                <vm:outbound-endpoint exchange-pattern="request-response" address="vm://edm2hp" doc:name="edm2hp"/>
+            </when>
+        </choice>
+    </flow>
+    <flow name="edm2hp">
+        <vm:inbound-endpoint exchange-pattern="request-response" address="vm://edm2hp" doc:name="edm2hp"/>
+        <dw:transform-message doc:name="Transform Message">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+pin: payload.OAI-PMH.ListRecords.record.metadata.*RDF map {
+	caption: $.Proxy.title
+}
+]]></dw:set-payload>
+        </dw:transform-message>
+    </flow>
+    <flow name="edm2tagApp">
+        <vm:inbound-endpoint exchange-pattern="one-way" address="vm://edm2tagApp" doc:name="VM"/>
+        <dw:transform-message doc:name="Transform Message">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/java
+---
+{
+}]]></dw:set-payload>
+        </dw:transform-message>
+        <vm:outbound-endpoint exchange-pattern="one-way" address="vm://tagApp-in" doc:name="VM"/>
+    </flow>
+    <flow name="HP2MINT">
+        <vm:inbound-endpoint exchange-pattern="one-way" address="vm://HP2MINT" doc:name="VM"/>
+        <vm:outbound-endpoint exchange-pattern="one-way" address="vm://mint-in" doc:name="VM"/>
+    </flow>
+</mule>

@@ -1,0 +1,11 @@
+{
+    "inputMessageMetadata": {
+        "messagePayload": {
+            "connectorName": "#_custom_mule_metadata_type_#",
+            "typeId": "harvesterStatus"
+        }
+    },
+    "outputMessageMetadata": {},
+    "id": "34b26623-53bd-47bf-95bc-ec6941e3b805",
+    "version": "5.2.0.0"
+}
