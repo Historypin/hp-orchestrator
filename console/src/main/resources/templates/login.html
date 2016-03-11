@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title th:text="#{login.title}">Login - Orchestrator</title>
+
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+          th:href="@{/webjars/bootstrap/3.3.6/css/bootstrap.min.css}" rel="stylesheet"/>
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css"
+          th:href="@{/webjars/font-awesome/4.5.0/css/font-awesome.min.css}" rel="stylesheet"/>
+
+    <link href="../static/css/console.css" th:href="@{/static/css/console.css}" rel="stylesheet"/>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-4 col-md-offset-4">
+            <div class="panel panel-login panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title" th:text="#{login.panel.title}">Orchestrator login</h3>
+                </div>
+                <div class="panel-body">
+                    <p th:text="#{login.panel.description}">Welcome to the Orchestrator. To proceed submit your username and password.</p>
+                    <form th:action="@{/login.do}" method="post">
+                        <fieldset>
+                            <legend th:text="#{login.panel.legend}">Please sign in</legend>
+
+
+                            <div class="alert alert-danger" role="alert" th:if="${param.error}" th:text="#{login.error}">
+                                Invalid username or password.
+                            </div>
+
+                            <div class="alert alert-danger" role="warning" th:if="${param.timeout}" th:text="#{login.timeout}">
+                                You have been logged out.
+                            </div>
+
+                            <div class="alert alert-success" role="warning" th:if="${param.logout}" th:text="#{login.logout}">
+                                You have been successfully logged out.
+                            </div>
+
+                            <div class="form-group">
+                                <input name="username" placeholder="Username" th:placeholder="#{login.username}" class="form-control" type="text"/>
+                            </div>
+
+                            <div class="form-group">
+                                    <input name="password" placeholder="Password" th:placeholder="#{login.password}" class="form-control" type="password"/>
+                            </div>
+
+                            <div class="form-group">
+                                    <button type="submit" name="login" class="btn btn-primary" th:text="#{login.button.title}">Login</button>
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-2.2.1.min.js" th:src="@{/webjars/jquery/2.2.1/jquery.min.js}"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" th:src="@{/webjars/bootstrap/3.3.6/js/bootstrap.min.js}"></script>
+</body>
+</html>

@@ -9,7 +9,7 @@ import java.util.List;
 public class HarvestRequestValidationSequenceProvider implements DefaultGroupSequenceProvider<HarvestRequest> {
 
     public List<Class<?>> getValidationGroups(HarvestRequest harvestRequest) {
-        List<Class<?>> sequence = new ArrayList<Class<?>>();
+        List<Class<?>> sequence = new ArrayList<>();
         sequence.add(HarvestRequest.class);
 
         if (harvestRequest != null) {

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title th:text="#{user.profile.title}">User profile - Orcherstrator</title>
+
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+          th:href="@{/webjars/bootstrap/3.3.6/css/bootstrap.min.css}" rel="stylesheet"/>
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css"
+          th:href="@{/webjars/font-awesome/4.5.0/css/font-awesome.min.css}" rel="stylesheet"/>
+
+    <link href="../static/css/console.css" th:href="@{/static/css/console.css}" rel="stylesheet"/>
+</head>
+<body>
+<div id="wrapper">
+    <!-- Navigation -->
+    <nav th:replace="fragments/navigation::navigation"></nav>
+
+    <!-- Page Content -->
+    <div id="page-wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header" th:text="#{nav.user.profile}">User profile</h1>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <form class="form-horizontal" action="#" th:action="@{/user_profile/change_password}" th:object="${changePasswordForm}" method="post" accept-charset="UTF-8">
+                        <fieldset>
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title" th:text="#{user.profile.password.heading}">Change password</h3>
+                                </div>
+                                <div class="panel-body">
+                                    <!-- Old password -->
+                                    <div class="form-group" th:classappend="${#fields.hasErrors('oldPassword')}? 'has-error'">
+                                        <label class="col-md-4 control-label" for="oldPassword" th:text="#{user.profile.password.old.password}">Old password</label>
+                                        <div class="col-md-4">
+                                            <input id="oldPassword" name="oldPassword" th:field="*{oldPassword}" th:placeholder="#{user.profile.password.old.password.placeholder}" placeholder="old password" class="form-control input-md" type="password"/>
+                                            <span class="help-block" th:if="${#fields.hasErrors('oldPassword')}" th:errors="*{oldPassword}">Old password error</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- New password -->
+                                    <div class="form-group" th:classappend="${#fields.hasErrors('newPassword')}? 'has-error'">
+                                        <label class="col-md-4 control-label" for="newPassword" th:text="#{user.profile.password.new.password}">New password</label>
+                                        <div class="col-md-4">
+                                            <input id="newPassword" name="newPassword" th:field="*{newPassword}" th:placeholder="#{user.profile.password.new.password.placeholder}" placeholder="new password" class="form-control input-md" type="password"/>
+                                            <span class="help-block" th:if="${#fields.hasErrors('newPassword')}" th:errors="*{newPassword}">New password error</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Repeat password -->
+                                    <div class="form-group" th:classappend="${#fields.hasErrors('global')}? 'has-error'">
+                                        <label class="col-md-4 control-label" for="repeatPassword" th:text="#{user.profile.password.repeat.password}">Repeat new password</label>
+                                        <div class="col-md-4">
+                                            <input id="repeatPassword" name="repeatPassword" th:field="*{repeatPassword}" th:placeholder="#{user.profile.password.repeat.password.placeholder}" placeholder="repeat new password" class="form-control input-md" type="password"/>
+                                            <span class="help-block" th:if="${#fields.hasErrors('repeatPassword')}" th:errors="*{confirmPassword}">Incorrect repeat password</span>
+                                            <span class="help-block" th:if="${#fields.hasErrors('global')}" th:errors="*{global}">Incorrect repeat password</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Button -->
+                                    <div class="form-group" th:classappend="${param.success != null}? 'has-success'">
+                                        <label class="col-md-4 control-label" for="changePasswordButton"></label>
+                                        <div class="col-md-4">
+                                            <button id="changePasswordButton" class="btn btn-primary" th:text="#{user.profile.password.button}">Change</button>
+                                            <span id="successMessage" class="help-block " th:text="#{user.profile.password.success}" th:unless="${param.success == null}">Success.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-2.2.1.min.js" th:src="@{/webjars/jquery/2.2.1/jquery.min.js}"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" th:src="@{/webjars/bootstrap/3.3.6/js/bootstrap.min.js}"></script>
+<script src="../static/js/console.js" th:src="@{/static/js/console.js}"></script>
+</body>
+</html>

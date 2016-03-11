@@ -1,32 +1,227 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>TD console</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title th:text="#{create.task.title}">Create task - Orchestrator</title>
+
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+          th:href="@{/webjars/bootstrap/3.3.6/css/bootstrap.min.css}" rel="stylesheet"/>
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css"
+          th:href="@{/webjars/font-awesome/4.5.0/css/font-awesome.min.css}" rel="stylesheet"/>
+
+    <link href="../static/css/console.css" th:href="@{/static/css/console.css}" rel="stylesheet"/>
 </head>
 <body>
-    <p>Welcome to the Technical Demostrator Admin console!</p>
-    <table>
-        <thead>
-        <tr>
-            <th>Property</th>
-            <th>Value</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td>profile</td>
-            <td th:text="${profile}"></td>
-        </tr>
-        <tr>
-            <td>defaultExample</td>
-            <td th:text="${defaultExample}"></td>
-        </tr>
-        <tr>
-            <td>databaseURL</td>
-            <td th:text="${databaseURL}"></td>
-        </tr>
-        </tbody>
-    </table>
+<div id="wrapper">
+    <!-- Navigation -->
+    <nav th:replace="fragments/navigation::navigation"></nav>
+
+    <!-- Page Content -->
+    <div id="page-wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header" th:text="#{nav.create.task}">Create task</h1>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <form class="form-horizontal" action="#" th:action="@{/}" th:object="${taskForm}" method="post" accept-charset="UTF-8">
+                        <fieldset>
+                            <!-- Name -->
+                            <div class="form-group" th:classappend="${#fields.hasErrors('name')}? 'has-error'">
+                                <label class="col-md-4 control-label" for="name" th:text="#{create.task.name}">Name</label>
+                                <div class="col-md-4">
+                                    <input id="name" name="name" th:field="*{name}" th:placeholder="#{create.task.name.placeholder}" placeholder="name of the task" class="form-control input-md" type="text"/>
+                                    <span class="help-block" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name error</span>
+                                </div>
+                            </div>
+
+                            <!-- Harvesting -->
+                            <div class="form-group" th:classappend="${#fields.hasErrors('harvesting')}? 'has-error'">
+                                <label class="col-md-4 control-label" for="harvesting" th:text="#{create.task.harvesting}">Harvesting</label>
+                                <div class="col-md-4">
+                                    <select id="harvesting" name="harvesting" class="form-control" th:field="*{harvesting}">
+                                        <option value="EU" th:text="#{create.task.harvesting.eu}">Europeana</option>
+                                        <option value="HP" th:text="#{create.task.harvesting.hp}">Historypin</option>
+                                    </select>
+                                    <span class="help-block" th:if="${#fields.hasErrors('harvesting')}" th:errors="*{harvesting}">Harvesting error</span>
+                                </div>
+                            </div>
+
+                            <!-- Type -->
+                            <div class="form-group" th:classappend="${#fields.hasErrors('type')}? 'has-error'">
+                                <label class="col-md-4 control-label" for="type" th:text="#{create.task.type}">Type</label>
+                                <div class="col-md-4">
+                                    <select id="type" name="type" class="form-control" th:field="*{type}">
+                                        <option value="OAIPMH" th:text="#{create.task.type.oai}">OAI-PMH</option>
+                                        <option value="REST" th:text="#{create.task.type.rest}">REST</option>
+                                    </select>
+                                    <span class="help-block" th:if="${#fields.hasErrors('type')}" th:errors="*{type}">Type error</span>
+                                </div>
+                            </div>
+
+                            <!-- Destination -->
+                            <div class="form-group" th:classappend="${#fields.hasErrors('destinations')}? 'has-error'">
+                                <label class="col-md-4 control-label" for="destination" th:text="#{create.task.dest}">Destination</label>
+                                <div class="col-md-4">
+                                    <select id="destination" name="destination" class="form-control" multiple="multiple" th:field="*{destinations}">
+                                        <option value="HP" th:text="#{create.task.dest.hp}">Historypin</option>
+                                        <option value="TAGAPP" th:text="#{create.task.dest.tagapp}">Tagapp</option>
+                                        <option value="MINT" th:text="#{create.task.dest.mint}">Mint</option>
+                                        <option value="EUROPEANA" th:text="#{create.task.dest.eu}">Europeana</option>
+                                        <option value="SD" th:text="#{create.task.dest.sd}">Semantic demonstrator</option>
+                                    </select>
+                                    <span class="help-block" th:if="${#fields.hasErrors('destinations')}" th:errors="*{destinations}">Destinations error</span>
+                                </div>
+                            </div>
+
+                            <!-- Configuration -->
+
+                            <!-- Name -->
+                            <div id="historypin-target-conf-group" class="form-group" th:classappend="${#fields.hasErrors('collectionName')}? 'has-error'">
+                                <label class="col-md-4 control-label" for="name" th:text="#{create.task.collectionName}">Collection name</label>
+                                <div class="col-md-4">
+                                    <input id="collectionName" name="collectionName" th:field="*{collectionName}" th:placeholder="#{create.task.collectionName.placeholder}" placeholder="name of the target collection in Historypin" class="form-control input-md" type="text"/>
+                                    <span class="help-block" th:if="${#fields.hasErrors('collectionName')}" th:errors="*{collectionName}">Collection name error</span>
+                                </div>
+                            </div>
+
+                            <!-- OAI-PMH date from -->
+                            <div id="oaipmh-conf-group">
+                                <div class="form-group" th:classappend="${#fields.hasErrors('oaiFrom')}? 'has-error'">
+                                    <label class="col-md-4 control-label" for="dateFrom" th:text="#{create.task.oai.from}">Date from</label>
+                                    <div class="col-md-4">
+                                        <input id="dateFrom" name="dateFrom" th:field="*{oaiFrom}" placeholder="YYYY-MM-DDThh:mm:ssZ" class="form-control input-md" type="text"/>
+                                        <span class="help-block" th:if="${#fields.hasErrors('oaiFrom')}" th:errors="*{oaiFrom}">Date from error</span>
+                                    </div>
+                                </div>
+
+                                <!-- OAI-PMH date until -->
+                                <div class="form-group" th:classappend="${#fields.hasErrors('oaiUntil')}? 'has-error'">
+                                    <label class="col-md-4 control-label" for="dateUntil" th:text="#{create.task.oai.until}">Date until</label>
+                                    <div class="col-md-4">
+                                        <input id="dateUntil" name="dateUntil" th:field="*{oaiUntil}" placeholder="YYYY-MM-DDThh:mm:ssZ" class="form-control input-md" type="text"/>
+                                        <span class="help-block" th:if="${#fields.hasErrors('oaiUntil')}" th:errors="*{oaiUntil}">Date until error</span>
+                                    </div>
+                                </div>
+
+                                <!-- OAI-PMH set -->
+                                <div class="form-group" th:classappend="${#fields.hasErrors('oaiSet')}? 'has-error'">
+                                    <label class="col-md-4 control-label" for="set" th:text="#{create.task.oai.set}">Set</label>
+                                    <div class="col-md-4">
+                                        <input id="set" name="set" th:field="*{oaiSet}" th:placeholder="#{create.task.oai.set.placeholder}" placeholder="set to harvest from" class="form-control input-md" type="text"/>
+                                        <span class="help-block" th:if="${#fields.hasErrors('oaiSet')}" th:errors="*{oaiSet}">Set error</span>
+                                    </div>
+                                </div>
+
+                                <!-- OAI-PMH metadata prefix -->
+                                <div class="form-group" th:classappend="${#fields.hasErrors('oaiMetadataPrefix')}? 'has-error'">
+                                    <label class="col-md-4 control-label" for="metadataPrefix" th:text="#{create.task.oai.metadata}">Metadata prefix</label>
+                                    <div class="col-md-4">
+                                        <input id="metadataPrefix" name="metadataPrefix" th:field="*{oaiMetadataPrefix}" th:placeholder="#{create.task.oai.metadata.placeholder}" placeholder="e.g. 'edm'" class="form-control input-md" type="text"/>
+                                        <span class="help-block" th:if="${#fields.hasErrors('oaiMetadataPrefix')}" th:errors="*{oaiMetadataPrefix}">Metadata prefix error</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Europeana lucene query-->
+                            <div id="europeana-conf-group" class="form-group" th:classappend="${#fields.hasErrors('luceneQuery')}? 'has-error'">
+                                <label class="col-md-4 control-label" for="luceneQuery" th:text="#{create.task.lucene}">Lucene query</label>
+                                <div class="col-md-4">
+                                    <input id="luceneQuery" name="luceneQuery" th:field="*{luceneQuery}" th:placeholder="#{create.task.lucene.placeholder}" placeholder="query to search for" class="form-control input-md" type="text"/>
+                                    <span class="help-block" th:if="${#fields.hasErrors('luceneQuery')}" th:errors="*{luceneQuery}">Lucene query error</span>
+                                </div>
+                            </div>
+
+                            <!-- Historypin project slug-->
+                            <div id="historypin-conf-group" class="form-group" th:classappend="${#fields.hasErrors('projectSlug')}? 'has-error'">
+                                <label class="col-md-4 control-label" for="projectSlug" th:text="#{create.task.slug}">Project slug</label>
+                                <div class="col-md-4">
+                                    <input id="projectSlug" name="projectSlug" th:field="*{projectSlug}" th:placeholder="#{create.task.slug.placeholder}" placeholder="path to project in Historypin" class="form-control input-md" type="text"/>
+                                    <span class="help-block" th:if="${#fields.hasErrors('projectSlug')}" th:errors="*{oaiFrom}">Project slug error</span>
+                                </div>
+                            </div>
+
+                            <!-- Button -->
+                            <div class="form-group" th:classappend="${param.success != null}? 'has-success'">
+                                <label class="col-md-4 control-label" for="createTaskButton"></label>
+                                <div class="col-md-4">
+                                    <button id="createTaskButton" name="createTaskButton" class="btn btn-primary" th:text="#{create.task.button}">Create task</button>
+                                    <span id="successMessage" class="help-block " th:text="#{create.task.success}" th:unless="${param.success == null}">Success.</span>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-2.2.1.min.js" th:src="@{/webjars/jquery/2.2.1/jquery.min.js}"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" th:src="@{/webjars/bootstrap/3.3.6/js/bootstrap.min.js}"></script>
+<script src="../static/js/console.js" th:src="@{/static/js/console.js}"></script>
+
+<script>
+    var defaultDestinationOptions = $("#destination option"); // save default destination options
+
+    var resolveConfiguration = function () {
+        var harvestingOption = $("#harvesting option:selected").val();
+        var typeOption = $("#type option:selected").val();
+
+        // restore default destination options
+        $("#destination option").remove();
+        $("#destination").append(defaultDestinationOptions);
+
+        $("#historypin-target-conf-group").hide();
+        $("#destination option:selected").each(function() {
+            if($(this).val() == 'HP'){
+                $("#historypin-target-conf-group").show();
+            }
+        });
+
+        if ("EU" == harvestingOption) {
+            $("#type option[value='OAIPMH']").show();
+            $("#destination option[value='MINT'], option[value='EUROPEANA'], option[value='SD']").remove();
+
+            if ("OAIPMH" == typeOption) {
+                $("#oaipmh-conf-group").show();
+                $("#europeana-conf-group").hide();
+                $("#historypin-conf-group").hide();
+            } else {
+                $("#europeana-conf-group").show();
+                $("#oaipmh-conf-group").hide();
+                $("#historypin-conf-group").hide();
+            }
+        } else {
+            $("#type option[value='OAIPMH']").hide();
+            $("#type").val("REST");
+            $("#destination option[value='HP']").remove();
+
+            $("#historypin-conf-group").show();
+            $("#oaipmh-conf-group").hide();
+            $("#europeana-conf-group").hide();
+        }
+    };
+
+    $(document).ready(function () {
+        resolveConfiguration();
+
+        $("#harvesting").change(function () {
+            resolveConfiguration();
+        });
+
+        $("#type").change(function () {
+            resolveConfiguration();
+        });
+
+        $("#destination").change(function () {
+            resolveConfiguration();
+        });
+    });
+</script>
 </body>
 </html>
