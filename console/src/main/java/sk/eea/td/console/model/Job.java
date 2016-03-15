@@ -5,7 +5,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "job")
 public class Job {
-
+	
     @Id
     @SequenceGenerator(name = "seq_job", sequenceName = "seq_job", initialValue = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_job")
@@ -19,9 +19,6 @@ public class Job {
 
     @Column
     private String target;
-
-    @Column
-    private String status;
 
     public String getSource() {
         return source;
@@ -37,14 +34,6 @@ public class Job {
 
     public void setTarget(String target) {
         this.target = target;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 
     public Long getId() {
@@ -69,7 +58,6 @@ public class Job {
                 ", name='" + name + '\'' +
                 ", source='" + source + '\'' +
                 ", target='" + target + '\'' +
-                ", status='" + status + '\'' +
                 '}';
     }
 }

@@ -1,5 +1,11 @@
 package sk.eea.td.console.controller;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.stream.Collectors;
+
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -7,22 +13,14 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+
 import sk.eea.td.console.form.TaskForm;
 import sk.eea.td.console.model.Job;
 import sk.eea.td.console.model.Param;
-import sk.eea.td.console.model.Process;
-import sk.eea.td.console.model.ReadOnlyParam;
 import sk.eea.td.console.repository.JobRepository;
 import sk.eea.td.console.repository.ParamRepository;
 import sk.eea.td.console.repository.ProcessRepository;
 import sk.eea.td.console.repository.ReadOnlyParamRepository;
-
-import javax.validation.Valid;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 @PreAuthorize("hasRole('ADMIN')")
@@ -56,7 +54,6 @@ public class HomeController {
         job.setName(taskForm.getName());
         job.setSource(taskForm.getHarvesting().toString());
         job.setTarget(taskForm.getDestinations().stream().map(TaskForm.Destination::toString).collect(Collectors.joining(", ")));
-        job.setStatus("CREATED");
         jobRepository.save(job);
 
         if(taskForm.getDestinations().contains(TaskForm.Destination.HP)) {
