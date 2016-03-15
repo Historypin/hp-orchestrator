@@ -1,21 +1,14 @@
 package sk.eea.td.flow.activities;
 
-import java.io.File;
-import java.io.FilenameFilter;
+import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
+import sk.eea.td.console.model.JobRun;
+import sk.eea.td.flow.Activity;
+import sk.eea.td.flow.FlowException;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Variant;
-
-import org.apache.commons.io.filefilter.TrueFileFilter;
-import org.glassfish.jersey.client.ClientConfig;
-
-import sk.eea.td.console.model.Process;
-import sk.eea.td.flow.Activity;
-import sk.eea.td.flow.FlowException;
+import java.io.File;
 
 public class TransformActivity implements Activity {
 
@@ -27,22 +20,22 @@ public class TransformActivity implements Activity {
 	
 	public TransformActivity() {
         ClientConfig clientConfig = new ClientConfig();
-        this.client = ClientBuilder.newClient(clientConfig);
+        this.client = ClientBuilder.newClient(clientConfig).register(MultiPartFeature.class);
 	}
 	
 	@Override
-	public void execute(Process context) throws FlowException {
+	public void execute(JobRun context) throws FlowException {
 		
 		File sourceDir;
 		File outputDir;
 		String transformType;
-		
-		WebTarget target = client.target(muleURL).path(muleAPIPath).path(muleTransform).queryParam("target", transformType);
-		
-				
-		for(File file : sourceDir.listFiles()){
-			target.request(MediaType.APPLICATION_OCTET_STREAM).buildPut();
-		}
+
+//		WebTarget target = client.target(muleURL).path(muleAPIPath).path(muleTransform).queryParam("target", transformType).request().buildPost(Entity.entity(sourceDir));
+//
+//
+//		for(File file : sourceDir.listFiles()){
+//			target.request(MediaType.APPLICATION_OCTET_STREAM);
+//		}
 
 		
 	}
