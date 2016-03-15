@@ -18,15 +18,16 @@ public class ReadOnlyParam {
     private String value;
 
     @ManyToOne
-    private Process process;
+    @JoinColumn(name = "job_run_id")
+    private JobRun jobRun;
 
     public ReadOnlyParam() {
     }
 
-    public ReadOnlyParam(String key, String value, Process process) {
+    public ReadOnlyParam(String key, String value, JobRun jobRun) {
         this.key = key;
         this.value = value;
-        this.process = process;
+        this.jobRun = jobRun;
     }
 
     public Long getId() {
@@ -53,12 +54,12 @@ public class ReadOnlyParam {
         this.value = value;
     }
 
-    public Process getProcess() {
-        return process;
+    public JobRun getJobRun() {
+        return jobRun;
     }
 
-    public void setProcess(Process process) {
-        this.process = process;
+    public void setJobRun(JobRun jobRun) {
+        this.jobRun = jobRun;
     }
 
     @Override public String toString() {

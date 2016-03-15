@@ -1,7 +1,6 @@
 package sk.eea.td.flow;
 
-import sk.eea.td.console.model.Process;
-import sk.eea.td.flow.model.Status;
+import sk.eea.td.console.model.JobRun;
 
 public interface FlowManager {
 
@@ -10,11 +9,13 @@ public interface FlowManager {
 	 * @param context Flow context 
 	 * @throws FlowException
 	 */
-	void startFlow(Process context);
+	void startFlow(JobRun context);
 
 	/**
 	 * Persist state of flow.
 	 * @param config
 	 */
-	void persistState(Process config);
+	void persistState(JobRun config);
+
+	void startHarvest();
 }

@@ -19,7 +19,6 @@ import sk.eea.td.console.model.Job;
 import sk.eea.td.console.model.Param;
 import sk.eea.td.console.repository.JobRepository;
 import sk.eea.td.console.repository.ParamRepository;
-import sk.eea.td.console.repository.ProcessRepository;
 import sk.eea.td.console.repository.ReadOnlyParamRepository;
 
 @Controller
@@ -31,10 +30,6 @@ public class HomeController {
 
     @Autowired
     private ParamRepository paramRepository;
-
-
-    @Autowired
-    private ProcessRepository processRepository;
 
     @Autowired
     private ReadOnlyParamRepository readOnlyParamRepository;

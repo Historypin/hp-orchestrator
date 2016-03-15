@@ -1,12 +1,12 @@
 -- CLEAR SCHEMA --
 DROP SEQUENCE IF EXISTS "seq_job" CASCADE;
 DROP SEQUENCE IF EXISTS "seq_param" CASCADE;
-DROP SEQUENCE IF EXISTS "seq_process" CASCADE;
+DROP SEQUENCE IF EXISTS "seq_job_run" CASCADE;
 DROP SEQUENCE IF EXISTS "seq_read_only_param" CASCADE;
 DROP SEQUENCE IF EXISTS "seq_log" CASCADE;
 DROP TABLE IF EXISTS "job" CASCADE;
 DROP TABLE IF EXISTS "param" CASCADE;
-DROP TABLE IF EXISTS "process" CASCADE;
+DROP TABLE IF EXISTS "job_run" CASCADE;
 DROP TABLE IF EXISTS "read_only_param" CASCADE;
 DROP TABLE IF EXISTS "log" CASCADE;
 DROP TABLE IF EXISTS "users" CASCADE;
@@ -19,8 +19,7 @@ CREATE TABLE "job" (
   "id"        INT8 PRIMARY KEY DEFAULT nextval('seq_job') NOT NULL,
   "name"      VARCHAR(255),
   "source"    VARCHAR(255),
-  "target"    VARCHAR(255),
-  "status"    VARCHAR(255)
+  "target"    VARCHAR(255)
 );
 -- JOB TABLE END --
 
@@ -39,15 +38,17 @@ CREATE INDEX "ix_param_job_id" ON "param" ("job_id");
 CREATE UNIQUE INDEX ix_param_job_id_key on param (job_id, key);
 -- PARAM TABLE END --
 
--- PROCESS TABLE BEGIN --
-CREATE SEQUENCE "seq_process" START 1 INCREMENT BY 50;
+-- JOB_RUN TABLE BEGIN --
+CREATE SEQUENCE "seq_job_run" START 1 INCREMENT BY 50;
 
-CREATE TABLE "process" (
-  "id"        INT8 PRIMARY KEY DEFAULT nextval('seq_process') NOT NULL,
+CREATE TABLE "job_run" (
+  "id"        INT8 PRIMARY KEY DEFAULT nextval('seq_job_run') NOT NULL,
+  "status"    VARCHAR(255),
+  "result"    VARCHAR(255),
   "job_id"    INT8 REFERENCES job(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
-CREATE INDEX "ix_process_job_id" ON "process" ("job_id");
--- PROCESS TABLE END --
+CREATE INDEX "ix_job_run_job_id" ON "job_run" ("job_id");
+-- JOB_RUN TABLE END --
 
 -- READ_ONLY_PARAM TABLE BEGIN --
 CREATE SEQUENCE "seq_read_only_param" START 1 INCREMENT BY 50;
@@ -56,12 +57,12 @@ CREATE TABLE "read_only_param" (
   "id"          INT8 PRIMARY KEY DEFAULT nextval('seq_read_only_param') NOT NULL,
   "key"         VARCHAR(255),
   "value"       VARCHAR(1024),
-  "process_id"  INT8 REFERENCES process(id) ON UPDATE CASCADE ON DELETE CASCADE
+  "job_run_id"  INT8 REFERENCES job_run(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-CREATE INDEX "ix_read_only_param_process_id" ON "read_only_param" ("process_id");
+CREATE INDEX "ix_read_only_param_job_run_id" ON "read_only_param" ("job_run_id");
 
-CREATE UNIQUE INDEX ix_read_only_param_process_id_key on read_only_param (process_id, key);
+CREATE UNIQUE INDEX ix_read_only_param_job_run_id_key on read_only_param (job_run_id, key);
 
 CREATE FUNCTION update_read_only_param_error() RETURNS TRIGGER AS $update_read_only_param_error$
 BEGIN
@@ -81,10 +82,10 @@ CREATE TABLE "log" (
   "task_type"   VARCHAR(255),
   "status"      VARCHAR(255),
   "message"     VARCHAR(1024),
-  "process_id"  INT8 REFERENCES process(id) ON UPDATE CASCADE ON DELETE CASCADE
+  "job_run_id"  INT8 REFERENCES job_run(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-CREATE INDEX "ix_log_process_id" ON "log" ("process_id");
+CREATE INDEX "ix_log_job_run_id" ON "log" ("job_run_id");
 --  LOG TABLE END --
 
 -- USERS TABLE BEGIN --

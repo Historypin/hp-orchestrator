@@ -21,7 +21,8 @@ public class Log {
     private String message;
 
     @ManyToOne
-    private Process process;
+    @JoinColumn(name = "job_run_id")
+    private JobRun jobRun;
 
     public Long getId() {
         return id;
@@ -55,12 +56,12 @@ public class Log {
         this.message = message;
     }
 
-    public Process getProcess() {
-        return process;
+    public JobRun getJobRun() {
+        return jobRun;
     }
 
-    public void setProcess(Process process) {
-        this.process = process;
+    public void setJobRun(JobRun jobRun) {
+        this.jobRun = jobRun;
     }
 
     @Override public String toString() {
