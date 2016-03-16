@@ -146,7 +146,5 @@ public class AppConfig extends WebMvcConfigurerAdapter {
 
     @Schedules(@Scheduled(cron="0 0 20 * * ?"))
     public void harvestEuropeana(){
-    	sk.eea.td.console.model.Process context = new sk.eea.td.console.model.Process();
-    	europeanaHarvester().startFlow(context);
     }
 }

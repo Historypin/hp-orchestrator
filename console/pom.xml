@@ -144,7 +144,7 @@
         <dependency>
             <groupId>org.glassfish.jersey.media</groupId>
             <artifactId>jersey-media-multipart</artifactId>
-            <version>2.11</version>
+            <version>2.22.1</version>
         </dependency>
 
         <dependency>
@@ -152,8 +152,8 @@
             <artifactId>javax.servlet-api</artifactId>
             <version>3.0.1</version>
             <scope>provided</scope>
-        </dependency>
-
+        </dependency>        
+        
         <!-- WEBJARS dependencies -->
         <dependency>
             <groupId>org.webjars</groupId>
@@ -222,7 +222,7 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
             <version>${spring.version}</version>
-        </dependency>        
+        </dependency>
     </dependencies>
 
     <build>

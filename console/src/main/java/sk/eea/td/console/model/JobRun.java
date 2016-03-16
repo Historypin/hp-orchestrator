@@ -1,5 +1,7 @@
 package sk.eea.td.console.model;
 
+import java.util.Properties;
+
 import javax.persistence.*;
 
 @Entity
@@ -29,6 +31,8 @@ public class JobRun {
     @Column
     @Enumerated(EnumType.STRING)
     private JobRunResult result;
+
+	private Properties properties;
 
     public Long getId() {
         return id;
@@ -69,4 +73,12 @@ public class JobRun {
     public void setResult(JobRunResult result) {
         this.result = result;
     }
+
+	public Properties getProperties() {
+		return this.properties;
+	}
+
+	public void setProperties(Properties properties) {
+		this.properties=properties;
+	}
 }
