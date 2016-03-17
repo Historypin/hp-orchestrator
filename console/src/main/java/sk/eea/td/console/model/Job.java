@@ -1,5 +1,7 @@
 package sk.eea.td.console.model;
 
+import sk.eea.td.rest.model.Connector;
+
 import javax.persistence.*;
 
 @Entity
@@ -15,16 +17,17 @@ public class Job {
     private String name;
 
     @Column
-    private String source;
+    @Enumerated(EnumType.STRING)
+    private Connector source;
 
     @Column
     private String target;
 
-    public String getSource() {
+    public Connector getSource() {
         return source;
     }
 
-    public void setSource(String source) {
+    public void setSource(Connector source) {
         this.source = source;
     }
 

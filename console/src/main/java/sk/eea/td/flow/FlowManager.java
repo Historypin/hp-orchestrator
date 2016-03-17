@@ -17,5 +17,10 @@ public interface FlowManager {
 	 */
 	void persistState(JobRun config);
 
-	void startHarvest();
+	/**
+	 * Run trigger function.
+	 *
+	 * Used to give time interval to flow manager.
+	 */
+	void trigger();
 }

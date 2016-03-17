@@ -3,6 +3,7 @@ package sk.eea.td.console.model;
 import java.util.Properties;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "job_run")
@@ -34,6 +35,9 @@ public class JobRun {
 
 	private Properties properties;
 
+    @OneToMany(cascade=CascadeType.ALL, mappedBy="jobRun")
+    private Set<ReadOnlyParam> readOnlyParams;
+
     public Long getId() {
         return id;
     }
@@ -48,14 +52,6 @@ public class JobRun {
 
     public void setJob(Job job) {
         this.job = job;
-    }
-
-    @Override public String toString() {
-        return "JobRun{" +
-                "id=" + id +
-                ", status=" + status +
-                ", result=" + result +
-                '}';
     }
 
     public JobRunStatus getStatus() {
@@ -81,4 +77,23 @@ public class JobRun {
 	public void setProperties(Properties properties) {
 		this.properties=properties;
 	}
+
+    public Set<ReadOnlyParam> getReadOnlyParams() {
+        return readOnlyParams;
+    }
+
+    public void setReadOnlyParams(Set<ReadOnlyParam> readOnlyParams) {
+        this.readOnlyParams = readOnlyParams;
+    }
+
+    @Override public String toString() {
+        return "JobRun{" +
+                "id=" + id +
+                ", job=" + job +
+                ", status=" + status +
+                ", result=" + result +
+                ", readOnlyParams=" + readOnlyParams +
+                ", properties=" + properties +
+                '}';
+    }
 }

@@ -29,8 +29,7 @@
         <module>eu-client</module>
 
         <module>console</module>
-        <module>oclc-harvester</module>
-	<module>mule-app</module>
+	    <module>mule-app</module>
         <module>onto-client</module>
     </modules>
 

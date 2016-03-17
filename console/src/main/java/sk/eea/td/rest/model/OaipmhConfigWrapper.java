@@ -2,18 +2,12 @@ package sk.eea.td.rest.model;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @ApiModel
 public class OaipmhConfigWrapper {
-
-    @NotNull
-    @Size(min = 1, max = 200)
-    @ApiModelProperty(value = "URL of OAIHandler", required = true)
-    private String baseURL;
 
     @NotNull
     @Size(min = 1, max = 200)
@@ -35,15 +29,14 @@ public class OaipmhConfigWrapper {
     @ApiModelProperty(value = "format of metadata used", required = true, example = "edm")
     private String metadataPrefix;
 
-    @ApiModelProperty(value = "OAI-PMH authorization string")
-    private String authorizationString;
-
-    public String getBaseURL() {
-        return baseURL;
+    public OaipmhConfigWrapper() {
     }
 
-    public void setBaseURL(String baseURL) {
-        this.baseURL = baseURL;
+    public OaipmhConfigWrapper(String from, String until, String set, String metadataPrefix) {
+        this.from = from;
+        this.until = until;
+        this.set = set;
+        this.metadataPrefix = metadataPrefix;
     }
 
     public String getFrom() {
@@ -78,22 +71,12 @@ public class OaipmhConfigWrapper {
         this.metadataPrefix = metadataPrefix;
     }
 
-    public String getAuthorizationString() {
-        return authorizationString;
-    }
-
-    public void setAuthorizationString(String authorizationString) {
-        this.authorizationString = authorizationString;
-    }
-
     @Override public String toString() {
-        return "OaipmhConfig{" +
-                "baseURL='" + baseURL + '\'' +
-                ", from='" + from + '\'' +
+        return "OaipmhConfigWrapper{" +
+                "from='" + from + '\'' +
                 ", until='" + until + '\'' +
                 ", set='" + set + '\'' +
                 ", metadataPrefix='" + metadataPrefix + '\'' +
-                ", authorizationString='" + authorizationString + '\'' +
                 '}';
     }
 }

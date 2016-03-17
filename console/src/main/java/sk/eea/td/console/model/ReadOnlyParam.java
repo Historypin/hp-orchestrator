@@ -18,7 +18,7 @@ public class ReadOnlyParam {
     private String value;
 
     @ManyToOne
-    @JoinColumn(name = "job_run_id")
+    @JoinColumn(name = "job_run_id", nullable = false)
     private JobRun jobRun;
 
     public ReadOnlyParam() {
@@ -27,6 +27,12 @@ public class ReadOnlyParam {
     public ReadOnlyParam(String key, String value, JobRun jobRun) {
         this.key = key;
         this.value = value;
+        this.jobRun = jobRun;
+    }
+
+    public ReadOnlyParam(Param param, JobRun jobRun) {
+        this.key = param.getKey();
+        this.value = param.getValue();
         this.jobRun = jobRun;
     }
 

@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.stream.Collectors;
 
+import javax.persistence.Table;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import sk.eea.td.console.model.Param;
 import sk.eea.td.console.repository.JobRepository;
 import sk.eea.td.console.repository.ParamRepository;
 import sk.eea.td.console.repository.ReadOnlyParamRepository;
+import sk.eea.td.rest.model.Connector;
 
 @Controller
 @PreAuthorize("hasRole('ADMIN')")
@@ -30,9 +32,6 @@ public class HomeController {
 
     @Autowired
     private ParamRepository paramRepository;
-
-    @Autowired
-    private ReadOnlyParamRepository readOnlyParamRepository;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String indexView(TaskForm taskForm) {
@@ -47,7 +46,15 @@ public class HomeController {
 
         Job job = new Job();
         job.setName(taskForm.getName());
-        job.setSource(taskForm.getHarvesting().toString());
+        if(TaskForm.Harvesting.EU.equals(taskForm.getHarvesting())) {
+            if(TaskForm.Type.REST.equals(taskForm.getType())) {
+                job.setSource(Connector.EUROPEANA);
+            } else { // OAI-PMH
+                job.setSource(Connector.OAIPMH);
+            }
+        } else { //HP
+            job.setSource(Connector.HISTORYPIN);
+        }
         job.setTarget(taskForm.getDestinations().stream().map(TaskForm.Destination::toString).collect(Collectors.joining(", ")));
         jobRepository.save(job);
 

@@ -32,7 +32,12 @@
         </encoder>
     </appender>
 
-    <logger level="${sk.eea.td.appender.level}" name="sk.eea.td" additivity="false" >
+    <logger name="sk.eea.td" level="${sk.eea.td.appender.level}" additivity="false" >
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="FILE"/>
+    </logger>
+
+    <logger name="com.zaxxer.hikari" level="WARN" additivity="false" >
         <appender-ref ref="STDOUT"/>
         <appender-ref ref="FILE"/>
     </logger>

@@ -26,6 +26,9 @@ public class OaipmhHarvestService {
 
     private static final AtomicBoolean CANCELLED = new AtomicBoolean();
 
+    @Value("${oaipmh.base.url}")
+    private String baseUrl;
+
     @Value("${oaipmh.max.files.in.directory}")
     private int maxFilesInDirectory;
 
@@ -59,7 +62,7 @@ public class OaipmhHarvestService {
      * @param oaipmhConfigWrapper
      */
     public void harvest(OaipmhConfigWrapper oaipmhConfigWrapper) throws NoSuchFieldException, IOException, ParserConfigurationException, SAXException, TransformerException {
-        harvest(oaipmhConfigWrapper.getBaseURL(), oaipmhConfigWrapper.getFrom(), oaipmhConfigWrapper.getUntil(), oaipmhConfigWrapper.getSet(), oaipmhConfigWrapper.getMetadataPrefix());
+        harvest(this.baseUrl, oaipmhConfigWrapper.getFrom(), oaipmhConfigWrapper.getUntil(), oaipmhConfigWrapper.getSet(), oaipmhConfigWrapper.getMetadataPrefix());
     }
 
     /**

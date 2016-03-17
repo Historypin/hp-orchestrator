@@ -50,7 +50,6 @@ public class OaipmhHarvestServiceIT {
     @Test
     public void testSuccess() throws IOException, TransformerException, ParserConfigurationException, SAXException, NoSuchFieldException {
         OaipmhConfigWrapper config = new OaipmhConfigWrapper();
-        config.setBaseURL(BASE_URL);
         config.setFrom(FROM);
         config.setUntil(UNTIL);
         config.setSet(SET);

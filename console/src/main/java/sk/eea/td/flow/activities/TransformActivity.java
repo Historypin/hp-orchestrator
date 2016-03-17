@@ -33,7 +33,9 @@ public class TransformActivity implements Activity {
 	private Client client;
 
 	private String muleURL;
+
 	private String muleAPIPath;
+
 	private String muleTransform;
 	
 	public TransformActivity() {

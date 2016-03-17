@@ -144,7 +144,7 @@
         <dependency>
             <groupId>org.glassfish.jersey.media</groupId>
             <artifactId>jersey-media-multipart</artifactId>
-            <version>2.22.1</version>
+            <version>${jersey.version}</version>
         </dependency>
 
         <dependency>
@@ -152,8 +152,8 @@
             <artifactId>javax.servlet-api</artifactId>
             <version>3.0.1</version>
             <scope>provided</scope>
-        </dependency>        
-        
+        </dependency>
+
         <!-- WEBJARS dependencies -->
         <dependency>
             <groupId>org.webjars</groupId>
@@ -276,9 +276,9 @@
                 </executions>
             </plugin>
             <plugin>
-            	<groupId>org.mortbay.jetty</groupId>
-            	<artifactId>jetty-maven-plugin</artifactId>
-            	<version>8.1.16.v20140903</version>
+                <groupId>org.mortbay.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <version>8.1.16.v20140903</version>
             </plugin>
         </plugins>
     </build>

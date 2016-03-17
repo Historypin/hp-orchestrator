@@ -1,7 +1,5 @@
 package sk.eea.td.config;
 
-import java.util.Locale;
-
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -24,12 +22,14 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 import org.thymeleaf.spring4.SpringTemplateEngine;
 import org.thymeleaf.spring4.view.ThymeleafViewResolver;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
-
+import sk.eea.td.flow.Activity;
 import sk.eea.td.flow.FlowManager;
 import sk.eea.td.flow.FlowManagerImpl;
 import sk.eea.td.flow.activities.HarvestActivity;
-import sk.eea.td.flow.activities.StoreActivity;
-import sk.eea.td.flow.activities.TransformActivity;
+import sk.eea.td.flow.activities.TransformAndStoreActivity;
+import sk.eea.td.rest.model.Connector;
+
+import java.util.Locale;
 
 @Configuration
 @EnableWebMvc
@@ -130,21 +130,41 @@ public class AppConfig extends WebMvcConfigurerAdapter {
     }
 
     @Bean
-    public FlowManager europeanaHarvester(){
-    	FlowManagerImpl flowManager = new FlowManagerImpl();
-    	flowManager.addActivity(new HarvestActivity());
-    	flowManager.addActivity(new TransformActivity());
-    	flowManager.addActivity(new StoreActivity());
-		return flowManager;
-    }
-    
-    @Bean
-    public FlowManager historypinHarvester(){
-    	FlowManagerImpl flowManagerImpl = new FlowManagerImpl();
-		return flowManagerImpl;
+    public Activity harvestActivity() {
+        return new HarvestActivity();
     }
 
-    @Schedules(@Scheduled(cron="0 0 20 * * ?"))
-    public void harvestEuropeana(){
+    @Bean
+    public Activity transformAndStoreActivity() {
+        return new TransformAndStoreActivity();
     }
+
+    @Bean
+    public FlowManager europeanaFlowManager() {
+        FlowManagerImpl flowManager = new FlowManagerImpl(Connector.EUROPEANA, Connector.OAIPMH);
+        flowManager.addActivity(harvestActivity());
+        flowManager.addActivity(transformAndStoreActivity());
+        return flowManager;
+    }
+
+    @Schedules(
+            @Scheduled(cron = "${europeana.flm.cron.expression}")
+    )
+    public void europeanaFlowManagerTimeSignal() {
+        europeanaFlowManager().trigger();
+    }
+
+//    @Bean
+//    public FlowManager historypinHarvester(){
+//    	FlowManagerImpl flowManager = new FlowManagerImpl("HP");
+//        flowManager.addActivity(new HarvestActivity());
+//        flowManager.addActivity(new TransformActivity());
+//        flowManager.addActivity(new StoreActivity());
+//        return flowManager;
+//    }
+//
+//    @Schedules(@Scheduled(cron="${historypin.flm.cron.expression}"))
+//    public void historypinFlowManagerTimeSignal(){
+//        historypinHarvester().trigger();
+//    }
 }
