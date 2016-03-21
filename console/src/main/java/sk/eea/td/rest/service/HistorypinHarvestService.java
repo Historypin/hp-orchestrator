@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import sk.eea.td.hp_client.api.HPClient;
 import sk.eea.td.hp_client.impl.HPClientImpl;
+import sk.eea.td.util.PathUtils;
 
 import javax.annotation.PostConstruct;
 import javax.ws.rs.core.Response;
@@ -32,7 +33,7 @@ public class HistorypinHarvestService {
     @Value("${historypin.api.secret}")
     private String apiSecret;
 
-    @Value("${historypin.output.directory}")
+    @Value("${storage.directory}")
     private String outputDirectory;
 
     private HPClient hpClient;
@@ -42,12 +43,14 @@ public class HistorypinHarvestService {
         this.hpClient = new HPClientImpl(baseURL, apiKey, apiSecret);
     }
 
-    public void harvest(String projectSlug) throws IOException {
+    public Path harvest(String harvestId, String projectSlug) throws IOException {
         Response response = hpClient.getPins(projectSlug);
+        final Path harvestPath = PathUtils.createHarvestRunSubdir(Paths.get(outputDirectory), harvestId);
         try (InputStream inputStream = response.readEntity(InputStream.class)) {
-            Path dir = Files.createDirectories(Paths.get(outputDirectory, String.valueOf(System.currentTimeMillis())));
-            Files.copy(inputStream, dir.resolve(String.valueOf(System.currentTimeMillis()) + ".json"));
+            Path filename = PathUtils.createUniqueFilename(harvestPath, "hp.json");
+            Files.copy(inputStream, filename);
         }
         LOG.info("Harvesting of projectSlug: " + projectSlug + " is completed.");
+        return harvestPath;
     }
 }

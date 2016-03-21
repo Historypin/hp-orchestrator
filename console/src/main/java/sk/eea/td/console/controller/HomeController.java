@@ -4,7 +4,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.stream.Collectors;
 
-import javax.persistence.Table;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,11 +15,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import sk.eea.td.console.form.TaskForm;
+import sk.eea.td.console.model.Destination;
 import sk.eea.td.console.model.Job;
 import sk.eea.td.console.model.Param;
 import sk.eea.td.console.repository.JobRepository;
 import sk.eea.td.console.repository.ParamRepository;
-import sk.eea.td.console.repository.ReadOnlyParamRepository;
 import sk.eea.td.rest.model.Connector;
 
 @Controller
@@ -55,34 +54,30 @@ public class HomeController {
         } else { //HP
             job.setSource(Connector.HISTORYPIN);
         }
-        job.setTarget(taskForm.getDestinations().stream().map(TaskForm.Destination::toString).collect(Collectors.joining(", ")));
+        job.setTarget(taskForm.getDestinations().stream().map(Destination::toString).collect(Collectors.joining(", ")));
         jobRepository.save(job);
 
-        if(taskForm.getDestinations().contains(TaskForm.Destination.HP)) {
-            Param param = new Param("collectionName", taskForm.getCollectionName(), job);
-            paramRepository.save(param);
+        if(taskForm.getDestinations().contains(Destination.HP)) {
+            Param param = new Param("collectionName", taskForm.getCollectionName());
+            job.addParam(param);
         }
 
         if (TaskForm.Harvesting.EU == taskForm.getHarvesting()) {
             if(TaskForm.Type.OAIPMH == taskForm.getType()) {
-                DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX");
+                //DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX");
+                DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'"); // TODO: fix time zone, previous was crushing in OAI-PMH harvesting
 
-                Param param = new Param("from", format.format(taskForm.getOaiFrom()), job);
-                paramRepository.save(param);
-                param = new Param("until", format.format(taskForm.getOaiUntil()), job);
-                paramRepository.save(param);
-                param = new Param("set", taskForm.getOaiSet(), job);
-                paramRepository.save(param);
-                param = new Param("metadataPrefix", taskForm.getOaiMetadataPrefix(), job);
-                paramRepository.save(param);paramRepository.save(param);
+                job.addParam(new Param("from", format.format(taskForm.getOaiFrom())));
+                job.addParam(new Param("until", format.format(taskForm.getOaiUntil())));
+                job.addParam(new Param("set", taskForm.getOaiSet()));
+                job.addParam(new Param("metadataPrefix", taskForm.getOaiMetadataPrefix()));
+
             } else { // Europeana REST
-                Param param = new Param("luceneQuery", taskForm.getLuceneQuery(), job);
-                paramRepository.save(param);
+                job.addParam(new Param("luceneQuery", taskForm.getLuceneQuery()));
             }
         } else {
             // Harvesting from Historypin
-            Param param = new Param("projectSlug", taskForm.getProjectSlug(), job);
-            paramRepository.save(param);
+            job.addParam(new Param("projectSlug", taskForm.getProjectSlug()));
         }
 
         return "redirect:/?success=true";

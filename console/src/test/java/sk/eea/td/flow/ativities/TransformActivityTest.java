@@ -1,4 +1,4 @@
-package sk.eea.td.flow.activities;
+package sk.eea.td.flow.ativities;
 
 import static org.junit.Assert.*;
 
@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import sk.eea.td.console.model.JobRun;
 import sk.eea.td.flow.FlowException;
+import sk.eea.td.flow.activities.TransformActivity;
 
 public class TransformActivityTest {
 

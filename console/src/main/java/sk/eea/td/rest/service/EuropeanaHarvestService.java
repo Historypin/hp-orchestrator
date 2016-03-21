@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import sk.eea.td.eu_client.api.EuropeanaClient;
 import sk.eea.td.eu_client.impl.EuropeanaClientImpl;
+import sk.eea.td.util.PathUtils;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
@@ -31,7 +32,7 @@ public class EuropeanaHarvestService {
     @Value("${europeana.retry.delay}")
     private Integer retryDelay;
 
-    @Value("${europeana.output.directory}")
+    @Value("${storage.directory}")
     private String outputDirectory;
 
     private EuropeanaClient europeanaClient;
@@ -41,16 +42,14 @@ public class EuropeanaHarvestService {
         this.europeanaClient = new EuropeanaClientImpl(baseURL, wsKey, maxRetries, retryDelay);
     }
 
-    public void harvest(String luceneQuery) throws IOException, InterruptedException {
+    public Path harvest(String harvestId, String luceneQuery) throws IOException, InterruptedException {
         List<String> results = europeanaClient.search(luceneQuery);
-        Path dir = Files.createDirectories(Paths.get(outputDirectory, String.valueOf(System.currentTimeMillis())));
+        final Path harvestPath = PathUtils.createHarvestRunSubdir(Paths.get(outputDirectory), harvestId);
         for(String result : results) {
-            Path outputFile;
-            do {
-                 outputFile = dir.resolve(String.valueOf(System.currentTimeMillis()) + ".json");
-            } while (Files.exists(outputFile));
+            Path outputFile = PathUtils.createUniqueFilename(harvestPath, "eu.json");
             Files.write(outputFile, result.getBytes());
         }
         LOG.info("Harvesting of Lucene query: " + luceneQuery + " is completed.");
+        return harvestPath;
     }
 }

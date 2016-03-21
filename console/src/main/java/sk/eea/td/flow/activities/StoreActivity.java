@@ -9,7 +9,5 @@ public class StoreActivity implements Activity {
 	@Override
 	public void execute(JobRun context) throws FlowException {
 		// TODO Auto-generated method stub
-
 	}
-
 }

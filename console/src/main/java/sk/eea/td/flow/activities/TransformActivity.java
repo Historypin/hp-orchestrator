@@ -1,8 +1,20 @@
 package sk.eea.td.flow.activities;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import sk.eea.td.console.model.Destination;
+import sk.eea.td.console.model.JobRun;
+import sk.eea.td.console.model.ReadOnlyParam;
+import sk.eea.td.flow.Activity;
+import sk.eea.td.flow.FlowException;
+import sk.eea.td.util.PathUtils;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -10,101 +22,110 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
-import org.glassfish.jersey.client.ClientConfig;
-import org.glassfish.jersey.media.multipart.MultiPartFeature;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-
-import sk.eea.td.console.model.JobRun;
-import sk.eea.td.flow.Activity;
-import sk.eea.td.flow.FlowException;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class TransformActivity implements Activity {
 
-	public static final String SOURCE_DIR = "transformSourceDir";
+    private static final Logger LOG = LoggerFactory.getLogger(TransformActivity.class);
 
-	public static final String OUTPUT_DIR = "transformOutputDir";
+    private Client client;
 
-	public static final String TRANSFORM = "transform";
+    @Value("${mule.transform.url}")
+    private String muleTransformURL;
 
-	private Client client;
+    @Value("${storage.directory}")
+    private String outputDirectory;
 
-	private String muleURL;
-
-	private String muleAPIPath;
-
-	private String muleTransform;
-	
-	public TransformActivity() {
+    public TransformActivity() {
         ClientConfig clientConfig = new ClientConfig();
         this.client = ClientBuilder.newClient(clientConfig).register(MultiPartFeature.class);
-	}
-	
-	@Override
-	public void execute(JobRun context) throws FlowException {
-		
-		String source=context.getProperties().getProperty(SOURCE_DIR);
-		String output=context.getProperties().getProperty(OUTPUT_DIR);
-		String transform=context.getProperties().getProperty(TRANSFORM);
+    }
 
-		File sourceDir = new File(source);
-		File outputDir = new File(output);
-		outputDir.mkdirs();
-		
-		if(!sourceDir.exists()){
-			throw new FlowException("Source dir doesn't exist!");
-		}
+    @Override
+    public void execute(JobRun context) throws FlowException {
+        LOG.debug("Starting transform activity for job ID: {}", context.getId());
+        try {
+            final Map<String, String> paramMap = new HashMap<>();
+            context.getReadOnlyParams().stream().forEach(p -> paramMap.put(p.getKey(), p.getValue()));
 
-		WebTarget target = client.target(muleURL).path(muleAPIPath).path(muleTransform).queryParam("transformation", transform);
+            List<Destination> destinations = new ArrayList<>();
+            for (String s : context.getJob().getTarget().split(", ")) {
+                try {
+                    destinations.add(Destination.valueOf(s));
+                } catch (IllegalArgumentException e) {
+                    LOG.error("Transformation to this destination will be skipped.", e);
+                }
+            }
 
-		for(File file : sourceDir.listFiles()){
-			Response response= target.request(MediaType.APPLICATION_JSON, MediaType.TEXT_XML).post(Entity.entity(file, MediaType.TEXT_XML));
-			String out= response.readEntity(String.class);
-			saveFiles(out,response.getMediaType(), file.getName(), outputDir);
-			response.close();
-		}		
-	}
+            if (destinations.isEmpty()) {
+                throw new IllegalStateException("There are no destinations set for this flow, therefore no transformation can be executed.");
+            }
 
-	private void saveFiles(String json, MediaType mediaType, String fileNamePrefix, File outputDir) throws FlowException {
-		if(MediaType.APPLICATION_JSON_TYPE.isCompatible(mediaType)){
-			JSONParser parser = new JSONParser();
-			try {
-				JSONObject obj = (JSONObject)parser.parse(json);
-				JSONArray records = (JSONArray)obj.get("records");
-				int i = 1;
-				for(Object object : records){
-					JSONObject pin = (JSONObject)((JSONObject)object).get("record");
-					File pinFile = new File(outputDir,fileNamePrefix + i + ".json");
-					FileWriter fileWriter = new FileWriter(pinFile);
-					pin.writeJSONString(fileWriter);
-					fileWriter.close();
-					i++;
-				}
-			} catch (ParseException e) {
-				throw new FlowException("Could not parse JSON", e);
-			} catch (IOException e) {
-				throw new FlowException("Could not write file", e);
-			} 
-		}
-	}
+            final WebTarget target = client.target(muleTransformURL);
+            final Path harvestPath = Paths.get(paramMap.get("harvestPath"));
+            final Path transformPath = PathUtils.createTransformRunSubdir(Paths.get(outputDirectory), String.valueOf(context.getId()));
+            for (Destination destination : destinations) {
+                Files.walkFileTree(harvestPath, new SimpleFileVisitor<Path>() {
+                    @Override
+                    public FileVisitResult visitFileFailed(Path file, IOException exc) {
+                        LOG.error(String.format("Error at accessing file '%s'. File will be skipped. Reason: ", file.toAbsolutePath().toString()), exc);
+                        return FileVisitResult.CONTINUE;
+                    }
 
-	public void setClient(Client client) {
-		this.client = client;
-	}
+                    @Override
+                    public FileVisitResult visitFile(Path file, BasicFileAttributes attr) {
+                        final String sourceFormatCode = file.getFileName().toString().split("\\.", 2)[1];
+                        final String transformer = String.format("%s2%s", sourceFormatCode, destination.getFormatCode());
+                        LOG.debug("Sending file '{}' for transformation with transformer {}", file.toString(), transformer);
+                        Response response = target.queryParam("transformation", transformer).request(MediaType.APPLICATION_JSON, MediaType.TEXT_XML).post(Entity.entity(file.toFile(), MediaType.TEXT_XML));
+                        try (InputStream inputStream = response.readEntity(InputStream.class)) {
+                            Path transformedFile = PathUtils.createUniqueFilename(transformPath, destination.getFormatCode());
+                            Files.copy(inputStream, transformedFile);
+                            LOG.debug("File '{}' has been transformed into file: '{}'", file.toString(), transformedFile.toString());
+                        } catch (IOException e) {
+                            LOG.error(String.format("Exception at transforming file '%s'. File will be skipped. Reason: ", file.toString()), e);
+                        }
+                        return FileVisitResult.CONTINUE;
+                    }
+                });
+            }
+            context.addReadOnlyParam(new ReadOnlyParam("transformPath", transformPath.toAbsolutePath().toString()));
+        } catch (Exception e) {
+            throw new FlowException("Exception raised during transform action", e);
+        } finally {
+            LOG.debug("Transform activity for job ID: {} has ended.", context.getId());
+        }
+    }
 
-	public void setMuleURL(String muleURL) {
-		this.muleURL = muleURL;
-	}
-
-	public void setMuleAPIPath(String muleAPIPath) {
-		this.muleAPIPath = muleAPIPath;
-	}
-
-	public void setMuleTransform(String muleTransform) {
-		this.muleTransform = muleTransform;
-	}
-
+    private void saveFiles(String json, MediaType mediaType, String fileNamePrefix, File outputDir) throws FlowException {
+        if (MediaType.APPLICATION_JSON_TYPE.isCompatible(mediaType)) {
+            JSONParser parser = new JSONParser();
+            try {
+                JSONObject obj = (JSONObject) parser.parse(json);
+                JSONArray records = (JSONArray) obj.get("records");
+                int i = 1;
+                for (Object object : records) {
+                    JSONObject pin = (JSONObject) ((JSONObject) object).get("record");
+                    File pinFile = new File(outputDir, fileNamePrefix + i + ".json");
+                    FileWriter fileWriter = new FileWriter(pinFile);
+                    pin.writeJSONString(fileWriter);
+                    fileWriter.close();
+                    i++;
+                }
+            } catch (ParseException e) {
+                throw new FlowException("Could not parse JSON", e);
+            } catch (IOException e) {
+                throw new FlowException("Could not write file", e);
+            }
+        }
+    }
 }

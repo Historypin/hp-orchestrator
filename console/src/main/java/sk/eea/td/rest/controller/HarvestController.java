@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.SystemEnvironmentPropertySource;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -54,7 +55,7 @@ public class HarvestController {
             case EUROPEANA:
                 europeanaExecutorService.submit(() -> {
                     try {
-                        europeanaHarvestService.harvest(request.getLuceneQuery());
+                        europeanaHarvestService.harvest(String.valueOf(System.currentTimeMillis()), request.getLuceneQuery());
                     } catch (IOException | InterruptedException e) {
                         LOG.error("Exception at Europeana harvest job.", e);
                     }
@@ -63,7 +64,7 @@ public class HarvestController {
             case HISTORYPIN:
                 historypinExecutorService.submit(() -> {
                     try {
-                        historypinHarvestService.harvest(request.getProjectSlug());
+                        historypinHarvestService.harvest(String.valueOf(System.currentTimeMillis()), request.getProjectSlug());
                     } catch (IOException e) {
                         LOG.error("Exception at Historypin harvest job.", e);
                     }
@@ -72,7 +73,7 @@ public class HarvestController {
             case OAIPMH:
                 oaipmhExecutorService.submit(() -> {
                     try {
-                        oaipmhHarvestService.harvest(request.getOaipmhConfigWrapper());
+                        oaipmhHarvestService.harvest(String.valueOf(System.currentTimeMillis()), request.getOaipmhConfigWrapper());
                     } catch (NoSuchFieldException | IOException | ParserConfigurationException | SAXException | TransformerException e) {
                         LOG.error("Exception at OAI-PMH harvest job.", e);
                     }

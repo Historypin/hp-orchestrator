@@ -24,16 +24,14 @@ public class ReadOnlyParam {
     public ReadOnlyParam() {
     }
 
-    public ReadOnlyParam(String key, String value, JobRun jobRun) {
+    public ReadOnlyParam(String key, String value) {
         this.key = key;
         this.value = value;
-        this.jobRun = jobRun;
     }
 
-    public ReadOnlyParam(Param param, JobRun jobRun) {
+    public ReadOnlyParam(Param param) {
         this.key = param.getKey();
         this.value = param.getValue();
-        this.jobRun = jobRun;
     }
 
     public Long getId() {
@@ -68,7 +66,8 @@ public class ReadOnlyParam {
         this.jobRun = jobRun;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "ReadOnlyParam{" +
                 "id=" + id +
                 ", key='" + key + '\'' +

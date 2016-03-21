@@ -14,11 +14,11 @@ http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/jso
 http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd">
     <flow name="transformersFlow">
         <http:listener config-ref="HTTP_Harvester_Test" path="/transformData" metadata:id="8cf2fa52-d597-4163-b766-a0a002d288a7" doc:name="HTTP"/>
-        <message-properties-transformer scope="session" doc:name="Message Properties">
+        <message-properties-transformer  doc:name="Message Properties" scope="session">
             <add-message-property key="transformation" value="#[message.inboundProperties.get('http.query.params').get('transformation')]"/>
         </message-properties-transformer>
 	        <choice doc:name="Choice">
-	            <when expression="#[sessionVars.transformation==&quot;edm2hp&quot;]">
+	            <when expression="#[sessionVars.transformation==&quot;eu.xml2hp.json&quot;]">
                     <byte-array-to-object-transformer mimeType="application/xml" doc:name="Byte Array to Object"/>
 			        <dw:transform-message doc:name="Transform Message">
 			            <dw:set-payload><![CDATA[%dw 1.0

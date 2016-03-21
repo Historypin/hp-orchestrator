@@ -18,15 +18,15 @@ public class Param {
     private String value;
 
     @ManyToOne
+    @JoinColumn(name = "job_id", nullable = false)
     private Job job;
 
     public Param() {
     }
 
-    public Param(String key, String value, Job job) {
+    public Param(String key, String value) {
         this.key = key;
         this.value = value;
-        this.job = job;
     }
 
     public Long getId() {
@@ -61,11 +61,30 @@ public class Param {
         this.job = job;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "Param{" +
                 "id=" + id +
                 ", key='" + key + '\'' +
                 ", value='" + value + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+
+        Param param = (Param) o;
+
+        return getId() != null ? getId().equals(param.getId()) : param.getId() == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return getId() != null ? getId().hashCode() : 0;
     }
 }

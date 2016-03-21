@@ -1,22 +1,21 @@
 package sk.eea.td.console.model;
 
-import java.util.Properties;
-
 import javax.persistence.*;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "job_run")
 public class JobRun {
-	
-	public enum JobRunStatus {
-		RUNNING, STOPPED, FINISHED
-	}
 
-	public enum JobRunResult {
-		OK, FAILED
-	}
-	
+    public enum JobRunStatus {
+        RUNNING, STOPPED, FINISHED
+    }
+
+    public enum JobRunResult {
+        OK, FAILED
+    }
+
     @Id
     @SequenceGenerator(name = "seq_job_run", sequenceName = "seq_job_run", initialValue = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_job_run")
@@ -24,19 +23,17 @@ public class JobRun {
 
     @ManyToOne
     private Job job;
-    
+
     @Column
     @Enumerated(EnumType.STRING)
     private JobRunStatus status;
-    
+
     @Column
     @Enumerated(EnumType.STRING)
     private JobRunResult result;
 
-	private Properties properties;
-
-    @OneToMany(cascade=CascadeType.ALL, mappedBy="jobRun")
-    private Set<ReadOnlyParam> readOnlyParams;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "jobRun", orphanRemoval = true)
+    private List<ReadOnlyParam> readOnlyParams = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -70,20 +67,18 @@ public class JobRun {
         this.result = result;
     }
 
-	public Properties getProperties() {
-		return this.properties;
-	}
-
-	public void setProperties(Properties properties) {
-		this.properties=properties;
-	}
-
-    public Set<ReadOnlyParam> getReadOnlyParams() {
+    public List<ReadOnlyParam> getReadOnlyParams() {
         return readOnlyParams;
     }
 
-    public void setReadOnlyParams(Set<ReadOnlyParam> readOnlyParams) {
-        this.readOnlyParams = readOnlyParams;
+    public void addReadOnlyParam(ReadOnlyParam readOnlyParam) {
+        readOnlyParam.setJobRun(this);
+        this.readOnlyParams.add(readOnlyParam);
+    }
+
+    public void removeReadOnlyParam(ReadOnlyParam readOnlyParam) {
+        readOnlyParam.setJobRun(null);
+        this.readOnlyParams.remove(readOnlyParam);
     }
 
     @Override public String toString() {
@@ -93,7 +88,6 @@ public class JobRun {
                 ", status=" + status +
                 ", result=" + result +
                 ", readOnlyParams=" + readOnlyParams +
-                ", properties=" + properties +
                 '}';
     }
 }

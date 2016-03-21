@@ -6,6 +6,7 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.SystemProfileValueSource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.xml.sax.SAXException;
@@ -59,7 +60,7 @@ public class OaipmhHarvestServiceIT {
         LOG.info("Created temporary directory at location: " + tempDirectory.toString());
         oaipmhHarvestService.setOutputDirectory(tempDirectory.toString());
 
-        oaipmhHarvestService.harvest(config);
+        oaipmhHarvestService.harvest(String.valueOf(System.currentTimeMillis()), config);
 
         List<Path> filesList = listFiles(tempDirectory);
         assertThat(filesList.size(), is(greaterThan(0)));

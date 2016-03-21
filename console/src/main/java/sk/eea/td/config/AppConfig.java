@@ -26,6 +26,8 @@ import sk.eea.td.flow.Activity;
 import sk.eea.td.flow.FlowManager;
 import sk.eea.td.flow.FlowManagerImpl;
 import sk.eea.td.flow.activities.HarvestActivity;
+import sk.eea.td.flow.activities.StoreActivity;
+import sk.eea.td.flow.activities.TransformActivity;
 import sk.eea.td.flow.activities.TransformAndStoreActivity;
 import sk.eea.td.rest.model.Connector;
 
@@ -135,20 +137,27 @@ public class AppConfig extends WebMvcConfigurerAdapter {
     }
 
     @Bean
-    public Activity transformAndStoreActivity() {
-        return new TransformAndStoreActivity();
+    public Activity transformActivity() {
+        return new TransformActivity();
+    }
+
+    @Bean
+    public Activity storeActivity() {
+        return new StoreActivity();
     }
 
     @Bean
     public FlowManager europeanaFlowManager() {
         FlowManagerImpl flowManager = new FlowManagerImpl(Connector.EUROPEANA, Connector.OAIPMH);
         flowManager.addActivity(harvestActivity());
-        flowManager.addActivity(transformAndStoreActivity());
+        flowManager.addActivity(transformActivity());
+        flowManager.addActivity(storeActivity());
         return flowManager;
     }
 
     @Schedules(
-            @Scheduled(cron = "${europeana.flm.cron.expression}")
+            //@Scheduled(cron = "${europeana.flm.cron.expression}")
+            @Scheduled(fixedRate = 1000)
     )
     public void europeanaFlowManagerTimeSignal() {
         europeanaFlowManager().trigger();

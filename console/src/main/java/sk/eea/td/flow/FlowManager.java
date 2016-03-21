@@ -15,7 +15,7 @@ public interface FlowManager {
 	 * Persist state of flow.
 	 * @param config
 	 */
-	void persistState(JobRun config);
+	JobRun persistState(JobRun config);
 
 	/**
 	 * Run trigger function.

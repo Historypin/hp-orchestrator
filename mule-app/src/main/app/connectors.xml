@@ -48,6 +48,6 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
     </flow>
     <flow name="harvest-status">
         <vm:inbound-endpoint exchange-pattern="one-way" address="vm://status" doc:name="status"/>
-        <http:request config-ref="HP_Harvest_connector" path="" method="" doc:name="HTTP"/>
+        <http:request config-ref="HP_Harvest_connector" path="/publishHarvestStatus" method="POST" doc:name="HTTP"/>
     </flow>
 </mule>

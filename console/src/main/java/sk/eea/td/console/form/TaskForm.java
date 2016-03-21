@@ -3,6 +3,7 @@ package sk.eea.td.console.form;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.validator.group.GroupSequenceProvider;
 import org.springframework.format.annotation.DateTimeFormat;
+import sk.eea.td.console.model.Destination;
 import sk.eea.td.console.validation.TaskFormValidationSequenceProvider;
 import sk.eea.td.rest.validation.EuropeanaValidation;
 import sk.eea.td.rest.validation.HistorypinTargetValidation;
@@ -63,10 +64,6 @@ public class TaskForm {
 
     public enum Type {
         OAIPMH, REST;
-    }
-
-    public enum Destination {
-        HP, TAGAPP, MINT, EUROPEANA, SD;
     }
 
     public Harvesting getHarvesting() {

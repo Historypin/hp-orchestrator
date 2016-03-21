@@ -2,7 +2,6 @@ package sk.eea.td.rest.service;
 
 import ORG.oclc.oai.harvester2.verb.HttpResponseCodeException;
 import ORG.oclc.oai.harvester2.verb.ListRecords;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.xml.sax.SAXException;
 import sk.eea.td.rest.model.OaipmhConfigWrapper;
+import sk.eea.td.util.PathUtils;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -17,6 +17,8 @@ import java.io.*;
 import java.net.Authenticator;
 import java.net.HttpRetryException;
 import java.net.PasswordAuthentication;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Component
@@ -28,9 +30,6 @@ public class OaipmhHarvestService {
 
     @Value("${oaipmh.base.url}")
     private String baseUrl;
-
-    @Value("${oaipmh.max.files.in.directory}")
-    private int maxFilesInDirectory;
 
     @Value("${oaipmh.character.encoding}")
     private String encoding = "UTF-8";
@@ -53,7 +52,7 @@ public class OaipmhHarvestService {
     @Value("${oaipmh.password}")
     private String password;
 
-    @Value("${oaipmh.output.directory}")
+    @Value("${storage.directory}")
     private String outputDirectory;
 
     /**
@@ -61,8 +60,10 @@ public class OaipmhHarvestService {
      *
      * @param oaipmhConfigWrapper
      */
-    public void harvest(OaipmhConfigWrapper oaipmhConfigWrapper) throws NoSuchFieldException, IOException, ParserConfigurationException, SAXException, TransformerException {
-        harvest(this.baseUrl, oaipmhConfigWrapper.getFrom(), oaipmhConfigWrapper.getUntil(), oaipmhConfigWrapper.getSet(), oaipmhConfigWrapper.getMetadataPrefix());
+    public Path harvest(String harvestId, OaipmhConfigWrapper oaipmhConfigWrapper) throws NoSuchFieldException, IOException, ParserConfigurationException, SAXException, TransformerException {
+        final Path harvestPath = PathUtils.createHarvestRunSubdir(Paths.get(outputDirectory), harvestId);
+        harvest(harvestPath, this.baseUrl, oaipmhConfigWrapper.getFrom(), oaipmhConfigWrapper.getUntil(), oaipmhConfigWrapper.getSet(), oaipmhConfigWrapper.getMetadataPrefix());
+        return harvestPath;
     }
 
     /**
@@ -76,9 +77,10 @@ public class OaipmhHarvestService {
      * @throws java.io.IOException
      * @throws NoSuchFieldException
      */
-    public void harvest(String url,
-            String resumptionToken) throws NoSuchFieldException, IOException, ParserConfigurationException, SAXException, TransformerException {
-        harvest(url, resumptionToken, null, null, null, null);
+    public Path harvest(String harvestId, String url, String resumptionToken) throws NoSuchFieldException, IOException, ParserConfigurationException, SAXException, TransformerException {
+        final Path harvestPath = PathUtils.createHarvestRunSubdir(Paths.get(outputDirectory), harvestId);
+        harvest(harvestPath, url, resumptionToken, null, null, null, null);
+        return harvestPath;
     }
 
     /**
@@ -96,21 +98,19 @@ public class OaipmhHarvestService {
      * @throws java.io.IOException
      * @throws NoSuchFieldException
      */
-    public HarvestingResult harvest(String url, String from,
+    public HarvestingResult harvest(Path harvestPath, String url, String from,
             String until, String set, String metadataPrefix) throws NoSuchFieldException, IOException, ParserConfigurationException, SAXException, TransformerException {
-        return harvest(url, null, from, until, set, metadataPrefix);
+        return harvest(harvestPath, url, null, from, until, set, metadataPrefix);
     }
 
-    private HarvestingResult harvest(String url, String resumptionToken, String from,
+    private HarvestingResult harvest(Path harvestPath, String url, String resumptionToken, String from,
             String until, String set, String metadataPrefix) throws IOException, ParserConfigurationException, SAXException, TransformerException, NoSuchFieldException {
 
         ListRecords listRecords;
         int harvestedFiles = 0;
-        int filesInDir = 0;
         int objectsCount = 0;
         if (CANCELLED.get())
             return new HarvestingResult(harvestedFiles, objectsCount, "Cancelled.");
-        File dir = createSubDir(this.outputDirectory);
 
         if (this.username != null && this.username.length() > 0 && this.password != null && this.password.length() > 0) {
             Authenticator.setDefault(new CustomAuthenticator(this.username, this.password));
@@ -121,19 +121,14 @@ public class OaipmhHarvestService {
         while (listRecords != null && listRecords.getResumptionToken() != null) {
             if (CANCELLED.get())
                 return new HarvestingResult(harvestedFiles, objectsCount, "Cancelled.");
-            if (filesInDir == this.maxFilesInDirectory) {
-                dir = createSubDir(this.outputDirectory);
-                filesInDir = 0;
-            }
 
             int length = listRecords.getNodeList("//*[name()='record']").getLength();
             if (length > 0) {
                 objectsCount += length;
                 harvestedFiles++;
 
-                filesInDir++;
-                File file = new File(dir, String.valueOf(System.currentTimeMillis()) + ".xml");
-                BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), this.encoding));
+                Path filename = PathUtils.createUniqueFilename(harvestPath, "eu.xml");
+                BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filename.toFile()), this.encoding));
                 out.write(listRecords.toString());
                 out.close();
                 if (this.maxObjectsCount != null && this.maxObjectsCount > 0 && objectsCount >= maxObjectsCount) {
@@ -226,14 +221,6 @@ public class OaipmhHarvestService {
             } catch (InterruptedException e) {
             }
         }
-    }
-
-    private File createSubDir(String dir) throws IOException {
-        File subDir = new File(dir, String.valueOf(System.currentTimeMillis()));
-        if (!subDir.exists()) {
-            FileUtils.forceMkdir(subDir);
-        }
-        return subDir;
     }
 
     private static class CustomAuthenticator extends Authenticator {

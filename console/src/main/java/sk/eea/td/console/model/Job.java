@@ -3,11 +3,13 @@ package sk.eea.td.console.model;
 import sk.eea.td.rest.model.Connector;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "job")
 public class Job {
-	
+
     @Id
     @SequenceGenerator(name = "seq_job", sequenceName = "seq_job", initialValue = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_job")
@@ -22,6 +24,9 @@ public class Job {
 
     @Column
     private String target;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "job", orphanRemoval = true)
+    private List<Param> params = new ArrayList<>();
 
     public Connector getSource() {
         return source;
@@ -53,6 +58,20 @@ public class Job {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public List<Param> getParams() {
+        return params;
+    }
+
+    public void addParam(Param param) {
+        param.setJob(this);
+        params.add(param);
+    }
+
+    public void removeParam(Param param) {
+        param.setJob(null);
+        params.remove(param);
     }
 
     @Override public String toString() {

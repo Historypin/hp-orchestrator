@@ -15,7 +15,6 @@ import sk.eea.td.console.repository.ParamRepository;
 import sk.eea.td.rest.model.Connector;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class FlowManagerImpl implements FlowManager {
 
@@ -52,12 +51,11 @@ public class FlowManagerImpl implements FlowManager {
                 // create its run
                 JobRun jobRun = new JobRun();
                 jobRun.setJob(job);
-
                 // copy params into read-only entity
                 Set<Param> paramList = paramRepository.findByJob(job);
-                Set<ReadOnlyParam> readOnlyParamList = paramList.stream().map(param -> new ReadOnlyParam(param, jobRun)).collect(Collectors.toSet());
-                jobRun.setReadOnlyParams(readOnlyParamList);
-                jobRunRepository.save(jobRun);
+                paramList.stream().forEach(
+                        p -> jobRun.addReadOnlyParam(new ReadOnlyParam(p))
+                );
 
                 this.jobRunning = true;
                 startFlow(jobRun);
@@ -73,18 +71,17 @@ public class FlowManagerImpl implements FlowManager {
         List<Activity> activities = getActivities();
         try {
             for (Activity activity : activities) {
-                persistState(context);
+                context = persistState(context);
                 activity.execute(context);
-                persistState(context);
+                context = persistState(context);
             }
             finishFlow(context);
-            persistState(context);
         } catch (FlowException e) {
             LOG.error("Exception at executing flow:", e);
             failFlow(context);
-            persistState(context);
         } finally {
             this.jobRunning = false;
+            persistState(context);
         }
     }
 
@@ -99,8 +96,8 @@ public class FlowManagerImpl implements FlowManager {
     }
 
     @Override
-    public void persistState(JobRun config) {
-        jobRunRepository.save(config);
+    public JobRun persistState(JobRun config) {
+        return jobRunRepository.save(config);
     }
 
     public List<Activity> getActivities() {

@@ -2,6 +2,7 @@ package sk.eea.td.console.validation;
 
 import org.hibernate.validator.spi.group.DefaultGroupSequenceProvider;
 import sk.eea.td.console.form.TaskForm;
+import sk.eea.td.console.model.Destination;
 import sk.eea.td.rest.validation.EuropeanaValidation;
 import sk.eea.td.rest.validation.HistorypinTargetValidation;
 import sk.eea.td.rest.validation.HistorypinValidation;
@@ -17,7 +18,7 @@ public class TaskFormValidationSequenceProvider implements DefaultGroupSequenceP
         sequence.add(TaskForm.class);
 
         if (taskForm != null) {
-            if(taskForm.getDestinations() != null && taskForm.getDestinations().contains(TaskForm.Destination.HP)) {
+            if(taskForm.getDestinations() != null && taskForm.getDestinations().contains(Destination.HP)) {
                 sequence.add(HistorypinTargetValidation.class);
             }
 
