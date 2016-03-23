@@ -25,12 +25,18 @@ http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/
 %output application/json
 ---
 records : payload.OAI-PMH.ListRecords.*record map {
-	record:  
-		pin:
+		pin: {
 			caption: $.metadata.RDF.Proxy.title,
-			remote:
-				id:(($.header.identifier) replace "http://data.europeana.eu/item" with "")
-	}
+			date: $.metadata.RDF.Proxy.date,
+			country: $.metadata.RDF.EuropeanaAggregation.country,
+			license: $.metadata.RDF.EuropeanaAggregation.rights.@resource,
+			preview: $.metadata.RDF.EuropeanaAggregation.preview.@resource,
+			landingPage: $.metadata.RDF.EuropeanaAggregation.landingPage.@resource
+		},
+		remote: {
+			id:(($.header.identifier) replace "http://data.europeana.eu/item" with "")
+		}
+}
 ]]></dw:set-payload>
 			        </dw:transform-message>
 	            </when>
