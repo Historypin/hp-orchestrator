@@ -1,21 +1,27 @@
 package sk.eea.td.console.model;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name = "log")
 public class Log {
+
+    public enum LogLevel {
+        DEBUG, INFO, WARN, ERROR
+    }
 
     @Id
     @SequenceGenerator(name = "seq_log", sequenceName = "seq_log", initialValue = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_log")
     private Long id;
 
-    @Column(name = "task_type")
-    private String taskType;
+    @Column
+    private Date timestamp;
 
     @Column
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private LogLevel level;
 
     @Column
     private String message;
@@ -23,6 +29,16 @@ public class Log {
     @ManyToOne
     @JoinColumn(name = "job_run_id")
     private JobRun jobRun;
+
+    public Log() {
+    }
+
+    public Log(Date timestamp, LogLevel level, String message, JobRun jobRun) {
+        this.timestamp = timestamp;
+        this.level = level;
+        this.message = message;
+        this.jobRun = jobRun;
+    }
 
     public Long getId() {
         return id;
@@ -32,20 +48,20 @@ public class Log {
         this.id = id;
     }
 
-    public String getTaskType() {
-        return taskType;
+    public Date getTimestamp() {
+        return timestamp;
     }
 
-    public void setTaskType(String taskType) {
-        this.taskType = taskType;
+    public void setTimestamp(Date timestamp) {
+        this.timestamp = timestamp;
     }
 
-    public String getStatus() {
-        return status;
+    public LogLevel getLevel() {
+        return level;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setLevel(LogLevel level) {
+        this.level = level;
     }
 
     public String getMessage() {
@@ -64,11 +80,12 @@ public class Log {
         this.jobRun = jobRun;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "Log{" +
                 "id=" + id +
-                ", taskType='" + taskType + '\'' +
-                ", status='" + status + '\'' +
+                ", timestamp=" + timestamp +
+                ", level=" + level +
                 ", message='" + message + '\'' +
                 '}';
     }

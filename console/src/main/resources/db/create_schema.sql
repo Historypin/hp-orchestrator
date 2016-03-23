@@ -79,8 +79,8 @@ CREATE SEQUENCE "seq_log" START 1 INCREMENT BY 50;
 
 CREATE TABLE "log" (
   "id"          INT8 PRIMARY KEY DEFAULT nextval('seq_log') NOT NULL,
-  "task_type"   VARCHAR(255),
-  "status"      VARCHAR(255),
+  "timestamp"   TIMESTAMP,
+  "level"       VARCHAR(255),
   "message"     VARCHAR(1024),
   "job_run_id"  INT8 REFERENCES job_run(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
