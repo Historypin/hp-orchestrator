@@ -22,4 +22,19 @@ public enum License {
     public String getKey() {
         return key;
     }
+
+    /**
+     * Returns license with given format code.
+     *
+     * @param key key
+     * @return license with input key or throws IllegalArgumentException of none could be found.
+     */
+    public static License getByKey(String key) {
+        for(License license : License.values()) {
+            if(license.getKey().equals(key)) {
+                return license;
+            }
+        }
+        throw new IllegalArgumentException("Cannot find license by given key: " + key);
+    }
 }

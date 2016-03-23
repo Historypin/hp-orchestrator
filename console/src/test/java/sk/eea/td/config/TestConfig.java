@@ -6,11 +6,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 
 @Configuration
-@ComponentScan(basePackages = {"sk.eea.td.eu_client", "sk.eea.td.hp_client"})
-public class TestPropertiesConfig {
+@ComponentScan(basePackages = {"sk.eea.td.flow", "sk.eea.td.rest"})
+public class TestConfig {
 
     @Bean
     public static PropertySourcesPlaceholderConfigurer propertyConfigurer() {
         return AppConfig.propertyConfigurer();
     }
 }
+

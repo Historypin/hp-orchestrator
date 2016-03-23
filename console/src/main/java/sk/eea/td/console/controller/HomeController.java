@@ -2,6 +2,8 @@ package sk.eea.td.console.controller;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -9,16 +11,20 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import sk.eea.td.console.form.TaskForm;
+import sk.eea.td.console.form.TaskRow;
 import sk.eea.td.console.model.Destination;
 import sk.eea.td.console.model.Job;
+import sk.eea.td.console.model.JobRun;
 import sk.eea.td.console.model.Param;
 import sk.eea.td.console.repository.JobRepository;
+import sk.eea.td.console.repository.JobRunRepository;
 import sk.eea.td.console.repository.ParamRepository;
 import sk.eea.td.rest.model.Connector;
 
@@ -30,10 +36,24 @@ public class HomeController {
     private JobRepository jobRepository;
 
     @Autowired
+    private JobRunRepository jobRunRepository;
+
+    @Autowired
     private ParamRepository paramRepository;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    public String indexView(TaskForm taskForm) {
+    public String indexView(TaskForm taskForm, Model model) {
+        List<TaskRow> tasks = new ArrayList<>();
+        List<Job> jobs = jobRepository.findByOrderByIdDesc();
+        for(Job job : jobs) {
+            JobRun jobRun = jobRunRepository.findTopByJobOrderByIdDesc(job);
+            if(jobRun == null) {
+                tasks.add(new TaskRow(job.getId(), job.getName(), job.getSource().toString(), job.getTarget(), "PLANNED", ""));
+            } else {
+                tasks.add(new TaskRow(job.getId(), job.getName(), job.getSource().toString(), job.getTarget(), jobRun.getStatus().toString(), (jobRun.getResult() != null) ? jobRun.getResult().toString() : ""));
+            }
+        }
+        model.addAttribute("tasks", tasks);
         return "index";
     }
 
@@ -55,11 +75,10 @@ public class HomeController {
             job.setSource(Connector.HISTORYPIN);
         }
         job.setTarget(taskForm.getDestinations().stream().map(Destination::toString).collect(Collectors.joining(", ")));
-        jobRepository.save(job);
 
         if(taskForm.getDestinations().contains(Destination.HP)) {
-            Param param = new Param("collectionName", taskForm.getCollectionName());
-            job.addParam(param);
+            job.addParam(new Param("collectionName", taskForm.getCollectionName()));
+            job.addParam(new Param("collectionLocation", taskForm.getCollectionLocation()));
         }
 
         if (TaskForm.Harvesting.EU == taskForm.getHarvesting()) {
@@ -80,6 +99,7 @@ public class HomeController {
             job.addParam(new Param("projectSlug", taskForm.getProjectSlug()));
         }
 
+        jobRepository.save(job);
         return "redirect:/?success=true";
     }
 }

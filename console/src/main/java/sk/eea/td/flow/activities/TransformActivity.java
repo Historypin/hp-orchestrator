@@ -2,10 +2,6 @@ package sk.eea.td.flow.activities;
 
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,8 +18,6 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.*;
@@ -32,6 +26,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 public class TransformActivity implements Activity {
 
@@ -82,17 +78,20 @@ public class TransformActivity implements Activity {
                     }
 
                     @Override
-                    public FileVisitResult visitFile(Path file, BasicFileAttributes attr) {
-                        final String sourceFormatCode = file.getFileName().toString().split("\\.", 2)[1];
-                        final String transformer = String.format("%s2%s", sourceFormatCode, destination.getFormatCode());
+                    public FileVisitResult visitFile(Path file, BasicFileAttributes attr) throws IOException {
+                        final String filename = file.getFileName().toString();
+                        final String[] parts = filename.split("\\.", 2);
+                        if (parts.length != 2 && isEmpty(parts[1])) {
+                            LOG.warn("Filename '{}' does not follow pattern '[name].[source_type].[format]'. File will be skipped.");
+                            return FileVisitResult.CONTINUE;
+                        }
+                        final String transformer = String.format("%s2%s", parts[1], destination.getFormatCode());
                         LOG.debug("Sending file '{}' for transformation with transformer {}", file.toString(), transformer);
                         Response response = target.queryParam("transformation", transformer).request(MediaType.APPLICATION_JSON, MediaType.TEXT_XML).post(Entity.entity(file.toFile(), MediaType.TEXT_XML));
                         try (InputStream inputStream = response.readEntity(InputStream.class)) {
                             Path transformedFile = PathUtils.createUniqueFilename(transformPath, destination.getFormatCode());
                             Files.copy(inputStream, transformedFile);
                             LOG.debug("File '{}' has been transformed into file: '{}'", file.toString(), transformedFile.toString());
-                        } catch (IOException e) {
-                            LOG.error(String.format("Exception at transforming file '%s'. File will be skipped. Reason: ", file.toString()), e);
                         }
                         return FileVisitResult.CONTINUE;
                     }
@@ -106,26 +105,8 @@ public class TransformActivity implements Activity {
         }
     }
 
-    private void saveFiles(String json, MediaType mediaType, String fileNamePrefix, File outputDir) throws FlowException {
-        if (MediaType.APPLICATION_JSON_TYPE.isCompatible(mediaType)) {
-            JSONParser parser = new JSONParser();
-            try {
-                JSONObject obj = (JSONObject) parser.parse(json);
-                JSONArray records = (JSONArray) obj.get("records");
-                int i = 1;
-                for (Object object : records) {
-                    JSONObject pin = (JSONObject) ((JSONObject) object).get("record");
-                    File pinFile = new File(outputDir, fileNamePrefix + i + ".json");
-                    FileWriter fileWriter = new FileWriter(pinFile);
-                    pin.writeJSONString(fileWriter);
-                    fileWriter.close();
-                    i++;
-                }
-            } catch (ParseException e) {
-                throw new FlowException("Could not parse JSON", e);
-            } catch (IOException e) {
-                throw new FlowException("Could not write file", e);
-            }
-        }
+    @Override
+    public String getName() {
+        return "Transform activity";
     }
 }

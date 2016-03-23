@@ -1,16 +1,15 @@
 package sk.eea.td.flow;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import sk.eea.td.console.model.Job;
-import sk.eea.td.console.model.JobRun;
+import sk.eea.td.console.model.*;
 import sk.eea.td.console.model.JobRun.JobRunResult;
 import sk.eea.td.console.model.JobRun.JobRunStatus;
-import sk.eea.td.console.model.Param;
-import sk.eea.td.console.model.ReadOnlyParam;
 import sk.eea.td.console.repository.JobRepository;
 import sk.eea.td.console.repository.JobRunRepository;
+import sk.eea.td.console.repository.LogRepository;
 import sk.eea.td.console.repository.ParamRepository;
 import sk.eea.td.rest.model.Connector;
 
@@ -28,6 +27,9 @@ public class FlowManagerImpl implements FlowManager {
 
     @Autowired
     private ParamRepository paramRepository;
+
+    @Autowired
+    private LogRepository logRepository;
 
     private List<Activity> activities = new ArrayList<>();
 
@@ -71,13 +73,25 @@ public class FlowManagerImpl implements FlowManager {
         List<Activity> activities = getActivities();
         try {
             for (Activity activity : activities) {
+                logActivityStart(activity, context);
                 context = persistState(context);
+
                 activity.execute(context);
+
+                logActivityEnd(activity, context);
                 context = persistState(context);
             }
             finishFlow(context);
         } catch (FlowException e) {
             LOG.error("Exception at executing flow:", e);
+
+            Log log = new Log();
+            log.setJobRun(context);
+            log.setTimestamp(new Date());
+            log.setLevel(Log.LogLevel.ERROR);
+            log.setMessage(ExceptionUtils.getStackTrace(e));
+            logRepository.save(log);
+
             failFlow(context);
         } finally {
             this.jobRunning = false;
@@ -118,5 +132,17 @@ public class FlowManagerImpl implements FlowManager {
 
     public void addSource(Connector source) {
         this.sources.add(source);
+    }
+
+    private void logActivityStart(Activity activity, JobRun context){
+        logActivity(activity, "started", context);
+    }
+
+    private void logActivityEnd(Activity activity, JobRun context){
+        logActivity(activity, "ended", context);
+    }
+
+    private void logActivity(Activity activity, String message, JobRun context){
+        logRepository.save(new Log(new Date(), Log.LogLevel.INFO, String.format("%s has %s", activity.getName(), message),context));
     }
 }

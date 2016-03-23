@@ -80,11 +80,21 @@
                             <!-- Configuration -->
 
                             <!-- Name -->
-                            <div id="historypin-target-conf-group" class="form-group" th:classappend="${#fields.hasErrors('collectionName')}? 'has-error'">
-                                <label class="col-md-4 control-label" for="name" th:text="#{create.task.collectionName}">Collection name</label>
-                                <div class="col-md-4">
-                                    <input id="collectionName" name="collectionName" th:field="*{collectionName}" th:placeholder="#{create.task.collectionName.placeholder}" placeholder="name of the target collection in Historypin" class="form-control input-md" type="text"/>
-                                    <span class="help-block" th:if="${#fields.hasErrors('collectionName')}" th:errors="*{collectionName}">Collection name error</span>
+                            <div id="historypin-target-conf-group">
+                                <div class="form-group" th:classappend="${#fields.hasErrors('collectionName')}? 'has-error'">
+                                    <label class="col-md-4 control-label" for="name" th:text="#{create.task.collectionName}">Collection name</label>
+                                    <div class="col-md-4">
+                                        <input id="collectionName" name="collectionName" th:field="*{collectionName}" th:placeholder="#{create.task.collectionName.placeholder}" placeholder="name of the target collection in Historypin" class="form-control input-md" type="text"/>
+                                        <span class="help-block" th:if="${#fields.hasErrors('collectionName')}" th:errors="*{collectionName}">Collection name error</span>
+                                    </div>
+                                </div>
+                                <div class="form-group" th:classappend="${#fields.hasErrors('collectionLocation')}? 'has-error'">
+                                    <label class="col-md-4 control-label" for="name" th:text="#{create.task.collectionLocation}">Collection location</label>
+                                    <div class="col-md-4">
+                                        <input id="collectionLocation" name="collectionLocation" th:field="*{collectionLocation}" th:placeholder="#{create.task.collectionLocation.placeholder}" placeholder="location of target collection in Historypin" class="form-control input-md" type="text"
+                                               data-toggle="tooltip" data-placement="right" th:title="#{create.task.collectionLocation.tooltip}"/>
+                                        <span class="help-block" th:if="${#fields.hasErrors('collectionLocation')}" th:errors="*{collectionLocation}">Collection location error</span>
+                                    </div>
                                 </div>
                             </div>
 
@@ -154,7 +164,33 @@
                             </div>
                         </fieldset>
                     </form>
-
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1>Task list</h1>
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Source</th>
+                            <th>Target</th>
+                            <th>Last run status</th>
+                            <th>Last run result</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="task : ${tasks}">
+                            <td th:text="${task.id}">1</td>
+                            <td th:text="${task.name}">My task name</td>
+                            <td th:text="${task.source}">Historypin</td>
+                            <td th:text="${task.target}">Europeana, Mint</td>
+                            <td th:text="${task.lastRunStatus}">RUNNING</td>
+                            <td th:text="${task.lastRunResult}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -177,8 +213,8 @@
         $("#destination").append(defaultDestinationOptions);
 
         $("#historypin-target-conf-group").hide();
-        $("#destination option:selected").each(function() {
-            if($(this).val() == 'HP'){
+        $("#destination option:selected").each(function () {
+            if ($(this).val() == 'HP') {
                 $("#historypin-target-conf-group").show();
             }
         });

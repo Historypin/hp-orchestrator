@@ -6,13 +6,12 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.SystemProfileValueSource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.xml.sax.SAXException;
 import sk.eea.td.IntegrationTest;
 import sk.eea.td.config.OaipmhConfig;
-import sk.eea.td.config.TestPropertiesConfig;
+import sk.eea.td.config.IntegrationTestConfig;
 import sk.eea.td.rest.model.OaipmhConfigWrapper;
 import sk.eea.td.rest.service.OaipmhHarvestService;
 
@@ -30,7 +29,7 @@ import static org.hamcrest.Matchers.greaterThan;
 
 @Category(IntegrationTest.class)
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {TestPropertiesConfig.class, OaipmhConfig.class})
+@ContextConfiguration(classes = { IntegrationTestConfig.class, OaipmhConfig.class})
 public class OaipmhHarvestServiceIT {
 
     private static Logger LOG = LoggerFactory.getLogger(OaipmhHarvestServiceIT.class);

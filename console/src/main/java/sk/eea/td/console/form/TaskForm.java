@@ -9,8 +9,10 @@ import sk.eea.td.rest.validation.EuropeanaValidation;
 import sk.eea.td.rest.validation.HistorypinTargetValidation;
 import sk.eea.td.rest.validation.HistorypinValidation;
 import sk.eea.td.rest.validation.OaipmhValidation;
+import sk.eea.td.util.LocationUtils;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.List;
@@ -31,8 +33,13 @@ public class TaskForm {
     private List<Destination> destinations;
 
     @NotNull(message = "Target collection name is missing", groups = { HistorypinTargetValidation.class })
-    @Size(min = 1, max = 150, groups = { HistorypinTargetValidation.class })
+    @Size(min = 6, max = 150, groups = { HistorypinTargetValidation.class })
     private String collectionName;
+
+    @NotNull(message = "Target collection location is missing", groups = { HistorypinTargetValidation.class })
+    @Size(min = 1, max = 150, groups = { HistorypinTargetValidation.class })
+    @Pattern(regexp = LocationUtils.HISTORY_PIN_LOCATION_PATTERN, groups = { HistorypinTargetValidation.class }, message = "Target collection location should be in format [lat, lng, range]. See tooltip for more info.")
+    private String collectionLocation;
 
     @NotNull(message = "Lucene query is missing.", groups = { EuropeanaValidation.class })
     @Size(min = 1, max = 150, groups = { EuropeanaValidation.class })
@@ -154,6 +161,14 @@ public class TaskForm {
         this.collectionName = collectionName;
     }
 
+    public String getCollectionLocation() {
+        return collectionLocation;
+    }
+
+    public void setCollectionLocation(String collectionLocation) {
+        this.collectionLocation = collectionLocation;
+    }
+
     @Override public String toString() {
         return "TaskForm{" +
                 "name='" + name + '\'' +
@@ -161,6 +176,7 @@ public class TaskForm {
                 ", type=" + type +
                 ", destinations=" + destinations +
                 ", collectionName='" + collectionName + '\'' +
+                ", collectionLocation='" + collectionLocation + '\'' +
                 ", luceneQuery='" + luceneQuery + '\'' +
                 ", projectSlug='" + projectSlug + '\'' +
                 ", oaiFrom=" + oaiFrom +

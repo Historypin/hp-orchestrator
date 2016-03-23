@@ -57,4 +57,9 @@ public class HarvestActivity implements Activity {
             LOG.debug("Harvest activity for job ID: {} has ended.", context.getId());
         }
     }
+
+    @Override
+    public String getName() {
+        return "Harvest activity";
+    }
 }

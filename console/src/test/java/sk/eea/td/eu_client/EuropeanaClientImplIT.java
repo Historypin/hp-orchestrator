@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import sk.eea.td.IntegrationTest;
-import sk.eea.td.config.TestPropertiesConfig;
+import sk.eea.td.config.IntegrationTestConfig;
 import sk.eea.td.eu_client.api.EuropeanaClient;
 import sk.eea.td.eu_client.impl.EuropeanaClientImpl;
 
@@ -21,7 +21,7 @@ import static org.hamcrest.Matchers.greaterThan;
 
 @Category(IntegrationTest.class)
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = TestPropertiesConfig.class)
+@ContextConfiguration(classes = IntegrationTestConfig.class)
 public class EuropeanaClientImplIT {
 
     @Value("${europeana.base.url}")

@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import sk.eea.td.IntegrationTest;
-import sk.eea.td.config.TestPropertiesConfig;
+import sk.eea.td.config.IntegrationTestConfig;
 import sk.eea.td.onto_client.api.OntoClient;
 import sk.eea.td.onto_client.impl.OntoClientImpl;
 
@@ -18,7 +18,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 @Category(IntegrationTest.class)
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = TestPropertiesConfig.class)
+@ContextConfiguration(classes = IntegrationTestConfig.class)
 public class OntoClientImplTestIT {
 
     private static final String TEXT = "This text is related to the London, capitol of UK.";

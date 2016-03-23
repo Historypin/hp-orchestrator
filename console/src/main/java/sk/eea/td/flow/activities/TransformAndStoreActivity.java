@@ -11,4 +11,8 @@ public class TransformAndStoreActivity implements Activity {
         // TODO Auto-generated method stub
 
     }
+
+    @Override public String getName() {
+        return "Tansform and store activity";
+    }
 }
