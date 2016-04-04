@@ -93,7 +93,7 @@ public class HPClientImplIT {
                 createdProjectId,
                 "42", "23", "2000",
                 date,
-                "test non existing licesne type",
+                "no-copyright",
                 PinnerType.TEXT,
                 "This is test pin content"
         );
