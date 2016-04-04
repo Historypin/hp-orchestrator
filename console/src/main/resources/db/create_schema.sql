@@ -81,7 +81,7 @@ CREATE TABLE "log" (
   "id"          INT8 PRIMARY KEY DEFAULT nextval('seq_log') NOT NULL,
   "timestamp"   TIMESTAMP,
   "level"       VARCHAR(255),
-  "message"     VARCHAR(1024),
+  "message"     VARCHAR,
   "job_run_id"  INT8 REFERENCES job_run(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 

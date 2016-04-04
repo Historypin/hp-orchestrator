@@ -35,6 +35,10 @@ public enum License {
                 return license;
             }
         }
-        throw new IllegalArgumentException("Cannot find license by given key: " + key);
+
+        //TODO: this is just temporary
+        return COPYRIGHT;
+
+        //throw new IllegalArgumentException("Cannot find license by given key: " + key);
     }
 }

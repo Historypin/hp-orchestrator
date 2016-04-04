@@ -2,6 +2,7 @@ package sk.eea.td.hp_client.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.filter.LoggingFilter;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import sk.eea.td.hp_client.api.HPClient;
 import sk.eea.td.hp_client.api.License;
@@ -45,7 +46,8 @@ public class HPClientImpl implements HPClient {
         ClientConfig clientConfig = new ClientConfig();
         this.client = ClientBuilder.newClient(clientConfig)
                 .register(JacksonObjectMapperProvider.class)
-                .register(JacksonFeature.class);
+                .register(JacksonFeature.class)
+                .register(new LoggingFilter());
     }
 
     @Override

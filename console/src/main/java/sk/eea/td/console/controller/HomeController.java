@@ -44,7 +44,7 @@ public class HomeController {
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String indexView(TaskForm taskForm, Model model) {
         List<TaskRow> tasks = new ArrayList<>();
-        List<Job> jobs = jobRepository.findByOrderByIdDesc();
+        List<Job> jobs = jobRepository.findTop20ByOrderByIdDesc();
         for(Job job : jobs) {
             JobRun jobRun = jobRunRepository.findTopByJobOrderByIdDesc(job);
             if(jobRun == null) {
@@ -90,7 +90,6 @@ public class HomeController {
                 job.addParam(new Param("until", format.format(taskForm.getOaiUntil())));
                 job.addParam(new Param("set", taskForm.getOaiSet()));
                 job.addParam(new Param("metadataPrefix", taskForm.getOaiMetadataPrefix()));
-
             } else { // Europeana REST
                 job.addParam(new Param("luceneQuery", taskForm.getLuceneQuery()));
             }

@@ -40,6 +40,28 @@ records : payload.OAI-PMH.ListRecords.*record map {
 ]]></dw:set-payload>
 			        </dw:transform-message>
 	            </when>
+	            <when expression="#[sessionVars.transformation==&quot;eu.json2hp.json&quot;]">
+                    <byte-array-to-object-transformer mimeType="application/json" doc:name="Byte Array to Object"/>
+			        <dw:transform-message doc:name="Transform Message">
+			            <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+records : payload.items map {
+		pin: {
+			(($.title default []) map caption: $),
+			(($.year default []) map date: $),
+			(($.country default []) map country: $),
+			(($.rights default []) map license: $),
+			(($.edmPreview default []) map preview: $),
+			landingPage: $.guid
+		},
+		remote: {
+			id: $.id
+		}
+}
+]]></dw:set-payload>
+			        </dw:transform-message>
+	            </when>
 	        </choice>
         <object-to-string-transformer doc:name="Object to String"/>
     </flow>

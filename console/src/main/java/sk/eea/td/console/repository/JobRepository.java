@@ -8,8 +8,8 @@ import java.util.List;
 
 public interface JobRepository extends CrudRepository<Job, Long> {
 
-    @Query(value = "select job.id, job.name, job.source, job.target from job LEFT JOIN job_run on job.id = job_run.job_id WHERE job_id IS NULL ORDER BY job_id LIMIT 1;", nativeQuery = true)
+    @Query(value = "SELECT job.id, job.name, job.source, job.target FROM job LEFT JOIN job_run ON job.id = job_run.job_id WHERE job_id IS NULL ORDER BY job_id LIMIT 1;", nativeQuery = true)
     Job findNextJob();
 
-    List<Job> findByOrderByIdDesc();
+    List<Job> findTop20ByOrderByIdDesc();
 }

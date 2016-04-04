@@ -3,6 +3,7 @@ package sk.eea.td.eu_client.impl;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.filter.LoggingFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sk.eea.td.eu_client.api.EuropeanaClient;
@@ -51,6 +52,7 @@ public class EuropeanaClientImpl implements EuropeanaClient {
             try {
                 target = client.target(baseURL).path("api").path("v2").path("search.json")
                         .queryParam("wskey", wskey)
+                        .queryParam("profile", "rich")
                         .queryParam("query", luceneQuery)
                         .queryParam("cursor", cursor);
 

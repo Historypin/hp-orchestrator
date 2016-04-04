@@ -32,10 +32,10 @@
                     <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
                 </a>
                 <ul class="dropdown-menu dropdown-user">
-                    <li><a href="/user_profile"><i class="fa fa-gear fa-fw"></i><span th:text="#{nav.user.profile}">User Profile</span></a>
+                    <li><a th:href="@{/user_profile}" href="/user_profile"><i class="fa fa-gear fa-fw"></i><span th:text="#{nav.user.profile}">User Profile</span></a>
                     </li>
                     <li class="divider"></li>
-                    <li><a href="/logout"><i class="fa fa-sign-out fa-fw"></i> <span th:text="#{nav.logout}">Logout</span></a>
+                    <li><a th:href="@{/logout}" href="/logout"><i class="fa fa-sign-out fa-fw"></i> <span th:text="#{nav.logout}">Logout</span></a>
                     </li>
                 </ul>
             </li>
@@ -45,13 +45,13 @@
             <div class="sidebar-nav navbar-collapse">
                 <ul class="nav" id="side-menu">
                     <li>
-                        <a href="/"><i class="fa fa-pencil-square-o fa-fw"></i> <span th:text="#{nav.create.task}">Create task</span></a>
+                        <a th:href="@{/}" href="/"><i class="fa fa-pencil-square-o fa-fw"></i> <span th:text="#{nav.create.task}">Create task</span></a>
                     </li>
                     <li>
-                        <a href="/logs"><i class="fa fa-list fa-fw"></i> <span th:text="#{nav.logs}">Logs</span></a>
+                        <a th:href="@{/logs}" href="/logs"><i class="fa fa-list fa-fw"></i> <span th:text="#{nav.logs}">Logs</span></a>
                     </li>
                     <li>
-                        <a href="/settings"><i class="fa fa-cog fa-fw"></i> <span th:text="#{nav.settings}">Settings</span></a>
+                        <a th:href="@{/settings}" href="/settings"><i class="fa fa-cog fa-fw"></i> <span th:text="#{nav.settings}">Settings</span></a>
                     </li>
                 </ul>
             </div>

@@ -50,6 +50,7 @@ public class FlowManagerImpl implements FlowManager {
             // get next job
             Job job = jobRepository.findNextJob();
             if(job != null && sources.contains(job.getSource())) {
+                this.jobRunning = true;
                 // create its run
                 JobRun jobRun = new JobRun();
                 jobRun.setJob(job);
@@ -58,8 +59,6 @@ public class FlowManagerImpl implements FlowManager {
                 paramList.stream().forEach(
                         p -> jobRun.addReadOnlyParam(new ReadOnlyParam(p))
                 );
-
-                this.jobRunning = true;
                 startFlow(jobRun);
             }
         }
@@ -73,16 +72,16 @@ public class FlowManagerImpl implements FlowManager {
         List<Activity> activities = getActivities();
         try {
             for (Activity activity : activities) {
-                logActivityStart(activity, context);
                 context = persistState(context);
+                logActivityStart(activity, context);
 
                 activity.execute(context);
 
-                logActivityEnd(activity, context);
                 context = persistState(context);
+                logActivityEnd(activity, context);
             }
             finishFlow(context);
-        } catch (FlowException e) {
+        } catch (Exception e) {
             LOG.error("Exception at executing flow:", e);
 
             Log log = new Log();
