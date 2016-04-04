@@ -5,10 +5,8 @@ import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.filter.LoggingFilter;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import sk.eea.td.hp_client.api.HPClient;
-import sk.eea.td.hp_client.api.License;
 import sk.eea.td.hp_client.api.PinnerType;
 import sk.eea.td.hp_client.dto.ListingsResponseDTO;
-import sk.eea.td.hp_client.dto.ListingsResponseDTO.Result;
 import sk.eea.td.hp_client.dto.SaveResponseDTO;
 import sk.eea.td.hp_client.util.ApiTokenFactory;
 import sk.eea.td.hp_client.util.JacksonObjectMapperProvider;
@@ -22,8 +20,11 @@ import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.Response;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class HPClientImpl implements HPClient {
+
+    private final static Logger LOG = Logger.getLogger(HPClientImpl.class.getName());
 
     private final Client client;
 
@@ -47,7 +48,7 @@ public class HPClientImpl implements HPClient {
         this.client = ClientBuilder.newClient(clientConfig)
                 .register(JacksonObjectMapperProvider.class)
                 .register(JacksonFeature.class)
-                .register(new LoggingFilter());
+                .register(new LoggingFilter(LOG, true));
     }
 
     @Override
@@ -92,7 +93,7 @@ public class HPClientImpl implements HPClient {
     }
 
     @Override
-    public SaveResponseDTO createPin(String caption, Long projectId, String lat, String lng, String range, String date, License license, PinnerType pinnerType, String content) {
+    public SaveResponseDTO createPin(String caption, Long projectId, String lat, String lng, String range, String date, String license, PinnerType pinnerType, String content) {
         WebTarget target = client.target(baseURL).path("en").path("api").path("pin").path("save.json");
 
         Map<String, String> data = new HashMap<>();
@@ -105,10 +106,10 @@ public class HPClientImpl implements HPClient {
         data.put("timemap[range]", range);
 
         data.put("date", date);
-        data.put("license", license.getKey());
+        data.put("license", license);
 
         data.put("pinner_type", pinnerType.name().toLowerCase());
-        if(PinnerType.PHOTO.equals(pinnerType)) {
+        if (PinnerType.PHOTO.equals(pinnerType)) {
             data.put("image_url", content);
         }
         data.put("display[content]", content);
@@ -122,7 +123,7 @@ public class HPClientImpl implements HPClient {
     }
 
     @Override
-    public SaveResponseDTO createPin(String caption, String description, Long projectId, String rawLocation, String date, License license, PinnerType pinnerType, String content) {
+    public SaveResponseDTO createPin(String caption, String description, Long projectId, String rawLocation, String date, String license, PinnerType pinnerType, String content) {
         WebTarget target = client.target(baseURL).path("en").path("api").path("pin").path("save.json");
 
         Map<String, String> data = new HashMap<>();
@@ -134,10 +135,10 @@ public class HPClientImpl implements HPClient {
         data.put("location[raw]", rawLocation);
 
         data.put("date", date);
-        data.put("license", license.getKey());
+        data.put("license", license);
 
         data.put("pinner_type", pinnerType.name().toLowerCase());
-        if(PinnerType.PHOTO.equals(pinnerType)) {
+        if (PinnerType.PHOTO.equals(pinnerType)) {
             data.put("image_url", content);
         }
         data.put("display[content]", content);
@@ -179,16 +180,16 @@ public class HPClientImpl implements HPClient {
     }
 
     @Override
-    public void deleteAllPins(Long user ) {
+    public void deleteAllPins(Long user) {
         WebTarget target = client.target(baseURL).path("en").path("api").path("pin").path("listing.json").queryParam("user", user).queryParam("limit", 1000000);
         ListingsResponseDTO response = target.request().get().readEntity(ListingsResponseDTO.class);
-        response.getResults().forEach( r -> deletePin(r.getId()));
+        response.getResults().forEach(r -> deletePin(r.getId()));
     }
 
     @Override
     public void deleteAllProjects(Long user) {
         WebTarget target = client.target(baseURL).path("en").path("api").path("projects").path("listing.json").queryParam("user", user).queryParam("limit", 1000000);
         ListingsResponseDTO response = target.request().get().readEntity(ListingsResponseDTO.class);
-        response.getResults().forEach( r -> deleteProject(r.getId()));
+        response.getResults().forEach(r -> deleteProject(r.getId()));
     }
 }

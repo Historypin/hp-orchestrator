@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import sk.eea.td.hp_client.api.HPClient;
-import sk.eea.td.hp_client.api.License;
 import sk.eea.td.hp_client.api.PinnerType;
 import sk.eea.td.hp_client.dto.SaveResponseDTO;
 import sk.eea.td.rest.model.HistorypinTransformDTO;
@@ -44,13 +43,14 @@ public class HistorypinStoreService {
         int failedPins = 0;
         for (HistorypinTransformDTO.Record record : transformation.getRecords()) {
             HistorypinTransformDTO.Pin pin = record.getPin();
+
             SaveResponseDTO response = hpClient.createPin(
                     pin.getCaption(),
                     pin.getLandingPage(),
                     projectId,
                     pin.getCountry(),
                     parseHistoryPinDate(pin.getDate()),
-                    License.getByKey(pin.getLicense()),
+                    pin.getLicense(),
                     PinnerType.PHOTO,
                     pin.getPreview()
             );

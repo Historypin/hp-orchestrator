@@ -15,7 +15,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import sk.eea.td.IntegrationTest;
 import sk.eea.td.config.IntegrationTestConfig;
 import sk.eea.td.hp_client.api.HPClient;
-import sk.eea.td.hp_client.api.License;
 import sk.eea.td.hp_client.api.PinnerType;
 import sk.eea.td.hp_client.dto.SaveResponseDTO;
 import sk.eea.td.hp_client.impl.HPClientImpl;
@@ -94,7 +93,7 @@ public class HPClientImplIT {
                 createdProjectId,
                 "42", "23", "2000",
                 date,
-                License.NO_COPYRIGHT,
+                "test non existing licesne type",
                 PinnerType.TEXT,
                 "This is test pin content"
         );
@@ -117,7 +116,7 @@ public class HPClientImplIT {
                     createdProjectId,
                     "42", "23", "2000",
                     date,
-                    License.NO_COPYRIGHT,
+                    "no-copyright",
                     PinnerType.TEXT,
                     "This is test pin content"
             );
@@ -140,7 +139,7 @@ public class HPClientImplIT {
         String caption = (String) jsonObject.get("caption");
         Long user_id = (Long) jsonObject.get("user_id");
         assertThat(caption, is(equalTo(PIN_NAME)));
-        assertThat(user_id.toString(), is(equalTo(user)));
+        assertThat(user_id, is(equalTo(user)));
     }
 
     @Test
@@ -170,7 +169,7 @@ public class HPClientImplIT {
         String projectName = (String) jsonObject.get("title");
         String ownerId = (String) jsonObject.get("owner_id");
         assertThat(projectName, is(equalTo(PROJECT_NAME)));
-        assertThat(ownerId, is(equalTo(user)));
+        assertThat(ownerId, is(equalTo(user.toString())));
     }
 
     /* UPDATE */
