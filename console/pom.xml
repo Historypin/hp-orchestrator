@@ -20,6 +20,7 @@
         <thymeleaf.version>2.1.4.RELEASE</thymeleaf.version>
         <swagger.springfox.version>2.3.1</swagger.springfox.version>
         <jquery.version>2.2.1</jquery.version>
+        <jquery-ui.version>1.11.4</jquery-ui.version>
         <bootstrap.version>3.3.6</bootstrap.version>
         <font-awesome.version>4.5.0</font-awesome.version>
     </properties>
@@ -176,6 +177,12 @@
             <groupId>org.webjars</groupId>
             <artifactId>jquery</artifactId>
             <version>${jquery.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>jquery-ui</artifactId>
+            <version>${jquery-ui.version}</version>
         </dependency>
 
         <dependency>

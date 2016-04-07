@@ -29,16 +29,11 @@
             </div>
             <div class="row">
                 <div class="col-lg-12">
-                    <p>Table is only showing logs from last task run. Previous logs can be found in database and server logs.</p>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-12">
-                    <table id="logListTable" class="table nowrap table-striped table-bordered" cellspacing="0" width="100%">
+                    <table id="logListTable" class="table table-striped table-bordered" cellspacing="0" width="100%">
                         <thead>
                         <tr>
                             <th>Timestamp</th>
-                            <th>Tak run #</th>
+                            <th>Task run #</th>
                             <th>Level</th>
                             <th style="width: 800px;">Message</th>
                         </tr>
@@ -46,7 +41,7 @@
                         <tfoot>
                         <tr>
                             <th>Timestamp</th>
-                            <th>Tak run #</th>
+                            <th>Task run #</th>
                             <th>Level</th>
                             <th style="width: 800px;">Message</th>
                         </tr>
@@ -60,9 +55,11 @@
 
 
 <script src="https://code.jquery.com/jquery-2.2.1.min.js" th:src="@{/webjars/jquery/2.2.1/jquery.min.js}"></script>
+<script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js" th:src="@{/webjars/jquery-ui/1.11.4/jquery-ui.min.js}"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" th:src="@{/webjars/bootstrap/3.3.6/js/bootstrap.min.js}"></script>
 <script src="../static/js/datatables.min.js" th:src="@{/static/js/datatables.min.js}"></script>
 <script src="../static/js/console.js" th:src="@{/static/js/console.js}"></script>
+<script src="../static/js/showmore.js" th:src="@{/static/js/showmore.js}"></script>
 
 <script>
     // <![CDATA[
@@ -75,21 +72,44 @@
         }
     }
 
+    $("#logListTable").on("click", ".show-more a", function () {
+        var $this = $(this);
+        var $content = $this.parent().prev("div.content");
+        var linkText = $this.text().toUpperCase();
+
+        if (linkText === "SHOW MORE") {
+            linkText = "Show less";
+            $content.switchClass("hideContent", "showContent", 400);
+        } else {
+            linkText = "Show more";
+            $content.switchClass("showContent", "hideContent", 400);
+        }
+
+        $this.text(linkText);
+    });
+
     $(document).ready(function () {
         $("#logListTable").DataTable({
-            'ajax' : {
-                'url' : '/logs/get.logs',
-                'data' : function(data) {
+            'ajax': {
+                'url': '/logs/get.logs',
+                'data': function (data) {
                     remapDatatables(data);
                 }
             },
-            'serverSide' : true,
-            'processing' : true,
+            'language': {
+                search: "Search by task run #:"
+            },
+            'serverSide': true,
+            'processing': true,
             'columns': [
-                { 'data': 'timestamp' },
-                { 'data': 'jobRunId' },
-                { 'data': 'level' },
-                { 'data': 'message'}
+                {'data': 'timestamp'},
+                {'data': 'jobRunId'},
+                {'data': 'level'},
+                {
+                    'data': 'message',
+                    'orderable': false,
+                    'render': $.fn.dataTable.render.showmore(30)
+                }
             ]
         });
     });
