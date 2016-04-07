@@ -52,13 +52,17 @@ public class FlowManagerImpl implements FlowManager {
             if(job != null && sources.contains(job.getSource())) {
                 this.jobRunning = true;
                 // create its run
-                JobRun jobRun = new JobRun();
+                final JobRun jobRun = new JobRun();
                 jobRun.setJob(job);
                 // copy params into read-only entity
                 Set<Param> paramList = paramRepository.findByJob(job);
                 paramList.stream().forEach(
                         p -> jobRun.addReadOnlyParam(new ReadOnlyParam(p))
                 );
+                // save & mark as actual job run for this job
+                job.setLastJobRun(jobRunRepository.save(jobRun));
+                jobRepository.save(job);
+
                 startFlow(jobRun);
             }
         }

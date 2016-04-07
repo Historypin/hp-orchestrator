@@ -87,7 +87,7 @@ public class JobRun {
                 ", job=" + job +
                 ", status=" + status +
                 ", result=" + result +
-                ", readOnlyParams=" + readOnlyParams +
+                ", readOnlyParams size=" + readOnlyParams.size() +
                 '}';
     }
 }

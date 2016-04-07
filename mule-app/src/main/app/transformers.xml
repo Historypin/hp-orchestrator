@@ -20,7 +20,7 @@ http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/
 	        <choice doc:name="Choice">
 	            <when expression="#[sessionVars.transformation==&quot;eu.xml2hp.json&quot;]">
                     <byte-array-to-object-transformer mimeType="application/xml" doc:name="Byte Array to Object"/>
-			        <dw:transform-message doc:name="Transform Message">
+			        <dw:transform-message doc:name="EU.xml2hp">
 			            <dw:set-payload><![CDATA[%dw 1.0
 %output application/json
 ---
@@ -42,12 +42,13 @@ records : payload.OAI-PMH.ListRecords.*record map {
 	            </when>
 	            <when expression="#[sessionVars.transformation==&quot;eu.json2hp.json&quot;]">
                     <byte-array-to-object-transformer mimeType="application/json" doc:name="Byte Array to Object"/>
-			        <dw:transform-message doc:name="Transform Message">
+			        <dw:transform-message doc:name="EU.json2hp">
 			            <dw:set-payload><![CDATA[%dw 1.0
 %output application/json
 ---
 records : payload.items map {
 		pin: {
+			type: $.type,
 			(($.title default []) map caption: $),
 			(($.year default []) map date: $),
 			(($.country default []) map country: $),

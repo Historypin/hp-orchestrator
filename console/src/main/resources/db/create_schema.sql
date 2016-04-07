@@ -11,15 +11,16 @@ DROP TABLE IF EXISTS "read_only_param" CASCADE;
 DROP TABLE IF EXISTS "log" CASCADE;
 DROP TABLE IF EXISTS "users" CASCADE;
 DROP TABLE IF EXISTS "authorities" CASCADE;
+DROP FUNCTION IF EXISTS update_read_only_param_error();
 
 -- JOB TABLE BEGIN --
 CREATE SEQUENCE "seq_job" START 1 INCREMENT BY 50;
 
 CREATE TABLE "job" (
-  "id"        INT8 PRIMARY KEY DEFAULT nextval('seq_job') NOT NULL,
-  "name"      VARCHAR(255),
-  "source"    VARCHAR(255),
-  "target"    VARCHAR(255)
+  "id"            INT8 PRIMARY KEY DEFAULT nextval('seq_job') NOT NULL,
+  "name"          VARCHAR(255),
+  "source"        VARCHAR(255),
+  "target"        VARCHAR(255)
 );
 -- JOB TABLE END --
 
@@ -103,3 +104,5 @@ CREATE TABLE "authorities" (
 );
 CREATE UNIQUE INDEX ix_authorities_username on authorities (username, authority);
 -- AUTHORITIES TABLE END --
+
+ALTER TABLE job ADD COLUMN  "last_job_run_id"  INT8 REFERENCES job_run(id);

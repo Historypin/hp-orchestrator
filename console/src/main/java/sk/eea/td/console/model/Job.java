@@ -28,6 +28,9 @@ public class Job {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "job", orphanRemoval = true)
     private List<Param> params = new ArrayList<>();
 
+    @OneToOne(fetch = FetchType.EAGER, mappedBy = "job", cascade = CascadeType.ALL)
+    private JobRun lastJobRun;
+
     public Connector getSource() {
         return source;
     }
@@ -60,8 +63,12 @@ public class Job {
         this.name = name;
     }
 
-    public List<Param> getParams() {
-        return params;
+    public JobRun getLastJobRun() {
+        return lastJobRun;
+    }
+
+    public void setLastJobRun(JobRun lastJobRun) {
+        this.lastJobRun = lastJobRun;
     }
 
     public void addParam(Param param) {
@@ -78,8 +85,10 @@ public class Job {
         return "Job{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", source='" + source + '\'' +
+                ", source=" + source +
                 ", target='" + target + '\'' +
+                ", params size=" + params.size() +
+                ", lastJobRun id=" + ((lastJobRun != null) ? lastJobRun.getId() : null) +
                 '}';
     }
 }

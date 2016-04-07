@@ -52,6 +52,8 @@ public class HistorypinTransformDTO {
 
     public static class Pin {
 
+        private String type;
+
         private String caption;
 
         private String date;
@@ -112,9 +114,18 @@ public class HistorypinTransformDTO {
             this.landingPage = landingPage;
         }
 
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
+
         @Override public String toString() {
             return "Pin{" +
-                    "caption='" + caption + '\'' +
+                    "type='" + type + '\'' +
+                    ", caption='" + caption + '\'' +
                     ", date='" + date + '\'' +
                     ", country='" + country + '\'' +
                     ", license='" + license + '\'' +

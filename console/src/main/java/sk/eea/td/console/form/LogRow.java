@@ -1,12 +1,12 @@
 package sk.eea.td.console.form;
 
-import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class LogRow {
 
-    private Date timestamp;
+    private String timestamp;
 
-    private Long taskId;
+    private Long jobRunId;
 
     private String level;
 
@@ -15,27 +15,27 @@ public class LogRow {
     public LogRow() {
     }
 
-    public LogRow(Date timestamp, Long taskId, String level, String message) {
+    public LogRow(String timestamp, Long taskId, String level, String message) {
         this.timestamp = timestamp;
-        this.taskId = taskId;
+        this.jobRunId = taskId;
         this.level = level;
         this.message = message;
     }
 
-    public Date getTimestamp() {
+    public String getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(Date timestamp) {
+    public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
     }
 
-    public Long getTaskId() {
-        return taskId;
+    public Long getJobRunId() {
+        return jobRunId;
     }
 
-    public void setTaskId(Long taskId) {
-        this.taskId = taskId;
+    public void setJobRunId(Long jobRunId) {
+        this.jobRunId = jobRunId;
     }
 
     public String getLevel() {
@@ -56,8 +56,8 @@ public class LogRow {
 
     @Override public String toString() {
         return "LogRow{" +
-                "timestamp=" + timestamp +
-                ", taskId=" + taskId +
+                "timestamp='" + timestamp + '\'' +
+                ", jobRunId=" + jobRunId +
                 ", level='" + level + '\'' +
                 ", message='" + message + '\'' +
                 '}';

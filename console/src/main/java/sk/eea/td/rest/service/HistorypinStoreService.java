@@ -44,16 +44,30 @@ public class HistorypinStoreService {
         for (HistorypinTransformDTO.Record record : transformation.getRecords()) {
             HistorypinTransformDTO.Pin pin = record.getPin();
 
-            SaveResponseDTO response = hpClient.createPin(
-                    pin.getCaption(),
-                    pin.getLandingPage(),
-                    projectId,
-                    pin.getCountry(),
-                    parseHistoryPinDate(pin.getDate()),
-                    pin.getLicense(),
-                    PinnerType.PHOTO,
-                    pin.getPreview()
-            );
+            SaveResponseDTO response;
+            if("TEXT".equals(pin.getType())) {
+                response = hpClient.createPin(
+                        pin.getCaption(),
+                        pin.getLandingPage(),
+                        projectId,
+                        pin.getCountry(),
+                        parseHistoryPinDate(pin.getDate()),
+                        pin.getLicense(),
+                        PinnerType.TEXT,
+                        pin.getLandingPage()
+                );
+            } else {
+                response = hpClient.createPin(
+                        pin.getCaption(),
+                        pin.getLandingPage(),
+                        projectId,
+                        pin.getCountry(),
+                        parseHistoryPinDate(pin.getDate()),
+                        pin.getLicense(),
+                        PinnerType.PHOTO,
+                        pin.getPreview()
+                );
+            }
 
             HistorypinTransformDTO.Remote remote = record.getRemote();
             if (response.getId() != null) {
