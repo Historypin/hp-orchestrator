@@ -89,7 +89,7 @@
     });
 
     $(document).ready(function () {
-        $("#logListTable").DataTable({
+        var table = $("#logListTable").DataTable({
             'ajax': {
                 'url': '/logs/get.logs',
                 'data': function (data) {

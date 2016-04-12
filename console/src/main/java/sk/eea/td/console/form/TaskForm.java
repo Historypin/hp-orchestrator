@@ -18,7 +18,7 @@ import java.util.List;
 @GroupSequenceProvider(value = TaskFormValidationSequenceProvider.class)
 public class TaskForm {
 
-    @NotEmpty(message = "Name is missing")
+    @NotEmpty(message = "Name is missing.")
     private String name;
 
     @NotNull
@@ -30,17 +30,26 @@ public class TaskForm {
     @NotEmpty(message = "At least one destination is required.")
     private List<Destination> destinations;
 
-    @NotNull(message = "Target collection name is missing", groups = { HistorypinTargetValidation.class })
+    @NotNull(message = "Historypin user ID is missing.", groups = { HistorypinTargetValidation.class })
+    private Long historypinUserId;
+
+    @NotEmpty(message = "Historypin API Key is missing.", groups = { HistorypinTargetValidation.class })
+    private String historypinApiKey;
+
+    @NotEmpty(message = "Historypin API Secret is missing.", groups = { HistorypinTargetValidation.class })
+    private String historypinApiSecret;
+
+    @NotNull(message = "Target collection name is missing.", groups = { HistorypinTargetValidation.class })
     @Size(min = 6, max = 150, groups = { HistorypinTargetValidation.class })
     private String collectionName;
 
-    @NotNull(message = "Target collection location (latitude) is missing", groups = { HistorypinTargetValidation.class })
+    @NotNull(message = "Target collection location (latitude) is missing.", groups = { HistorypinTargetValidation.class })
     private Double collectionLat;
 
-    @NotNull(message = "Target collection location (longitude) is missing", groups = { HistorypinTargetValidation.class })
+    @NotNull(message = "Target collection location (longitude) is missing.", groups = { HistorypinTargetValidation.class })
     private Double collectionLng;
 
-    @NotNull(message = "Target collection location (radius) is missing", groups = { HistorypinTargetValidation.class })
+    @NotNull(message = "Target collection location (radius) is missing.", groups = { HistorypinTargetValidation.class })
     private Double collectionRadius;
 
 
@@ -188,12 +197,39 @@ public class TaskForm {
         this.collectionRadius = collectionRadius;
     }
 
+    public Long getHistorypinUserId() {
+        return historypinUserId;
+    }
+
+    public void setHistorypinUserId(Long historypinUserId) {
+        this.historypinUserId = historypinUserId;
+    }
+
+    public String getHistorypinApiKey() {
+        return historypinApiKey;
+    }
+
+    public void setHistorypinApiKey(String historypinApiKey) {
+        this.historypinApiKey = historypinApiKey;
+    }
+
+    public String getHistorypinApiSecret() {
+        return historypinApiSecret;
+    }
+
+    public void setHistorypinApiSecret(String historypinApiSecret) {
+        this.historypinApiSecret = historypinApiSecret;
+    }
+
     @Override public String toString() {
         return "TaskForm{" +
                 "name='" + name + '\'' +
                 ", harvesting=" + harvesting +
                 ", type=" + type +
                 ", destinations=" + destinations +
+                ", historypinUserId=" + historypinUserId +
+                ", historypinApiKey='" + historypinApiKey + '\'' +
+                ", historypinApiSecret='" + historypinApiSecret + '\'' +
                 ", collectionName='" + collectionName + '\'' +
                 ", collectionLat=" + collectionLat +
                 ", collectionLng=" + collectionLng +

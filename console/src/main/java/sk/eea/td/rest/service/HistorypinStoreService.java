@@ -25,9 +25,6 @@ public class HistorypinStoreService {
     private String user;
 
     @Autowired
-    private HPClient hpClient;
-
-    @Autowired
     private ObjectMapper objectMapper;
 
     /**
@@ -38,7 +35,7 @@ public class HistorypinStoreService {
      * @return True if there we no failed pin uploads, false if otherwise.
      * @throws IOException
      */
-    public boolean store(Long projectId, Path file) throws IOException {
+    public boolean store(Long projectId, Path file, HPClient hpClient) throws IOException {
         final HistorypinTransformDTO transformation = objectMapper.readValue(file.toFile(), HistorypinTransformDTO.class);
         int failedPins = 0;
         for (HistorypinTransformDTO.Record record : transformation.getRecords()) {

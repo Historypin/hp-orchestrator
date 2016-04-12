@@ -14,6 +14,7 @@ import sk.eea.td.flow.Activity;
 import sk.eea.td.flow.FlowException;
 import sk.eea.td.hp_client.api.HPClient;
 import sk.eea.td.hp_client.dto.SaveResponseDTO;
+import sk.eea.td.hp_client.impl.HPClientImpl;
 import sk.eea.td.rest.service.HistorypinStoreService;
 import sk.eea.td.util.LocationUtils;
 
@@ -32,11 +33,8 @@ public class StoreActivity implements Activity {
 
     private static final Logger LOG = LoggerFactory.getLogger(StoreActivity.class);
 
-    @Value("${historypin.user}")
-    private Long hpUser;
-
-    @Autowired
-    private HPClient hpClient;
+    @Value("${historypin.base.url}")
+    private String hpUrl;
 
     @Autowired
     private HistorypinStoreService historypinStoreService;
@@ -53,6 +51,10 @@ public class StoreActivity implements Activity {
         try {
             final Map<String, String> paramMap = new HashMap<>();
             context.getReadOnlyParams().stream().forEach(p -> paramMap.put(p.getKey(), p.getValue()));
+
+            final HPClient hpClient = new HPClientImpl(hpUrl, paramMap.get("historypinApiKey"), paramMap.get("historypinApiSecret"));
+
+            final Long hpUser = Long.parseLong(paramMap.get("historypinUserId"));
 
             final Path transformPath = Paths.get(paramMap.get("transformPath"));
             Files.walkFileTree(transformPath, new SimpleFileVisitor<Path>() {
@@ -95,7 +97,7 @@ public class StoreActivity implements Activity {
                                 }
                             }
 
-                            if (!historypinStoreService.store(hpProjectId, file)) {
+                            if (!historypinStoreService.store(hpProjectId, file, hpClient)) {
                                 Log log = new Log();
                                 log.setJobRun(context);
                                 log.setTimestamp(new Date());

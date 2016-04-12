@@ -54,7 +54,7 @@ public class HomeController {
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String indexView(TaskForm taskForm, Model model) {
-        model.addAttribute("googleMapsApiKey", googleMapsApiKey);
+        //model.addAttribute("googleMapsApiKey", googleMapsApiKey);
         return "index";
     }
 
@@ -109,6 +109,9 @@ public class HomeController {
         job.setTarget(taskForm.getDestinations().stream().map(Destination::toString).collect(Collectors.joining(", ")));
 
         if(taskForm.getDestinations().contains(Destination.HP)) {
+            job.addParam(new Param("historypinUserId", taskForm.getHistorypinUserId().toString()));
+            job.addParam(new Param("historypinApiKey", taskForm.getHistorypinApiKey()));
+            job.addParam(new Param("historypinApiSecret", taskForm.getHistorypinApiSecret()));
             job.addParam(new Param("collectionName", taskForm.getCollectionName()));
             job.addParam(new Param("collectionLat", taskForm.getCollectionLat().toString()));
             job.addParam(new Param("collectionLng", taskForm.getCollectionLng().toString()));
@@ -119,7 +122,6 @@ public class HomeController {
             if(TaskForm.Type.OAIPMH == taskForm.getType()) {
                 //DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX");
                 DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'"); // TODO: fix time zone, previous was crushing in OAI-PMH harvesting
-
                 job.addParam(new Param("from", format.format(taskForm.getOaiFrom())));
                 job.addParam(new Param("until", format.format(taskForm.getOaiUntil())));
                 job.addParam(new Param("set", taskForm.getOaiSet()));

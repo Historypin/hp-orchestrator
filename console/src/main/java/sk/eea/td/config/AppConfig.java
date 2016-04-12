@@ -4,6 +4,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.core.io.ClassPathResource;
@@ -36,6 +37,7 @@ import java.util.Locale;
 @Configuration
 @EnableWebMvc
 @EnableScheduling
+@PropertySource({ "classpath:default.properties", "classpath:${spring.profiles.active:prod}.properties"})
 @ComponentScan(basePackages = "sk.eea.td")
 public class AppConfig extends WebMvcConfigurerAdapter {
 
@@ -54,6 +56,12 @@ public class AppConfig extends WebMvcConfigurerAdapter {
     }
 
     @Bean
+    public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
+        return new PropertySourcesPlaceholderConfigurer();
+    }
+
+
+    @Bean
     public SpringTemplateEngine templateEngine() {
         SpringTemplateEngine engine = new SpringTemplateEngine();
         engine.setTemplateResolver(templateResolver());
@@ -66,29 +74,6 @@ public class AppConfig extends WebMvcConfigurerAdapter {
         viewResolver.setTemplateEngine(templateEngine());
         viewResolver.setOrder(1);
         return viewResolver;
-    }
-
-    @Bean
-    public static PropertySourcesPlaceholderConfigurer propertyConfigurer() {
-        PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer = new PropertySourcesPlaceholderConfigurer();
-        // get active profile
-        String activeProfile = System.getProperty("spring.profiles.active");
-
-        // choose different property files for different active profile
-        Resource profileResource;
-        if ("dev".equalsIgnoreCase(activeProfile)) {
-            profileResource = new ClassPathResource("dev.properties");
-        } else if ("test".equalsIgnoreCase(activeProfile)) {
-            profileResource = new ClassPathResource("test.properties");
-        } else {
-            profileResource = new ClassPathResource("prod.properties");
-        }
-
-        Resource defaultResource = new ClassPathResource("default.properties");
-        // load the property files
-        propertySourcesPlaceholderConfigurer.setLocations(defaultResource, profileResource);
-
-        return propertySourcesPlaceholderConfigurer;
     }
 
     @Bean

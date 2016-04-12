@@ -15,12 +15,12 @@ public class RESTClientsConfig {
         return new ObjectMapper();
     }
 
-    @Bean
-    public HPClient hpClient(
-            @Value("${historypin.base.url}") String baseURL,
-            @Value("${historypin.api.key}") String apiKey,
-            @Value("${historypin.api.secret}") String apiSecret
-    ) {
-        return new HPClientImpl(baseURL, apiKey, apiSecret);
-    }
+//    @Bean
+//    public HPClient hpClient(
+//            @Value("${historypin.base.url}") String baseURL,
+//            @Value("${historypin.api.key}") String apiKey,
+//            @Value("${historypin.api.secret}") String apiSecret
+//    ) {
+//        return new HPClientImpl(baseURL, apiKey, apiSecret);
+//    }
 }
