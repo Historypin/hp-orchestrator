@@ -9,10 +9,8 @@ import sk.eea.td.rest.validation.EuropeanaValidation;
 import sk.eea.td.rest.validation.HistorypinTargetValidation;
 import sk.eea.td.rest.validation.HistorypinValidation;
 import sk.eea.td.rest.validation.OaipmhValidation;
-import sk.eea.td.util.LocationUtils;
 
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.List;
@@ -36,10 +34,15 @@ public class TaskForm {
     @Size(min = 6, max = 150, groups = { HistorypinTargetValidation.class })
     private String collectionName;
 
-    @NotNull(message = "Target collection location is missing", groups = { HistorypinTargetValidation.class })
-    @Size(min = 1, max = 150, groups = { HistorypinTargetValidation.class })
-    @Pattern(regexp = LocationUtils.HISTORY_PIN_LOCATION_PATTERN, groups = { HistorypinTargetValidation.class }, message = "Target collection location should be in format [lat, lng, range]. See tooltip for more info.")
-    private String collectionLocation;
+    @NotNull(message = "Target collection location (latitude) is missing", groups = { HistorypinTargetValidation.class })
+    private Double collectionLat;
+
+    @NotNull(message = "Target collection location (longitude) is missing", groups = { HistorypinTargetValidation.class })
+    private Double collectionLng;
+
+    @NotNull(message = "Target collection location (radius) is missing", groups = { HistorypinTargetValidation.class })
+    private Double collectionRadius;
+
 
     @NotNull(message = "Lucene query is missing.", groups = { EuropeanaValidation.class })
     @Size(min = 1, max = 150, groups = { EuropeanaValidation.class })
@@ -161,12 +164,28 @@ public class TaskForm {
         this.collectionName = collectionName;
     }
 
-    public String getCollectionLocation() {
-        return collectionLocation;
+    public Double getCollectionLat() {
+        return collectionLat;
     }
 
-    public void setCollectionLocation(String collectionLocation) {
-        this.collectionLocation = collectionLocation;
+    public void setCollectionLat(Double collectionLat) {
+        this.collectionLat = collectionLat;
+    }
+
+    public Double getCollectionLng() {
+        return collectionLng;
+    }
+
+    public void setCollectionLng(Double collectionLng) {
+        this.collectionLng = collectionLng;
+    }
+
+    public Double getCollectionRadius() {
+        return collectionRadius;
+    }
+
+    public void setCollectionRadius(Double collectionRadius) {
+        this.collectionRadius = collectionRadius;
     }
 
     @Override public String toString() {
@@ -176,7 +195,9 @@ public class TaskForm {
                 ", type=" + type +
                 ", destinations=" + destinations +
                 ", collectionName='" + collectionName + '\'' +
-                ", collectionLocation='" + collectionLocation + '\'' +
+                ", collectionLat=" + collectionLat +
+                ", collectionLng=" + collectionLng +
+                ", collectionRadius=" + collectionRadius +
                 ", luceneQuery='" + luceneQuery + '\'' +
                 ", projectSlug='" + projectSlug + '\'' +
                 ", oaiFrom=" + oaiFrom +

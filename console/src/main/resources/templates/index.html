@@ -2,6 +2,9 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no"/>
+
     <title th:text="#{create.task.title}">Create task - Orchestrator</title>
 
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
@@ -81,7 +84,7 @@
 
                             <!-- Configuration -->
 
-                            <!-- Name -->
+                            <!-- HP target configuration -->
                             <div id="historypin-target-conf-group">
                                 <div class="form-group" th:classappend="${#fields.hasErrors('collectionName')}? 'has-error'">
                                     <label class="col-md-4 control-label" for="name" th:text="#{create.task.collectionName}">Collection name</label>
@@ -90,13 +93,12 @@
                                         <span class="help-block" th:if="${#fields.hasErrors('collectionName')}" th:errors="*{collectionName}">Collection name error</span>
                                     </div>
                                 </div>
-                                <div class="form-group" th:classappend="${#fields.hasErrors('collectionLocation')}? 'has-error'">
-                                    <label class="col-md-4 control-label" for="name" th:text="#{create.task.collectionLocation}">Collection location</label>
-                                    <div class="col-md-4">
-                                        <input id="collectionLocation" name="collectionLocation" th:field="*{collectionLocation}" th:placeholder="#{create.task.collectionLocation.placeholder}" placeholder="location of target collection in Historypin" class="form-control input-md" type="text"
-                                               data-toggle="tooltip" data-placement="right" th:title="#{create.task.collectionLocation.tooltip}"/>
-                                        <span class="help-block" th:if="${#fields.hasErrors('collectionLocation')}" th:errors="*{collectionLocation}">Collection location error</span>
-                                    </div>
+                                <div class="form-group" th:classappend="${#fields.hasErrors('collectionLat')}? 'has-error'">
+                                    <label class="col-md-4 control-label" for="map" th:text="#{create.task.collectionLocation}">Collection location</label>
+                                    <div id="map" class="col-md-4"></div>
+                                    <input type="hidden" th:field="*{collectionLat}" name="circleLat" id="circleLat"/>
+                                    <input type="hidden" th:field="*{collectionLng}" name="circleLng" id="circleLng"/>
+                                    <input type="hidden" th:field="*{collectionRadius}" name="circleRadius" id="circleRadius"/>
                                 </div>
                             </div>
 
@@ -202,6 +204,7 @@
 
 <script src="https://code.jquery.com/jquery-2.2.1.min.js" th:src="@{/webjars/jquery/2.2.1/jquery.min.js}"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" th:src="@{/webjars/bootstrap/3.3.6/js/bootstrap.min.js}"></script>
+<script async="async" defer="defer" type="text/javascript" th:src="'https://maps.googleapis.com/maps/api/js?key=' + ${googleMapsApiKey} + '&amp;libraries=visualization,places,geometry&amp;language=en'"></script>
 <script src="../static/js/datatables.min.js" th:src="@{/static/js/datatables.min.js}"></script>
 <script src="../static/js/console.js" th:src="@{/static/js/console.js}"></script>
 
@@ -221,6 +224,7 @@
         $("#destination option:selected").each(function () {
             if ($(this).val() == 'HP') {
                 $("#historypin-target-conf-group").show();
+                initMap();
             }
         });
 
@@ -257,24 +261,67 @@
         }
     }
 
+    /* Google Maps functions */
+    var defaultLatLng = {
+        lat: 46.517482,
+        lng: 8.1034214
+    };
+
+    var defaultRadius = 600000;
+
+    function initMap() {
+        var map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 4,
+            center: defaultLatLng
+        });
+
+        var circle = new google.maps.Circle({
+            map: map,
+            fillColor		: '#fff',
+            fillOpacity		: 0.5,
+            strokeColor		: '#b9b9b9',
+            strokeOpacity   : 1,
+            strokeWeight    : 2,
+            editable        : true,
+            draggable       : true,
+            center          : defaultLatLng,
+            radius          : defaultRadius
+        });
+
+        bindCircleToInputs(circle)
+
+        circle.addListener('center_changed', function() {
+            bindCircleToInputs(circle)
+        });
+        circle.addListener('radius_changed', function() {
+            bindCircleToInputs(circle)
+        });
+    }
+
+    function bindCircleToInputs(circle) {
+        document.getElementById('circleLat').value = circle.getCenter().lat();
+        document.getElementById('circleLng').value = circle.getCenter().lng();
+        document.getElementById('circleRadius').value = circle.getRadius();
+    }
+
     $(document).ready(function () {
         $("#taskListTable").DataTable({
             'bFilter': false,
-            'ajax' : {
-                'url' : '/get.jobs',
-                'data' : function(data) {
+            'ajax': {
+                'url': '/get.jobs',
+                'data': function (data) {
                     remapDatatables(data);
                 }
             },
-            'serverSide' : true,
-            'processing' : true,
+            'serverSide': true,
+            'processing': true,
             'columns': [
-                { 'data': 'name' },
-                { 'data': 'source' },
-                { 'data': 'target' },
-                { 'data': 'lastRunStatus', 'orderable': false },
-                { 'data': 'lastRunResult', 'orderable': false },
-                { 'data': 'lastRunId'}
+                {'data': 'name'},
+                {'data': 'source'},
+                {'data': 'target'},
+                {'data': 'lastRunStatus', 'orderable': false},
+                {'data': 'lastRunResult', 'orderable': false},
+                {'data': 'lastRunId'}
             ]
         });
 

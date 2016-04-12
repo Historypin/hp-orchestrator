@@ -78,16 +78,12 @@ public class StoreActivity implements Activity {
                     switch (destination) {
                         case HP:
                             if (this.hpProjectId == null) {
-                                // parse HP collection location
-                                final String collectionLocation = paramMap.get("collectionLocation");
-                                Pattern locationPattern = Pattern.compile(LocationUtils.HISTORY_PIN_LOCATION_PATTERN);
-                                Matcher matcher = locationPattern.matcher(collectionLocation);
-                                if (!matcher.matches()) {
-                                    throw new IllegalArgumentException("Collection location: " + collectionLocation + " cannot be parsed!");
-                                }
-                                // create HP project
+                                // get required parameters
+                                final String collectionLat = paramMap.get("collectionLat");
+                                final String collectionLng = paramMap.get("collectionLng");
+                                final String collectionRadius = paramMap.get("collectionRadius");
                                 final String collectionName = paramMap.get("collectionName");
-                                SaveResponseDTO response = hpClient.createProject(collectionName, hpUser, matcher.group(1), matcher.group(2), matcher.group(3));
+                                SaveResponseDTO response = hpClient.createProject(collectionName, hpUser, collectionLat, collectionLng, collectionRadius);
                                 // verify that project is created
                                 if (!response.getErrors().isEmpty()) {
                                     throw new IllegalStateException("Could not create collection with name: " + collectionName + " in Historypin API. Reason: " + response.getErrors().toString());

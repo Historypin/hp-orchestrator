@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -48,8 +49,12 @@ public class HomeController {
     @Autowired
     private ParamRepository paramRepository;
 
+    @Value(value = "${google.maps.api.key}")
+    private String googleMapsApiKey;
+
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String indexView(TaskForm taskForm, Model model) {
+        model.addAttribute("googleMapsApiKey", googleMapsApiKey);
         return "index";
     }
 
@@ -105,7 +110,9 @@ public class HomeController {
 
         if(taskForm.getDestinations().contains(Destination.HP)) {
             job.addParam(new Param("collectionName", taskForm.getCollectionName()));
-            job.addParam(new Param("collectionLocation", taskForm.getCollectionLocation()));
+            job.addParam(new Param("collectionLat", taskForm.getCollectionLat().toString()));
+            job.addParam(new Param("collectionLng", taskForm.getCollectionLng().toString()));
+            job.addParam(new Param("collectionRadius", taskForm.getCollectionRadius().toString()));
         }
 
         if (TaskForm.Harvesting.EU == taskForm.getHarvesting()) {
