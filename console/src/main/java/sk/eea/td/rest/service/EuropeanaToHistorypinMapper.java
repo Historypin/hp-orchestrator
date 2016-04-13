@@ -10,7 +10,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 import static org.apache.commons.lang3.StringUtils.isEmpty;
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static sk.eea.td.util.DateUtils.parseHistoryPinDate;
 
 @Component
@@ -20,19 +19,19 @@ public class EuropeanaToHistorypinMapper {
 
     /**
      * Method maps object from europeana to historypin.
-     *
      * It does it in fail-safe manner. In case of problem, it skips and removes object from list of objects to transform.
      *
      * @param mappedObject Object to map, object is modified in mapping process.
-     * @param paramMap parameters map.
+     * @param paramMap     parameters map.
      * @return false if one or more pins could not be transformed.
      */
     public boolean map(HistorypinTransformDTO mappedObject, Map<String, String> paramMap) {
-        for( Iterator<HistorypinTransformDTO.Record> iterator = mappedObject.getRecords().iterator(); iterator.hasNext(); ) {
+        boolean allItemTransformed = true;
+        for (Iterator<HistorypinTransformDTO.Record> iterator = mappedObject.getRecords().iterator(); iterator.hasNext(); ) {
             final HistorypinTransformDTO.Record record = iterator.next();
 
             // type mapping
-            switch(record.getEuropeanaFields().getType()) { // break-through logic intended
+            switch (record.getEuropeanaFields().getType()) { // break-through logic intended
                 case "TEXT":
                 case "IMAGE":
                     record.getPin().setPinnerType("PHOTO");
@@ -43,15 +42,17 @@ public class EuropeanaToHistorypinMapper {
                 default:
                     LOG.error("Type: ''{}'' is not recognized. Record with remoteId: ''{}'' will be skipped.", record.getEuropeanaFields().getType(), record.getPin().getRemoteId());
                     iterator.remove();
+                    allItemTransformed = false;
                     continue;
             }
 
             // date mapping
             String date = parseHistoryPinDate(record.getEuropeanaFields().getYear());
-            if(isEmpty(date)) {
+            if (isEmpty(date)) {
                 date = paramMap.get(ParamKey.HP_DATE.toString());
             }
             record.getPin().setDate(date);
         }
+        return allItemTransformed;
     }
 }
