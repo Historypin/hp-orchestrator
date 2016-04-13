@@ -24,7 +24,7 @@ public class HistorypinTransformDTO {
 
         private Pin pin;
 
-        private Remote remote;
+        private EuropeanaFields europeanaFields;
 
         public Pin getPin() {
             return pin;
@@ -34,37 +34,51 @@ public class HistorypinTransformDTO {
             this.pin = pin;
         }
 
-        public Remote getRemote() {
-            return remote;
+        public EuropeanaFields getEuropeanaFields() {
+            return europeanaFields;
         }
 
-        public void setRemote(Remote remote) {
-            this.remote = remote;
+        public void setEuropeanaFields(EuropeanaFields europeanaFields) {
+            this.europeanaFields = europeanaFields;
         }
 
         @Override public String toString() {
             return "Record{" +
                     "pin=" + pin +
-                    ", remote=" + remote +
+                    ", europeanaFields=" + europeanaFields +
                     '}';
         }
     }
 
     public static class Pin {
 
-        private String type;
+        private String pinnerType;
 
         private String caption;
 
-        private String date;
+        private String description;
 
-        private String country;
+        private String date;
 
         private String license;
 
-        private String preview;
+        private Location location;
 
-        private String landingPage;
+        private String link;
+
+        private String content;
+
+        private String tags;
+
+        private String remoteId;
+
+        public String getPinnerType() {
+            return pinnerType;
+        }
+
+        public void setPinnerType(String pinnerType) {
+            this.pinnerType = pinnerType;
+        }
 
         public String getCaption() {
             return caption;
@@ -82,14 +96,6 @@ public class HistorypinTransformDTO {
             this.date = date;
         }
 
-        public String getCountry() {
-            return country;
-        }
-
-        public void setCountry(String country) {
-            this.country = country;
-        }
-
         public String getLicense() {
             return license;
         }
@@ -98,21 +104,122 @@ public class HistorypinTransformDTO {
             this.license = license;
         }
 
-        public String getPreview() {
-            return preview;
+        public Location getLocation() {
+            return location;
         }
 
-        public void setPreview(String preview) {
-            this.preview = preview;
+        public void setLocation(Location location) {
+            this.location = location;
         }
 
-        public String getLandingPage() {
-            return landingPage;
+        public String getLink() {
+            return link;
         }
 
-        public void setLandingPage(String landingPage) {
-            this.landingPage = landingPage;
+        public void setLink(String link) {
+            this.link = link;
         }
+
+        public String getContent() {
+            return content;
+        }
+
+        public void setContent(String content) {
+            this.content = content;
+        }
+
+        public String getTags() {
+            return tags;
+        }
+
+        public void setTags(String tags) {
+            this.tags = tags;
+        }
+
+        public String getRemoteId() {
+            return remoteId;
+        }
+
+        public void setRemoteId(String remoteId) {
+            this.remoteId = remoteId;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
+        }
+
+        @Override public String toString() {
+            return "Pin{" +
+                    "pinnerType='" + pinnerType + '\'' +
+                    ", caption='" + caption + '\'' +
+                    ", description='" + description + '\'' +
+                    ", date='" + date + '\'' +
+                    ", license='" + license + '\'' +
+                    ", location=" + location +
+                    ", link='" + link + '\'' +
+                    ", content='" + content + '\'' +
+                    ", tags='" + tags + '\'' +
+                    ", remoteId='" + remoteId + '\'' +
+                    '}';
+        }
+    }
+
+    public static class Location {
+
+        private String lat;
+
+        private String lng;
+
+        private String range;
+
+        public String getLat() {
+            return lat;
+        }
+
+        public void setLat(String lat) {
+            this.lat = lat;
+        }
+
+        public String getLng() {
+            return lng;
+        }
+
+        public void setLng(String lng) {
+            this.lng = lng;
+        }
+
+        public String getRange() {
+            return range;
+        }
+
+        public void setRange(String range) {
+            this.range = range;
+        }
+
+        @Override public String toString() {
+            return "Location{" +
+                    "lat='" + lat + '\'' +
+                    ", lng='" + lng + '\'' +
+                    ", range='" + range + '\'' +
+                    '}';
+        }
+    }
+
+    public static class EuropeanaFields {
+
+        private String type;
+
+        private String year;
+
+        private String country;
+
+        private String rights;
+
+        private String edmIsShownBy;
 
         public String getType() {
             return type;
@@ -122,34 +229,45 @@ public class HistorypinTransformDTO {
             this.type = type;
         }
 
+        public String getYear() {
+            return year;
+        }
+
+        public void setYear(String year) {
+            this.year = year;
+        }
+
+        public String getCountry() {
+            return country;
+        }
+
+        public void setCountry(String country) {
+            this.country = country;
+        }
+
+        public String getRights() {
+            return rights;
+        }
+
+        public void setRights(String rights) {
+            this.rights = rights;
+        }
+
+        public String getEdmIsShownBy() {
+            return edmIsShownBy;
+        }
+
+        public void setEdmIsShownBy(String edmIsShownBy) {
+            this.edmIsShownBy = edmIsShownBy;
+        }
+
         @Override public String toString() {
-            return "Pin{" +
+            return "EuropeanaFields{" +
                     "type='" + type + '\'' +
-                    ", caption='" + caption + '\'' +
-                    ", date='" + date + '\'' +
+                    ", year='" + year + '\'' +
                     ", country='" + country + '\'' +
-                    ", license='" + license + '\'' +
-                    ", preview='" + preview + '\'' +
-                    ", landingPage='" + landingPage + '\'' +
-                    '}';
-        }
-    }
-
-    public static class Remote {
-
-        private String id;
-
-        public String getId() {
-            return id;
-        }
-
-        public void setId(String id) {
-            this.id = id;
-        }
-
-        @Override public String toString() {
-            return "Remote{" +
-                    "id='" + id + '\'' +
+                    ", rights='" + rights + '\'' +
+                    ", edmIsShownBy='" + edmIsShownBy + '\'' +
                     '}';
         }
     }

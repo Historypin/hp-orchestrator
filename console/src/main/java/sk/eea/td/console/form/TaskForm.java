@@ -11,6 +11,7 @@ import sk.eea.td.rest.validation.HistorypinValidation;
 import sk.eea.td.rest.validation.OaipmhValidation;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.List;
@@ -44,14 +45,19 @@ public class TaskForm {
     private String collectionName;
 
     @NotNull(message = "Target collection location (latitude) is missing.", groups = { HistorypinTargetValidation.class })
-    private Double collectionLat;
+    private Double collectionLat = 46.517482; // default value
 
     @NotNull(message = "Target collection location (longitude) is missing.", groups = { HistorypinTargetValidation.class })
-    private Double collectionLng;
+    private Double collectionLng = 8.1034214; // default value
 
     @NotNull(message = "Target collection location (radius) is missing.", groups = { HistorypinTargetValidation.class })
-    private Double collectionRadius;
+    private Long collectionRadius = 600000L; // default value
 
+    @NotEmpty(message = "Default collection date is missing.", groups = { HistorypinTargetValidation.class })
+    private String collectionDate;
+
+    // this field is optional
+    private String collectionTags;
 
     @NotNull(message = "Lucene query is missing.", groups = { EuropeanaValidation.class })
     @Size(min = 1, max = 150, groups = { EuropeanaValidation.class })
@@ -189,11 +195,11 @@ public class TaskForm {
         this.collectionLng = collectionLng;
     }
 
-    public Double getCollectionRadius() {
+    public Long getCollectionRadius() {
         return collectionRadius;
     }
 
-    public void setCollectionRadius(Double collectionRadius) {
+    public void setCollectionRadius(Long collectionRadius) {
         this.collectionRadius = collectionRadius;
     }
 
@@ -221,6 +227,22 @@ public class TaskForm {
         this.historypinApiSecret = historypinApiSecret;
     }
 
+    public String getCollectionDate() {
+        return collectionDate;
+    }
+
+    public void setCollectionDate(String collectionDate) {
+        this.collectionDate = collectionDate;
+    }
+
+    public String getCollectionTags() {
+        return collectionTags;
+    }
+
+    public void setCollectionTags(String collectionTags) {
+        this.collectionTags = collectionTags;
+    }
+
     @Override public String toString() {
         return "TaskForm{" +
                 "name='" + name + '\'' +
@@ -234,6 +256,8 @@ public class TaskForm {
                 ", collectionLat=" + collectionLat +
                 ", collectionLng=" + collectionLng +
                 ", collectionRadius=" + collectionRadius +
+                ", collectionDate='" + collectionDate + '\'' +
+                ", collectionTags='" + collectionTags + '\'' +
                 ", luceneQuery='" + luceneQuery + '\'' +
                 ", projectSlug='" + projectSlug + '\'' +
                 ", oaiFrom=" + oaiFrom +

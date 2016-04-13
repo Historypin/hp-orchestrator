@@ -121,6 +121,19 @@
                                     <input type="hidden" th:field="*{collectionLng}" name="circleLng" id="circleLng"/>
                                     <input type="hidden" th:field="*{collectionRadius}" name="circleRadius" id="circleRadius"/>
                                 </div>
+                                <div class="form-group" th:classappend="${#fields.hasErrors('collectionDate')}? 'has-error'">
+                                    <label class="col-md-4 control-label" for="name" th:text="#{create.task.collectionDate}">Collection date</label>
+                                    <div class="col-md-4">
+                                        <input id="collectionDate" name="collectionDate" th:field="*{collectionDate}" th:placeholder="#{create.task.collectionDate.placeholder}" placeholder="default date for pins" data-toggle="tooltip" th:title="#{create.task.collectionDate.tooltip}" class="form-control input-md" type="text"/>
+                                        <span class="help-block" th:if="${#fields.hasErrors('collectionDate')}" th:errors="*{collectionDate}">Collection date error</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label" for="collectionTags" th:text="#{create.task.collectionTags}">Collection tags</label>
+                                    <div class="col-md-4">
+                                        <input id="collectionTags" name="collectionTags" th:field="*{collectionTags}" th:placeholder="#{create.task.collectionTags.placeholder}" placeholder="default tags, added to all pins" data-toggle="tooltip" th:title="#{create.task.collectionTags.tooltip}" class="form-control input-md" type="text"/>
+                                    </div>
+                                </div>
                             </div>
 
                             <!-- OAI-PMH date from -->
@@ -225,7 +238,7 @@
 
 <script src="https://code.jquery.com/jquery-2.2.1.min.js" th:src="@{/webjars/jquery/2.2.1/jquery.min.js}"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" th:src="@{/webjars/bootstrap/3.3.6/js/bootstrap.min.js}"></script>
-<script async="async" defer="defer" type="text/javascript" th:src="'https://maps.googleapis.com/maps/api/js?key=' + ${@environment.getProperty('google.maps.api.key')} + '&amp;libraries=visualization,places,geometry&amp;language=en'"></script>
+<script async="async" defer="defer" type="text/javascript" th:src="'https://maps.googleapis.com/maps/api/js?key=' + ${@environment.getProperty('google.maps.api.key')} + '&amp;libraries=visualization,places,geometry&amp;language=en&amp;callback=initMap'"></script>
 <script src="../static/js/datatables.min.js" th:src="@{/static/js/datatables.min.js}"></script>
 <script src="../static/js/console.js" th:src="@{/static/js/console.js}"></script>
 
@@ -245,7 +258,11 @@
         $("#destination option:selected").each(function () {
             if ($(this).val() == 'HP') {
                 $("#historypin-target-conf-group").show();
-                initMap();
+                try {
+                    initMap();
+                } catch (e) {
+                    // ignore for now
+                }
             }
         });
 
@@ -283,17 +300,20 @@
     }
 
     /* Google Maps functions */
-    var defaultLatLng = {
-        lat: 46.517482,
-        lng: 8.1034214
-    };
-
-    var defaultRadius = 600000;
+//    var defaultLatLng = {
+//        lat: 46.517482,
+//        lng: 8.1034214
+//    };
+//
+//    var defaultRadius = 600000;
 
     function initMap() {
         var map = new google.maps.Map(document.getElementById('map'), {
             zoom: 4,
-            center: defaultLatLng
+            center: {
+                lat: parseFloat(document.getElementById('circleLat').value),
+                lng: parseFloat(document.getElementById('circleLng').value)
+            }
         });
 
         var circle = new google.maps.Circle({
@@ -305,8 +325,11 @@
             strokeWeight    : 2,
             editable        : true,
             draggable       : true,
-            center          : defaultLatLng,
-            radius          : defaultRadius
+            center          : {
+                lat: parseFloat(document.getElementById('circleLat').value),
+                lng: parseFloat(document.getElementById('circleLng').value)
+            },
+            radius          : parseInt(document.getElementById('circleRadius').value)
         });
 
         bindCircleToInputs(circle)
@@ -322,7 +345,7 @@
     function bindCircleToInputs(circle) {
         document.getElementById('circleLat').value = circle.getCenter().lat();
         document.getElementById('circleLng').value = circle.getCenter().lng();
-        document.getElementById('circleRadius').value = circle.getRadius();
+        document.getElementById('circleRadius').value = Math.floor(circle.getRadius());
     }
 
     $(document).ready(function () {

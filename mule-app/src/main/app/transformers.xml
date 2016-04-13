@@ -48,16 +48,17 @@ records : payload.OAI-PMH.ListRecords.*record map {
 ---
 records : payload.items map {
 		pin: {
-			type: $.type,
 			(($.title default []) map caption: $),
-			(($.year default []) map date: $),
-			(($.country default []) map country: $),
-			(($.rights default []) map license: $),
-			(($.edmPreview default []) map preview: $),
-			landingPage: $.guid
+			(($.dcDescription default []) map description: $),
+			remoteId: $.remoteId,
+			link: $.guid
 		},
-		remote: {
-			id: $.id
+		europeanaFields: {
+			type: $.type,
+			(($.year default []) map year: $),
+			(($.country default []) map country: $),
+			(($.rights default []) map rights: $),
+			(($.edmIsShownBy default []) map edmIsShownBy: $)
 		}
 }
 ]]></dw:set-payload>
