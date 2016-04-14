@@ -25,11 +25,17 @@ public class TaskFormValidationSequenceProvider implements DefaultGroupSequenceP
             if (TaskForm.Harvesting.EU.equals(taskForm.getHarvesting())) {
                 if (TaskForm.Type.OAIPMH.equals(taskForm.getType())) {
                     sequence.add(OaipmhValidation.class);
-                } else {
+                } else if(TaskForm.Type.REST.equals(taskForm.getType())) {
                     sequence.add(EuropeanaValidation.class);
+                } else {
+                	throw new IllegalArgumentException("Source protocol not recognized.");
                 }
-            } else {
+            } else if(TaskForm.Harvesting.HP.equals(taskForm.getHarvesting())) {
                 sequence.add(HistorypinValidation.class);
+            } else if(TaskForm.Harvesting.HP_ANNOTATION.equals(taskForm.getHarvesting())){
+            	
+            } else {
+            	throw new IllegalArgumentException("Source type not recognized.");
             }
         }
         return sequence;

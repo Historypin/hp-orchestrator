@@ -78,7 +78,7 @@ public class TaskForm {
     private String oaiMetadataPrefix;
 
     public enum Harvesting {
-        EU, HP;
+        EU, HP, HP_ANNOTATION;
     }
 
     public enum Type {

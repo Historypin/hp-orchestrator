@@ -1,7 +1,7 @@
 package sk.eea.td.console.model;
 
 public enum Destination {
-    HP("hp.json"), TAGAPP("unknown"), MINT("unknown"), EUROPEANA("unknown"), SD("unknown");
+    HP("hp.json"), TAGAPP("unknown"), MINT("unknown"), EUROPEANA("unknown"), SD("unknown"), EUROPEANA_ANNOTATION("unknown");
 
     private String formatCode;
 
