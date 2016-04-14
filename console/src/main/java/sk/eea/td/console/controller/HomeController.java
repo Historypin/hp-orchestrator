@@ -33,7 +33,10 @@ import sk.eea.td.console.repository.JobRepository;
 import sk.eea.td.console.repository.JobRunRepository;
 import sk.eea.td.console.repository.ParamRepository;
 import sk.eea.td.rest.model.Connector;
+import sk.eea.td.util.DateUtils;
 
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static sk.eea.td.util.PageUtils.getPageable;
 
 @Controller
@@ -116,9 +119,16 @@ public class HomeController {
         job.setTarget(taskForm.getDestinations().stream().map(Destination::toString).collect(Collectors.joining(", ")));
 
         if(taskForm.getDestinations().contains(Destination.HP)) {
+            // validate date and tags
+            if(!DateUtils.isHistorypinDateValid(taskForm.getCollectionDate())) {
+                bindingResult.rejectValue("collectionDate", "parseError.collectionDate");
+                return "index";
+            }
             job.addParam(new Param("historypinUserId", taskForm.getHistorypinUserId().toString()));
             job.addParam(new Param("historypinApiKey", taskForm.getHistorypinApiKey()));
             job.addParam(new Param("historypinApiSecret", taskForm.getHistorypinApiSecret()));
+            job.addParam(new Param("collectionDate", taskForm.getCollectionDate()));
+            job.addParam(new Param("collectionTags", taskForm.getCollectionTags()));
             job.addParam(new Param("collectionName", taskForm.getCollectionName()));
             job.addParam(new Param("collectionLat", taskForm.getCollectionLat().toString()));
             job.addParam(new Param("collectionLng", taskForm.getCollectionLng().toString()));

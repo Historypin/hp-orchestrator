@@ -1,15 +1,18 @@
 package sk.eea.td.flow.activities;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import sk.eea.td.console.model.Destination;
 import sk.eea.td.console.model.JobRun;
 import sk.eea.td.console.model.ReadOnlyParam;
 import sk.eea.td.flow.Activity;
 import sk.eea.td.flow.FlowException;
+import sk.eea.td.rest.model.HistorypinTransformDTO;
 import sk.eea.td.util.PathUtils;
 
 import javax.ws.rs.client.Client;
@@ -18,6 +21,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.*;
@@ -40,6 +44,9 @@ public class TransformActivity implements Activity {
 
     @Value("${storage.directory}")
     private String outputDirectory;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     public TransformActivity() {
         ClientConfig clientConfig = new ClientConfig();
@@ -88,11 +95,18 @@ public class TransformActivity implements Activity {
                         final String transformer = String.format("%s2%s", parts[1], destination.getFormatCode());
                         LOG.debug("Sending file '{}' for transformation with transformer {}", file.toString(), transformer);
                         Response response = target.queryParam("transformation", transformer).request(MediaType.APPLICATION_JSON, MediaType.TEXT_XML).post(Entity.entity(file.toFile(), MediaType.TEXT_XML));
-                        try (InputStream inputStream = response.readEntity(InputStream.class)) {
-                            Path transformedFile = PathUtils.createUniqueFilename(transformPath, destination.getFormatCode());
-                            Files.copy(inputStream, transformedFile);
-                            LOG.debug("File '{}' has been transformed into file: '{}'", file.toString(), transformedFile.toString());
+
+                        Path transformedFile = PathUtils.createUniqueFilename(transformPath, destination.getFormatCode());
+                        if("eu.json2hp.json".equals(transformer)) { // additional transformation logic is required for EU2HP transformation
+                            final HistorypinTransformDTO dto = objectMapper.readValue(response.readEntity(InputStream.class), HistorypinTransformDTO.class);
+
+                            objectMapper.writeValue(new FileOutputStream(transformedFile.toFile()), dto); // save enriched DTO object as file
+                        } else {
+                            try (InputStream inputStream = response.readEntity(InputStream.class)) {
+                                Files.copy(inputStream, transformedFile);
+                            }
                         }
+                        LOG.debug("File '{}' has been transformed into file: '{}'", file.toString(), transformedFile.toString());
                         return FileVisitResult.CONTINUE;
                     }
                 });

@@ -93,11 +93,12 @@ public class HPClientImpl implements HPClient {
     }
 
     @Override
-    public SaveResponseDTO createPin(String caption, Long projectId, String lat, String lng, String range, String date, String license, PinnerType pinnerType, String content) {
+    public SaveResponseDTO createPin(String caption, String description, Long projectId, String lat, String lng, String range, String date, String license, PinnerType pinnerType, String content, String link) {
         WebTarget target = client.target(baseURL).path("en").path("api").path("pin").path("save.json");
 
         Map<String, String> data = new HashMap<>();
         data.put("caption", caption);
+        data.put("description", description);
 
         data.put("repinned_projects[0][id]", projectId.toString());
 
@@ -107,35 +108,7 @@ public class HPClientImpl implements HPClient {
 
         data.put("date", date);
         data.put("license", license);
-
-        data.put("pinner_type", pinnerType.name().toLowerCase());
-        if (PinnerType.PHOTO.equals(pinnerType)) {
-            data.put("image_url", content);
-        }
-        data.put("display[content]", content);
-
-        data.put("api_key", apiKey);
-        data.put("api_path", "pin/save.json");
-
-        data.put("api_token", apiTokenFactory.getApiToken(data));
-
-        return target.request(MediaType.TEXT_PLAIN_TYPE).post(Entity.form(new MultivaluedHashMap<>(data))).readEntity(SaveResponseDTO.class);
-    }
-
-    @Override
-    public SaveResponseDTO createPin(String caption, String description, Long projectId, String rawLocation, String date, String license, PinnerType pinnerType, String content) {
-        WebTarget target = client.target(baseURL).path("en").path("api").path("pin").path("save.json");
-
-        Map<String, String> data = new HashMap<>();
-        data.put("caption", caption);
-        data.put("description", description);
-
-        data.put("repinned_projects[0][id]", projectId.toString());
-
-        data.put("location[raw]", rawLocation);
-
-        data.put("date", date);
-        data.put("license", license);
+        data.put("link", link);
 
         data.put("pinner_type", pinnerType.name().toLowerCase());
         if (PinnerType.PHOTO.equals(pinnerType)) {

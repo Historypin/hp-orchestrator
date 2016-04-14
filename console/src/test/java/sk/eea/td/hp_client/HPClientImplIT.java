@@ -54,6 +54,10 @@ public class HPClientImplIT {
 
     private static final String PIN_NAME = "My test pin";
 
+    private static final String PIN_DESCRIPTION = "This is accurate and complete description of this pin";
+
+    private static final String URL = "http://example.com";
+
     private static String createdProjectSlug;
 
     private static Long createdProjectId;
@@ -90,12 +94,14 @@ public class HPClientImplIT {
         String date = now.format(DateTimeFormatter.ISO_LOCAL_DATE);
         SaveResponseDTO response = client.createPin(
                 PIN_NAME,
+                PIN_DESCRIPTION,
                 createdProjectId,
                 "42", "23", "2000",
                 date,
                 "no-copyright",
                 PinnerType.TEXT,
-                "This is test pin content"
+                "This is test pin content",
+                URL
         );
 
         assertThat(response.isSuccess(), is(equalTo(true)));
@@ -112,13 +118,15 @@ public class HPClientImplIT {
         String date = now.format(DateTimeFormatter.ISO_LOCAL_DATE);
         for (int i = 0; i < 3; i++) {
             SaveResponseDTO response = client.createPin(
-                    String.format("%s %d", PIN_NAME, i),
+                    PIN_NAME,
+                    PIN_DESCRIPTION,
                     createdProjectId,
                     "42", "23", "2000",
                     date,
                     "no-copyright",
                     PinnerType.TEXT,
-                    "This is test pin content"
+                    "This is test pin content",
+                    URL
             );
             assertThat(response.isSuccess(), is(equalTo(true)));
             assertThat(response.getId(), is(not(equalTo(0))));

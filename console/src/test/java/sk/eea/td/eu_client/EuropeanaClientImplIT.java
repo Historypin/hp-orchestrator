@@ -17,7 +17,10 @@ import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.isEmptyString;
+import static org.hamcrest.core.IsNot.not;
 
 @Category(IntegrationTest.class)
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -36,7 +39,13 @@ public class EuropeanaClientImplIT {
     @Value("${europeana.retry.delay}")
     private Integer retryDelay;
 
-    private String LUCENE_QUERY = "timestamp_created:[2013-11-01T00:00:0.000Z TO 2013-11-12T16:36:01.000Z]";
+    private final String LUCENE_QUERY = "timestamp_created:[2013-11-01T00:00:0.000Z TO 2013-11-12T16:36:01.000Z]";
+
+    private final String DATASET_NAME = "edm_datasetName:2059517_EU_FD_Wolverhampton";
+
+    private final String FACET = "edm_datasetName";
+
+    private final String ITEM_ID = "/2059517/data_foodanddrink_WAGMU_op57";
 
     private EuropeanaClient europeanaClient;
 
@@ -46,8 +55,20 @@ public class EuropeanaClientImplIT {
     }
 
     @Test
-    public void test() throws IOException, InterruptedException {
+    public void testSearch() throws IOException, InterruptedException {
         List<String> jsons = europeanaClient.search(LUCENE_QUERY);
         assertThat(jsons.size(), is(greaterThan(0)));
+    }
+
+    @Test
+    public void testSearchWithFacet() throws IOException, InterruptedException {
+        List<String> jsons = europeanaClient.search(DATASET_NAME, FACET);
+        assertThat(jsons.size(), is(greaterThan(0)));
+    }
+
+    @Test
+    public void testGetRecord() throws IOException, InterruptedException {
+        String json = europeanaClient.getRecord(ITEM_ID);
+        assertThat(json, is(not(isEmptyString())));
     }
 }

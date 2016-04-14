@@ -14,9 +14,7 @@ public interface HPClient {
 
     SaveResponseDTO createProject(String title, Long user, String lat, String lng, String range);
 
-    SaveResponseDTO createPin(String caption, Long projectId, String lat, String lng, String range, String date, String license, PinnerType pinnerType, String content);
-
-    SaveResponseDTO createPin(String caption, String description, Long projectId, String rawLocation, String date, String license, PinnerType pinnerType, String content);
+    SaveResponseDTO createPin(String caption, String description, Long projectId, String lat, String lng, String range, String date, String license, PinnerType pinnerType, String content, String link);
 
     Response deleteProject(Long projectId);
 

@@ -14,8 +14,6 @@ import sk.eea.td.rest.model.HistorypinTransformDTO;
 import java.io.IOException;
 import java.nio.file.Path;
 
-import static sk.eea.td.util.DateUtils.parseHistoryPinDate;
-
 @Component
 public class HistorypinStoreService {
 
@@ -41,37 +39,25 @@ public class HistorypinStoreService {
         for (HistorypinTransformDTO.Record record : transformation.getRecords()) {
             HistorypinTransformDTO.Pin pin = record.getPin();
 
-            SaveResponseDTO response;
-            if("TEXT".equals(pin.getType())) {
-                response = hpClient.createPin(
-                        pin.getCaption(),
-                        pin.getLandingPage(),
-                        projectId,
-                        pin.getCountry(),
-                        parseHistoryPinDate(pin.getDate()),
-                        pin.getLicense(),
-                        PinnerType.TEXT,
-                        pin.getLandingPage()
-                );
-            } else {
-                response = hpClient.createPin(
-                        pin.getCaption(),
-                        pin.getLandingPage(),
-                        projectId,
-                        pin.getCountry(),
-                        parseHistoryPinDate(pin.getDate()),
-                        pin.getLicense(),
-                        PinnerType.PHOTO,
-                        pin.getPreview()
-                );
-            }
+            SaveResponseDTO response = hpClient.createPin(
+                    pin.getCaption(),
+                    pin.getDescription(),
+                    projectId,
+                    pin.getLocation().getLat(),
+                    pin.getLocation().getLng(),
+                    pin.getLocation().getRange(),
+                    pin.getDate(),
+                    pin.getLicense(),
+                    PinnerType.valueOf(pin.getPinnerType()),
+                    pin.getContent(),
+                    pin.getLink()
+            );
 
-            HistorypinTransformDTO.Remote remote = record.getRemote();
             if (response.getId() != null) {
-                LOG.debug("Record with remote ID: '{}' was created. Target ID is: '{}'", remote.getId(), response.getId());
+                LOG.debug("Record with remote ID: '{}' was created. Target ID is: '{}'", pin.getRemoteId(), response.getId());
             } else {
                 failedPins++;
-                LOG.error("Failed to create record with remote ID: '{}'. Reason: target_id='{}' errorMessages='{}'", remote.getId(), response.getId(), response.getErrors());
+                LOG.error("Failed to create record with remote ID: '{}'. Reason: target_id='{}' errorMessages='{}'", pin.getRemoteId(), response.getId(), response.getErrors());
             }
         }
         LOG.debug("Successfully extracted and uploaded {} pins from file '{}'.", transformation.getRecords().size(), file);
