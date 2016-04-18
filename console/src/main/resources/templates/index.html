@@ -35,7 +35,7 @@
                     <form class="form-horizontal" action="#" th:action="@{/}" th:object="${taskForm}" method="post" accept-charset="UTF-8">
                         <fieldset>
                             <!-- Name -->
-                            <div class="form-group" th:classappend="${#fields.hasErrors('name')}? 'has-error'">
+                            <div class="form-group required" th:classappend="${#fields.hasErrors('name')}? 'has-error'">
                                 <label class="col-md-4 control-label" for="name" th:text="#{create.task.name}">Name</label>
                                 <div class="col-md-4">
                                     <input id="name" name="name" th:field="*{name}" th:placeholder="#{create.task.name.placeholder}" placeholder="name of the task" class="form-control input-md" type="text"/>
@@ -68,10 +68,10 @@
                             </div>
 
                             <!-- Destination -->
-                            <div class="form-group" th:classappend="${#fields.hasErrors('destinations')}? 'has-error'">
+                            <div class="form-group required" th:classappend="${#fields.hasErrors('destinations')}? 'has-error'">
                                 <label class="col-md-4 control-label" for="destination" th:text="#{create.task.dest}">Destination</label>
                                 <div class="col-md-4">
-                                    <select id="destination" name="destination" class="form-control" multiple="multiple" th:field="*{destinations}">
+                                    <select id="destination" required="required" name="destination" class="form-control" multiple="multiple" th:field="*{destinations}">
                                         <option value="HP" th:text="#{create.task.dest.hp}">Historypin</option>
                                         <option value="TAGAPP" th:text="#{create.task.dest.tagapp}">Tagapp</option>
                                         <option value="MINT" th:text="#{create.task.dest.mint}">Mint</option>
@@ -86,28 +86,30 @@
 
                             <!-- HP target configuration -->
                             <div id="historypin-target-conf-group">
-                                <div class="form-group" th:classappend="${#fields.hasErrors('historypinUserId')}? 'has-error'">
+                                <div class="form-group required" th:classappend="${#fields.hasErrors('historypinUserId')}? 'has-error'">
                                     <label class="col-md-4 control-label" for="historypinUserId" th:text="#{create.task.historypinUserId}">Historypin User ID</label>
                                     <div class="col-md-4">
                                         <input id="historypinUserId" name="historypinUserId" th:field="*{historypinUserId}" th:placeholder="#{create.task.historypinUserId.placeholder}" placeholder="ID of user, on which behalf the collection is managed" class="form-control input-md" type="text"/>
                                         <span class="help-block" th:if="${#fields.hasErrors('historypinUserId')}" th:errors="*{historypinUserId}">historypinUserId error</span>
                                     </div>
                                 </div>
-                                <div class="form-group" th:classappend="${#fields.hasErrors('historypinApiKey')}? 'has-error'">
+                                <div class="form-group required" th:classappend="${#fields.hasErrors('historypinApiKey')}? 'has-error'">
                                     <label class="col-md-4 control-label" for="name" th:text="#{create.task.historypinApiKey}">Historypin API key</label>
                                     <div class="col-md-4">
-                                        <input id="historypinApiKey" name="historypinApiKey" th:field="*{historypinApiKey}" th:placeholder="#{create.task.historypinApiKey.placeholder}" placeholder="API key of user, on which behalf the collection is managed" class="form-control input-md" type="text"/>
+                                        <input id="historypinApiKey" name="historypinApiKey" th:field="*{historypinApiKey}" th:placeholder="#{create.task.historypinApiKey.placeholder}" placeholder="API key of user, on which behalf the collection is managed" class="form-control input-md"
+                                               type="text"/>
                                         <span class="help-block" th:if="${#fields.hasErrors('historypinApiKey')}" th:errors="*{historypinApiKey}">historypinApiKey error</span>
                                     </div>
                                 </div>
-                                <div class="form-group" th:classappend="${#fields.hasErrors('historypinApiSecret')}? 'has-error'">
+                                <div class="form-group required" th:classappend="${#fields.hasErrors('historypinApiSecret')}? 'has-error'">
                                     <label class="col-md-4 control-label" for="name" th:text="#{create.task.historypinApiSecret}">Historypin API secret</label>
                                     <div class="col-md-4">
-                                        <input id="historypinApiSecret" name="historypinApiSecret" th:field="*{historypinApiSecret}" th:placeholder="#{create.task.historypinApiSecret.placeholder}" placeholder="API secret of user, on which behalf the collection is managed" class="form-control input-md" type="text"/>
+                                        <input id="historypinApiSecret" name="historypinApiSecret" th:field="*{historypinApiSecret}" th:placeholder="#{create.task.historypinApiSecret.placeholder}" placeholder="API secret of user, on which behalf the collection is managed"
+                                               class="form-control input-md" type="text"/>
                                         <span class="help-block" th:if="${#fields.hasErrors('historypinApiSecret')}" th:errors="*{historypinApiSecret}">historypinApiSecret error</span>
                                     </div>
                                 </div>
-                                <div class="form-group" th:classappend="${#fields.hasErrors('collectionName')}? 'has-error'">
+                                <div class="form-group required" th:classappend="${#fields.hasErrors('collectionName')}? 'has-error'">
                                     <label class="col-md-4 control-label" for="name" th:text="#{create.task.collectionName}">Collection name</label>
                                     <div class="col-md-4">
                                         <input id="collectionName" name="collectionName" th:field="*{collectionName}" th:placeholder="#{create.task.collectionName.placeholder}" placeholder="name of the target collection in Historypin" class="form-control input-md" type="text"/>
@@ -121,24 +123,26 @@
                                     <input type="hidden" th:field="*{collectionLng}" name="circleLng" id="circleLng"/>
                                     <input type="hidden" th:field="*{collectionRadius}" name="circleRadius" id="circleRadius"/>
                                 </div>
-                                <div class="form-group" th:classappend="${#fields.hasErrors('collectionDate')}? 'has-error'">
+                                <div class="form-group required" th:classappend="${#fields.hasErrors('collectionDate')}? 'has-error'">
                                     <label class="col-md-4 control-label" for="name" th:text="#{create.task.collectionDate}">Collection date</label>
                                     <div class="col-md-4">
-                                        <input id="collectionDate" name="collectionDate" th:field="*{collectionDate}" th:placeholder="#{create.task.collectionDate.placeholder}" placeholder="default date for pins" data-toggle="tooltip" th:title="#{create.task.collectionDate.tooltip}" class="form-control input-md" type="text"/>
+                                        <input id="collectionDate" name="collectionDate" th:field="*{collectionDate}" th:placeholder="#{create.task.collectionDate.placeholder}" placeholder="default date for pins" data-toggle="tooltip" th:title="#{create.task.collectionDate.tooltip}"
+                                               class="form-control input-md" type="text"/>
                                         <span class="help-block" th:if="${#fields.hasErrors('collectionDate')}" th:errors="*{collectionDate}">Collection date error</span>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-md-4 control-label" for="collectionTags" th:text="#{create.task.collectionTags}">Collection tags</label>
                                     <div class="col-md-4">
-                                        <input id="collectionTags" name="collectionTags" th:field="*{collectionTags}" th:placeholder="#{create.task.collectionTags.placeholder}" placeholder="default tags, added to all pins" data-toggle="tooltip" th:title="#{create.task.collectionTags.tooltip}" class="form-control input-md" type="text"/>
+                                        <input id="collectionTags" name="collectionTags" th:field="*{collectionTags}" th:placeholder="#{create.task.collectionTags.placeholder}" placeholder="default tags, added to all pins" data-toggle="tooltip" th:title="#{create.task.collectionTags.tooltip}"
+                                               class="form-control input-md" type="text"/>
                                     </div>
                                 </div>
                             </div>
 
                             <!-- OAI-PMH date from -->
                             <div id="oaipmh-conf-group">
-                                <div class="form-group" th:classappend="${#fields.hasErrors('oaiFrom')}? 'has-error'">
+                                <div class="form-group required" th:classappend="${#fields.hasErrors('oaiFrom')}? 'has-error'">
                                     <label class="col-md-4 control-label" for="dateFrom" th:text="#{create.task.oai.from}">Date from</label>
                                     <div class="col-md-4">
                                         <input id="dateFrom" name="dateFrom" th:field="*{oaiFrom}" placeholder="YYYY-MM-DDThh:mm:ssZ" class="form-control input-md" type="text"/>
@@ -147,7 +151,7 @@
                                 </div>
 
                                 <!-- OAI-PMH date until -->
-                                <div class="form-group" th:classappend="${#fields.hasErrors('oaiUntil')}? 'has-error'">
+                                <div class="form-group required" th:classappend="${#fields.hasErrors('oaiUntil')}? 'has-error'">
                                     <label class="col-md-4 control-label" for="dateUntil" th:text="#{create.task.oai.until}">Date until</label>
                                     <div class="col-md-4">
                                         <input id="dateUntil" name="dateUntil" th:field="*{oaiUntil}" placeholder="YYYY-MM-DDThh:mm:ssZ" class="form-control input-md" type="text"/>
@@ -156,35 +160,34 @@
                                 </div>
 
                                 <!-- OAI-PMH set -->
-                                <div class="form-group" th:classappend="${#fields.hasErrors('oaiSet')}? 'has-error'">
+                                <div class="form-group required" th:classappend="${#fields.hasErrors('oaiSet')}? 'has-error'">
                                     <label class="col-md-4 control-label" for="set" th:text="#{create.task.oai.set}">Set</label>
                                     <div class="col-md-4">
                                         <input id="set" name="set" th:field="*{oaiSet}" th:placeholder="#{create.task.oai.set.placeholder}" placeholder="set to harvest from" class="form-control input-md" type="text"/>
                                         <span class="help-block" th:if="${#fields.hasErrors('oaiSet')}" th:errors="*{oaiSet}">Set error</span>
                                     </div>
                                 </div>
+                            </div>
 
-                                <!-- OAI-PMH metadata prefix -->
-                                <div class="form-group" th:classappend="${#fields.hasErrors('oaiMetadataPrefix')}? 'has-error'">
-                                    <label class="col-md-4 control-label" for="metadataPrefix" th:text="#{create.task.oai.metadata}">Metadata prefix</label>
+                            <!-- Europeana lucene query-->
+                            <div id="europeana-conf-group">
+                                <div class="form-group required" th:classappend="${#fields.hasErrors('luceneQuery')}? 'has-error'">
+                                    <label class="col-md-4 control-label" for="luceneQuery" th:text="#{create.task.lucene}">Lucene query</label>
                                     <div class="col-md-4">
-                                        <input id="metadataPrefix" name="metadataPrefix" th:field="*{oaiMetadataPrefix}" th:placeholder="#{create.task.oai.metadata.placeholder}" placeholder="e.g. 'edm'" class="form-control input-md" type="text"/>
-                                        <span class="help-block" th:if="${#fields.hasErrors('oaiMetadataPrefix')}" th:errors="*{oaiMetadataPrefix}">Metadata prefix error</span>
+                                        <input id="luceneQuery" name="luceneQuery" th:field="*{luceneQuery}" th:placeholder="#{create.task.lucene.placeholder}" placeholder="query to search for" class="form-control input-md" type="text"/>
+                                        <span class="help-block" th:if="${#fields.hasErrors('luceneQuery')}" th:errors="*{luceneQuery}">Lucene query error</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label" for="searchFacet" th:text="#{create.task.search.facet }">Search facet</label>
+                                    <div class="col-md-4">
+                                        <input id="searchFacet" name="searchFacet" th:field="*{searchFacet}" th:placeholder="#{create.task.search.facet.placeholder}" placeholder="name of individual facet" class="form-control input-md" type="text"/>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Europeana lucene query-->
-                            <div id="europeana-conf-group" class="form-group" th:classappend="${#fields.hasErrors('luceneQuery')}? 'has-error'">
-                                <label class="col-md-4 control-label" for="luceneQuery" th:text="#{create.task.lucene}">Lucene query</label>
-                                <div class="col-md-4">
-                                    <input id="luceneQuery" name="luceneQuery" th:field="*{luceneQuery}" th:placeholder="#{create.task.lucene.placeholder}" placeholder="query to search for" class="form-control input-md" type="text"/>
-                                    <span class="help-block" th:if="${#fields.hasErrors('luceneQuery')}" th:errors="*{luceneQuery}">Lucene query error</span>
-                                </div>
-                            </div>
-
                             <!-- Historypin project slug-->
-                            <div id="historypin-conf-group" class="form-group" th:classappend="${#fields.hasErrors('projectSlug')}? 'has-error'">
+                            <div id="historypin-conf-group" class="form-group required" th:classappend="${#fields.hasErrors('projectSlug')}? 'has-error'">
                                 <label class="col-md-4 control-label" for="projectSlug" th:text="#{create.task.slug}">Project slug</label>
                                 <div class="col-md-4">
                                     <input id="projectSlug" name="projectSlug" th:field="*{projectSlug}" th:placeholder="#{create.task.slug.placeholder}" placeholder="path to project in Historypin" class="form-control input-md" type="text"/>
@@ -193,11 +196,12 @@
                             </div>
 
                             <!-- Button -->
-                            <div class="form-group" th:classappend="${param.success != null}? 'has-success'">
+                            <div class="form-group">
                                 <label class="col-md-4 control-label" for="createTaskButton"></label>
                                 <div class="col-md-4">
+                                    <p th:inline="text" class="help-block"><em><span style="color:red;">*</span> [[#{create.task.required}]]</em></p>
                                     <button id="createTaskButton" name="createTaskButton" class="btn btn-primary" th:text="#{create.task.button}">Create task</button>
-                                    <span id="successMessage" class="help-block " th:text="#{create.task.success}" th:unless="${param.success == null}">Success.</span>
+                                    <span id="successMessage" class="help-block" style="color: green" th:text="#{create.task.success}" th:unless="${param.success == null}">Success.</span>
                                 </div>
                             </div>
                         </fieldset>
@@ -300,12 +304,12 @@
     }
 
     /* Google Maps functions */
-//    var defaultLatLng = {
-//        lat: 46.517482,
-//        lng: 8.1034214
-//    };
-//
-//    var defaultRadius = 600000;
+    //    var defaultLatLng = {
+    //        lat: 46.517482,
+    //        lng: 8.1034214
+    //    };
+    //
+    //    var defaultRadius = 600000;
 
     function initMap() {
         var map = new google.maps.Map(document.getElementById('map'), {
@@ -318,26 +322,26 @@
 
         var circle = new google.maps.Circle({
             map: map,
-            fillColor		: '#fff',
-            fillOpacity		: 0.5,
-            strokeColor		: '#b9b9b9',
-            strokeOpacity   : 1,
-            strokeWeight    : 2,
-            editable        : true,
-            draggable       : true,
-            center          : {
+            fillColor: '#fff',
+            fillOpacity: 0.5,
+            strokeColor: '#b9b9b9',
+            strokeOpacity: 1,
+            strokeWeight: 2,
+            editable: true,
+            draggable: true,
+            center: {
                 lat: parseFloat(document.getElementById('circleLat').value),
                 lng: parseFloat(document.getElementById('circleLng').value)
             },
-            radius          : parseInt(document.getElementById('circleRadius').value)
+            radius: parseInt(document.getElementById('circleRadius').value)
         });
 
         bindCircleToInputs(circle)
 
-        circle.addListener('center_changed', function() {
+        circle.addListener('center_changed', function () {
             bindCircleToInputs(circle)
         });
-        circle.addListener('radius_changed', function() {
+        circle.addListener('radius_changed', function () {
             bindCircleToInputs(circle)
         });
     }

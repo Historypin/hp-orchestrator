@@ -20,7 +20,8 @@ CREATE TABLE "job" (
   "id"            INT8 PRIMARY KEY DEFAULT nextval('seq_job') NOT NULL,
   "name"          VARCHAR(255),
   "source"        VARCHAR(255),
-  "target"        VARCHAR(255)
+  "target"        VARCHAR(255),
+  "last_job_run_id" INT8
 );
 -- JOB TABLE END --
 
@@ -105,4 +106,4 @@ CREATE TABLE "authorities" (
 CREATE UNIQUE INDEX ix_authorities_username on authorities (username, authority);
 -- AUTHORITIES TABLE END --
 
-ALTER TABLE job ADD COLUMN  "last_job_run_id"  INT8 REFERENCES job_run(id);
+ALTER TABLE job ADD CONSTRAINT last_job_run_fk FOREIGN KEY (last_job_run_id) REFERENCES job_run(id) ON DELETE SET NULL;

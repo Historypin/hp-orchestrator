@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.filter.LoggingFilter;
 import org.glassfish.jersey.jackson.JacksonFeature;
-import sk.eea.td.hp_client.api.HPClient;
-import sk.eea.td.hp_client.api.PinnerType;
+import sk.eea.td.hp_client.api.*;
 import sk.eea.td.hp_client.dto.ListingsResponseDTO;
+import sk.eea.td.hp_client.dto.PlacesResponseDTO;
 import sk.eea.td.hp_client.dto.SaveResponseDTO;
 import sk.eea.td.hp_client.util.ApiTokenFactory;
 import sk.eea.td.hp_client.util.JacksonObjectMapperProvider;
@@ -21,6 +21,8 @@ import javax.ws.rs.core.Response;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
+
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 public class HPClientImpl implements HPClient {
 
@@ -70,17 +72,17 @@ public class HPClientImpl implements HPClient {
     }
 
     @Override
-    public SaveResponseDTO createProject(String title, Long user, String lat, String lng, String range) {
+    public SaveResponseDTO createProject(Long userId, Project project) {
         WebTarget target = client.target(baseURL).path("en").path("api").path("projects").path("save.json");
 
         Map<String, String> data = new HashMap<>();
-        data.put("title", title);
+        data.put("title", project.getTitle());
 
-        data.put("owners[0][id]", user.toString());
+        data.put("owners[0][id]", userId.toString());
 
-        data.put("timemap[lat]", lat);
-        data.put("timemap[lng]", lng);
-        data.put("timemap[range]", range);
+        data.put("timemap[lat]", project.getLocation().getLat().toString());
+        data.put("timemap[lng]", project.getLocation().getLng().toString());
+        data.put("timemap[range]", project.getLocation().getRange().toString());
         data.put("timemap[zoom]", "0"); // TODO: temporary workaround, we need to provide default value, otherwise the project will not be valid
 
         data.put("new_project", "true");
@@ -93,28 +95,35 @@ public class HPClientImpl implements HPClient {
     }
 
     @Override
-    public SaveResponseDTO createPin(String caption, String description, Long projectId, String lat, String lng, String range, String date, String license, PinnerType pinnerType, String content, String link) {
+    public SaveResponseDTO createPin(Long projectId, Pin pin) {
         WebTarget target = client.target(baseURL).path("en").path("api").path("pin").path("save.json");
 
         Map<String, String> data = new HashMap<>();
-        data.put("caption", caption);
-        data.put("description", description);
+        data.put("caption", pin.getCaption());
+        data.put("description", pin.getDescription());
 
         data.put("repinned_projects[0][id]", projectId.toString());
 
-        data.put("timemap[lat]", lat);
-        data.put("timemap[lng]", lng);
-        data.put("timemap[range]", range);
+        data.put("location[lat]", pin.getLocation().getLat().toString());
+        data.put("location[lng]", pin.getLocation().getLng().toString());
+        data.put("location[range]", pin.getLocation().getRange().toString());
 
-        data.put("date", date);
-        data.put("license", license);
-        data.put("link", link);
+        data.put("date", pin.getDate());
+        data.put("license", pin.getLicense());
+        data.put("link", pin.getLink());
 
-        data.put("pinner_type", pinnerType.name().toLowerCase());
-        if (PinnerType.PHOTO.equals(pinnerType)) {
-            data.put("image_url", content);
+        data.put("pinner_type", pin.getPinnerType().name().toLowerCase());
+        if (PinnerType.PHOTO.equals(pin.getPinnerType())) {
+            data.put("image_url", pin.getContent());
         }
-        data.put("display[content]", content);
+        data.put("display[content]", pin.getContent());
+
+        if(isNotEmpty(pin.getTags())) {
+            String[] tags = pin.getTags().split(",");
+            for (int i = 0; i < tags.length; i++) {
+                data.put(String.format("tags[%d][text]", i), tags[i].trim());
+            }
+        }
 
         data.put("api_key", apiKey);
         data.put("api_path", "pin/save.json");
@@ -164,5 +173,11 @@ public class HPClientImpl implements HPClient {
         WebTarget target = client.target(baseURL).path("en").path("api").path("projects").path("listing.json").queryParam("user", user).queryParam("limit", 1000000);
         ListingsResponseDTO response = target.request().get().readEntity(ListingsResponseDTO.class);
         response.getResults().forEach(r -> deleteProject(r.getId()));
+    }
+
+    @Override
+    public PlacesResponseDTO getPlaces(String countrySlug) {
+        WebTarget target = client.target(baseURL).path("en").path("api").path("places").path("get.json").queryParam("places", countrySlug);
+        return target.request().get().readEntity(PlacesResponseDTO.class);
     }
 }

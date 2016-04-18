@@ -16,6 +16,7 @@ import sk.eea.td.util.GeoUtils;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -75,8 +76,24 @@ public class PlacesCache {
         },cleanupInterval,cleanupInterval, TimeUnit.MINUTES);
     }
 
+    /**
+     * Gets location using cache.
+     *
+     * Cache is loaded from HP Places API. If there was problem during location retrieval, cache will return empty (not null !!!) location for period of time set by property "places.cache.expire.time" in properties file.
+     *
+     * @param countrySlug
+     * @return location from given country slug, or will return empty (not null!) location if exeption occured during value retrieval.
+     */
     public Location getLocation(String countrySlug) {
-        return placesCache.getUnchecked(countrySlug).orNull();
+        try {
+            return placesCache.get(countrySlug).get();
+        } catch (Exception e) {
+            LOG.error("Exception at determining pin location through Historypin Places API.", e);
+            // put empty location into cache
+            Location emptyLocation = new Location();
+            placesCache.put(countrySlug, Optional.of(emptyLocation));
+            return emptyLocation;
+        }
     }
 
     @PreDestroy

@@ -50,15 +50,15 @@ records : payload.items map {
 		pin: {
 			(($.title default []) map caption: $),
 			(($.dcDescription default []) map description: $),
-			remoteId: $.remoteId,
+			(($.edmIsShownBy default []) map content: $),
+			remoteId: $.id,
 			link: $.guid
 		},
 		europeanaFields: {
 			type: $.type,
 			(($.year default []) map year: $),
 			(($.country default []) map country: $),
-			(($.rights default []) map rights: $),
-			(($.edmIsShownBy default []) map edmIsShownBy: $)
+			(($.rights default []) map rights: $)
 		}
 }
 ]]></dw:set-payload>

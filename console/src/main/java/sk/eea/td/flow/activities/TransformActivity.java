@@ -7,12 +7,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import sk.eea.td.console.model.Destination;
-import sk.eea.td.console.model.JobRun;
-import sk.eea.td.console.model.ReadOnlyParam;
+import sk.eea.td.console.model.*;
+import sk.eea.td.console.repository.LogRepository;
 import sk.eea.td.flow.Activity;
 import sk.eea.td.flow.FlowException;
 import sk.eea.td.rest.model.HistorypinTransformDTO;
+import sk.eea.td.rest.service.EuropeanaToHistorypinMapper;
 import sk.eea.td.util.PathUtils;
 
 import javax.ws.rs.client.Client;
@@ -26,10 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
@@ -48,6 +45,12 @@ public class TransformActivity implements Activity {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private EuropeanaToHistorypinMapper europeanaToHistorypinMapper;
+
+    @Autowired
+    private LogRepository logRepository;
+
     public TransformActivity() {
         ClientConfig clientConfig = new ClientConfig();
         this.client = ClientBuilder.newClient(clientConfig).register(MultiPartFeature.class);
@@ -57,7 +60,7 @@ public class TransformActivity implements Activity {
     public void execute(JobRun context) throws FlowException {
         LOG.debug("Starting transform activity for job ID: {}", context.getId());
         try {
-            final Map<String, String> paramMap = new HashMap<>();
+            final Map<ParamKey, String> paramMap = new HashMap<>();
             context.getReadOnlyParams().stream().forEach(p -> paramMap.put(p.getKey(), p.getValue()));
 
             List<Destination> destinations = new ArrayList<>();
@@ -74,7 +77,7 @@ public class TransformActivity implements Activity {
             }
 
             final WebTarget target = client.target(muleTransformURL);
-            final Path harvestPath = Paths.get(paramMap.get("harvestPath"));
+            final Path harvestPath = Paths.get(paramMap.get(ParamKey.HARVEST_PATH));
             final Path transformPath = PathUtils.createTransformRunSubdir(Paths.get(outputDirectory), String.valueOf(context.getId()));
             for (Destination destination : destinations) {
                 Files.walkFileTree(harvestPath, new SimpleFileVisitor<Path>() {
@@ -97,8 +100,17 @@ public class TransformActivity implements Activity {
                         Response response = target.queryParam("transformation", transformer).request(MediaType.APPLICATION_JSON, MediaType.TEXT_XML).post(Entity.entity(file.toFile(), MediaType.TEXT_XML));
 
                         Path transformedFile = PathUtils.createUniqueFilename(transformPath, destination.getFormatCode());
-                        if("eu.json2hp.json".equals(transformer)) { // additional transformation logic is required for EU2HP transformation
+                        if ("eu.json2hp.json".equals(transformer)) { // additional transformation logic is required for EU2HP transformation
                             final HistorypinTransformDTO dto = objectMapper.readValue(response.readEntity(InputStream.class), HistorypinTransformDTO.class);
+
+                            if (!europeanaToHistorypinMapper.map(dto, paramMap)) {
+                                Log log = new Log();
+                                log.setJobRun(context);
+                                log.setTimestamp(new Date());
+                                log.setLevel(Log.LogLevel.ERROR);
+                                log.setMessage(String.format("Not all pins from file '%s' were transformed successfully. See server logs for details.", file));
+                                logRepository.save(log);
+                            }
 
                             objectMapper.writeValue(new FileOutputStream(transformedFile.toFile()), dto); // save enriched DTO object as file
                         } else {
@@ -111,7 +123,7 @@ public class TransformActivity implements Activity {
                     }
                 });
             }
-            context.addReadOnlyParam(new ReadOnlyParam("transformPath", transformPath.toAbsolutePath().toString()));
+            context.addReadOnlyParam(new ReadOnlyParam(ParamKey.TRANSFORM_PATH, transformPath.toAbsolutePath().toString()));
         } catch (Exception e) {
             throw new FlowException("Exception raised during transform action", e);
         } finally {

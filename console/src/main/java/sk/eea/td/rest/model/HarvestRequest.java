@@ -31,6 +31,9 @@ public class HarvestRequest {
     @ApiModelProperty(value = "Lucene query for EUROPEANA connector to harvest. Required if EUROPEANA connector is used!")
     private String luceneQuery;
 
+    // this field is optional
+    private String searchFacet;
+
     @NotNull(message = "Project slug is mandatory for HISTORYPIN connector.", groups = { HistorypinValidation.class})
     @Size(min = 1, max = 200)
     @ApiModelProperty(value = "projectSlug for HISTORYPIN connector to harvest. Required if HISTORYPIN connector is used!")
@@ -81,11 +84,20 @@ public class HarvestRequest {
         this.oaipmhConfigWrapper = oaipmhConfigWrapper;
     }
 
+    public String getSearchFacet() {
+        return searchFacet;
+    }
+
+    public void setSearchFacet(String searchFacet) {
+        this.searchFacet = searchFacet;
+    }
+
     @Override public String toString() {
         return "HarvestRequest{" +
                 "filePath='" + filePath + '\'' +
                 ", connector=" + connector +
                 ", luceneQuery='" + luceneQuery + '\'' +
+                ", searchFacet='" + searchFacet + '\'' +
                 ", projectSlug='" + projectSlug + '\'' +
                 ", oaipmhConfigWrapper=" + oaipmhConfigWrapper +
                 '}';

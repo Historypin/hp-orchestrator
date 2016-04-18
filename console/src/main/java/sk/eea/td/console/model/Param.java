@@ -12,7 +12,8 @@ public class Param {
     private Long id;
 
     @Column
-    private String key;
+    @Enumerated(EnumType.STRING)
+    private ParamKey key;
 
     @Column
     private String value;
@@ -24,7 +25,7 @@ public class Param {
     public Param() {
     }
 
-    public Param(String key, String value) {
+    public Param(ParamKey key, String value) {
         this.key = key;
         this.value = value;
     }
@@ -37,11 +38,11 @@ public class Param {
         this.id = id;
     }
 
-    public String getKey() {
+    public ParamKey getKey() {
         return key;
     }
 
-    public void setKey(String key) {
+    public void setKey(ParamKey key) {
         this.key = key;
     }
 
@@ -61,12 +62,12 @@ public class Param {
         this.job = job;
     }
 
-    @Override
-    public String toString() {
+    @Override public String toString() {
         return "Param{" +
                 "id=" + id +
-                ", key='" + key + '\'' +
+                ", key=" + key +
                 ", value='" + value + '\'' +
+                ", jobId=" + ((job != null) ? job.getId() : null) +
                 '}';
     }
 

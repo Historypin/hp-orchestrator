@@ -42,8 +42,8 @@ public class EuropeanaHarvestService {
         this.europeanaClient = new EuropeanaClientImpl(baseURL, wsKey, maxRetries, retryDelay);
     }
 
-    public Path harvest(String harvestId, String luceneQuery) throws IOException, InterruptedException {
-        List<String> results = europeanaClient.search(luceneQuery);
+    public Path harvest(String harvestId, String luceneQuery, String facet) throws IOException, InterruptedException {
+        List<String> results = europeanaClient.search(luceneQuery, facet);
         final Path harvestPath = PathUtils.createHarvestRunSubdir(Paths.get(outputDirectory), harvestId);
         for(String result : results) {
             Path outputFile = PathUtils.createUniqueFilename(harvestPath, "eu.json");

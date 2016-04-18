@@ -71,7 +71,7 @@ public class EuropeanaClientImpl implements EuropeanaClient {
                         .queryParam("cursor", cursor);
 
                 if(isNotEmpty(facet)) {
-                    target.queryParam("facet", facet);
+                    target.queryParam("qf", facet);
                 }
 
                 Response response = target.request().get();
