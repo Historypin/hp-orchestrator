@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface JobRepository extends PagingAndSortingRepository<Job, Long> {
 
-    @Query(value = "SELECT job.id, job.name, job.source, job.target FROM job LEFT JOIN job_run ON job.id = job_run.job_id WHERE job_id IS NULL ORDER BY job_id LIMIT 1;", nativeQuery = true)
+    @Query(value = "SELECT job.id, job.name, job.source, job.target, job.last_job_run_id FROM job LEFT JOIN job_run ON job.id = job_run.job_id WHERE job_id IS NULL ORDER BY job_id LIMIT 1;", nativeQuery = true)
     Job findNextJob();
 
     List<Job> findTop20ByOrderByIdDesc();

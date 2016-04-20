@@ -1,5 +1,8 @@
 package sk.eea.td.eu_client.impl;
 
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.glassfish.jersey.client.ClientConfig;
@@ -34,12 +37,17 @@ public class EuropeanaClientImpl implements EuropeanaClient {
 
     private final ObjectMapper objectMapper;
 
+    private final JsonFactory jsonFactory;
+
+    private static final String EDM_IS_SHOWN_BY = "edmIsShownBy";
+
     public EuropeanaClientImpl(String baseURL, String wskey, Integer maxRetries, Integer retryDelay) {
         this.baseURL = baseURL;
         this.wskey = wskey;
         this.maxRetries = maxRetries;
         this.retryDelay = retryDelay;
-        this.objectMapper = new ObjectMapper();
+        this.jsonFactory = new JsonFactory();
+        this.objectMapper = new ObjectMapper(this.jsonFactory);
         ClientConfig clientConfig = new ClientConfig();
         this.client = ClientBuilder.newClient(clientConfig);
     }
@@ -50,6 +58,36 @@ public class EuropeanaClientImpl implements EuropeanaClient {
                 .queryParam("wskey", wskey);
         final Response response = target.request().get();
         return response.readEntity(String.class);
+    }
+
+    /**
+     * Get value of field 'edmIsShownBy' from Europeana record by given item ID.
+     *
+     * Uses Jackson Streaming api to get the field's value.
+     *
+     * Return null if field is missing.
+     *
+     * @param id Europeana item ID.
+     * @return Value of 'edmIsShownBy' field of null if not found.
+     * @throws IOException
+     * @throws InterruptedException
+     */
+    @Override
+    public String getRecordsEdmIsShownBy(String id) throws IOException, InterruptedException {
+        final String response = getRecord(id);
+        final JsonParser jsonParser = this.jsonFactory.createParser(response);
+        while (!jsonParser.isClosed()) {
+            final JsonToken jsonToken = jsonParser.nextToken();
+            if(JsonToken.FIELD_NAME.equals(jsonToken)) {
+                final String fieldname = jsonParser.getCurrentName();
+                if (EDM_IS_SHOWN_BY.equals(fieldname)) {
+                    //move to next token
+                    jsonParser.nextToken();
+                    return jsonParser.getValueAsString();
+                }
+            }
+        }
+        return null;
     }
 
     @Override
@@ -71,7 +109,7 @@ public class EuropeanaClientImpl implements EuropeanaClient {
                         .queryParam("cursor", cursor);
 
                 if(isNotEmpty(facet)) {
-                    target.queryParam("facet", facet);
+                    target.queryParam("qf", facet);
                 }
 
                 Response response = target.request().get();

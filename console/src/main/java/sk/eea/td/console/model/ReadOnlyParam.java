@@ -12,7 +12,8 @@ public class ReadOnlyParam {
     private Long id;
 
     @Column
-    private String key;
+    @Enumerated(EnumType.STRING)
+    private ParamKey key;
 
     @Column
     private String value;
@@ -24,7 +25,7 @@ public class ReadOnlyParam {
     public ReadOnlyParam() {
     }
 
-    public ReadOnlyParam(String key, String value) {
+    public ReadOnlyParam(ParamKey key, String value) {
         this.key = key;
         this.value = value;
     }
@@ -42,11 +43,11 @@ public class ReadOnlyParam {
         this.id = id;
     }
 
-    public String getKey() {
+    public ParamKey getKey() {
         return key;
     }
 
-    public void setKey(String key) {
+    public void setKey(ParamKey key) {
         this.key = key;
     }
 
@@ -66,12 +67,12 @@ public class ReadOnlyParam {
         this.jobRun = jobRun;
     }
 
-    @Override
-    public String toString() {
+    @Override public String toString() {
         return "ReadOnlyParam{" +
                 "id=" + id +
-                ", key='" + key + '\'' +
+                ", key=" + key +
                 ", value='" + value + '\'' +
+                ", jobRunId=" + ((jobRun != null) ? jobRun.getId() : null) +
                 '}';
     }
 }

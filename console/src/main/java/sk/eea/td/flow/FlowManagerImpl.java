@@ -45,22 +45,23 @@ public class FlowManagerImpl implements FlowManager {
         this.sources.addAll(Arrays.asList(sources));
     }
 
-    public void trigger() {
+    public synchronized void trigger() {
         if (!this.jobRunning) {
             // get next job
             Job job = jobRepository.findNextJob();
             if(job != null && sources.contains(job.getSource())) {
                 this.jobRunning = true;
                 // create its run
-                final JobRun jobRun = new JobRun();
+                JobRun jobRun = new JobRun();
                 jobRun.setJob(job);
                 // copy params into read-only entity
-                Set<Param> paramList = paramRepository.findByJob(job);
-                paramList.stream().forEach(
-                        p -> jobRun.addReadOnlyParam(new ReadOnlyParam(p))
-                );
+                Set<Param> paramSet = paramRepository.findByJob(job);
+                for(Param param : paramSet) {
+                    jobRun.addReadOnlyParam(new ReadOnlyParam(param));
+                }
                 // save & mark as actual job run for this job
-                job.setLastJobRun(jobRunRepository.save(jobRun));
+                jobRun =  jobRunRepository.save(jobRun);
+                job.setLastJobRun(jobRun);
                 jobRepository.save(job);
 
                 startFlow(jobRun);

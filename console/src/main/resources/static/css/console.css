@@ -153,3 +153,8 @@ html, body {
     height: 0;
     padding-bottom: 30%;
 }
+
+div.required label.control-label:after {
+    content: " *";
+    color: red;
+}

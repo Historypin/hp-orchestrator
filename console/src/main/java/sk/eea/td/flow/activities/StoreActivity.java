@@ -9,10 +9,13 @@ import org.springframework.beans.factory.annotation.Value;
 import sk.eea.td.console.model.Destination;
 import sk.eea.td.console.model.JobRun;
 import sk.eea.td.console.model.Log;
+import sk.eea.td.console.model.ParamKey;
 import sk.eea.td.console.repository.LogRepository;
 import sk.eea.td.flow.Activity;
 import sk.eea.td.flow.FlowException;
 import sk.eea.td.hp_client.api.HPClient;
+import sk.eea.td.hp_client.api.Location;
+import sk.eea.td.hp_client.api.Project;
 import sk.eea.td.hp_client.dto.SaveResponseDTO;
 import sk.eea.td.hp_client.impl.HPClientImpl;
 import sk.eea.td.rest.service.HistorypinStoreService;
@@ -49,14 +52,14 @@ public class StoreActivity implements Activity {
     public void execute(JobRun context) throws FlowException {
         LOG.debug("Starting store activity for job ID: {}", context.getId());
         try {
-            final Map<String, String> paramMap = new HashMap<>();
+            final Map<ParamKey, String> paramMap = new HashMap<>();
             context.getReadOnlyParams().stream().forEach(p -> paramMap.put(p.getKey(), p.getValue()));
 
-            final HPClient hpClient = new HPClientImpl(hpUrl, paramMap.get("historypinApiKey"), paramMap.get("historypinApiSecret"));
+            final HPClient hpClient = new HPClientImpl(hpUrl, paramMap.get(ParamKey.HP_API_KEY), paramMap.get(ParamKey.HP_API_SECRET));
 
-            final Long hpUser = Long.parseLong(paramMap.get("historypinUserId"));
+            final Long hpUser = Long.parseLong(paramMap.get(ParamKey.HP_USER_ID));
 
-            final Path transformPath = Paths.get(paramMap.get("transformPath"));
+            final Path transformPath = Paths.get(paramMap.get(ParamKey.TRANSFORM_PATH));
             Files.walkFileTree(transformPath, new SimpleFileVisitor<Path>() {
                 private Long hpProjectId;
 
@@ -81,11 +84,13 @@ public class StoreActivity implements Activity {
                         case HP:
                             if (this.hpProjectId == null) {
                                 // get required parameters
-                                final String collectionLat = paramMap.get("collectionLat");
-                                final String collectionLng = paramMap.get("collectionLng");
-                                final String collectionRadius = paramMap.get("collectionRadius");
-                                final String collectionName = paramMap.get("collectionName");
-                                SaveResponseDTO response = hpClient.createProject(collectionName, hpUser, collectionLat, collectionLng, collectionRadius);
+                                final Location location = new Location(
+                                        Double.parseDouble(paramMap.get(ParamKey.HP_LAT)),
+                                        Double.parseDouble(paramMap.get(ParamKey.HP_LNG)),
+                                        Long.parseLong(paramMap.get(ParamKey.HP_RADIUS))
+                                );
+                                final String collectionName = paramMap.get(ParamKey.HP_NAME);
+                                final SaveResponseDTO response = hpClient.createProject(hpUser, new Project(collectionName, location));
                                 // verify that project is created
                                 if (!response.getErrors().isEmpty()) {
                                     throw new IllegalStateException("Could not create collection with name: " + collectionName + " in Historypin API. Reason: " + response.getErrors().toString());

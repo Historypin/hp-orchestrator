@@ -71,4 +71,10 @@ public class EuropeanaClientImplIT {
         String json = europeanaClient.getRecord(ITEM_ID);
         assertThat(json, is(not(isEmptyString())));
     }
+
+    @Test
+    public void testGetRecordsEdmIsShownBy() throws IOException, InterruptedException {
+        String json = europeanaClient.getRecordsEdmIsShownBy(ITEM_ID);
+        assertThat(json, is(not(isEmptyString())));
+    }
 }

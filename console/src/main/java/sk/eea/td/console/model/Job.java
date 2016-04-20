@@ -28,7 +28,8 @@ public class Job {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "job", orphanRemoval = true)
     private List<Param> params = new ArrayList<>();
 
-    @OneToOne(fetch = FetchType.EAGER, mappedBy = "job", cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="last_job_run_id", nullable = true)
     private JobRun lastJobRun;
 
     public Connector getSource() {

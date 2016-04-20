@@ -50,7 +50,8 @@ records : payload.items map {
 		pin: {
 			(($.title default []) map caption: $),
 			(($.dcDescription default []) map description: $),
-			remoteId: $.remoteId,
+			(($.edmIsShownBy default []) map content: $),
+			remoteId: $.id,
 			link: $.guid
 		},
 		europeanaFields: {
@@ -58,7 +59,8 @@ records : payload.items map {
 			(($.year default []) map year: $),
 			(($.country default []) map country: $),
 			(($.rights default []) map rights: $),
-			(($.edmIsShownBy default []) map edmIsShownBy: $)
+			(($.edmPlaceLatitude default []) map edmPlaceLatitude: $),
+			(($.edmPlaceLongitude default []) map edmPlaceLongitude: $)
 		}
 }
 ]]></dw:set-payload>

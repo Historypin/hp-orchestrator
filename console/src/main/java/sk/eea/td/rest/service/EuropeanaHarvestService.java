@@ -2,6 +2,7 @@ package sk.eea.td.rest.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import sk.eea.td.eu_client.api.EuropeanaClient;
@@ -20,30 +21,14 @@ public class EuropeanaHarvestService {
 
     private static Logger LOG = LoggerFactory.getLogger(EuropeanaHarvestService.class);
 
-    @Value("${europeana.base.url}")
-    private String baseURL;
-
-    @Value("${europeana.ws.key}")
-    private String wsKey;
-
-    @Value("${europeana.retry}")
-    private Integer maxRetries;
-
-    @Value("${europeana.retry.delay}")
-    private Integer retryDelay;
-
     @Value("${storage.directory}")
     private String outputDirectory;
 
+    @Autowired
     private EuropeanaClient europeanaClient;
 
-    @PostConstruct
-    public void init() {
-        this.europeanaClient = new EuropeanaClientImpl(baseURL, wsKey, maxRetries, retryDelay);
-    }
-
-    public Path harvest(String harvestId, String luceneQuery) throws IOException, InterruptedException {
-        List<String> results = europeanaClient.search(luceneQuery);
+    public Path harvest(String harvestId, String luceneQuery, String facet) throws IOException, InterruptedException {
+        List<String> results = this.europeanaClient.search(luceneQuery, facet);
         final Path harvestPath = PathUtils.createHarvestRunSubdir(Paths.get(outputDirectory), harvestId);
         for(String result : results) {
             Path outputFile = PathUtils.createUniqueFilename(harvestPath, "eu.json");

@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import sk.eea.td.hp_client.api.HPClient;
-import sk.eea.td.hp_client.api.PinnerType;
+import sk.eea.td.hp_client.api.Pin;
 import sk.eea.td.hp_client.dto.SaveResponseDTO;
 import sk.eea.td.rest.model.HistorypinTransformDTO;
 
@@ -37,30 +37,21 @@ public class HistorypinStoreService {
         final HistorypinTransformDTO transformation = objectMapper.readValue(file.toFile(), HistorypinTransformDTO.class);
         int failedPins = 0;
         for (HistorypinTransformDTO.Record record : transformation.getRecords()) {
-            HistorypinTransformDTO.Pin pin = record.getPin();
-
-            SaveResponseDTO response = hpClient.createPin(
-                    pin.getCaption(),
-                    pin.getDescription(),
-                    projectId,
-                    pin.getLocation().getLat(),
-                    pin.getLocation().getLng(),
-                    pin.getLocation().getRange(),
-                    pin.getDate(),
-                    pin.getLicense(),
-                    PinnerType.valueOf(pin.getPinnerType()),
-                    pin.getContent(),
-                    pin.getLink()
-            );
-
-            if (response.getId() != null) {
-                LOG.debug("Record with remote ID: '{}' was created. Target ID is: '{}'", pin.getRemoteId(), response.getId());
-            } else {
+            final Pin pin = record.getPin();
+            try {
+                final SaveResponseDTO response = hpClient.createPin(projectId, pin);
+                if (response.getId() != null) {
+                    LOG.debug("Record with remote ID: '{}' was created. Target ID is: '{}'", pin.getRemoteId(), response.getId());
+                } else {
+                    failedPins++;
+                    LOG.error("Failed to create record with remote ID: '{}'. Reason: target_id='{}' errorMessages='{}'", pin.getRemoteId(), response.getId(), response.getErrors());
+                }
+            } catch (Exception e) {
                 failedPins++;
-                LOG.error("Failed to create record with remote ID: '{}'. Reason: target_id='{}' errorMessages='{}'", pin.getRemoteId(), response.getId(), response.getErrors());
+                LOG.error("Failed to create record with remote ID: '{}'. Exception'", pin.getRemoteId(), e);
             }
         }
-        LOG.debug("Successfully extracted and uploaded {} pins from file '{}'.", transformation.getRecords().size(), file);
+        LOG.debug("Successfully extracted and uploaded {} pins from file '{}'.", transformation.getRecords().size() - failedPins, file);
         return failedPins <= 0;
     }
 
