@@ -9,6 +9,7 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.annotation.Schedules;
@@ -148,17 +149,17 @@ public class AppConfig extends WebMvcConfigurerAdapter {
         europeanaFlowManager().trigger();
     }
 
-//    @Bean
-//    public FlowManager historypinHarvester(){
-//    	FlowManagerImpl flowManager = new FlowManagerImpl("HP");
-//        flowManager.addActivity(new HarvestActivity());
-//        flowManager.addActivity(new TransformActivity());
-//        flowManager.addActivity(new StoreActivity());
-//        return flowManager;
-//    }
-//
-//    @Schedules(@Scheduled(cron="${historypin.flm.cron.expression}"))
-//    public void historypinFlowManagerTimeSignal(){
-//        historypinHarvester().trigger();
-//    }
+    @Bean
+    public FlowManager historypinHarvester(){
+    	FlowManagerImpl flowManager = new FlowManagerImpl(Connector.HISTORYPIN);
+        flowManager.addActivity(harvestActivity());
+        flowManager.addActivity(transformActivity());
+        flowManager.addActivity(storeActivity());
+        return flowManager;
+    }
+
+    @Schedules(@Scheduled(cron="${historypin.flm.cron.expression}"))
+    public void historypinFlowManagerTimeSignal(){
+        historypinHarvester().trigger();
+    }
 }

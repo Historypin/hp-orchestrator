@@ -2,6 +2,7 @@ package sk.eea.td.flow.activities;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.NotImplementedException;
+import org.glassfish.jersey.uri.PathPattern.RightHandPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +20,11 @@ import sk.eea.td.hp_client.api.Project;
 import sk.eea.td.hp_client.dto.SaveResponseDTO;
 import sk.eea.td.hp_client.impl.HPClientImpl;
 import sk.eea.td.rest.service.HistorypinStoreService;
+import sk.eea.td.rest.service.MintStoreService;
 import sk.eea.td.util.LocationUtils;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -29,6 +33,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
@@ -41,6 +49,9 @@ public class StoreActivity implements Activity {
 
     @Autowired
     private HistorypinStoreService historypinStoreService;
+    
+    @Autowired
+    private MintStoreService mintStoreService;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -60,6 +71,12 @@ public class StoreActivity implements Activity {
             final Long hpUser = Long.parseLong(paramMap.get(ParamKey.HP_USER_ID));
 
             final Path transformPath = Paths.get(paramMap.get(ParamKey.TRANSFORM_PATH));
+            final Path transformPath = Paths.get(paramMap.get("transformPath"));
+
+            File mintFile = File.createTempFile("mintData", ".zip");
+            FileOutputStream mintOutputStream = new FileOutputStream(mintFile);
+			final ZipOutputStream zipOutputStream = new ZipOutputStream(mintOutputStream);
+            
             Files.walkFileTree(transformPath, new SimpleFileVisitor<Path>() {
                 private Long hpProjectId;
 
@@ -78,7 +95,7 @@ public class StoreActivity implements Activity {
                         LOG.warn("Filename '{}' does not follow pattern '[name].[source_type].[format]'. File will be skipped.");
                         return FileVisitResult.CONTINUE;
                     }
-
+                    
                     final Destination destination = Destination.getDestinationByFormatCode(parts[1]);
                     switch (destination) {
                         case HP:
@@ -113,6 +130,11 @@ public class StoreActivity implements Activity {
                             break;
                         case TAGAPP:
                         case MINT:
+                        	zipOutputStream.putNextEntry(new ZipEntry(file.getFileName().toString()));
+                        	Files.copy(file, zipOutputStream);
+                        	zipOutputStream.closeEntry();
+                        	zipOutputStream.flush();
+                        	break;
                         case EUROPEANA:
                         case SD:
                             throw new NotImplementedException("Store procedure for destination: " + destination + " is not implemented yet!");
@@ -123,6 +145,22 @@ public class StoreActivity implements Activity {
                     return FileVisitResult.CONTINUE;
                 }
             });
+            zipOutputStream.close();
+            mintOutputStream.close();
+            ZipFile zipFile = new ZipFile(mintFile);
+			boolean notEmpty = zipFile.entries().hasMoreElements();
+			zipFile.close();
+			if(notEmpty){            	
+            	if (!mintStoreService.store(mintFile.toPath())){
+                    Log log = new Log();
+                    log.setJobRun(context);
+                    log.setTimestamp(new Date());
+                    log.setLevel(Log.LogLevel.ERROR);
+                    log.setMessage(String.format("Not all pins were saved successfully. See server logs for details."));
+                    logRepository.save(log);                        		
+            	}
+            }
+            	
         } catch (Exception e) {
             throw new FlowException("Exception raised during store action", e);
         } finally {

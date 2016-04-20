@@ -50,6 +50,12 @@
             <artifactId>onto-client</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
+        
+        <dependency>
+        	<groupId>sk.eea.td</groupId>
+        	<artifactId>mint-client</artifactId>
+        	<version>0.0.1-SNAPSHOT</version>
+        </dependency>
 
         <!-- External dependencies -->
         <dependency>
@@ -238,18 +244,25 @@
             <version>4.12</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-all</artifactId>
             <version>1.3</version>
             <scope>test</scope>
         </dependency>
+        
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
             <version>${spring.version}</version>
         </dependency>
 
+        <dependency>
+        	<groupId>org.easymock</groupId>
+        	<artifactId>easymock</artifactId>
+        	<version>3.3.1</version>
+        </dependency>
 
         <dependency>
             <groupId>javax.el</groupId>
@@ -296,6 +309,7 @@
                 			<value>${spring.profiles.active}</value>
                 		</systemProperty>
                 	</systemProperties>
+                	<scanIntervalSeconds>10</scanIntervalSeconds>
                 </configuration>
             </plugin>
         </plugins>

@@ -66,6 +66,9 @@ records : payload.items map {
 ]]></dw:set-payload>
 			        </dw:transform-message>
 	            </when>
+            <when expression="#[sessionVars.transformation==&quot;hp.json2mint.json&quot;]">
+                <byte-array-to-object-transformer doc:name="hp.json2mint.json"/>
+            </when>
 	        </choice>
         <object-to-string-transformer doc:name="Object to String"/>
     </flow>

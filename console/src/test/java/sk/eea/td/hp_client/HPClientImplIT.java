@@ -1,5 +1,21 @@
 package sk.eea.td.hp_client;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.isEmptyString;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.notNullValue;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.ws.rs.core.Response;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -10,23 +26,16 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
 import sk.eea.td.IntegrationTest;
 import sk.eea.td.config.IntegrationTestConfig;
 import sk.eea.td.hp_client.api.*;
 import sk.eea.td.hp_client.dto.PlacesResponseDTO;
 import sk.eea.td.hp_client.dto.SaveResponseDTO;
 import sk.eea.td.hp_client.impl.HPClientImpl;
-
-import javax.ws.rs.core.Response;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
 
 /**
  * Integration test for HPClientImpl class.
@@ -35,6 +44,7 @@ import static org.hamcrest.Matchers.*;
 @Category(IntegrationTest.class)
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = IntegrationTestConfig.class)
+@PropertySource({ "classpath:default.properties", "classpath:${spring.profiles.active:prod}.properties"})
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class HPClientImplIT {
 
@@ -164,6 +174,7 @@ public class HPClientImplIT {
     public void test_B_GetPins() throws Exception {
         assertThat(createdProjectSlug, is(not(isEmptyString())));
         Response response = client.getPins(createdProjectSlug);
+//        Response response = client.getPins("new-orleans");
         assertThat(response.getStatus(), is(equalTo(Response.Status.OK.getStatusCode())));
         String responseMessage = response.readEntity(String.class);
         JSONObject jsonObject = (JSONObject) jsonParser.parse(responseMessage);
