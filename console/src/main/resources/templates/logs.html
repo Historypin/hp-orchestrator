@@ -61,8 +61,8 @@
 <script src="../static/js/console.js" th:src="@{/static/js/console.js}"></script>
 <script src="../static/js/showmore.js" th:src="@{/static/js/showmore.js}"></script>
 
-<script>
-    // <![CDATA[
+<script th:inline="javascript">
+    /* <![CDATA[*/
     function remapDatatables(data) {
         for (var i = 0; i < data.columns.length; i++) {
             column = data.columns[i];
@@ -91,7 +91,7 @@
     $(document).ready(function () {
         var table = $("#logListTable").DataTable({
             'ajax': {
-                'url': '/logs/get.logs',
+                'url': [[@{/logs/get.logs}]],
                 'data': function (data) {
                     remapDatatables(data);
                 }
@@ -113,7 +113,7 @@
             ]
         });
     });
-    // ]]>
+    /* ]]> */
 </script>
 </body>
 </html>

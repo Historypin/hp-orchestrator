@@ -5,14 +5,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import sk.eea.td.console.model.ParamKey;
-import sk.eea.td.hp_client.api.HPClient;
+import sk.eea.td.eu_client.api.EuropeanaClient;
 import sk.eea.td.hp_client.api.Location;
 import sk.eea.td.hp_client.api.PinnerType;
-import sk.eea.td.hp_client.dto.PlacesResponseDTO;
 import sk.eea.td.rest.model.HistorypinTransformDTO;
-import sk.eea.td.util.GeoUtils;
 
-import java.util.Arrays;
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -26,10 +24,13 @@ public class EuropeanaToHistorypinMapper {
     private static final Logger LOG = LoggerFactory.getLogger(EuropeanaToHistorypinMapper.class);
 
     @Autowired
+    private EuropeanaClient europeanaClient;
+
+    @Autowired
     private PlacesCache placesCache;
+
     /**
      * Method maps object from europeana to historypin.
-     *
      * It does it in fail-safe manner. In case of problem, it skips and removes object from list of objects to transform.
      *
      * @param mappedObject Object to map, object is modified in mapping process.
@@ -38,7 +39,8 @@ public class EuropeanaToHistorypinMapper {
      */
     public boolean map(HistorypinTransformDTO mappedObject, Map<ParamKey, String> paramMap) {
         boolean allItemTransformed = true;
-        for (Iterator<HistorypinTransformDTO.Record> iterator = mappedObject.getRecords().iterator(); iterator.hasNext(); ) {
+        for (Iterator<HistorypinTransformDTO.Record> iterator = mappedObject.getRecords().iterator(); iterator
+                .hasNext(); ) {
             final HistorypinTransformDTO.Record record = iterator.next();
 
             // type mapping
@@ -51,18 +53,32 @@ public class EuropeanaToHistorypinMapper {
                 case "VIDEO":
                     record.getPin().setPinnerType(PinnerType.MEDIA);
                 default:
-                    LOG.error("Type: '{}' is not recognized. Record with remoteId: '{}' will be skipped.", record.getEuropeanaFields().getType(), record.getPin().getRemoteId());
+                    LOG.error("Type: '{}' is not recognized. Record with remoteId: '{}' will be skipped.",
+                            record.getEuropeanaFields().getType(), record.getPin().getRemoteId());
                     iterator.remove();
                     allItemTransformed = false;
                     continue;
             }
 
             // content validation
-            if(isEmpty(record.getPin().getContent())) {
-                LOG.error("Content of pin is empty. Record with remoteId: '{}' will be skipped.", record.getPin().getRemoteId());
-                iterator.remove();
-                allItemTransformed = false;
-                continue;
+            if (isEmpty(record.getPin().getContent())) {
+                // try to search for content in items detail
+                String content = null;
+                try {
+                    content = europeanaClient.getRecordsEdmIsShownBy(record.getPin().getRemoteId());
+                } catch (IOException | InterruptedException e) {
+                    LOG.error("Exception at retrieving item details from Europeana API", e);
+                }
+
+                if (isNotEmpty(content)) {
+                    record.getPin().setContent(content);
+                } else {
+                    LOG.error("Content of pin is empty. Record with remoteId: '{}' will be skipped.",
+                            record.getPin().getRemoteId());
+                    iterator.remove();
+                    allItemTransformed = false;
+                    continue;
+                }
             }
 
             // date mapping
@@ -106,7 +122,8 @@ public class EuropeanaToHistorypinMapper {
             record.getPin().setTags(paramMap.get(ParamKey.HP_TAGS));
 
             // location mapping
-            if (isNotEmpty(record.getEuropeanaFields().getEdmPlaceLatitude()) && isNotEmpty(record.getEuropeanaFields().getEdmPlaceLongitude())) { // if exact location is known, use it
+            if (isNotEmpty(record.getEuropeanaFields().getEdmPlaceLatitude()) && isNotEmpty(
+                    record.getEuropeanaFields().getEdmPlaceLongitude())) { // if exact location is known, use it
                 try {
                     Location location = new Location();
                     location.setLat(Double.parseDouble(record.getEuropeanaFields().getEdmPlaceLatitude()));
@@ -118,7 +135,8 @@ public class EuropeanaToHistorypinMapper {
                 }
             }
 
-            if (record.getPin().getLocation() == null && isNotEmpty(record.getEuropeanaFields().getCountry())) { // try to get location from country
+            if (record.getPin().getLocation() == null && isNotEmpty(
+                    record.getEuropeanaFields().getCountry())) { // try to get location from country
                 record.getPin().setLocation(placesCache.getLocation(record.getEuropeanaFields().getCountry()));
             }
 

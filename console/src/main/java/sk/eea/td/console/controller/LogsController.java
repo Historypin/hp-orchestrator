@@ -59,8 +59,8 @@ public class LogsController {
         }
 
         output.setData(logs);
-        output.setRecordsTotal(logPage.getTotalElements());
-        output.setRecordsFiltered((long) logPage.getNumberOfElements());
+        output.setRecordsTotal(logRepository.count());
+        output.setRecordsFiltered(logPage.getTotalElements());
 
         return output;
     }

@@ -4,17 +4,15 @@ import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static sk.eea.td.util.GeoUtils.calculateDistance;
-import static sk.eea.td.util.GeoUtils.calculateMidpoint;
-import static sk.eea.td.util.GeoUtils.normalizeCoordinate;
+import static sk.eea.td.util.GeoUtils.*;
 
 public class GeoUtilsTest {
 
     @Test
     public void testNormalizeCoordinate() throws Exception {
-        assertThat(normalizeCoordinate(-240d), is(equalTo(120d)));
-        assertThat(normalizeCoordinate(0d), is(equalTo(0d)));
-        assertThat(normalizeCoordinate(-181d), is(equalTo(179d)));
+        assertThat(normalizeLongitudeCoordinate(-240d), is(equalTo(120d)));
+        assertThat(normalizeLongitudeCoordinate(0d), is(equalTo(0d)));
+        assertThat(normalizeLongitudeCoordinate(-181d), is(equalTo(179d)));
     }
 
     @Test
