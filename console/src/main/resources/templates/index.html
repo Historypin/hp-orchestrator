@@ -246,8 +246,8 @@
 <script src="../static/js/datatables.min.js" th:src="@{/static/js/datatables.min.js}"></script>
 <script src="../static/js/console.js" th:src="@{/static/js/console.js}"></script>
 
-<script>
-    // <![CDATA[
+<script th:inline="javascript">
+    /* <![CDATA[ */
     var defaultDestinationOptions = $("#destination option"); // save default destination options
 
     var resolveConfiguration = function () {
@@ -303,14 +303,6 @@
         }
     }
 
-    /* Google Maps functions */
-    //    var defaultLatLng = {
-    //        lat: 46.517482,
-    //        lng: 8.1034214
-    //    };
-    //
-    //    var defaultRadius = 600000;
-
     function initMap() {
         var map = new google.maps.Map(document.getElementById('map'), {
             zoom: 4,
@@ -336,7 +328,7 @@
             radius: parseInt(document.getElementById('circleRadius').value)
         });
 
-        bindCircleToInputs(circle)
+        bindCircleToInputs(circle);
 
         circle.addListener('center_changed', function () {
             bindCircleToInputs(circle)
@@ -356,7 +348,7 @@
         $("#taskListTable").DataTable({
             'bFilter': false,
             'ajax': {
-                'url': '/get.jobs',
+                'url': [[@{/get.jobs}]],
                 'data': function (data) {
                     remapDatatables(data);
                 }
@@ -387,7 +379,7 @@
             resolveConfiguration();
         });
     });
-    // ]]>
+    /* ]]> */
 </script>
 </body>
 </html>
