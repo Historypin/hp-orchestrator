@@ -180,17 +180,7 @@
                                         <span class="help-block" th:if="${#fields.hasErrors('luceneQuery')}" th:errors="*{luceneQuery}">Lucene query error</span>
                                     </div>
                                 </div>
-                            </div>
-							
-                            <!-- Europeana lucene query-->
-                            <div id="europeana-conf-group" class="form-group" th:classappend="${#fields.hasErrors('luceneQuery')}? 'has-error'">
-                                <label class="col-md-4 control-label" for="luceneQuery" th:text="#{create.task.lucene}">Lucene query</label>
-                                <div class="col-md-4">
-                                    <input id="luceneQuery" name="luceneQuery" th:field="*{luceneQuery}" th:placeholder="#{create.task.lucene.placeholder}" placeholder="query to search for" class="form-control input-md" type="text"/>
-                                    <span class="help-block" th:if="${#fields.hasErrors('luceneQuery')}" th:errors="*{luceneQuery}">Lucene query error</span>
-				</div>
-                                
-				<div class="form-group">
+                                <div class="form-group">
                                     <label class="col-md-4 control-label" for="searchFacet" th:text="#{create.task.search.facet }">Search facet</label>
                                     <div class="col-md-4">
                                         <input id="searchFacet" name="searchFacet" th:field="*{searchFacet}" th:placeholder="#{create.task.search.facet.placeholder}" placeholder="name of individual facet" class="form-control input-md" type="text"/>
