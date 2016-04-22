@@ -11,17 +11,20 @@ DROP TABLE IF EXISTS "read_only_param" CASCADE;
 DROP TABLE IF EXISTS "log" CASCADE;
 DROP TABLE IF EXISTS "users" CASCADE;
 DROP TABLE IF EXISTS "authorities" CASCADE;
+DROP INDEX IF EXISTS "ix_authority_username" CASCADE;
 DROP FUNCTION IF EXISTS update_read_only_param_error();
 
 -- JOB TABLE BEGIN --
 CREATE SEQUENCE "seq_job" START 1 INCREMENT BY 50;
 
 CREATE TABLE "job" (
-  "id"            INT8 PRIMARY KEY DEFAULT nextval('seq_job') NOT NULL,
-  "name"          VARCHAR(255),
-  "source"        VARCHAR(255),
-  "target"        VARCHAR(255),
-  "last_job_run_id" INT8
+  "id"              INT8 PRIMARY KEY DEFAULT nextval('seq_job') NOT NULL,
+  "name"            VARCHAR(255),
+  "source"          VARCHAR(255),
+  "target"          VARCHAR(255),
+  "last_job_run_id" INT8,
+  "user"            VARCHAR(255) NOT NULL,
+  "created"         TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 );
 -- JOB TABLE END --
 
@@ -47,7 +50,8 @@ CREATE TABLE "job_run" (
   "id"        INT8 PRIMARY KEY DEFAULT nextval('seq_job_run') NOT NULL,
   "status"    VARCHAR(255),
   "result"    VARCHAR(255),
-  "job_id"    INT8 REFERENCES job(id) ON UPDATE CASCADE ON DELETE CASCADE
+  "job_id"    INT8 REFERENCES job(id) ON UPDATE CASCADE ON DELETE CASCADE,
+  "created"   TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 );
 CREATE INDEX "ix_job_run_job_id" ON "job_run" ("job_id");
 -- JOB_RUN TABLE END --
@@ -81,7 +85,7 @@ CREATE SEQUENCE "seq_log" START 1 INCREMENT BY 50;
 
 CREATE TABLE "log" (
   "id"          INT8 PRIMARY KEY DEFAULT nextval('seq_log') NOT NULL,
-  "timestamp"   TIMESTAMP,
+  "timestamp"   TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
   "level"       VARCHAR(255),
   "message"     VARCHAR,
   "job_run_id"  INT8 REFERENCES job_run(id) ON UPDATE CASCADE ON DELETE CASCADE
@@ -93,6 +97,7 @@ CREATE INDEX "ix_log_job_run_id" ON "log" ("job_run_id");
 -- USERS TABLE BEGIN --
 CREATE TABLE "users" (
   "username"    VARCHAR(255) PRIMARY KEY NOT NULL,
+  "email"       VARCHAR(255) NOT NULL,
   "password"    VARCHAR(255) NOT NULL,
   "enabled"     BOOLEAN NOT NULL
 );
@@ -100,10 +105,11 @@ CREATE TABLE "users" (
 
 -- AUTHORITIES TABLE BEGIN --
 CREATE TABLE "authorities" (
-  "username"    VARCHAR(255) NOT NULL REFERENCES users(username) ON UPDATE CASCADE ON DELETE CASCADE,
+  "username"     VARCHAR(255) NOT NULL REFERENCES "users"(username) ON UPDATE CASCADE ON DELETE CASCADE,
   "authority"   VARCHAR(255) NOT NULL
 );
-CREATE UNIQUE INDEX ix_authorities_username on authorities (username, authority);
+CREATE UNIQUE INDEX ix_authority_username on "authorities"(username, authority);
 -- AUTHORITIES TABLE END --
 
-ALTER TABLE job ADD CONSTRAINT last_job_run_fk FOREIGN KEY (last_job_run_id) REFERENCES job_run(id) ON DELETE SET NULL;
+ALTER TABLE job ADD CONSTRAINT last_job_run_fk FOREIGN KEY ("last_job_run_id") REFERENCES job_run(id) ON DELETE SET NULL;
+ALTER TABLE job ADD CONSTRAINT user_fk FOREIGN KEY ("user") REFERENCES "users"(username) ON UPDATE CASCADE ON DELETE CASCADE;

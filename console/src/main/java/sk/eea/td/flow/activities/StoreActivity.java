@@ -105,7 +105,6 @@ public class StoreActivity implements Activity {
                             if (!historypinStoreService.store(hpProjectId, file, hpClient)) {
                                 Log log = new Log();
                                 log.setJobRun(context);
-                                log.setTimestamp(new Date());
                                 log.setLevel(Log.LogLevel.ERROR);
                                 log.setMessage(String.format("Not all pins from file '%s' were saved successfully. See server logs for details.", file));
                                 logRepository.save(log);

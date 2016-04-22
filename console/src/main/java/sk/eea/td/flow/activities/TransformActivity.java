@@ -106,7 +106,6 @@ public class TransformActivity implements Activity {
                             if (!europeanaToHistorypinMapper.map(dto, paramMap)) {
                                 Log log = new Log();
                                 log.setJobRun(context);
-                                log.setTimestamp(new Date());
                                 log.setLevel(Log.LogLevel.ERROR);
                                 log.setMessage(String.format("Not all pins from file '%s' were transformed successfully. See server logs for details.", file));
                                 logRepository.save(log);

@@ -2,6 +2,7 @@ package sk.eea.td.console.model;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -34,6 +35,9 @@ public class JobRun {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "jobRun", orphanRemoval = true)
     private List<ReadOnlyParam> readOnlyParams = new ArrayList<>();
+
+    @Column(insertable = false, updatable = false)
+    private Date created;
 
     public Long getId() {
         return id;
@@ -81,6 +85,14 @@ public class JobRun {
         this.readOnlyParams.remove(readOnlyParam);
     }
 
+    public Date getCreated() {
+        return created;
+    }
+
+    public void setCreated(Date created) {
+        this.created = created;
+    }
+
     @Override public String toString() {
         return "JobRun{" +
                 "id=" + id +
@@ -88,6 +100,7 @@ public class JobRun {
                 ", status=" + status +
                 ", result=" + result +
                 ", readOnlyParams size=" + readOnlyParams.size() +
+                ", created=" + created +
                 '}';
     }
 }

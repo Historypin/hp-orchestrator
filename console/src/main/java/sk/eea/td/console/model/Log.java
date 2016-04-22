@@ -16,7 +16,7 @@ public class Log {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_log")
     private Long id;
 
-    @Column
+    @Column(insertable = false, updatable = false)
     private Date timestamp;
 
     @Column
