@@ -16,6 +16,9 @@
     <link href="../static/css/datatables.min.css" th:href="@{/static/css/datatables.min.css}" rel="stylesheet"/>
 
     <link href="../static/css/console.css" th:href="@{/static/css/console.css}" rel="stylesheet"/>
+
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
 </head>
 <body>
 <div id="wrapper">
@@ -243,6 +246,7 @@
                             <th>Last run status</th>
                             <th>Last run result</th>
                             <th>Last run ID</th>
+                            <th>Actions</th>
                         </tr>
                         </thead>
                         <tfoot>
@@ -253,6 +257,7 @@
                             <th>Last run status</th>
                             <th>Last run result</th>
                             <th>Last run ID</th>
+                            <th>Actions</th>
                         </tr>
                         </tfoot>
                     </table>
@@ -271,6 +276,8 @@
 <script th:inline="javascript">
     /* <![CDATA[ */
     var defaultDestinationOptions = $("#destination option"); // save default destination options
+
+    var table; // datatable
 
     var resolveConfiguration = function () {
         var harvestingOption = $("#harvesting option:selected").val();
@@ -383,11 +390,31 @@
         document.getElementById('circleRadius').value = Math.floor(circle.getRadius());
     }
 
+    function restartTask(lastRunId) {
+        var json = {'lastRunId' : lastRunId};
+        $.ajax({
+            'type' : 'POST',
+            'url' : /*[[@{/restart.task}]]*/,
+            'beforeSend' : function(xhr) {
+                xhr.setRequestHeader("Accept", "application/json");
+                xhr.setRequestHeader("Content-Type", "application/json");
+                xhr.setRequestHeader($("meta[name='_csrf_header']").attr("content"), $("meta[name='_csrf']").attr("content"));
+            },
+            'data' : JSON.stringify(json),
+            dataType : 'json',
+            success : function(data) {
+                if(table != null) {
+                    table.ajax.reload(null, false);
+                }
+            }
+        });
+    }
+
     $(document).ready(function () {
-        $("#taskListTable").DataTable({
+        table = $("#taskListTable").DataTable({
             'bFilter': false,
             'ajax': {
-                'url': [[@{/get.jobs}]],
+                'url': /*[[@{/get.jobs}]]*/,
                 'data': function (data) {
                     remapDatatables(data);
                 }
@@ -400,7 +427,17 @@
                 {'data': 'target'},
                 {'data': 'lastRunStatus', 'orderable': false},
                 {'data': 'lastRunResult', 'orderable': false},
-                {'data': 'lastRunId'}
+                {'data': 'lastRunId'},
+                {
+                    'data': 'actions',
+                    'render': function ( data, type, row, meta ) {
+                        if((row != null || row != undefined) && row.lastRunId != "") {
+                            return '<button onclick="restartTask(' + row.lastRunId +')" title="Restart task"><i class="fa fa-repeat" aria-hidden="true"></i></button>';
+                        } else {
+                            return '';
+                        }
+                    }
+                }
             ]
         });
 

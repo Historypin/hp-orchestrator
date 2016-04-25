@@ -81,10 +81,6 @@ public class TaskForm {
     @Size(min = 1, max = 150, groups = { OaipmhValidation.class })
     private String oaiSet;
 
-    @NotNull(message = "Metadata prefix is missing.", groups = { OaipmhValidation.class })
-    @Size(min = 1, max = 150, groups = { OaipmhValidation.class })
-    private String oaiMetadataPrefix;
-
     public enum Harvesting {
         EU, HP, HP_ANNOTATION;
     }
@@ -155,14 +151,6 @@ public class TaskForm {
 
     public void setOaiSet(String oaiSet) {
         this.oaiSet = oaiSet;
-    }
-
-    public String getOaiMetadataPrefix() {
-        return oaiMetadataPrefix;
-    }
-
-    public void setOaiMetadataPrefix(String oaiMetadataPrefix) {
-        this.oaiMetadataPrefix = oaiMetadataPrefix;
     }
 
     public String getName() {
@@ -274,7 +262,6 @@ public class TaskForm {
                 ", oaiFrom=" + oaiFrom +
                 ", oaiUntil=" + oaiUntil +
                 ", oaiSet='" + oaiSet + '\'' +
-                ", oaiMetadataPrefix='" + oaiMetadataPrefix + '\'' +
                 '}';
     }
 }

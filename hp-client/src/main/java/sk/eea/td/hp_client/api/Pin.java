@@ -1,8 +1,5 @@
 package sk.eea.td.hp_client.api;
 
-/**
- * Created by mva on 4/14/16.
- */
 public class Pin {
 
     private PinnerType pinnerType;
@@ -25,10 +22,21 @@ public class Pin {
 
     private String remoteId;
 
+    private String remoteProviderId;
+
     public Pin() {
     }
 
-    public Pin(PinnerType pinnerType, String caption, String description, String date, String license, Location location, String link, String content, String tags, String remoteId) {
+    public Pin(PinnerType pinnerType,
+            String caption,
+            String description,
+            String date,
+            String license,
+            Location location,
+            String link,
+            String content,
+            String tags,
+            String remoteId, String remoteProviderId) {
         this.pinnerType = pinnerType;
         this.caption = caption;
         this.description = description;
@@ -39,6 +47,7 @@ public class Pin {
         this.content = content;
         this.tags = tags;
         this.remoteId = remoteId;
+        this.remoteProviderId = remoteProviderId;
     }
 
     public PinnerType getPinnerType() {
@@ -121,6 +130,14 @@ public class Pin {
         this.remoteId = remoteId;
     }
 
+    public String getRemoteProviderId() {
+        return remoteProviderId;
+    }
+
+    public void setRemoteProviderId(String remoteProviderId) {
+        this.remoteProviderId = remoteProviderId;
+    }
+
     @Override public String toString() {
         return "Pin{" +
                 "pinnerType=" + pinnerType +
@@ -133,6 +150,7 @@ public class Pin {
                 ", content='" + content + '\'' +
                 ", tags='" + tags + '\'' +
                 ", remoteId='" + remoteId + '\'' +
+                ", remoteProviderId='" + remoteProviderId + '\'' +
                 '}';
     }
 }

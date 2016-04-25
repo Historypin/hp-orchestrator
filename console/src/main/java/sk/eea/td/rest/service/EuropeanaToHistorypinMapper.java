@@ -3,6 +3,7 @@ package sk.eea.td.rest.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import sk.eea.td.console.model.ParamKey;
 import sk.eea.td.eu_client.api.EuropeanaClient;
@@ -23,6 +24,9 @@ public class EuropeanaToHistorypinMapper {
 
     private static final Logger LOG = LoggerFactory.getLogger(EuropeanaToHistorypinMapper.class);
 
+    @Value("${historypin.europeana.provider.id}")
+    private String europeanaProviderId;
+
     @Autowired
     private EuropeanaClient europeanaClient;
 
@@ -42,6 +46,9 @@ public class EuropeanaToHistorypinMapper {
         for (Iterator<HistorypinTransformDTO.Record> iterator = mappedObject.getRecords().iterator(); iterator
                 .hasNext(); ) {
             final HistorypinTransformDTO.Record record = iterator.next();
+
+            // europeana remote provider ID
+            record.getPin().setRemoteProviderId(europeanaProviderId);
 
             // type mapping
             switch (record.getEuropeanaFields().getType()) { // fall-through logic intended

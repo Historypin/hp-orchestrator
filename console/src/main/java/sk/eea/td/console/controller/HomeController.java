@@ -1,6 +1,8 @@
 package sk.eea.td.console.controller;
 
 import org.apache.commons.lang3.NotImplementedException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -8,24 +10,25 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import sk.eea.td.console.form.TaskForm;
 import sk.eea.td.console.form.TaskRow;
 import sk.eea.td.console.model.Destination;
 import sk.eea.td.console.model.Job;
+import sk.eea.td.console.model.JobRun;
 import sk.eea.td.console.model.Param;
 import sk.eea.td.console.model.datatables.DataTablesInput;
 import sk.eea.td.console.model.datatables.DataTablesOutput;
+import sk.eea.td.console.model.datatables.RestartTaskRequest;
 import sk.eea.td.console.repository.JobRepository;
 import sk.eea.td.console.repository.JobRunRepository;
 import sk.eea.td.console.repository.ParamRepository;
+import sk.eea.td.console.repository.UsersRepository;
 import sk.eea.td.rest.model.Connector;
 import sk.eea.td.util.DateUtils;
 
 import javax.validation.Valid;
+import java.security.Principal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -39,6 +42,8 @@ import static sk.eea.td.util.PageUtils.getPageable;
 @PreAuthorize("hasRole('ADMIN')")
 public class HomeController {
 
+    private static final Logger LOG = LoggerFactory.getLogger(HomeController.class);
+
     @Autowired
     private JobRepository jobRepository;
 
@@ -48,12 +53,11 @@ public class HomeController {
     @Autowired
     private ParamRepository paramRepository;
 
-    @Value(value = "${google.maps.api.key}")
-    private String googleMapsApiKey;
+    @Autowired
+    private UsersRepository usersRepository;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    public String indexView(TaskForm taskForm, Model model) {
-        //model.addAttribute("googleMapsApiKey", googleMapsApiKey);
+    public String indexView(TaskForm taskForm) {
         return "index";
     }
 
@@ -87,14 +91,28 @@ public class HomeController {
         return output;
     }
 
+    @ResponseBody
+    @RequestMapping(value = "/restart.task", method = RequestMethod.POST)
+    public String restartTask(@RequestBody RestartTaskRequest request) {
+        JobRun jobRun = jobRunRepository.findOne(request.getLastRunId());
+        if(jobRun != null) {
+            Job job = jobRun.getJob();
+            LOG.info("Restarting job id= {}.", job.getId());
+            job.setLastJobRun(null);
+            jobRepository.save(job);
+        }
+        return "{}";
+    }
+
     @RequestMapping(value = "/", method = RequestMethod.POST)
-    public String indexSubmit(@ModelAttribute @Valid TaskForm taskForm, BindingResult bindingResult) {
+    public String indexSubmit(@ModelAttribute @Valid TaskForm taskForm, Principal principal, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "index";
         }
 
         Job job = new Job();
         job.setName(taskForm.getName());
+        job.setUser(usersRepository.findByUsername(principal.getName()));
         if (TaskForm.Harvesting.EU.equals(taskForm.getHarvesting())) {
             if (TaskForm.Type.REST.equals(taskForm.getType())) {
                 job.setSource(Connector.EUROPEANA);

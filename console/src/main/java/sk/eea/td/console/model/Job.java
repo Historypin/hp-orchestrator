@@ -4,6 +4,7 @@ import sk.eea.td.rest.model.Connector;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -31,6 +32,13 @@ public class Job {
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="last_job_run_id", nullable = true)
     private JobRun lastJobRun;
+
+    @Column(insertable = false, updatable = false)
+    private Date created;
+
+    @ManyToOne(optional=false, fetch = FetchType.EAGER)
+    @JoinColumn(name="\"user\"", nullable=false)
+    private User user;
 
     public Connector getSource() {
         return source;
@@ -72,6 +80,14 @@ public class Job {
         this.lastJobRun = lastJobRun;
     }
 
+    public Date getCreated() {
+        return created;
+    }
+
+    public void setCreated(Date created) {
+        this.created = created;
+    }
+
     public void addParam(Param param) {
         param.setJob(this);
         params.add(param);
@@ -82,14 +98,24 @@ public class Job {
         params.remove(param);
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     @Override public String toString() {
         return "Job{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", source=" + source +
                 ", target='" + target + '\'' +
-                ", params size=" + params.size() +
-                ", lastJobRun id=" + ((lastJobRun != null) ? lastJobRun.getId() : null) +
+                ", params size=" + ((params != null) ? params.size() : null) +
+                ", lastJobRunId=" + ((lastJobRun != null) ? lastJobRun.getId() : null ) +
+                ", created=" + created +
+                ", username=" + ((user != null) ?  user.getUsername() : null) +
                 '}';
     }
 }

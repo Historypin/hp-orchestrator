@@ -62,6 +62,8 @@ public class HPClientImplIT {
 
     private static final String REMOTE_ID = "/this/is_unique00000/id";
 
+    private static final String REMOTE_PROVIDER_ID = "1";
+
     private static final Location LOCATION = new Location(42.0, 23.0, 2000L);
 
     private static String createdProjectSlug;
@@ -108,7 +110,8 @@ public class HPClientImplIT {
                 URL,
                 "This is test pin content",
                 TAGS,
-                REMOTE_ID
+                REMOTE_ID,
+                REMOTE_PROVIDER_ID
         );
         SaveResponseDTO response = client.createPin(createdProjectId, pin);
 
@@ -135,7 +138,8 @@ public class HPClientImplIT {
                     URL,
                     "This is test pin content",
                     TAGS,
-                    REMOTE_ID
+                    REMOTE_ID,
+                    REMOTE_PROVIDER_ID
             );
             SaveResponseDTO response = client.createPin(createdProjectId, pin);
             assertThat(response.isSuccess(), is(equalTo(true)));

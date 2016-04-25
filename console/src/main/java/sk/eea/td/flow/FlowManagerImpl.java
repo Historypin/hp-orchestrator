@@ -48,7 +48,7 @@ public class FlowManagerImpl implements FlowManager {
     public synchronized void trigger() {
         if (!this.jobRunning) {
             // get next job
-            Job job = jobRepository.findNextJob();
+            Job job = jobRepository.findFirstByLastJobRunIsNullOrderByIdAsc();
             if(job != null && sources.contains(job.getSource())) {
                 this.jobRunning = true;
                 // create its run
@@ -91,7 +91,6 @@ public class FlowManagerImpl implements FlowManager {
 
             Log log = new Log();
             log.setJobRun(context);
-            log.setTimestamp(new Date());
             log.setLevel(Log.LogLevel.ERROR);
             log.setMessage(ExceptionUtils.getStackTrace(e));
             logRepository.save(log);
