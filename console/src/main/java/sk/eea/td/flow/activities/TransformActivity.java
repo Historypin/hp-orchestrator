@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.text.MessageFormat;
 import java.util.*;
 
 import static org.apache.commons.lang3.StringUtils.isEmpty;
@@ -95,10 +96,18 @@ public class TransformActivity implements Activity {
                             LOG.warn("Filename '{}' does not follow pattern '[name].[source_type].[format]'. File will be skipped.");
                             return FileVisitResult.CONTINUE;
                         }
-                        final String transformer = Destination.getTransformer(Destination.getDestinationByFormatCode(parts[1]), destination);
+                        
+                        Destination sourceType = Destination.getDestinationByFormatCode(parts[1]);
+						final String transformer = Destination.getTransformer(sourceType, destination);
                         LOG.debug("Sending file '{}' for transformation with transformer {}", file.toString(), transformer);
-                        Response response = target.queryParam("transformation", transformer).request(MediaType.APPLICATION_JSON, MediaType.TEXT_XML).post(Entity.entity(file.toFile(), MediaType.TEXT_XML));
-
+                        Response response = target.queryParam("transformation", transformer).request(MediaType.APPLICATION_JSON, MediaType.TEXT_XML)
+                        		.post(Entity.entity(file.toFile(), sourceType.getMediaType()));
+                        
+                        if(response.getStatus() != 200){
+                        	LOG.error(MessageFormat.format("Could not transform file: {0}", file.getFileName()));
+                        	LOG.debug("Transformation failed", response.getEntity().toString());
+                        	return FileVisitResult.CONTINUE;
+                        }
                         Path transformedFile = PathUtils.createUniqueFilename(transformPath, destination.getFormatCode());
                         if(Destination.getTransformer(Destination.EUROPEANA, Destination.HP).equals(transformer)) { // additional transformation logic is required for EU2HP transformation
                             final HistorypinTransformDTO dto = objectMapper.readValue(response.readEntity(InputStream.class), HistorypinTransformDTO.class);

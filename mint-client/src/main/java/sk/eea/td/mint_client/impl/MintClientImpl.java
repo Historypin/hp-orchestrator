@@ -3,9 +3,11 @@ package sk.eea.td.mint_client.impl;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
+import java.net.ProxySelector;
 import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -22,6 +24,7 @@ import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.conn.SystemDefaultRoutePlanner;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
@@ -46,7 +49,8 @@ public class MintClientImpl implements Closeable, MintClient{
 	
 	private MintClientImpl(String baseUrl) {
 		this.baseUrl = baseUrl;
-		this.httpClient = HttpClientBuilder.create().build(); 
+		this.httpClient = HttpClientBuilder.create().setRoutePlanner(new SystemDefaultRoutePlanner(ProxySelector.getDefault()))
+				.build(); 
 	}
 
 	/* (non-Javadoc)
@@ -67,6 +71,7 @@ public class MintClientImpl implements Closeable, MintClient{
 			if( e != null ) {
 				EntityUtils.consumeQuietly(e);
 			}
+			LOG.debug("Logging to MINT: "+(result?"SUCCESSFUL":"UNSUCCESSFUL"));
 			return result;
 		} catch( Exception e ) {
 			return false;
@@ -121,15 +126,17 @@ public class MintClientImpl implements Closeable, MintClient{
 				}
 				EntityUtils.consumeQuietly(resp.getEntity());
 				waitForReady(datasetId, timeout);
+				LOG.debug("Uploading file to MINT: SUCCESSFUL");
 				return datasetId;
 			} else {
 				EntityUtils.consumeQuietly(resp.getEntity());
-				return null;
+				LOG.debug(MessageFormat.format("Result code: {0} when uploading file to MINT",resp.getStatusLine().getStatusCode()));
 			}
 		} catch( Exception e ) {
 			e.printStackTrace();
-			return null;
 		}
+		LOG.debug("Uploading file to MINT: UNSUCCESSFUL");		
+		return null;
 	}
 	
 	// Use this to get all the status of the dataset
@@ -190,18 +197,18 @@ public class MintClientImpl implements Closeable, MintClient{
 			resp = httpClient.execute(httpPost);
 			if( resp.getStatusLine().getStatusCode() != 200 ) {
 				// problem ?
-				LOG.warn("Transform problem: \n"+ EntityUtils.toString( resp.getEntity()));
-				EntityUtils.consumeQuietly(resp.getEntity());						
+				LOG.warn(MessageFormat.format("Transform problem of dataset ({0}))",datasetId));
+				LOG.debug("Transform error response" +EntityUtils.toString( resp.getEntity()));
+				EntityUtils.consumeQuietly(resp.getEntity());
 				return false;
 			}else{
 				return waitForReady(datasetId, timeout);
 			}
 		} catch( Exception e ) {
-			e.printStackTrace();
-			EntityUtils.consumeQuietly(resp.getEntity());						
+			LOG.error(MessageFormat.format("Transformation of MINT dataset ({0}) failed.", datasetId),e);
+			EntityUtils.consumeQuietly(resp.getEntity());
+			return false;
 		}
-
-		return false;
 	}
 	
 	// when set is imported, send the correct define items
@@ -222,13 +229,15 @@ public class MintClientImpl implements Closeable, MintClient{
 			int status = resp.getStatusLine().getStatusCode();
 			EntityUtils.consumeQuietly( resp.getEntity());
 			if( status == 200 ) {
+				LOG.debug(MessageFormat.format("Define items for dataset ({0}) SUCCES", datasetId));
 				return waitForReady(datasetId, timeout);
 			}
 		} catch( Exception e ) {
-			e.printStackTrace();
+			LOG.error(MessageFormat.format("Problem definning items for dataset ({0}) in MINT",datasetId),e);
 			if( resp != null ) EntityUtils.consumeQuietly( resp.getEntity());
 			return false;
 		}
+		LOG.error(MessageFormat.format("Problem definning items for dataset ({0}) in MINT",datasetId));
 		return false;
 	}
 	
@@ -249,13 +258,16 @@ public class MintClientImpl implements Closeable, MintClient{
 			int status = resp.getStatusLine().getStatusCode();
 			EntityUtils.consumeQuietly( resp.getEntity());
 			if( status == 200 ) {
+				LOG.debug(MessageFormat.format("Publishing of dataset ({0}) SUCCESSFUL", datasetId));
 				return waitForReady(datasetId, timeout);
 			}	
 		} catch( Exception e ) {
+			LOG.error(MessageFormat.format("Problem publishing items of dataset ({0}).", datasetId), e);
 			e.printStackTrace();
 			if( resp != null ) EntityUtils.consumeQuietly( resp.getEntity());
 			return false;
 		}
+		LOG.error(MessageFormat.format("Problem publishing items of dataset ({0}).", datasetId));
 		return false;
 	}
 	

@@ -16,7 +16,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import sk.eea.td.console.model.Destination;
+import sk.eea.td.console.model.Job;
 import sk.eea.td.console.model.JobRun;
+import sk.eea.td.console.model.ParamKey;
 import sk.eea.td.console.model.ReadOnlyParam;
 import sk.eea.td.flow.FlowException;
 import sk.eea.td.rest.service.MintStoreService;
@@ -39,10 +42,12 @@ public class StoreActivityTest {
 	@Test
 	public void testMintTarget() {		 
 		JobRun context = new JobRun();
-		context.addReadOnlyParam(new ReadOnlyParam("transformPath", "src/test/resources/mint"));
-		context.addReadOnlyParam(new ReadOnlyParam("historypinApiKey","ddddd"));
-		context.addReadOnlyParam(new ReadOnlyParam("historypinApiSecret","ddddd"));
-		context.addReadOnlyParam(new ReadOnlyParam("historypinUserId","0"));
+		context.addReadOnlyParam(new ReadOnlyParam(ParamKey.TRANSFORM_PATH, "src/test/resources/mint"));
+		context.addReadOnlyParam(new ReadOnlyParam(ParamKey.HP_API_KEY,"ddddd"));
+		context.addReadOnlyParam(new ReadOnlyParam(ParamKey.HP_API_SECRET,"ddddd"));
+		context.addReadOnlyParam(new ReadOnlyParam(ParamKey.HP_USER_ID,"0"));
+		context.setJob(new Job());
+		context.getJob().setTarget(Destination.MINT.toString());
 		Capture<Path> pathToZip = EasyMock.<Path>newCapture();
 		
 		EasyMock.expect(mintStoreService.store(EasyMock.<Path>capture(pathToZip))).andReturn(Boolean.TRUE);

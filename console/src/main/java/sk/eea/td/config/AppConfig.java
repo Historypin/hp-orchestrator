@@ -158,7 +158,10 @@ public class AppConfig extends WebMvcConfigurerAdapter {
         return flowManager;
     }
 
-    @Schedules(@Scheduled(cron="${historypin.flm.cron.expression}"))
+    @Schedules(
+//    		@Scheduled(cron="${historypin.flm.cron.expression}")
+            @Scheduled(fixedRate = 1000)
+    		)
     public void historypinFlowManagerTimeSignal(){
         historypinHarvester().trigger();
     }

@@ -1,12 +1,31 @@
 package sk.eea.td.flow.activities;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.text.MessageFormat;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipOutputStream;
+
 import org.apache.commons.lang3.NotImplementedException;
-import org.glassfish.jersey.uri.PathPattern.RightHandPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+
 import sk.eea.td.console.model.Destination;
 import sk.eea.td.console.model.JobRun;
 import sk.eea.td.console.model.Log;
@@ -14,31 +33,10 @@ import sk.eea.td.console.model.ParamKey;
 import sk.eea.td.console.repository.LogRepository;
 import sk.eea.td.flow.Activity;
 import sk.eea.td.flow.FlowException;
-import sk.eea.td.hp_client.api.HPClient;
 import sk.eea.td.hp_client.api.Location;
-import sk.eea.td.hp_client.api.Project;
-import sk.eea.td.hp_client.dto.SaveResponseDTO;
 import sk.eea.td.hp_client.impl.HPClientImpl;
 import sk.eea.td.rest.service.HistorypinStoreService;
 import sk.eea.td.rest.service.MintStoreService;
-import sk.eea.td.util.LocationUtils;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.file.*;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-import java.util.zip.ZipInputStream;
-import java.util.zip.ZipOutputStream;
-
-import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 public class StoreActivity implements Activity {
 
@@ -48,31 +46,26 @@ public class StoreActivity implements Activity {
     private String hpUrl;
 
     @Autowired
-    private HistorypinStoreService historypinStoreService;
-    
-    @Autowired
     private MintStoreService mintStoreService;
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @Autowired
     private LogRepository logRepository;
 
+	private HistorypinStoreService historypinStoreService = null;
+    
     @Override
     public void execute(JobRun context) throws FlowException {
         LOG.debug("Starting store activity for job ID: {}", context.getId());
         try {
             final Map<ParamKey, String> paramMap = new HashMap<>();
             context.getReadOnlyParams().stream().forEach(p -> paramMap.put(p.getKey(), p.getValue()));
-
-            final HPClient hpClient = new HPClientImpl(hpUrl, paramMap.get(ParamKey.HP_API_KEY), paramMap.get(ParamKey.HP_API_SECRET));
-
-            final Long hpUser = Long.parseLong(paramMap.get(ParamKey.HP_USER_ID));
-
+            
             final Path transformPath = Paths.get(paramMap.get(ParamKey.TRANSFORM_PATH));
-            final Path transformPath = Paths.get(paramMap.get("transformPath"));
 
+            if(Arrays.asList(context.getJob().getTarget().split(",")).contains(Destination.HP.toString())){            	
+            	historypinStoreService = HistorypinStoreService.getInstance(new HPClientImpl(hpUrl, paramMap.get(ParamKey.HP_API_KEY), paramMap.get(ParamKey.HP_API_SECRET)),Long.parseLong(paramMap.get(ParamKey.HP_USER_ID)));
+            }
+            
             File mintFile = File.createTempFile("mintData", ".zip");
             FileOutputStream mintOutputStream = new FileOutputStream(mintFile);
 			final ZipOutputStream zipOutputStream = new ZipOutputStream(mintOutputStream);
@@ -106,20 +99,10 @@ public class StoreActivity implements Activity {
                                         Double.parseDouble(paramMap.get(ParamKey.HP_LNG)),
                                         Long.parseLong(paramMap.get(ParamKey.HP_RADIUS))
                                 );
-                                final String collectionName = paramMap.get(ParamKey.HP_NAME);
-                                final SaveResponseDTO response = hpClient.createProject(hpUser, new Project(collectionName, location));
-                                // verify that project is created
-                                if (!response.getErrors().isEmpty()) {
-                                    throw new IllegalStateException("Could not create collection with name: " + collectionName + " in Historypin API. Reason: " + response.getErrors().toString());
-                                } else if (response.getId() == null) {
-                                    throw new IllegalStateException("Could not create collection with name: " + collectionName + " in Historypin API. Reason: projectId is null");
-                                } else {
-                                    LOG.debug("Created new project in Historypin with ID: {}.", response.getId());
-                                    this.hpProjectId = response.getId();
-                                }
+                                this.hpProjectId = historypinStoreService.createProject(paramMap.get(ParamKey.HP_NAME), location);
                             }
 
-                            if (!historypinStoreService.store(hpProjectId, file, hpClient)) {
+                            if (!historypinStoreService.storeToProject(hpProjectId, file)) {
                                 Log log = new Log();
                                 log.setJobRun(context);
                                 log.setTimestamp(new Date());
@@ -130,10 +113,11 @@ public class StoreActivity implements Activity {
                             break;
                         case TAGAPP:
                         case MINT:
+                        	LOG.debug(MessageFormat.format("Adding {0} to {1}", file.getFileName(), mintFile.getName()));
                         	zipOutputStream.putNextEntry(new ZipEntry(file.getFileName().toString()));
                         	Files.copy(file, zipOutputStream);
                         	zipOutputStream.closeEntry();
-                        	zipOutputStream.flush();
+                        	zipOutputStream.flush();                        	
                         	break;
                         case EUROPEANA:
                         case SD:
@@ -150,7 +134,8 @@ public class StoreActivity implements Activity {
             ZipFile zipFile = new ZipFile(mintFile);
 			boolean notEmpty = zipFile.entries().hasMoreElements();
 			zipFile.close();
-			if(notEmpty){            	
+			if(notEmpty){
+				LOG.debug(MessageFormat.format("Sending {0} into MINT", mintFile.getName()));
             	if (!mintStoreService.store(mintFile.toPath())){
                     Log log = new Log();
                     log.setJobRun(context);
@@ -159,6 +144,8 @@ public class StoreActivity implements Activity {
                     log.setMessage(String.format("Not all pins were saved successfully. See server logs for details."));
                     logRepository.save(log);                        		
             	}
+            }else{
+            	LOG.debug(MessageFormat.format("Not sending {0} into MINT because it is empty.", zipFile.getName()));
             }
             	
         } catch (Exception e) {

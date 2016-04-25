@@ -1,6 +1,7 @@
 package sk.eea.td.rest.service;
 
 import java.nio.file.Path;
+import java.text.MessageFormat;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,19 +26,21 @@ public class MintStoreService {
 	private String mintPass;
 
 	public boolean store(Path file) {
+		LOG.debug(MessageFormat.format("Storing MINT data ({0}}", file.getFileName()));
 		MintClient client = MintClientImpl.getNewClient(mintBase);
-		if(client.login(mintUser, mintPass))
+		if(!client.login(mintUser, mintPass))
 			return false;
 		int id = client.uploadJson(file.toFile());
-		if(!Integer.valueOf(0).equals(id))
+		if(Integer.valueOf(0).equals(id))
 			return false;
-		if(client.defineItems(id))
+		if(!client.defineItems(id))
 			return false;
-		if(client.transform(id))
+		if(!client.transform(id))
 			return false;
-		if(client.publish(id))
+		if(!client.publish(id))
 			return false;
-		return false;
+		LOG.debug(MessageFormat.format("Storing MINT data ({0}) SUCCESS", file.getFileName()));
+		return true;
 	}
 		
 }

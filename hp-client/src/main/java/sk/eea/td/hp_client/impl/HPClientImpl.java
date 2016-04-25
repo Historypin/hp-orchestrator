@@ -60,8 +60,10 @@ public class HPClientImpl implements HPClient {
     }
 
     @Override
-    public Response getPins(String projectSlug) {
-        WebTarget target = client.target(baseURL).path("en").path("api").path(projectSlug).path("pin").path("get_gallery.json").queryParam("limit", 10000);
+    public Response getProjectSlug(String projectSlug, long page) {
+        WebTarget target = client.target(baseURL).path("en").path("api").path(projectSlug).path("pin").path("get_gallery.json").queryParam("limit", 100);
+        if(page > 1)
+        	target = target.queryParam("page", page);
         return target.request().get();
     }
 

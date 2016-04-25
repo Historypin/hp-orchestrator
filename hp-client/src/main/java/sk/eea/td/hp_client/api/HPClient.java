@@ -9,7 +9,7 @@ public interface HPClient {
 
     Response getPin(Long pinId);
 
-    Response getPins(String projectSlug);
+    Response getProjectSlug(String projectSlug, long page);
 
     Response getProjectDetail(String projectSlug);
 
