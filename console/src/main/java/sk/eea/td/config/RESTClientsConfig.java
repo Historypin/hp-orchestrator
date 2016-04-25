@@ -29,9 +29,7 @@ public class RESTClientsConfig {
     @Bean
     public EuropeanaClient europeanaClient(
             @Value("${europeana.base.url}") String baseURL,
-            @Value("${europeana.ws.key}") String wsKey,
-            @Value("${europeana.retry}") Integer maxRetries,
-            @Value("${europeana.retry.delay}") Integer retryDelay) {
-        return new EuropeanaClientImpl(baseURL, wsKey, maxRetries, retryDelay);
+            @Value("${europeana.ws.key}") String wsKey) {
+        return new EuropeanaClientImpl(baseURL, wsKey);
     }
 }

@@ -56,12 +56,8 @@ public class HomeController {
     @Autowired
     private UsersRepository usersRepository;
 
-    @Value(value = "${google.maps.api.key}")
-    private String googleMapsApiKey;
-
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    public String indexView(TaskForm taskForm, Model model) {
-        //model.addAttribute("googleMapsApiKey", googleMapsApiKey);
+    public String indexView(TaskForm taskForm) {
         return "index";
     }
 

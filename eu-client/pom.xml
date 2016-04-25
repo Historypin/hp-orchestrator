@@ -32,6 +32,11 @@
             <version>2.7.1-1</version>
         </dependency>
 
+        <dependency>
+            <groupId>net.jodah</groupId>
+            <artifactId>recurrent</artifactId>
+        </dependency>
+
         <!-- LOGGING dependencies -->
         <dependency>
             <groupId>org.slf4j</groupId>
