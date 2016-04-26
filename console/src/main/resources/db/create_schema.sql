@@ -106,3 +106,5 @@ CREATE UNIQUE INDEX ix_authorities_username on authorities (username, authority)
 -- AUTHORITIES TABLE END --
 
 ALTER TABLE job ADD COLUMN  "last_job_run_id"  INT8 REFERENCES job_run(id);
+
+ALTER TABLE job_run ADD COLUMN "activity" VARCHAR(255);

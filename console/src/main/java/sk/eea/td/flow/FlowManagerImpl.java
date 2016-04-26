@@ -1,20 +1,31 @@
 package sk.eea.td.flow;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import sk.eea.td.console.model.*;
+import org.springframework.stereotype.Component;
+
+import sk.eea.td.console.model.Job;
+import sk.eea.td.console.model.JobRun;
 import sk.eea.td.console.model.JobRun.JobRunResult;
 import sk.eea.td.console.model.JobRun.JobRunStatus;
+import sk.eea.td.console.model.Log;
+import sk.eea.td.console.model.Param;
+import sk.eea.td.console.model.ReadOnlyParam;
 import sk.eea.td.console.repository.JobRepository;
 import sk.eea.td.console.repository.JobRunRepository;
 import sk.eea.td.console.repository.LogRepository;
 import sk.eea.td.console.repository.ParamRepository;
 import sk.eea.td.rest.model.Connector;
 
-import java.util.*;
-
+@Component
 public class FlowManagerImpl implements FlowManager {
 
     private static final Logger LOG = LoggerFactory.getLogger(FlowManagerImpl.class);
@@ -37,6 +48,9 @@ public class FlowManagerImpl implements FlowManager {
 
     private List<Connector> sources = new ArrayList<>();
 
+    public FlowManagerImpl() {
+    }
+
     public FlowManagerImpl(Connector source) {
         this.sources.add(source);
     }
@@ -45,30 +59,18 @@ public class FlowManagerImpl implements FlowManager {
         this.sources.addAll(Arrays.asList(sources));
     }
 
-    public void trigger() {
-        if (!this.jobRunning) {
-            // get next job
-            Job job = jobRepository.findNextJob();
-            if(job != null && sources.contains(job.getSource())) {
-                this.jobRunning = true;
-                // create its run
-                final JobRun jobRun = new JobRun();
-                jobRun.setJob(job);
-                // copy params into read-only entity
-                Set<Param> paramList = paramRepository.findByJob(job);
-                paramList.stream().forEach(
-                        p -> jobRun.addReadOnlyParam(new ReadOnlyParam(p))
-                );
-                // save & mark as actual job run for this job
-                job.setLastJobRun(jobRunRepository.save(jobRun));
-                jobRepository.save(job);
+    /*
+     * public void trigger() { if (!this.jobRunning) { // get next job Job job = jobRepository.findNextJob(); LOG.debug(
+     * "job found: ", job); if(job != null && sources.contains(job.getSource())) { this.jobRunning = true; // create its
+     * run final JobRun jobRun = new JobRun(); jobRun.setJob(job); // copy params into read-only entity Set<Param>
+     * paramList = paramRepository.findByJob(job); paramList.stream().forEach( p -> jobRun.addReadOnlyParam(new
+     * ReadOnlyParam(p)) ); // save & mark as actual job run for this job
+     * job.setLastJobRun(jobRunRepository.save(jobRun)); jobRepository.save(job); //startFlow(jobRun);
+     * resumeFlow(jobRun); } } }
+     */
 
-                startFlow(jobRun);
-            }
-        }
-    }
-
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
      * @see sk.eea.td.flow.FlowManager#startFlow(sk.eea.td.flow.model.FlowConfig)
      */
     public void startFlow(JobRun context) {
@@ -112,6 +114,102 @@ public class FlowManagerImpl implements FlowManager {
         context.setResult(JobRunResult.FAILED);
     }
 
+    public void trigger() {
+        if (!this.jobRunning) {
+            // get next job
+            Job job = jobRepository.findNextJob();
+            LOG.debug("job found: ", job);
+            if (job != null && sources.contains(job.getSource())) {
+
+                JobRun jobRun = null;
+                // evaluate job.getLastJobRun().getStatus()
+                // ak je WAITING, tak kopirujem jeho params
+                // a nasledne volam resumeFlow (namiesto startFlow)
+                if (job.getLastJobRun() != null && job.getLastJobRun().getStatus() != null
+                        && (JobRunStatus.WAITING == job.getLastJobRun().getStatus()
+                                || JobRunStatus.RESUMED == job.getLastJobRun().getStatus())) {
+                    jobRun = job.getLastJobRun();
+                } else {
+                    jobRun = new JobRun();
+                    jobRun.setJob(job);
+                    Set<Param> paramList = paramRepository.findByJob(job);
+                    for (Param param : paramList) {
+                        jobRun.addReadOnlyParam(new ReadOnlyParam(param));
+                    }
+                    /*
+                     * paramList.stream().forEach( p -> jobRun.addReadOnlyParam(new ReadOnlyParam(p)) );
+                     */
+                }
+
+                this.jobRunning = true;
+                /*
+                 * // create its run // copy params into read-only entity Set<Param> paramList =
+                 * paramRepository.findByJob(job); paramList.stream().forEach( p -> jobRun.addReadOnlyParam(new
+                 * ReadOnlyParam(p)) );
+                 */
+                // save & mark as actual job run for this job
+                job.setLastJobRun(jobRunRepository.save(jobRun));
+                jobRepository.save(job);
+
+                // startFlow(jobRun);
+                resumeFlow(jobRun);
+            }
+        }
+    }
+
+    public void resumeFlow(JobRun context) {
+
+        try {
+            while (true) {
+                Activity activity = getNextActivity(context.getActivity(), context.getStatus());
+                if (activity == null) {
+                    finishFlow(context);
+                    break;
+                }
+                context.setActivity(activity.getId());
+                if (activity.isAsync() && (JobRunStatus.WAITING == context.getStatus()
+                        || JobRunStatus.RUNNING == context.getStatus())) {
+                    if (JobRunStatus.WAITING == context.getStatus()) {
+                        // logActivityStart(activity, context);
+                        //this.jobRunning = false;
+                        break;
+                    } else if (JobRunStatus.RUNNING == context.getStatus()) {
+                        context.setStatus(JobRunStatus.WAITING);
+                        // logActivityStart(activity, context);
+                        context = persistState(context);
+                        //this.jobRunning = false;
+                        break;
+                    } else {
+
+                    }
+                } else {
+                    // activity is either "sync" or "async with status RESUMED"
+                    // this.jobRunning = true;
+                    context.setStatus(JobRunStatus.RUNNING);
+                    logActivityStart(activity, context);
+                    activity.execute(context);
+                    context = persistState(context);
+                    logActivityEnd(activity, context);
+                }
+            }
+
+        } catch (Exception e) {
+            LOG.error("Exception at executing flow:", e);
+
+            Log log = new Log();
+            log.setJobRun(context);
+            log.setTimestamp(new Date());
+            log.setLevel(Log.LogLevel.ERROR);
+            log.setMessage(ExceptionUtils.getStackTrace(e));
+            logRepository.save(log);
+
+            failFlow(context);
+        } finally {
+            this.jobRunning = false;
+            persistState(context);
+        }
+    }
+
     @Override
     public JobRun persistState(JobRun config) {
         return jobRunRepository.save(config);
@@ -137,15 +235,36 @@ public class FlowManagerImpl implements FlowManager {
         this.sources.add(source);
     }
 
-    private void logActivityStart(Activity activity, JobRun context){
+    private void logActivityStart(Activity activity, JobRun context) {
         logActivity(activity, "started", context);
     }
 
-    private void logActivityEnd(Activity activity, JobRun context){
+    private void logActivityEnd(Activity activity, JobRun context) {
         logActivity(activity, "ended", context);
     }
 
-    private void logActivity(Activity activity, String message, JobRun context){
-        logRepository.save(new Log(new Date(), Log.LogLevel.INFO, String.format("%s has %s", activity.getName(), message),context));
+    private void logActivity(Activity activity, String message, JobRun context) {
+        logRepository.save(new Log(new Date(), Log.LogLevel.INFO,
+                String.format("%s has %s", activity.getName(), message), context));
+    }
+
+    private Activity getNextActivity(String id, JobRunStatus status) {
+
+        List<Activity> activities = getActivities();
+        if (status == null) {
+            return activities.get(0);
+        }
+
+        for (int i = 0; i < activities.size(); i++) {
+            Activity activity = activities.get(i);
+            if (id.equalsIgnoreCase(activity.getId())) {
+                if (JobRunStatus.WAITING == status || JobRunStatus.RESUMED == status) {
+                    return activity;
+                } else {
+                    return (activities.size() > i + 1) ? activities.get(i + 1) : null;
+                }
+            }
+        }
+        return null;
     }
 }

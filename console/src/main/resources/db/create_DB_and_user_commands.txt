@@ -1,5 +1,5 @@
 create user console with password 'z3whcTuyZoRYlNhr2kCJ';
 
-create database console;
+create database console OWNER console;
 
 grant all privileges on database console to console;

@@ -2,6 +2,8 @@ package sk.eea.td.onto_client.api;
 
 import java.io.IOException;
 
+import com.fasterxml.jackson.core.JsonParseException;
+
 public interface OntoClient {
 
     /**
@@ -16,4 +18,6 @@ public interface OntoClient {
      * @throws IOException
      */
     String extractCoordinatesFromTextByRelevance(String text) throws IOException;
+
+    public String[] extract(String text) throws JsonParseException, IOException;
 }

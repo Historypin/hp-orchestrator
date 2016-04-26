@@ -1,6 +1,9 @@
 package sk.eea.td.flow;
 
+import java.util.List;
+
 import sk.eea.td.console.model.JobRun;
+import sk.eea.td.rest.model.Connector;
 
 public interface FlowManager {
 
@@ -23,4 +26,8 @@ public interface FlowManager {
 	 * Used to give time interval to flow manager.
 	 */
 	void trigger();
+
+    void addActivity(Activity activity);
+
+    void setSources(List<Connector> sources);
 }

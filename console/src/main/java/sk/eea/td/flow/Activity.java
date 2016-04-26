@@ -7,4 +7,12 @@ public interface Activity {
 	void execute(JobRun context) throws FlowException;
 
 	String getName();
+
+	default String getId() {
+	    return getName();
+	};
+
+	default boolean isAsync() {
+	    return false;
+	};
 }

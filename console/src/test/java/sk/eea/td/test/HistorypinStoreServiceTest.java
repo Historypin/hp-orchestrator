@@ -33,7 +33,7 @@ public class HistorypinStoreServiceTest {
     public void test() throws IOException {
         // parse HP collection location
         //hpClient.deleteAllPins(65543L);
-        historypinStoreService.store(25475L, PATH);
+//        historypinStoreService.store(25475L, PATH);
     }
 
 }

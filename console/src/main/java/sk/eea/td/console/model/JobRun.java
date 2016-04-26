@@ -9,7 +9,7 @@ import java.util.List;
 public class JobRun {
 
     public enum JobRunStatus {
-        RUNNING, STOPPED, FINISHED
+        RUNNING, STOPPED, FINISHED, WAITING, RESUMED
     }
 
     public enum JobRunResult {
@@ -34,6 +34,9 @@ public class JobRun {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "jobRun", orphanRemoval = true)
     private List<ReadOnlyParam> readOnlyParams = new ArrayList<>();
+
+    @Column
+    private String activity;
 
     public Long getId() {
         return id;
@@ -81,12 +84,21 @@ public class JobRun {
         this.readOnlyParams.remove(readOnlyParam);
     }
 
+    public String getActivity() {
+        return activity;
+    }
+
+    public void setActivity(String activity) {
+        this.activity = activity;
+    }
+
     @Override public String toString() {
         return "JobRun{" +
                 "id=" + id +
                 ", job=" + job +
                 ", status=" + status +
                 ", result=" + result +
+                ", activity=" + activity +
                 ", readOnlyParams size=" + readOnlyParams.size() +
                 '}';
     }

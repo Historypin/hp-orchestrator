@@ -1,11 +1,17 @@
 package sk.eea.td.onto_client.impl;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.jsonldjava.utils.JsonUtils;
+
 import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.filter.LoggingFilter;
+import org.glassfish.jersey.jackson.JacksonFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sk.eea.td.onto_client.api.OntoClient;
+import sk.eea.td.onto_client.util.JacksonObjectMapperProvider;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -36,6 +42,8 @@ public class OntoClientImpl implements OntoClient {
         this.objectMapper = new ObjectMapper();
         ClientConfig clientConfig = new ClientConfig();
         this.client = ClientBuilder.newClient(clientConfig);
+        /*this.client = ClientBuilder.newClient(clientConfig).register(JacksonObjectMapperProvider.class)
+                .register(JacksonFeature.class).register(new LoggingFilter(LOG, true));*/
     }
 
     /**
@@ -90,6 +98,20 @@ public class OntoClientImpl implements OntoClient {
             }
         }
 
+        return null;
+    }
+
+    @Override
+    public String[] extract(String text) throws JsonParseException, IOException {
+        String uri = "http://mint-projects.image.ntua.gr/data/foodanddrink/EUFD105370";
+        WebTarget target = client.target(baseURL).queryParam("uri", uri);
+
+        Response resp = target.request(MediaType.TEXT_XML).post(Entity.text(text));
+//        ExtractResponseDTO dto = resp.readEntity(ExtractResponseDTO.class);
+//        System.out.println(dto);
+        String respString = resp.readEntity(String.class);
+        Object jsonObject = JsonUtils.fromString(respString);
+        System.out.println(jsonObject);
         return null;
     }
 }

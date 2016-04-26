@@ -148,6 +148,27 @@ public class AppConfig extends WebMvcConfigurerAdapter {
         europeanaFlowManager().trigger();
     }
 
+    @Bean
+    public FlowManager ontotextFetchFlowManager() {
+        FlowManagerImpl flowManager = new FlowManagerImpl(Connector.EUROPEANA, Connector.OAIPMH);
+        flowManager.addActivity(harvestActivity());
+        flowManager.addActivity(transformActivity());
+        return flowManager;
+    }
+    public void ontotextFetchFlowManagerTimeSignal() {
+        ontotextFetchFlowManager().trigger();
+    }
+
+    @Bean
+    public FlowManager ontotextApproveFlowManager() {
+        FlowManagerImpl flowManager = new FlowManagerImpl(Connector.EUROPEANA, Connector.OAIPMH);
+        flowManager.addActivity(storeActivity());
+        return flowManager;
+    }
+    public void ontotextApproveFlowManagerTimeSignal() {
+        ontotextApproveFlowManager().trigger();
+    }
+
 //    @Bean
 //    public FlowManager historypinHarvester(){
 //    	FlowManagerImpl flowManager = new FlowManagerImpl("HP");

@@ -3,3 +3,7 @@
 # IDEA files
 /.idea/
 *.iml
+
+.classpath
+.project
+.settings

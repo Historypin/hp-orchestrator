@@ -1,0 +1,31 @@
+[ {
+  "@id" : "http://mint-projects.image.ntua.gr/data/foodanddrink/EUFD105370",
+  "dct:spatial" : [ {
+    "@id" : "dbr:Seattle"
+  }, {
+    "@id" : "dbr:London"
+  } ],
+  "dct:subject" : [ {
+    "@id" : "dbr:Chess_piece"
+  }, {
+    "@id" : "dbr:Cooking"
+  }, {
+    "@id" : "dbr:Sponge_cake"
+  }, {
+    "@id" : "dbr:Blue"
+  }, {
+    "@id" : "dbr:Strawberry"
+  }, {
+    "@id" : "dbr:Cake"
+  }, {
+    "@id" : "dbr:Plate_tectonics"
+  }, {
+    "@id" : "dbr:Coffee"
+  }, {
+    "@id" : "dbr:Black_people"
+  }, {
+    "@id" : "dbr:Sugar"
+  }, {
+    "@id" : "dbr:Food"
+  } ]
+} ]
