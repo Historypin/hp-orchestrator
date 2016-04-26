@@ -15,6 +15,10 @@ import sk.eea.td.console.model.User;
 import sk.eea.td.console.repository.JobRepository;
 import sk.eea.td.console.repository.JobRunRepository;
 import sk.eea.td.console.repository.UsersRepository;
+import sk.eea.td.rest.model.Connector;
+
+import java.util.Arrays;
+import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { TestConfig.class, RESTClientsConfig.class, PersistenceConfig.class})
@@ -41,7 +45,8 @@ public class PersistenceTest {
         }
 
         for (int i = 0; i < 10; i++) {
-            Job job = jobRepository.findFirstByLastJobRunIsNullOrderByIdAsc();
+            List<Connector> connectors = Arrays.asList(Connector.EUROPEANA);
+            Job job = jobRepository.findFirstByLastJobRunIsNullAndSourceIsInOrderByIdAsc(connectors);
             JobRun jobRun = new JobRun();
             jobRun.setJob(job);
 

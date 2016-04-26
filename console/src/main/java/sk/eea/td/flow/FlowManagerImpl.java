@@ -14,6 +14,8 @@ import sk.eea.td.console.repository.ParamRepository;
 import sk.eea.td.rest.model.Connector;
 
 import java.util.*;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class FlowManagerImpl implements FlowManager {
 
@@ -31,11 +33,14 @@ public class FlowManagerImpl implements FlowManager {
     @Autowired
     private LogRepository logRepository;
 
+    private Lock lock = new ReentrantLock();
+
     private List<Activity> activities = new ArrayList<>();
 
-    private boolean jobRunning = false; // default value
-
     private List<Connector> sources = new ArrayList<>();
+
+    public FlowManagerImpl() {
+    }
 
     public FlowManagerImpl(Connector source) {
         this.sources.add(source);
@@ -45,26 +50,31 @@ public class FlowManagerImpl implements FlowManager {
         this.sources.addAll(Arrays.asList(sources));
     }
 
-    public synchronized void trigger() {
-        if (!this.jobRunning) {
-            // get next job
-            Job job = jobRepository.findFirstByLastJobRunIsNullOrderByIdAsc();
-            if(job != null && sources.contains(job.getSource())) {
-                this.jobRunning = true;
-                // create its run
-                JobRun jobRun = new JobRun();
-                jobRun.setJob(job);
-                // copy params into read-only entity
-                Set<Param> paramSet = paramRepository.findByJob(job);
-                for(Param param : paramSet) {
-                    jobRun.addReadOnlyParam(new ReadOnlyParam(param));
-                }
-                // save & mark as actual job run for this job
-                jobRun =  jobRunRepository.save(jobRun);
-                job.setLastJobRun(jobRun);
-                jobRepository.save(job);
+    public void trigger() {
+        if (lock.tryLock()) {
+            try {
+                // get next job
+                Job job = jobRepository.findFirstByLastJobRunIsNullAndSourceIsInOrderByIdAsc(sources);
+                if (job != null) {
+                    //create its run
+                    JobRun jobRun = new JobRun();
+                    jobRun.setJob(job);
 
-                startFlow(jobRun);
+                    // copy params into read-only entity
+                    Set<Param> paramSet = paramRepository.findByJob(job);
+                    for (Param param : paramSet) {
+                        jobRun.addReadOnlyParam(new ReadOnlyParam(param));
+                    }
+
+                    // save & mark as actual job run for this job
+                    jobRun = jobRunRepository.save(jobRun);
+                    job.setLastJobRun(jobRun);
+                    jobRepository.save(job);
+
+                    startFlow(jobRun);
+                }
+            } finally {
+                lock.unlock();
             }
         }
     }
@@ -97,7 +107,7 @@ public class FlowManagerImpl implements FlowManager {
 
             failFlow(context);
         } finally {
-            this.jobRunning = false;
+            //this.jobRunning = false;
             persistState(context);
         }
     }
@@ -137,15 +147,15 @@ public class FlowManagerImpl implements FlowManager {
         this.sources.add(source);
     }
 
-    private void logActivityStart(Activity activity, JobRun context){
+    private void logActivityStart(Activity activity, JobRun context) {
         logActivity(activity, "started", context);
     }
 
-    private void logActivityEnd(Activity activity, JobRun context){
+    private void logActivityEnd(Activity activity, JobRun context) {
         logActivity(activity, "ended", context);
     }
 
-    private void logActivity(Activity activity, String message, JobRun context){
-        logRepository.save(new Log(new Date(), Log.LogLevel.INFO, String.format("%s has %s", activity.getName(), message),context));
+    private void logActivity(Activity activity, String message, JobRun context) {
+        logRepository.save(new Log(new Date(), Log.LogLevel.INFO, String.format("%s has %s", activity.getName(), message), context));
     }
 }
