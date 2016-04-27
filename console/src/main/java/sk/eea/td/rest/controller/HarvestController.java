@@ -1,6 +1,8 @@
 package sk.eea.td.rest.controller;
 
 import io.swagger.annotations.ApiOperation;
+
+import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,7 +67,7 @@ public class HarvestController {
                 historypinExecutorService.submit(() -> {
                     try {
                         historypinHarvestService.harvest(String.valueOf(System.currentTimeMillis()), request.getProjectSlug());
-                    } catch (IOException e) {
+                    } catch (IOException |ParseException e) {
                         LOG.error("Exception at Historypin harvest job.", e);
                     }
                 });

@@ -1,5 +1,23 @@
 package sk.eea.td.hp_client;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.isEmptyString;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.notNullValue;
+
+import java.io.FileWriter;
+import java.io.Writer;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.ws.rs.core.Response;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -10,23 +28,20 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
 import sk.eea.td.IntegrationTest;
 import sk.eea.td.config.IntegrationTestConfig;
-import sk.eea.td.hp_client.api.*;
+import sk.eea.td.hp_client.api.HPClient;
+import sk.eea.td.hp_client.api.Location;
+import sk.eea.td.hp_client.api.Pin;
+import sk.eea.td.hp_client.api.PinnerType;
+import sk.eea.td.hp_client.api.Project;
 import sk.eea.td.hp_client.dto.PlacesResponseDTO;
 import sk.eea.td.hp_client.dto.SaveResponseDTO;
 import sk.eea.td.hp_client.impl.HPClientImpl;
-
-import javax.ws.rs.core.Response;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
 
 /**
  * Integration test for HPClientImpl class.
@@ -35,6 +50,7 @@ import static org.hamcrest.Matchers.*;
 @Category(IntegrationTest.class)
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = IntegrationTestConfig.class)
+@PropertySource({ "classpath:default.properties", "classpath:${spring.profiles.active:prod}.properties"})
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class HPClientImplIT {
 
@@ -154,10 +170,16 @@ public class HPClientImplIT {
     public void test_B_GetPin() throws Exception {
         assertThat(createdPinsIds, is(not(empty())));
         Response response = client.getPin(createdPinsIds.get(0));
+//        Response response = client.getPin(89832l);
         assertThat(response.getStatus(), is(equalTo(Response.Status.OK.getStatusCode())));
 
         String responseMessage = response.readEntity(String.class);
         JSONObject jsonObject = (JSONObject) jsonParser.parse(responseMessage);
+
+//		Writer writer = new FileWriter("/tmp/89832.json");
+//		jsonObject.writeJSONString(writer);
+//		writer.close();
+        
         String caption = (String) jsonObject.get("caption");
         Long user_id = (Long) jsonObject.get("user_id");
         assertThat(caption, is(equalTo(PIN_NAME)));
@@ -167,11 +189,17 @@ public class HPClientImplIT {
     @Test
     public void test_B_GetPins() throws Exception {
         assertThat(createdProjectSlug, is(not(isEmptyString())));
-        Response response = client.getPins(createdProjectSlug);
+        Response response = client.getProjectSlug(createdProjectSlug, 1);
+//        Response response = client.getProjectSlug("new-orleans", 1);
         assertThat(response.getStatus(), is(equalTo(Response.Status.OK.getStatusCode())));
         String responseMessage = response.readEntity(String.class);
         JSONObject jsonObject = (JSONObject) jsonParser.parse(responseMessage);
         JSONArray jsonArray = (JSONArray) jsonObject.get("results");
+
+//        Writer writer = new FileWriter("/tmp/new-orleans.json");
+//        jsonObject.writeJSONString(writer);
+//        writer.close();
+        
         for (Object object : jsonArray) {
             JSONObject pin = (JSONObject) object;
             Long id = (Long) pin.get("id");
