@@ -13,12 +13,15 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import sk.eea.td.config.FlowManagerTestConfig;
 import sk.eea.td.config.PersistenceConfig;
 import sk.eea.td.console.model.Job;
+import sk.eea.td.console.model.JobRun;
+import sk.eea.td.console.model.JobRun.JobRunStatus;
+import sk.eea.td.console.model.User;
 import sk.eea.td.console.repository.JobRepository;
 import sk.eea.td.console.repository.JobRunRepository;
 import sk.eea.td.console.repository.LogRepository;
 import sk.eea.td.console.repository.ParamRepository;
+import sk.eea.td.console.repository.UsersRepository;
 import sk.eea.td.flow.FlowManager;
-import sk.eea.td.flow.ativities.AsyncActivity;
 import sk.eea.td.flow.ativities.SyncActivity;
 import sk.eea.td.rest.model.Connector;
 
@@ -28,10 +31,17 @@ public class FlowManagerTest {
 
     @Test
     public void testFlow() throws Exception {
+        FlowManager testFlowManager = testFlowManager();
         Job job = createJob();
-        testFlowManager().trigger();
-//        Thread.sleep(5000l);
-//        testFlowManager().trigger();
+        testFlowManager.trigger();
+        Thread.sleep(1000l);
+        updateJob(job, JobRunStatus.RESUMED);
+        Thread.sleep(1000l);
+        testFlowManager.trigger();
+        Thread.sleep(1000l);
+        updateJob(job, JobRunStatus.RESUMED);
+        Thread.sleep(1000l);
+        testFlowManager.trigger();
         System.out.println(flowManager);
     }
 
@@ -40,50 +50,59 @@ public class FlowManagerTest {
         Job job = new Job();
         job.setName("test job");
         job.setSource(Connector.EUROPEANA);
+        User user = usersRepository.findByUsername("admin");
+        job.setUser(user);
         job = jobRepository.save(job);
-
-        System.out.println(job);
         return job;
     }
 
-    @Bean
-    SyncActivity syncActivity1() {
-        return new SyncActivity("sync1");
-    }
-    
-    @Bean
-    SyncActivity syncActivity2() {
-        return new SyncActivity("sync2");
+    private void updateJob(Job job, JobRunStatus status) {
+
+        job = jobRepository.findOne(job.getId());
+        JobRun jobRun = job.getLastJobRun();
+        jobRun.setStatus(status);
+        jobRunRepository.save(jobRun);
     }
 
     @Bean
-    AsyncActivity asyncActivity1() {
-        return new AsyncActivity("async1");
+    SyncActivity activity1() {
+        return new SyncActivity("activity1", false);
     }
-
-    @Autowired
-    private JobRepository jobRepository;
-
-    @Autowired
-    private JobRunRepository jobRunRepository;
-
-    @Autowired
-    private ParamRepository paramRepository;
-
-    @Autowired
-    private LogRepository logRepository;
-
-    @Autowired
-    private FlowManager flowManager;
+    @Bean
+    SyncActivity activity2() {
+        return new SyncActivity("activity2", true);
+    }
+    @Bean
+    SyncActivity activity3() {
+        return new SyncActivity("activity3", false);
+    }
+    @Bean
+    SyncActivity activity4() {
+        return new SyncActivity("activity4", true);
+    }
 
     @Bean
     public FlowManager testFlowManager() {
         List<Connector> sources = new ArrayList<>();
         sources.add(Connector.EUROPEANA);
         flowManager.setSources(sources);
-        flowManager.addActivity(syncActivity1());
-        flowManager.addActivity(asyncActivity1());
-        flowManager.addActivity(syncActivity2());
+        flowManager.addActivity(activity1());
+        flowManager.addActivity(activity2());
+        flowManager.addActivity(activity3());
+        flowManager.addActivity(activity4());
         return flowManager;
     }
+
+    @Autowired
+    private JobRepository jobRepository;
+    @Autowired
+    private JobRunRepository jobRunRepository;
+    @Autowired
+    private ParamRepository paramRepository;
+    @Autowired
+    private LogRepository logRepository;
+    @Autowired
+    private FlowManager flowManager;
+    @Autowired
+    private UsersRepository usersRepository;
 }

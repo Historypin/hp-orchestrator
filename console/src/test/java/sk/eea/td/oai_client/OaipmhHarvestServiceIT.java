@@ -45,15 +45,12 @@ public class OaipmhHarvestServiceIT {
 
     private static final String SET = "07101_Ag_SK_EuropeanASNG";
 
-    private static final String METADATA_PREFIX = "edm";
-
     @Test
     public void testSuccess() throws IOException, TransformerException, ParserConfigurationException, SAXException, NoSuchFieldException {
         OaipmhConfigWrapper config = new OaipmhConfigWrapper();
         config.setFrom(FROM);
         config.setUntil(UNTIL);
         config.setSet(SET);
-        config.setMetadataPrefix(METADATA_PREFIX);
 
         Path tempDirectory = Files.createTempDirectory("oaipmh-integration-test");
         LOG.info("Created temporary directory at location: " + tempDirectory.toString());

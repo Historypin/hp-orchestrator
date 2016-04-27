@@ -6,18 +6,21 @@ package sk.eea.td.console.model;
  */
 public enum ParamKey {
 
-    HP_USER_ID("historypinUserId"),
-    HP_API_KEY("historypinApiKey"),
-    HP_DATE("collectionDate"),
-    HP_TAGS("collectionTags"),
-    HP_NAME("collectionName"),
-    HP_LAT("collectionLat"),
-    HP_LNG("collectionLng"),
-    HP_RADIUS("collectionRadius");
-
-    private String key;
-
-    ParamKey(String key) {
-        this.key = key;
-    }
+    HP_USER_ID,
+    HP_API_KEY,
+    HP_API_SECRET,
+    HP_DATE,
+    HP_TAGS,
+    HP_NAME,
+    HP_LAT,
+    HP_LNG,
+    HP_RADIUS,
+    HP_PROJECT_SLUG,
+    OAI_FROM,
+    OAI_UNTIL,
+    OAI_SET,
+    EU_REST_QUERY,
+    EU_REST_FACET,
+    HARVEST_PATH,
+    TRANSFORM_PATH
 }

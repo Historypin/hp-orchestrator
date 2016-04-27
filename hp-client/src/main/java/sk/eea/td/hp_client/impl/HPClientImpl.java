@@ -1,16 +1,22 @@
 package sk.eea.td.hp_client.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.jodah.recurrent.Recurrent;
+import net.jodah.recurrent.RetryPolicy;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.filter.LoggingFilter;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import sk.eea.td.hp_client.api.HPClient;
+import sk.eea.td.hp_client.api.Pin;
 import sk.eea.td.hp_client.api.PinnerType;
+import sk.eea.td.hp_client.api.Project;
 import sk.eea.td.hp_client.dto.ListingsResponseDTO;
+import sk.eea.td.hp_client.dto.PlacesResponseDTO;
 import sk.eea.td.hp_client.dto.SaveResponseDTO;
 import sk.eea.td.hp_client.util.ApiTokenFactory;
 import sk.eea.td.hp_client.util.JacksonObjectMapperProvider;
 
+import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -20,7 +26,10 @@ import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.Response;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
+
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 public class HPClientImpl implements HPClient {
 
@@ -38,12 +47,18 @@ public class HPClientImpl implements HPClient {
 
     private final ObjectMapper objectMapper;
 
+    private final RetryPolicy retryPolicy;
+
     public HPClientImpl(String URL, String apiKey, String apiSecret) {
         this.baseURL = URL;
         this.apiKey = apiKey;
         this.apiSecret = apiSecret;
         this.apiTokenFactory = new ApiTokenFactory(apiSecret);
         this.objectMapper = new ObjectMapper();
+        this.retryPolicy = new RetryPolicy()
+                .retryOn(failure -> failure instanceof ProcessingException)
+                .withBackoff(2, 30, TimeUnit.SECONDS)
+                .withMaxRetries(3);
         ClientConfig clientConfig = new ClientConfig();
         this.client = ClientBuilder.newClient(clientConfig)
                 .register(JacksonObjectMapperProvider.class)
@@ -54,33 +69,33 @@ public class HPClientImpl implements HPClient {
     @Override
     public Response getPin(Long pinID) {
         WebTarget target = client.target(baseURL).path("en").path("api").path("pin").path("get.json").queryParam("id", pinID);
-        return target.request().get();
+        return Recurrent.with(retryPolicy).get(() -> target.request().get());
     }
 
     @Override
     public Response getPins(String projectSlug) {
         WebTarget target = client.target(baseURL).path("en").path("api").path(projectSlug).path("pin").path("get_gallery.json").queryParam("limit", 10000);
-        return target.request().get();
+        return Recurrent.with(retryPolicy).get(() -> target.request().get());
     }
 
     @Override
     public Response getProjectDetail(String projectSlug) {
         WebTarget target = client.target(baseURL).path("en").path("api").path(projectSlug).path("projects").path("get.json");
-        return target.request().get();
+        return Recurrent.with(retryPolicy).get(() -> target.request().get());
     }
 
     @Override
-    public SaveResponseDTO createProject(String title, Long user, String lat, String lng, String range) {
+    public SaveResponseDTO createProject(Long userId, Project project) {
         WebTarget target = client.target(baseURL).path("en").path("api").path("projects").path("save.json");
 
         Map<String, String> data = new HashMap<>();
-        data.put("title", title);
+        data.put("title", project.getTitle());
 
-        data.put("owners[0][id]", user.toString());
+        data.put("owners[0][id]", userId.toString());
 
-        data.put("timemap[lat]", lat);
-        data.put("timemap[lng]", lng);
-        data.put("timemap[range]", range);
+        data.put("timemap[lat]", project.getLocation().getLat().toString());
+        data.put("timemap[lng]", project.getLocation().getLng().toString());
+        data.put("timemap[range]", project.getLocation().getRange().toString());
         data.put("timemap[zoom]", "0"); // TODO: temporary workaround, we need to provide default value, otherwise the project will not be valid
 
         data.put("new_project", "true");
@@ -89,39 +104,54 @@ public class HPClientImpl implements HPClient {
 
         data.put("api_token", apiTokenFactory.getApiToken(data));
 
-        return target.request(MediaType.TEXT_PLAIN_TYPE).post(Entity.form(new MultivaluedHashMap<>(data))).readEntity(SaveResponseDTO.class);
+        return Recurrent.with(retryPolicy)
+                .get(() ->
+                        target.request(MediaType.TEXT_PLAIN_TYPE).post(Entity.form(new MultivaluedHashMap<>(data))).readEntity(SaveResponseDTO.class)
+                );
     }
 
     @Override
-    public SaveResponseDTO createPin(String caption, String description, Long projectId, String lat, String lng, String range, String date, String license, PinnerType pinnerType, String content, String link) {
+    public SaveResponseDTO createPin(Long projectId, Pin pin) {
         WebTarget target = client.target(baseURL).path("en").path("api").path("pin").path("save.json");
 
         Map<String, String> data = new HashMap<>();
-        data.put("caption", caption);
-        data.put("description", description);
+        data.put("caption", pin.getCaption());
+        data.put("description", pin.getDescription());
 
         data.put("repinned_projects[0][id]", projectId.toString());
 
-        data.put("timemap[lat]", lat);
-        data.put("timemap[lng]", lng);
-        data.put("timemap[range]", range);
+        data.put("location[lat]", pin.getLocation().getLat().toString());
+        data.put("location[lng]", pin.getLocation().getLng().toString());
+        data.put("location[range]", pin.getLocation().getRange().toString());
 
-        data.put("date", date);
-        data.put("license", license);
-        data.put("link", link);
+        data.put("remote[id]", pin.getRemoteId());
+        data.put("remote[provider_id]", pin.getRemoteProviderId());
 
-        data.put("pinner_type", pinnerType.name().toLowerCase());
-        if (PinnerType.PHOTO.equals(pinnerType)) {
-            data.put("image_url", content);
+        data.put("date", pin.getDate());
+        data.put("license", pin.getLicense());
+        data.put("link", pin.getLink());
+
+        data.put("pinner_type", pin.getPinnerType().name().toLowerCase());
+        if (PinnerType.PHOTO.equals(pin.getPinnerType())) {
+            data.put("image_url", pin.getContent());
         }
-        data.put("display[content]", content);
+        data.put("display[content]", pin.getContent());
+
+        if (isNotEmpty(pin.getTags())) {
+            String[] tags = pin.getTags().split(",");
+            for (int i = 0; i < tags.length; i++) {
+                data.put(String.format("tags[%d][text]", i), tags[i].trim());
+            }
+        }
 
         data.put("api_key", apiKey);
         data.put("api_path", "pin/save.json");
 
         data.put("api_token", apiTokenFactory.getApiToken(data));
 
-        return target.request(MediaType.TEXT_PLAIN_TYPE).post(Entity.form(new MultivaluedHashMap<>(data))).readEntity(SaveResponseDTO.class);
+        return Recurrent.with(retryPolicy).get(() ->
+                target.request(MediaType.TEXT_PLAIN_TYPE).post(Entity.form(new MultivaluedHashMap<>(data))).readEntity(SaveResponseDTO.class)
+        );
     }
 
     @Override
@@ -135,7 +165,9 @@ public class HPClientImpl implements HPClient {
 
         data.put("api_token", apiTokenFactory.getApiToken(data));
 
-        return target.request(MediaType.TEXT_PLAIN_TYPE).post(Entity.form(new MultivaluedHashMap<>(data)));
+        return Recurrent.with(retryPolicy).get(() ->
+                target.request(MediaType.TEXT_PLAIN_TYPE).post(Entity.form(new MultivaluedHashMap<>(data)))
+        );
     }
 
     @Override
@@ -149,20 +181,34 @@ public class HPClientImpl implements HPClient {
 
         data.put("api_token", apiTokenFactory.getApiToken(data));
 
-        return target.request(MediaType.TEXT_PLAIN_TYPE).post(Entity.form(new MultivaluedHashMap<>(data)));
+        return Recurrent.with(retryPolicy).get(() ->
+                target.request(MediaType.TEXT_PLAIN_TYPE).post(Entity.form(new MultivaluedHashMap<>(data)))
+        );
     }
 
     @Override
     public void deleteAllPins(Long user) {
         WebTarget target = client.target(baseURL).path("en").path("api").path("pin").path("listing.json").queryParam("user", user).queryParam("limit", 1000000);
-        ListingsResponseDTO response = target.request().get().readEntity(ListingsResponseDTO.class);
+        ListingsResponseDTO response = Recurrent.with(retryPolicy).get(() ->
+                target.request().get().readEntity(ListingsResponseDTO.class)
+        );
         response.getResults().forEach(r -> deletePin(r.getId()));
     }
 
     @Override
     public void deleteAllProjects(Long user) {
         WebTarget target = client.target(baseURL).path("en").path("api").path("projects").path("listing.json").queryParam("user", user).queryParam("limit", 1000000);
-        ListingsResponseDTO response = target.request().get().readEntity(ListingsResponseDTO.class);
+        ListingsResponseDTO response = Recurrent.with(retryPolicy).get(() ->
+                target.request().get().readEntity(ListingsResponseDTO.class)
+        );
         response.getResults().forEach(r -> deleteProject(r.getId()));
+    }
+
+    @Override
+    public PlacesResponseDTO getPlaces(String countrySlug) {
+        WebTarget target = client.target(baseURL).path("en").path("api").path("places").path("get.json").queryParam("places", countrySlug);
+        return Recurrent.with(retryPolicy).get(() ->
+                target.request().get().readEntity(PlacesResponseDTO.class)
+        );
     }
 }

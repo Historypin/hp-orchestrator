@@ -14,8 +14,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import sk.eea.td.IntegrationTest;
 import sk.eea.td.config.IntegrationTestConfig;
-import sk.eea.td.hp_client.api.HPClient;
-import sk.eea.td.hp_client.api.PinnerType;
+import sk.eea.td.hp_client.api.*;
+import sk.eea.td.hp_client.dto.PlacesResponseDTO;
 import sk.eea.td.hp_client.dto.SaveResponseDTO;
 import sk.eea.td.hp_client.impl.HPClientImpl;
 
@@ -58,6 +58,14 @@ public class HPClientImplIT {
 
     private static final String URL = "http://example.com";
 
+    private static final String TAGS = "much wow, very pin, so tags";
+
+    private static final String REMOTE_ID = "/this/is_unique00000/id";
+
+    private static final String REMOTE_PROVIDER_ID = "1";
+
+    private static final Location LOCATION = new Location(42.0, 23.0, 2000L);
+
     private static String createdProjectSlug;
 
     private static Long createdProjectId;
@@ -77,7 +85,7 @@ public class HPClientImplIT {
     /* CREATE */
     @Test
     public void test_AA_CreateProject() throws Exception {
-        SaveResponseDTO response = client.createProject(PROJECT_NAME, user, "42", "23", "2000");
+        SaveResponseDTO response = client.createProject(user, new Project(PROJECT_NAME, LOCATION));
 
         assertThat(response.isSuccess(), is(equalTo(true)));
         assertThat(response.getSlug(), is(not(isEmptyString())));
@@ -92,17 +100,20 @@ public class HPClientImplIT {
 
         LocalDate now = LocalDate.now();
         String date = now.format(DateTimeFormatter.ISO_LOCAL_DATE);
-        SaveResponseDTO response = client.createPin(
+        Pin pin = new Pin(
+                PinnerType.TEXT,
                 PIN_NAME,
                 PIN_DESCRIPTION,
-                createdProjectId,
-                "42", "23", "2000",
                 date,
                 "no-copyright",
-                PinnerType.TEXT,
+                LOCATION,
+                URL,
                 "This is test pin content",
-                URL
+                TAGS,
+                REMOTE_ID,
+                REMOTE_PROVIDER_ID
         );
+        SaveResponseDTO response = client.createPin(createdProjectId, pin);
 
         assertThat(response.isSuccess(), is(equalTo(true)));
         assertThat(response.getId(), is(not(equalTo(0))));
@@ -117,17 +128,20 @@ public class HPClientImplIT {
         LocalDate now = LocalDate.now();
         String date = now.format(DateTimeFormatter.ISO_LOCAL_DATE);
         for (int i = 0; i < 3; i++) {
-            SaveResponseDTO response = client.createPin(
+            Pin pin = new Pin(
+                    PinnerType.TEXT,
                     PIN_NAME,
                     PIN_DESCRIPTION,
-                    createdProjectId,
-                    "42", "23", "2000",
                     date,
                     "no-copyright",
-                    PinnerType.TEXT,
+                    LOCATION,
+                    URL,
                     "This is test pin content",
-                    URL
+                    TAGS,
+                    REMOTE_ID,
+                    REMOTE_PROVIDER_ID
             );
+            SaveResponseDTO response = client.createPin(createdProjectId, pin);
             assertThat(response.isSuccess(), is(equalTo(true)));
             assertThat(response.getId(), is(not(equalTo(0))));
 
@@ -178,6 +192,15 @@ public class HPClientImplIT {
         String ownerId = (String) jsonObject.get("owner_id");
         assertThat(projectName, is(equalTo(PROJECT_NAME)));
         assertThat(ownerId, is(equalTo(user.toString())));
+    }
+
+    @Test
+    public void test_B_GetPlaces() throws Exception {
+        PlacesResponseDTO response = client.getPlaces("bulgaria");
+        assertThat(response.getId(), is(notNullValue()));
+        assertThat(response.getBounds(), is(notNullValue()));
+        assertThat(response.getBounds().getNe(), is(notNullValue()));
+        assertThat(response.getBounds().getSw(), is(notNullValue()));
     }
 
     /* UPDATE */

@@ -5,22 +5,24 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 import sk.eea.td.config.PersistenceConfig;
 import sk.eea.td.config.RESTClientsConfig;
 import sk.eea.td.config.TestConfig;
 import sk.eea.td.console.model.Job;
 import sk.eea.td.console.model.JobRun;
-import sk.eea.td.console.model.Log;
-import sk.eea.td.console.model.ReadOnlyParam;
+import sk.eea.td.console.model.User;
 import sk.eea.td.console.repository.JobRepository;
 import sk.eea.td.console.repository.JobRunRepository;
-import sk.eea.td.console.repository.LogRepository;
-
-import java.util.Date;
+import sk.eea.td.console.repository.UsersRepository;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = { TestConfig.class, PersistenceConfig.class, RESTClientsConfig.class})
+@ContextConfiguration(classes = { TestConfig.class, RESTClientsConfig.class, PersistenceConfig.class})
+@Transactional
 public class PersistenceTest {
+
+    @Autowired
+    private UsersRepository usersRepository;
 
     @Autowired
     private JobRepository jobRepository;
@@ -28,41 +30,26 @@ public class PersistenceTest {
     @Autowired
     private JobRunRepository jobRunRepository;
 
-    @Autowired
-    private LogRepository logRepository;
-
     @Test
-    public void testLog() throws Exception {
-
-//        Job job = jobRepository.findByOrderByIdDesc().iterator().next();
-//        JobRun jobRun = jobRunRepository.findTopByJobOrderByIdDesc(job);
-//
-//        Log log = new Log(new Date(), Log.LogLevel.ERROR, "thi sis horrible message", jobRun);
-//        log = logRepository.save(log);
-//
-//        System.out.println(log.toString());
-
-        System.out.println(logRepository.findAllRelevantLogs());
-    }
-
-    @Test
-    public void testJob() throws Exception {
-
-        Job job = new Job();
-        job.setName("test job");
-        job = jobRepository.save(job);
-
-        JobRun jobRun = new JobRun();
-        jobRun.setJob(job);
-        jobRun = jobRunRepository.save(jobRun);
+    public void test() {
+        User user = usersRepository.findByUsername("admin");
 
         for (int i = 0; i < 10; i++) {
-            jobRun.addReadOnlyParam(new ReadOnlyParam("test" + i, "balh"));
-            jobRun = jobRunRepository.save(jobRun);
+            Job job = new Job();
+            job.setUser(user);
+            jobRepository.save(job);
         }
 
+        for (int i = 0; i < 10; i++) {
+            Job job = jobRepository.findFirstByLastJobRunIsNullOrderByIdAsc();
+            JobRun jobRun = new JobRun();
+            jobRun.setJob(job);
 
-        System.out.println(jobRun);
+            jobRunRepository.save(jobRun);
+            job.setLastJobRun(jobRun);
+            jobRepository.save(job);
 
+            System.out.println(job.getId());
+        }
     }
 }

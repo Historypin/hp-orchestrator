@@ -12,7 +12,7 @@ public interface Activity {
 	    return getName();
 	};
 
-	default boolean isAsync() {
+	default boolean isSleepAfter() {
 	    return false;
 	};
 }

@@ -33,12 +33,6 @@ public class EuropeanaClientImplIT {
     @Value("${europeana.ws.key}")
     private String wsKey;
 
-    @Value("${europeana.retry}")
-    private Integer maxRetries;
-
-    @Value("${europeana.retry.delay}")
-    private Integer retryDelay;
-
     private final String LUCENE_QUERY = "timestamp_created:[2013-11-01T00:00:0.000Z TO 2013-11-12T16:36:01.000Z]";
 
     private final String DATASET_NAME = "edm_datasetName:2059517_EU_FD_Wolverhampton";
@@ -51,7 +45,7 @@ public class EuropeanaClientImplIT {
 
     @Before
     public void setUp() throws Exception {
-        this.europeanaClient = new EuropeanaClientImpl(baseURL, wsKey, maxRetries, retryDelay);
+        this.europeanaClient = new EuropeanaClientImpl(baseURL, wsKey);
     }
 
     @Test
@@ -69,6 +63,12 @@ public class EuropeanaClientImplIT {
     @Test
     public void testGetRecord() throws IOException, InterruptedException {
         String json = europeanaClient.getRecord(ITEM_ID);
+        assertThat(json, is(not(isEmptyString())));
+    }
+
+    @Test
+    public void testGetRecordsEdmIsShownBy() throws IOException, InterruptedException {
+        String json = europeanaClient.getRecordsEdmIsShownBy(ITEM_ID);
         assertThat(json, is(not(isEmptyString())));
     }
 }

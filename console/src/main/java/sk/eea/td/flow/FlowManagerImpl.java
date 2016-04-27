@@ -59,15 +59,29 @@ public class FlowManagerImpl implements FlowManager {
         this.sources.addAll(Arrays.asList(sources));
     }
 
-    /*
-     * public void trigger() { if (!this.jobRunning) { // get next job Job job = jobRepository.findNextJob(); LOG.debug(
-     * "job found: ", job); if(job != null && sources.contains(job.getSource())) { this.jobRunning = true; // create its
-     * run final JobRun jobRun = new JobRun(); jobRun.setJob(job); // copy params into read-only entity Set<Param>
-     * paramList = paramRepository.findByJob(job); paramList.stream().forEach( p -> jobRun.addReadOnlyParam(new
-     * ReadOnlyParam(p)) ); // save & mark as actual job run for this job
-     * job.setLastJobRun(jobRunRepository.save(jobRun)); jobRepository.save(job); //startFlow(jobRun);
-     * resumeFlow(jobRun); } } }
-     */
+/*    public synchronized void trigger() {
+        if (!this.jobRunning) {
+            // get next job
+            Job job = jobRepository.findFirstByLastJobRunIsNullOrderByIdAsc();
+            if(job != null && sources.contains(job.getSource())) {
+                this.jobRunning = true;
+                // create its run
+                JobRun jobRun = new JobRun();
+                jobRun.setJob(job);
+                // copy params into read-only entity
+                Set<Param> paramSet = paramRepository.findByJob(job);
+                for(Param param : paramSet) {
+                    jobRun.addReadOnlyParam(new ReadOnlyParam(param));
+                }
+                // save & mark as actual job run for this job
+                jobRun =  jobRunRepository.save(jobRun);
+                job.setLastJobRun(jobRun);
+                jobRepository.save(job);
+
+                startFlow(jobRun);
+            }
+        }
+    }*/
 
     /*
      * (non-Javadoc)
@@ -92,7 +106,6 @@ public class FlowManagerImpl implements FlowManager {
 
             Log log = new Log();
             log.setJobRun(context);
-            log.setTimestamp(new Date());
             log.setLevel(Log.LogLevel.ERROR);
             log.setMessage(ExceptionUtils.getStackTrace(e));
             logRepository.save(log);
@@ -115,6 +128,7 @@ public class FlowManagerImpl implements FlowManager {
     }
 
     public void trigger() {
+
         if (!this.jobRunning) {
             // get next job
             Job job = jobRepository.findNextJob();
@@ -122,12 +136,8 @@ public class FlowManagerImpl implements FlowManager {
             if (job != null && sources.contains(job.getSource())) {
 
                 JobRun jobRun = null;
-                // evaluate job.getLastJobRun().getStatus()
-                // ak je WAITING, tak kopirujem jeho params
-                // a nasledne volam resumeFlow (namiesto startFlow)
                 if (job.getLastJobRun() != null && job.getLastJobRun().getStatus() != null
-                        && (JobRunStatus.WAITING == job.getLastJobRun().getStatus()
-                                || JobRunStatus.RESUMED == job.getLastJobRun().getStatus())) {
+                        && (JobRunStatus.RESUMED == job.getLastJobRun().getStatus())) {
                     jobRun = job.getLastJobRun();
                 } else {
                     jobRun = new JobRun();
@@ -136,22 +146,13 @@ public class FlowManagerImpl implements FlowManager {
                     for (Param param : paramList) {
                         jobRun.addReadOnlyParam(new ReadOnlyParam(param));
                     }
-                    /*
-                     * paramList.stream().forEach( p -> jobRun.addReadOnlyParam(new ReadOnlyParam(p)) );
-                     */
                 }
 
                 this.jobRunning = true;
-                /*
-                 * // create its run // copy params into read-only entity Set<Param> paramList =
-                 * paramRepository.findByJob(job); paramList.stream().forEach( p -> jobRun.addReadOnlyParam(new
-                 * ReadOnlyParam(p)) );
-                 */
-                // save & mark as actual job run for this job
-                job.setLastJobRun(jobRunRepository.save(jobRun));
+                jobRun = jobRunRepository.save(jobRun);
+                job.setLastJobRun(jobRun);
                 jobRepository.save(job);
 
-                // startFlow(jobRun);
                 resumeFlow(jobRun);
             }
         }
@@ -167,29 +168,18 @@ public class FlowManagerImpl implements FlowManager {
                     break;
                 }
                 context.setActivity(activity.getId());
-                if (activity.isAsync() && (JobRunStatus.WAITING == context.getStatus()
-                        || JobRunStatus.RUNNING == context.getStatus())) {
-                    if (JobRunStatus.WAITING == context.getStatus()) {
-                        // logActivityStart(activity, context);
-                        //this.jobRunning = false;
-                        break;
-                    } else if (JobRunStatus.RUNNING == context.getStatus()) {
-                        context.setStatus(JobRunStatus.WAITING);
-                        // logActivityStart(activity, context);
-                        context = persistState(context);
-                        //this.jobRunning = false;
-                        break;
-                    } else {
-
-                    }
-                } else {
-                    // activity is either "sync" or "async with status RESUMED"
-                    // this.jobRunning = true;
+                if (JobRunStatus.WAITING != context.getStatus()) {
                     context.setStatus(JobRunStatus.RUNNING);
                     logActivityStart(activity, context);
                     activity.execute(context);
-                    context = persistState(context);
-                    logActivityEnd(activity, context);
+                    if (activity.isSleepAfter()) {
+                        context.setStatus(JobRunStatus.WAITING);
+                        context = persistState(context);
+                        break;
+                    } else {
+                        context = persistState(context);
+                        logActivityEnd(activity, context);
+                    }
                 }
             }
 
@@ -208,6 +198,26 @@ public class FlowManagerImpl implements FlowManager {
             this.jobRunning = false;
             persistState(context);
         }
+    }
+
+    private Activity getNextActivity(String id, JobRunStatus status) {
+
+        List<Activity> activities = getActivities();
+        if (status == null) {
+            return activities.get(0);
+        }
+
+        for (int i = 0; i < activities.size(); i++) {
+            Activity activity = activities.get(i);
+            if (id.equalsIgnoreCase(activity.getId())) {
+                if (JobRunStatus.WAITING == status/* || JobRunStatus.RESUMED == status*/) {
+                    return activity;
+                } else {
+                    return (activities.size() > i + 1) ? activities.get(i + 1) : null;
+                }
+            }
+        }
+        return null;
     }
 
     @Override
@@ -248,23 +258,4 @@ public class FlowManagerImpl implements FlowManager {
                 String.format("%s has %s", activity.getName(), message), context));
     }
 
-    private Activity getNextActivity(String id, JobRunStatus status) {
-
-        List<Activity> activities = getActivities();
-        if (status == null) {
-            return activities.get(0);
-        }
-
-        for (int i = 0; i < activities.size(); i++) {
-            Activity activity = activities.get(i);
-            if (id.equalsIgnoreCase(activity.getId())) {
-                if (JobRunStatus.WAITING == status || JobRunStatus.RESUMED == status) {
-                    return activity;
-                } else {
-                    return (activities.size() > i + 1) ? activities.get(i + 1) : null;
-                }
-            }
-        }
-        return null;
-    }
 }

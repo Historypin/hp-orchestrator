@@ -1,5 +1,6 @@
 package sk.eea.td.hp_client.util;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 
@@ -22,6 +23,7 @@ public class JacksonObjectMapperProvider implements ContextResolver<ObjectMapper
 
     private static ObjectMapper createDefaultObjectMapper() {
         return new ObjectMapper()
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
                 .setAnnotationIntrospector(new JacksonAnnotationIntrospector());
     }
 }

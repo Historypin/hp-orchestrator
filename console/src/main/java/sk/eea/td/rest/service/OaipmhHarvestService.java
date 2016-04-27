@@ -52,6 +52,9 @@ public class OaipmhHarvestService {
     @Value("${oaipmh.password}")
     private String password;
 
+    @Value("${oaipmh.metadata.prefix}")
+    private String metadataPrefix;
+
     @Value("${storage.directory}")
     private String outputDirectory;
 
@@ -62,7 +65,7 @@ public class OaipmhHarvestService {
      */
     public Path harvest(String harvestId, OaipmhConfigWrapper oaipmhConfigWrapper) throws NoSuchFieldException, IOException, ParserConfigurationException, SAXException, TransformerException {
         final Path harvestPath = PathUtils.createHarvestRunSubdir(Paths.get(outputDirectory), harvestId);
-        harvest(harvestPath, this.baseUrl, oaipmhConfigWrapper.getFrom(), oaipmhConfigWrapper.getUntil(), oaipmhConfigWrapper.getSet(), oaipmhConfigWrapper.getMetadataPrefix());
+        harvest(harvestPath, this.baseUrl, oaipmhConfigWrapper.getFrom(), oaipmhConfigWrapper.getUntil(), oaipmhConfigWrapper.getSet());
         return harvestPath;
     }
 
@@ -79,7 +82,7 @@ public class OaipmhHarvestService {
      */
     public Path harvest(String harvestId, String url, String resumptionToken) throws NoSuchFieldException, IOException, ParserConfigurationException, SAXException, TransformerException {
         final Path harvestPath = PathUtils.createHarvestRunSubdir(Paths.get(outputDirectory), harvestId);
-        harvest(harvestPath, url, resumptionToken, null, null, null, null);
+        harvest(harvestPath, url, resumptionToken, null, null, null);
         return harvestPath;
     }
 
@@ -90,7 +93,6 @@ public class OaipmhHarvestService {
      * @param from
      * @param until
      * @param set
-     * @param metadataPrefix
      * @return harvestedFiles count and harvested objects count
      * @throws javax.xml.transform.TransformerException
      * @throws org.xml.sax.SAXException
@@ -99,12 +101,12 @@ public class OaipmhHarvestService {
      * @throws NoSuchFieldException
      */
     public HarvestingResult harvest(Path harvestPath, String url, String from,
-            String until, String set, String metadataPrefix) throws NoSuchFieldException, IOException, ParserConfigurationException, SAXException, TransformerException {
-        return harvest(harvestPath, url, null, from, until, set, metadataPrefix);
+            String until, String set) throws NoSuchFieldException, IOException, ParserConfigurationException, SAXException, TransformerException {
+        return harvest(harvestPath, url, null, from, until, set);
     }
 
     private HarvestingResult harvest(Path harvestPath, String url, String resumptionToken, String from,
-            String until, String set, String metadataPrefix) throws IOException, ParserConfigurationException, SAXException, TransformerException, NoSuchFieldException {
+            String until, String set) throws IOException, ParserConfigurationException, SAXException, TransformerException, NoSuchFieldException {
 
         ListRecords listRecords;
         int harvestedFiles = 0;

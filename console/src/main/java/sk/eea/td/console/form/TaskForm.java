@@ -11,7 +11,6 @@ import sk.eea.td.rest.validation.HistorypinValidation;
 import sk.eea.td.rest.validation.OaipmhValidation;
 
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.List;
@@ -63,6 +62,9 @@ public class TaskForm {
     @Size(min = 1, max = 150, groups = { EuropeanaValidation.class })
     private String luceneQuery;
 
+    // this field is optional
+    private String searchFacet;
+
     @NotNull(message = "Project slug is missing.", groups = { HistorypinValidation.class })
     @Size(min = 1, max = 150, groups = { HistorypinValidation.class })
     private String projectSlug;
@@ -79,16 +81,12 @@ public class TaskForm {
     @Size(min = 1, max = 150, groups = { OaipmhValidation.class })
     private String oaiSet;
 
-    @NotNull(message = "Metadata prefix is missing.", groups = { OaipmhValidation.class })
-    @Size(min = 1, max = 150, groups = { OaipmhValidation.class })
-    private String oaiMetadataPrefix;
-
     public enum Harvesting {
-        EU, HP;
+        EU, HP
     }
 
     public enum Type {
-        OAIPMH, REST;
+        OAIPMH, REST
     }
 
     public Harvesting getHarvesting() {
@@ -153,14 +151,6 @@ public class TaskForm {
 
     public void setOaiSet(String oaiSet) {
         this.oaiSet = oaiSet;
-    }
-
-    public String getOaiMetadataPrefix() {
-        return oaiMetadataPrefix;
-    }
-
-    public void setOaiMetadataPrefix(String oaiMetadataPrefix) {
-        this.oaiMetadataPrefix = oaiMetadataPrefix;
     }
 
     public String getName() {
@@ -243,6 +233,14 @@ public class TaskForm {
         this.collectionTags = collectionTags;
     }
 
+    public String getSearchFacet() {
+        return searchFacet;
+    }
+
+    public void setSearchFacet(String searchFacet) {
+        this.searchFacet = searchFacet;
+    }
+
     @Override public String toString() {
         return "TaskForm{" +
                 "name='" + name + '\'' +
@@ -259,11 +257,11 @@ public class TaskForm {
                 ", collectionDate='" + collectionDate + '\'' +
                 ", collectionTags='" + collectionTags + '\'' +
                 ", luceneQuery='" + luceneQuery + '\'' +
+                ", searchFacet='" + searchFacet + '\'' +
                 ", projectSlug='" + projectSlug + '\'' +
                 ", oaiFrom=" + oaiFrom +
                 ", oaiUntil=" + oaiUntil +
                 ", oaiSet='" + oaiSet + '\'' +
-                ", oaiMetadataPrefix='" + oaiMetadataPrefix + '\'' +
                 '}';
     }
 }

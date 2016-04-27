@@ -10,12 +10,14 @@ import sk.eea.td.flow.FlowException;
 public class SyncActivity implements Activity {
 
     private String id;
+    boolean sleepAfter = false;
     private static final Logger LOG = LoggerFactory.getLogger(SyncActivity.class);
 
     public SyncActivity() {
     }
-    public SyncActivity(String id) {
+    public SyncActivity(String id, boolean sleepAfter) {
         this.id = id;
+        this.sleepAfter = sleepAfter;
     }
 
     @Override
@@ -31,5 +33,10 @@ public class SyncActivity implements Activity {
     @Override
     public String getId() {
         return id;
+    }
+
+    @Override
+    public boolean isSleepAfter() {
+        return sleepAfter;
     }
 }

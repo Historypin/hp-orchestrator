@@ -1,5 +1,7 @@
 package sk.eea.td.rest.model;
 
+import sk.eea.td.hp_client.api.Pin;
+
 import java.util.List;
 
 public class HistorypinTransformDTO {
@@ -50,165 +52,6 @@ public class HistorypinTransformDTO {
         }
     }
 
-    public static class Pin {
-
-        private String pinnerType;
-
-        private String caption;
-
-        private String description;
-
-        private String date;
-
-        private String license;
-
-        private Location location;
-
-        private String link;
-
-        private String content;
-
-        private String tags;
-
-        private String remoteId;
-
-        public String getPinnerType() {
-            return pinnerType;
-        }
-
-        public void setPinnerType(String pinnerType) {
-            this.pinnerType = pinnerType;
-        }
-
-        public String getCaption() {
-            return caption;
-        }
-
-        public void setCaption(String caption) {
-            this.caption = caption;
-        }
-
-        public String getDate() {
-            return date;
-        }
-
-        public void setDate(String date) {
-            this.date = date;
-        }
-
-        public String getLicense() {
-            return license;
-        }
-
-        public void setLicense(String license) {
-            this.license = license;
-        }
-
-        public Location getLocation() {
-            return location;
-        }
-
-        public void setLocation(Location location) {
-            this.location = location;
-        }
-
-        public String getLink() {
-            return link;
-        }
-
-        public void setLink(String link) {
-            this.link = link;
-        }
-
-        public String getContent() {
-            return content;
-        }
-
-        public void setContent(String content) {
-            this.content = content;
-        }
-
-        public String getTags() {
-            return tags;
-        }
-
-        public void setTags(String tags) {
-            this.tags = tags;
-        }
-
-        public String getRemoteId() {
-            return remoteId;
-        }
-
-        public void setRemoteId(String remoteId) {
-            this.remoteId = remoteId;
-        }
-
-        public String getDescription() {
-            return description;
-        }
-
-        public void setDescription(String description) {
-            this.description = description;
-        }
-
-        @Override public String toString() {
-            return "Pin{" +
-                    "pinnerType='" + pinnerType + '\'' +
-                    ", caption='" + caption + '\'' +
-                    ", description='" + description + '\'' +
-                    ", date='" + date + '\'' +
-                    ", license='" + license + '\'' +
-                    ", location=" + location +
-                    ", link='" + link + '\'' +
-                    ", content='" + content + '\'' +
-                    ", tags='" + tags + '\'' +
-                    ", remoteId='" + remoteId + '\'' +
-                    '}';
-        }
-    }
-
-    public static class Location {
-
-        private String lat;
-
-        private String lng;
-
-        private String range;
-
-        public String getLat() {
-            return lat;
-        }
-
-        public void setLat(String lat) {
-            this.lat = lat;
-        }
-
-        public String getLng() {
-            return lng;
-        }
-
-        public void setLng(String lng) {
-            this.lng = lng;
-        }
-
-        public String getRange() {
-            return range;
-        }
-
-        public void setRange(String range) {
-            this.range = range;
-        }
-
-        @Override public String toString() {
-            return "Location{" +
-                    "lat='" + lat + '\'' +
-                    ", lng='" + lng + '\'' +
-                    ", range='" + range + '\'' +
-                    '}';
-        }
-    }
-
     public static class EuropeanaFields {
 
         private String type;
@@ -219,7 +62,9 @@ public class HistorypinTransformDTO {
 
         private String rights;
 
-        private String edmIsShownBy;
+        private String edmPlaceLatitude;
+
+        private String edmPlaceLongitude;
 
         public String getType() {
             return type;
@@ -253,12 +98,20 @@ public class HistorypinTransformDTO {
             this.rights = rights;
         }
 
-        public String getEdmIsShownBy() {
-            return edmIsShownBy;
+        public String getEdmPlaceLatitude() {
+            return edmPlaceLatitude;
         }
 
-        public void setEdmIsShownBy(String edmIsShownBy) {
-            this.edmIsShownBy = edmIsShownBy;
+        public void setEdmPlaceLatitude(String edmPlaceLatitude) {
+            this.edmPlaceLatitude = edmPlaceLatitude;
+        }
+
+        public String getEdmPlaceLongitude() {
+            return edmPlaceLongitude;
+        }
+
+        public void setEdmPlaceLongitude(String edmPlaceLongitude) {
+            this.edmPlaceLongitude = edmPlaceLongitude;
         }
 
         @Override public String toString() {
@@ -267,7 +120,8 @@ public class HistorypinTransformDTO {
                     ", year='" + year + '\'' +
                     ", country='" + country + '\'' +
                     ", rights='" + rights + '\'' +
-                    ", edmIsShownBy='" + edmIsShownBy + '\'' +
+                    ", edmPlaceLatitude='" + edmPlaceLatitude + '\'' +
+                    ", edmPlaceLongitude='" + edmPlaceLongitude + '\'' +
                     '}';
         }
     }

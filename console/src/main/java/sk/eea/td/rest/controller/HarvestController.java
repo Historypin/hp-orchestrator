@@ -55,7 +55,7 @@ public class HarvestController {
             case EUROPEANA:
                 europeanaExecutorService.submit(() -> {
                     try {
-                        europeanaHarvestService.harvest(String.valueOf(System.currentTimeMillis()), request.getLuceneQuery());
+                        europeanaHarvestService.harvest(String.valueOf(System.currentTimeMillis()), request.getLuceneQuery(), request.getSearchFacet());
                     } catch (IOException | InterruptedException e) {
                         LOG.error("Exception at Europeana harvest job.", e);
                     }

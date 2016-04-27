@@ -24,19 +24,13 @@ public class OaipmhConfigWrapper {
     @ApiModelProperty(value = "set to harvest from", required = true)
     private String set;
 
-    @NotNull
-    @Size(min = 1, max = 200)
-    @ApiModelProperty(value = "format of metadata used", required = true, example = "edm")
-    private String metadataPrefix;
-
     public OaipmhConfigWrapper() {
     }
 
-    public OaipmhConfigWrapper(String from, String until, String set, String metadataPrefix) {
+    public OaipmhConfigWrapper(String from, String until, String set) {
         this.from = from;
         this.until = until;
         this.set = set;
-        this.metadataPrefix = metadataPrefix;
     }
 
     public String getFrom() {
@@ -63,20 +57,11 @@ public class OaipmhConfigWrapper {
         this.set = set;
     }
 
-    public String getMetadataPrefix() {
-        return metadataPrefix;
-    }
-
-    public void setMetadataPrefix(String metadataPrefix) {
-        this.metadataPrefix = metadataPrefix;
-    }
-
     @Override public String toString() {
         return "OaipmhConfigWrapper{" +
                 "from='" + from + '\'' +
                 ", until='" + until + '\'' +
                 ", set='" + set + '\'' +
-                ", metadataPrefix='" + metadataPrefix + '\'' +
                 '}';
     }
 }

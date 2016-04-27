@@ -2,6 +2,7 @@ package sk.eea.td.console.model;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -37,6 +38,9 @@ public class JobRun {
 
     @Column
     private String activity;
+
+    @Column(insertable = false, updatable = false)
+    private Date created;
 
     public Long getId() {
         return id;
@@ -92,6 +96,14 @@ public class JobRun {
         this.activity = activity;
     }
 
+    public Date getCreated() {
+        return created;
+    }
+
+    public void setCreated(Date created) {
+        this.created = created;
+    }
+
     @Override public String toString() {
         return "JobRun{" +
                 "id=" + id +
@@ -100,6 +112,7 @@ public class JobRun {
                 ", result=" + result +
                 ", activity=" + activity +
                 ", readOnlyParams size=" + readOnlyParams.size() +
+                ", created=" + created +
                 '}';
     }
 }
