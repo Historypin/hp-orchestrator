@@ -17,6 +17,8 @@ import org.junit.runners.MethodSorters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import sk.eea.td.mint_client.api.MintServiceException;
+
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class MintClientIT {
 
@@ -46,9 +48,10 @@ public class MintClientIT {
 		try {
 			f = new File(ClassLoader.getSystemResource("data.zip").toURI());
 			datasetId = client.uploadJson(f);
-			LOG.info("Dataset ID:" + datasetId);		
+			LOG.info("Dataset ID:" + datasetId);
+			if(datasetId == null) fail();
 			assertNotEquals(Integer.valueOf(0), datasetId);
-		} catch (URISyntaxException e) {
+		} catch (MintServiceException|URISyntaxException e) {
 			fail(e.toString());
 		}
 	}
@@ -56,33 +59,46 @@ public class MintClientIT {
 //	@Test
 	public void test03_DefineItems(){
 		test02_Upload();
-		if(!Integer.valueOf(0).equals(datasetId)){
-			Boolean result = client.defineItems(datasetId);
+		try {
+			Boolean result = false;
+			if(!Integer.valueOf(0).equals(datasetId)){
+				result = client.defineItems(datasetId);
+			}else{
+				fail("Upload wasn't successful");
+			}
 			assertTrue(result);
-		}else{
-			fail("Upload wasn't successful");
-		}
+			} catch (MintServiceException e) {
+				fail(e.toString());
+			}
 	}
 	
 //	@Test
 	public void test04_Transform(){
 		test03_DefineItems();
-		if(!Integer.valueOf(0).equals(datasetId)){
-			Boolean result = client.transform(datasetId);
-			assertTrue(result);
-		}else{
-			fail("Upload wasn't successful");
+		try {
+			if(!Integer.valueOf(0).equals(datasetId)){
+				Boolean result = client.transform(datasetId);
+				assertTrue(result);
+			}else{
+				fail("Upload wasn't successful");
+			}
+		} catch (MintServiceException e) {
+			fail(e.toString());
 		}
 	}
 	
 	@Test
 	public void test05_Publish(){
 		test04_Transform();
-		if(!Integer.valueOf(0).equals(datasetId)){
-			Boolean result = client.publish(datasetId);
-			assertTrue(result);
-		}else{
-			fail("Upload wasn't successful");
+		try{
+			if(!Integer.valueOf(0).equals(datasetId)){
+				Boolean result = client.publish(datasetId);
+				assertTrue(result);
+			}else{
+				fail("Upload wasn't successful");
+			}
+		} catch (MintServiceException e) {
+			fail(e.toString());
 		}
 	}
 	

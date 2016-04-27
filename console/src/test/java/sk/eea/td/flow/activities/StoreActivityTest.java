@@ -50,9 +50,9 @@ public class StoreActivityTest {
 		context.getJob().setTarget(Destination.MINT.toString());
 		Capture<Path> pathToZip = EasyMock.<Path>newCapture();
 		
-		EasyMock.expect(mintStoreService.store(EasyMock.<Path>capture(pathToZip))).andReturn(Boolean.TRUE);
-		EasyMock.replay(mintStoreService);
 		try {
+			EasyMock.expect(mintStoreService.store(EasyMock.<Path>capture(pathToZip))).andReturn(Boolean.TRUE);
+			EasyMock.replay(mintStoreService);
 			activity.execute(context);
             ZipFile zipFile = new ZipFile(pathToZip.getValue().toFile());
 			ZipEntry entry = zipFile.entries().nextElement();

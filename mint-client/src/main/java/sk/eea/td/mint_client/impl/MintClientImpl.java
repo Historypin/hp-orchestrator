@@ -20,9 +20,12 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.config.ConnectionConfig;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.DefaultConnectionKeepAliveStrategy;
+import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.SystemDefaultRoutePlanner;
 import org.apache.http.message.BasicNameValuePair;
@@ -32,6 +35,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import sk.eea.td.mint_client.api.MintClient;
+import sk.eea.td.mint_client.api.MintServiceException;
 
 public class MintClientImpl implements Closeable, MintClient{
 	
@@ -50,6 +54,7 @@ public class MintClientImpl implements Closeable, MintClient{
 	private MintClientImpl(String baseUrl) {
 		this.baseUrl = baseUrl;
 		this.httpClient = HttpClientBuilder.create().setRoutePlanner(new SystemDefaultRoutePlanner(ProxySelector.getDefault()))
+				.setRetryHandler(new DefaultHttpRequestRetryHandler(5, true))
 				.build(); 
 	}
 
@@ -83,16 +88,17 @@ public class MintClientImpl implements Closeable, MintClient{
 	 * @see sk.eea.td.mint_client.impl.MintClient#uploadJson(java.io.File)
 	 */
 	@Override
-	public Integer uploadJson( File f ) {
+	public Integer uploadJson( File f ) throws MintServiceException {
 		// send the file
+		int datasetId = -1;
 		try {
 			HttpPost httpPost = new HttpPost(baseUrl+"/AjaxFileReader.action?qqfile=" + 
 					URLEncoder.encode( f.getName(), "UTF-8"));
 			Path p = f.toPath();
 			byte[] data = Files.readAllBytes(p);
 			String tmpFileName = "";
-			int datasetId = -1;
 			httpPost.setEntity(new ByteArrayEntity(data, ContentType.APPLICATION_OCTET_STREAM));
+			httpPost.expectContinue();
 			CloseableHttpResponse resp = httpClient.execute( httpPost );
 			if( resp.getStatusLine().getStatusCode() == 200 ) {
 				String respText = EntityUtils.toString( resp.getEntity());
@@ -103,6 +109,7 @@ public class MintClientImpl implements Closeable, MintClient{
 				}
 				EntityUtils.consumeQuietly(resp.getEntity());
 			} else {
+				LOG.debug("Uploading file to MINT: FAILED");
 				return null;
 			}
 
@@ -125,17 +132,22 @@ public class MintClientImpl implements Closeable, MintClient{
 					datasetId = Integer.parseInt( m.group(1));
 				}
 				EntityUtils.consumeQuietly(resp.getEntity());
-				waitForReady(datasetId, timeout);
-				LOG.debug("Uploading file to MINT: SUCCESSFUL");
-				return datasetId;
+				resp.close();
+				if(!waitForReady(datasetId, timeout)){
+					LOG.debug("Uploading file to MINT: FAILED");
+					return null;
+				}else{
+					LOG.debug("Uploading file to MINT: SUCCESSFUL");
+					return datasetId;
+				}
 			} else {
 				EntityUtils.consumeQuietly(resp.getEntity());
 				LOG.debug(MessageFormat.format("Result code: {0} when uploading file to MINT",resp.getStatusLine().getStatusCode()));
 			}
 		} catch( Exception e ) {
-			e.printStackTrace();
+			throw new MintServiceException(e);
 		}
-		LOG.debug("Uploading file to MINT: UNSUCCESSFUL");		
+		LOG.debug("Uploading file to MINT: FAILED");		
 		return null;
 	}
 	
@@ -144,7 +156,7 @@ public class MintClientImpl implements Closeable, MintClient{
 	 * @see sk.eea.td.mint_client.impl.MintClient#completeStatus(int)
 	 */
 	@Override
-	public JSONObject completeStatus( int id ) {
+	public JSONObject completeStatus( int id ) throws MintServiceException {
 		CloseableHttpResponse resp = null;
 		try {
 			HttpGet get = new HttpGet( baseUrl+"/ImportStatusJson?importId="+id);
@@ -158,10 +170,9 @@ public class MintClientImpl implements Closeable, MintClient{
 				return null;
 			}
 		} catch( Exception e ) {
-			e.printStackTrace();
-			EntityUtils.consumeQuietly(resp.getEntity());			
+			EntityUtils.consumeQuietly(resp.getEntity());
+			throw new MintServiceException(e);
 		}
-		return null;
 	}
 	
 	// return the current status of the set
@@ -171,11 +182,21 @@ public class MintClientImpl implements Closeable, MintClient{
 	 * @see sk.eea.td.mint_client.impl.MintClient#findStatus(int)
 	 */
 	@Override
-	public String findStatus( int datasetId ) {
+	public String findStatus( int datasetId ) throws MintServiceException {
 		JSONObject js = completeStatus( datasetId );
 		if( js == null ) return "error";
-		if( js.getBoolean("inProgress" )) return "running"; 
-		else return "ready";
+		if( js.getBoolean("inProgress" )){
+			return "running";
+		} else {
+			if(js.has("derived")){
+				JSONObject derived = js.getJSONObject("derived");
+				for(String name : JSONObject.getNames(derived)){
+					JSONObject derivedObject = derived.getJSONObject(name);
+					if(derivedObject.getBoolean("inProgress")) return "running"; 
+				}				
+			}
+		}
+		return "ready";
 	}
 	
 	// transform according to histroypin mapping
@@ -183,7 +204,7 @@ public class MintClientImpl implements Closeable, MintClient{
 	 * @see sk.eea.td.mint_client.impl.MintClient#transform(int)
 	 */
 	@Override
-	public boolean transform( int datasetId ) {		
+	public boolean transform( int datasetId ) throws MintServiceException {		
 		HttpPost httpPost;
 		CloseableHttpResponse resp = null;
 		
@@ -207,7 +228,7 @@ public class MintClientImpl implements Closeable, MintClient{
 		} catch( Exception e ) {
 			LOG.error(MessageFormat.format("Transformation of MINT dataset ({0}) failed.", datasetId),e);
 			EntityUtils.consumeQuietly(resp.getEntity());
-			return false;
+			throw new MintServiceException(e);
 		}
 	}
 	
@@ -216,7 +237,7 @@ public class MintClientImpl implements Closeable, MintClient{
 	 * @see sk.eea.td.mint_client.impl.MintClient#defineItems(int)
 	 */
 	@Override
-	public boolean defineItems( int datasetId ) {
+	public boolean defineItems( int datasetId ) throws MintServiceException {
 		CloseableHttpResponse resp = null;
 		try {
 			HttpGet get = new HttpGet( new URIBuilder(baseUrl+"/Itemize")
@@ -235,7 +256,7 @@ public class MintClientImpl implements Closeable, MintClient{
 		} catch( Exception e ) {
 			LOG.error(MessageFormat.format("Problem definning items for dataset ({0}) in MINT",datasetId),e);
 			if( resp != null ) EntityUtils.consumeQuietly( resp.getEntity());
-			return false;
+			throw new MintServiceException(e);
 		}
 		LOG.error(MessageFormat.format("Problem definning items for dataset ({0}) in MINT",datasetId));
 		return false;
@@ -248,7 +269,7 @@ public class MintClientImpl implements Closeable, MintClient{
 	 * @see sk.eea.td.mint_client.impl.MintClient#publish(int)
 	 */
 	@Override
-	public boolean publish( int datasetId ) {
+	public boolean publish( int datasetId ) throws MintServiceException {
 		CloseableHttpResponse resp = null;
 		try {
 			HttpGet get = new HttpGet( new URIBuilder(baseUrl+"/XSLselection")
@@ -263,9 +284,8 @@ public class MintClientImpl implements Closeable, MintClient{
 			}	
 		} catch( Exception e ) {
 			LOG.error(MessageFormat.format("Problem publishing items of dataset ({0}).", datasetId), e);
-			e.printStackTrace();
 			if( resp != null ) EntityUtils.consumeQuietly( resp.getEntity());
-			return false;
+			throw new MintServiceException(e);
 		}
 		LOG.error(MessageFormat.format("Problem publishing items of dataset ({0}).", datasetId));
 		return false;
@@ -288,7 +308,7 @@ public class MintClientImpl implements Closeable, MintClient{
 				if(	"error".equals( status )) return false;
 				if( System.currentTimeMillis() - start - 1000*timeOutSeconds > 0 ) return false;
 			} catch( Exception e ) {
-				e.printStackTrace();
+				LOG.debug("Could not get dataset state.", e);
 				return false;
 			}
 		}
