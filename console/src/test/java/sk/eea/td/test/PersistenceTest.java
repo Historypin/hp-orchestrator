@@ -1,11 +1,14 @@
 package sk.eea.td.test;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
+
+import sk.eea.td.IntegrationTest;
 import sk.eea.td.config.PersistenceConfig;
 import sk.eea.td.config.RESTClientsConfig;
 import sk.eea.td.config.TestConfig;
@@ -22,6 +25,7 @@ import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { TestConfig.class, RESTClientsConfig.class, PersistenceConfig.class})
+@Category(IntegrationTest.class)
 @Transactional
 public class PersistenceTest {
 

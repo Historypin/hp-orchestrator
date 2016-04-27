@@ -17,9 +17,11 @@ import org.junit.runners.MethodSorters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import sk.eea.td.IntegrationTest;
 import sk.eea.td.mint_client.api.MintServiceException;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@Category(IntegrationTest.class)
 public class MintClientIT {
 
 	public static Logger LOG = LoggerFactory.getLogger(MintClientIT.class);
