@@ -32,10 +32,7 @@
                 org.springframework.web.context.support.AnnotationConfigWebApplicationContext
             </param-value>
         </init-param>
-        <init-param>
-            <param-name>contextConfigLocation</param-name>
-            <param-value>sk.eea.td.config.AppConfig</param-value>
-        </init-param>
+        <load-on-startup>1</load-on-startup>
     </servlet>
 
     <!-- Security Filter -->
