@@ -12,6 +12,7 @@ import sk.eea.td.console.repository.JobRunRepository;
 import sk.eea.td.console.repository.LogRepository;
 import sk.eea.td.console.repository.ParamRepository;
 import sk.eea.td.rest.model.Connector;
+import sk.eea.td.rest.service.MailService;
 
 import java.util.*;
 import java.util.concurrent.locks.Lock;
@@ -32,6 +33,9 @@ public class FlowManagerImpl implements FlowManager {
 
     @Autowired
     private LogRepository logRepository;
+
+    @Autowired
+    private MailService mailService;
 
     private Lock lock = new ReentrantLock();
 
@@ -71,6 +75,7 @@ public class FlowManagerImpl implements FlowManager {
                     job.setLastJobRun(jobRun);
                     jobRepository.save(job);
 
+                    LOG.debug("Created a new JobRun with id: {}.", jobRun.getId());
                     startFlow(jobRun);
                 }
             } finally {
@@ -107,8 +112,8 @@ public class FlowManagerImpl implements FlowManager {
 
             failFlow(context);
         } finally {
-            //this.jobRunning = false;
             persistState(context);
+            LOG.debug("Finished a JobRun with id: {}.", context.getId());
         }
     }
 
@@ -120,6 +125,26 @@ public class FlowManagerImpl implements FlowManager {
     protected void failFlow(JobRun context) {
         context.setStatus(JobRunStatus.STOPPED);
         context.setResult(JobRunResult.FAILED);
+
+        reportFailure(context);
+    }
+
+    protected void reportFailure(JobRun context) {
+        try {
+            final Map<String, String> emailParams = new HashMap<>();
+            // prepare required params for sending emails
+            emailParams.put("userName", context.getJob().getUser().getUsername());
+            emailParams.put("taskName", context.getJob().getName());
+            emailParams.put("taskRunId", context.getId().toString());
+
+            mailService.sendErrorMail(
+                    context.getJob().getUser().getEmail(),
+                    "Orchestrator task has failed",
+                    emailParams
+            );
+        } catch (Exception e) {
+            LOG.error("Exception occurred during reporting failure to user: ", e);
+        }
     }
 
     @Override
