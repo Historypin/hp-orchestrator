@@ -1,5 +1,6 @@
 package sk.eea.td.test;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -23,6 +24,7 @@ import sk.eea.td.rest.model.Connector;
 import java.util.Arrays;
 import java.util.List;
 
+@Ignore
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { TestConfig.class, RESTClientsConfig.class, PersistenceConfig.class})
 @Category(IntegrationTest.class)
