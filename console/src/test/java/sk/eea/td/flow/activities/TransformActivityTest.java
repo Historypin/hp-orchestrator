@@ -1,4 +1,4 @@
-package sk.eea.td.flow.ativities;
+package sk.eea.td.flow.activities;
 
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
