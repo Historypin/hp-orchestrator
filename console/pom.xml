@@ -29,7 +29,7 @@
         <!-- Inter-project dependencies -->
         <dependency>
             <groupId>sk.eea.td</groupId>
-            <artifactId>oclc-harvester</artifactId>
+            <artifactId>oai-client</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 

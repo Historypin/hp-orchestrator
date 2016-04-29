@@ -28,7 +28,6 @@
         <module>hp-client</module>
         <module>oai-client</module>
         <module>eu-client</module>
-
         <module>console</module>
 	    <module>mule-app</module>
         <module>onto-client</module>
