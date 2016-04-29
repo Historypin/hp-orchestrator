@@ -31,7 +31,7 @@
         <module>eu-client</module>
         <module>onto-client</module>
         <module>mint-client</module>
-        <!--<module>mule-app</module>-->
+        <module>mule-app</module>
     </modules>
 
     <build>

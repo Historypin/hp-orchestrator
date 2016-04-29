@@ -1,5 +1,8 @@
 package sk.eea.td.config;
 
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +13,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.annotation.Schedules;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
+
 import sk.eea.td.flow.Activity;
 import sk.eea.td.flow.FlowManager;
 import sk.eea.td.flow.FlowManagerImpl;
@@ -18,9 +22,6 @@ import sk.eea.td.flow.activities.ReportActivity;
 import sk.eea.td.flow.activities.StoreActivity;
 import sk.eea.td.flow.activities.TransformActivity;
 import sk.eea.td.rest.model.Connector;
-
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
 @Configuration
 @EnableScheduling

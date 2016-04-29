@@ -16,12 +16,9 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-		<mule.version>3.7.3</mule.version>
+		<mule.version>3.7.0</mule.version>
     	<mule.tools.version>1.1</mule.tools.version>
-		<munit.version>1.1.0</munit.version>
-    	<mule.munit.support.version>3.7.1</mule.munit.support.version>
-    	<mule.module.version>3.7.0</mule.module.version>
-    </properties>
+	</properties>
 
 	<build>
 		<plugins>
@@ -32,21 +29,7 @@
 				<extensions>true</extensions>
 				<configuration>
                     <copyToAppsDirectory>true</copyToAppsDirectory>
-				<inclusions>
-                        <inclusion>
-                            <groupId>org.mule.modules</groupId>
-                            <artifactId>mule-module-extensions-support</artifactId>
-                        </inclusion>
-                    <inclusion>
-                            <groupId>org.mule.modules</groupId>
-                            <artifactId>mule-module-extensions-spring-support</artifactId>
-                        </inclusion>
-                    <inclusion>
-                            <groupId>org.mule.modules</groupId>
-                            <artifactId>mule-module-apikit</artifactId>
-                        </inclusion>
-                    </inclusions>
-                </configuration>
+				</configuration>
 			</plugin>
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
@@ -84,52 +67,15 @@
 					</execution>
 				</executions>
 			</plugin>
-<!-- 		<plugin> -->
-<!--                 <groupId>com.mulesoft.munit.tools</groupId> -->
-<!--                 <artifactId>munit-maven-plugin</artifactId> -->
-<!--                 <version>${munit.version}</version> -->
-<!--                 <executions> -->
-<!--                     <execution> -->
-<!--                         <id>test</id> -->
-<!--                         <phase>test</phase> -->
-<!--                         <goals> -->
-<!--                             <goal>test</goal> -->
-<!--                         </goals> -->
-<!--                     </execution> -->
-<!--                 </executions> -->
-<!--                 <configuration> -->
-<!--                     <coverage> -->
-<!--                         <runCoverage>true</runCoverage> -->
-<!--                         <formats> -->
-<!--                             <format>html</format> -->
-<!--                         </formats> -->
-<!--                     </coverage> -->
-<!--                 </configuration> -->
-<!--             </plugin> -->
-        </plugins>
-	<testResources>
-            <testResource>
-                <directory>src/test/munit</directory>
-            </testResource>
-        <testResource>
-                <directory>src/test/resources</directory>
-            </testResource>
-        </testResources>
-    </build>
+		</plugins>
+	</build>
 
 	<!-- Mule Dependencies -->
 	<dependencies>
 		<!-- Xml configuration -->
 		<dependency>
-        	<groupId>com.mulesoft.muleesb</groupId>
-			<artifactId>mule-core-ee</artifactId>
-			<version>${mule.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		<!-- Xml configuration -->
-		<dependency>
-			<groupId>com.mulesoft.muleesb.modules</groupId>
-			<artifactId>mule-module-spring-config-ee</artifactId>
+			<groupId>org.mule.modules</groupId>
+			<artifactId>mule-module-spring-config</artifactId>
 			<version>${mule.version}</version>
 			<scope>provided</scope>
 		</dependency>
@@ -147,14 +93,14 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-        	<groupId>com.mulesoft.muleesb.transports</groupId>
-			<artifactId>mule-transport-jdbc-ee</artifactId>
+			<groupId>org.mule.transports</groupId>
+			<artifactId>mule-transport-jdbc</artifactId>
 			<version>${mule.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-        	<groupId>com.mulesoft.muleesb.transports</groupId>
-			<artifactId>mule-transport-jms-ee</artifactId>
+			<groupId>org.mule.transports</groupId>
+			<artifactId>mule-transport-jms</artifactId>
 			<version>${mule.version}</version>
 			<scope>provided</scope>
 		</dependency>
@@ -168,13 +114,23 @@
 		<dependency>
 			<groupId>org.mule.modules</groupId>
 			<artifactId>mule-module-scripting</artifactId>
-			<version>${mule.module.version}</version>
+			<version>${mule.version}</version>
 			<scope>provided</scope>
+			<exclusions>
+				<exclusion>
+		          <groupId>javax.script</groupId>
+		          <artifactId>jruby-engine</artifactId>
+		        </exclusion>
+				<exclusion>
+					<artifactId>jffi</artifactId>
+					<groupId>com.github.jnr</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.mule.modules</groupId>
 			<artifactId>mule-module-xml</artifactId>
-			<version>${mule.module.version}</version>
+			<version>${mule.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<!-- for testing -->
@@ -184,84 +140,21 @@
 			<version>${mule.version}</version>
 			<scope>test</scope>
 		</dependency>
-	<dependency>
-            <groupId>org.mule.modules</groupId>
-            <artifactId>mule-module-jersey</artifactId>
-            <version>${mule.module.version}</version>
-            <scope>provided</scope>
-        </dependency>
-    <dependency>
-            <groupId>org.mule.modules</groupId>
-            <artifactId>mule-module-http</artifactId>
-            <version>${mule.module.version}</version>
-            <scope>provided</scope>
-        </dependency>
-<!--     <dependency> -->
-<!--             <groupId>com.mulesoft.munit</groupId> -->
-<!--             <artifactId>mule-munit-support</artifactId> -->
-<!--             <version>${mule.munit.support.version}</version> -->
-<!--             <scope>test</scope> -->
-<!--         </dependency> -->
-<!--     <dependency> -->
-<!--             <groupId>com.mulesoft.munit</groupId> -->
-<!--             <artifactId>munit-runner</artifactId> -->
-<!--             <version>${munit.version}</version> -->
-<!--             <scope>test</scope> -->
-<!--         </dependency> -->
-    <dependency>
-            <groupId>org.mule.modules</groupId>
-            <artifactId>mule-module-extensions-support</artifactId>
-            <version>${mule.module.version}</version>
-        </dependency>
-    <dependency>
-            <groupId>org.mule.modules</groupId>
-            <artifactId>mule-module-extensions-spring-support</artifactId>
-            <version>${mule.module.version}</version>
-        </dependency>
-    <dependency>
-            <groupId>org.mule.modules</groupId>
-            <artifactId>mule-module-spring-config</artifactId>
-            <version>${mule.version}</version>
-            <scope>provided</scope>
-        </dependency>
-    <dependency>
-            <groupId>org.mule.modules</groupId>
-            <artifactId>mule-module-json</artifactId>
-            <version>${mule.module.version}</version>
-            <scope>provided</scope>
-        </dependency>
-    <dependency>
-            <groupId>com.mulesoft.weave</groupId>
-            <artifactId>mule-plugin-weave_2.11</artifactId>
-            <version>${mule.version}</version>
-            <scope>provided</scope>
-        </dependency>
-    <dependency>
-            <groupId>org.mule.modules</groupId>
-            <artifactId>mule-module-apikit</artifactId>
-            <version>1.7.3</version>
-        </dependency>
-    <dependency>
-            <groupId>com.mulesoft.muleesb.modules</groupId>
-            <artifactId>mule-module-batch-ee</artifactId>
-            <version>${mule.version}</version>
-            <scope>provided</scope>
-        </dependency>
-    </dependencies>
+	</dependencies>
 
 	<repositories>
+          <repository>
+            <id>Central</id>
+            <name>Central</name>
+            <url>http://repo1.maven.org/maven2/</url>
+            <layout>default</layout>
+        </repository>
         <repository>
             <id>mulesoft-releases</id>
             <name>MuleSoft Releases Repository</name>
             <url>http://repository.mulesoft.org/releases/</url>
             <layout>default</layout>
         </repository>
-	    <repository>
-	        <id>mulesoft-snapshots</id>
-	        <name>MuleSoft Snapshot Repository</name>
-	        <url>http://repository.mulesoft.org/snapshots/</url>
-	        <layout>default</layout>
-	    </repository>		
     </repositories>
     <pluginRepositories>
         <pluginRepository>
@@ -275,4 +168,13 @@
         </pluginRepository>
     </pluginRepositories>
 
+    <dependencyManagement>
+    	<dependencies>
+    		<dependency>
+    			<groupId>com.github.jnr</groupId>
+    			<artifactId>jffi</artifactId>
+    			<version>1.2.5</version>
+    		</dependency>
+    	</dependencies>
+    </dependencyManagement>
 </project>
