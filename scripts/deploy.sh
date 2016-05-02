@@ -12,7 +12,7 @@ function stop_tomcat() {
     done
 
     echo "Clearing webapps..."
-    rm -rfv ${TOMCAT_WEBAPPS_DIR}/*
+    sudo rm -rfv ${TOMCAT_WEBAPPS_DIR}/*
 }
 
 function start_tomcat() {
@@ -35,7 +35,7 @@ function start_tomcat() {
         return 0;
     fi
 
-    echo "Tomcat is up and running"
+    echo "Tomcat is up and running."
     return 1;
 }
 
@@ -44,11 +44,6 @@ function deploy_console() {
     cp -v "console.war" -t ${TOMCAT_WEBAPPS_DIR}
 }
 
-function deploy_mule() {
-    echo "Deploying mule app..."
-}
-
 stop_tomcat
 deploy_console
 start_tomcat
-deploy_mule
