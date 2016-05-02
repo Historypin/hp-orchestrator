@@ -32,11 +32,10 @@ function start_tomcat() {
 
     if [[ ${count} -eq ${TIMEOUT_LIMIT} ]]; then
         echo "Tomcat did not start in allowed limit!"
-        return 0;
+        return -1;
     fi
 
     echo "Tomcat is up and running."
-    return 1;
 }
 
 function deploy_console() {
