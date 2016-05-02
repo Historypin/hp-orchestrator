@@ -21,6 +21,7 @@
 	</properties>
 
 	<build>
+		<finalName>mule-app</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.mule.tools.maven</groupId>
