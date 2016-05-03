@@ -241,9 +241,9 @@ public class MintClientImpl implements Closeable, MintClient{
 		CloseableHttpResponse resp = null;
 		try {
 			HttpGet get = new HttpGet( new URIBuilder(baseUrl+"/Itemize")
-					.addParameter("itemLevel", "/json/results")
-					.addParameter( "itemLabel", "/json/results/caption")
-					.addParameter( "itemNativeId", "/json/results/id")
+					.addParameter("itemLevel", "/json")
+					.addParameter( "itemLabel", "/json/caption")
+					.addParameter( "itemNativeId", "/json/id")
 					.addParameter( "uploadId", Integer.toString( datasetId ))
 					.build());
 			resp = httpClient.execute(get);

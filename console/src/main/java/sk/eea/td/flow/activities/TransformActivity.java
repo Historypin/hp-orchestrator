@@ -89,9 +89,8 @@ public class TransformActivity implements Activity {
                             }
                             break;
                         case "hp.json2mint.json":
-//                            try (InputStream inputStream = response.readEntity(InputStream.class)) {
-//                                Files.copy(inputStream, transformedFile);
-//                            }
+                            Files.copy(harvestedFile, transformToFile);
+                            LOG.debug("File '{}' has been transformed into file: '{}'", harvestedFile.toString(), transformToFile.toString());
                             break;
                     }
                     return FileVisitResult.CONTINUE;
