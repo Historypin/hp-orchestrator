@@ -1,14 +1,8 @@
 package sk.eea.td.rest.service;
 
-import java.io.IOException;
-import java.nio.file.Path;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import sk.eea.td.hp_client.api.HPClient;
 import sk.eea.td.hp_client.api.Location;
 import sk.eea.td.hp_client.api.Pin;
@@ -16,23 +10,26 @@ import sk.eea.td.hp_client.api.Project;
 import sk.eea.td.hp_client.dto.SaveResponseDTO;
 import sk.eea.td.rest.model.HistorypinTransformDTO;
 
+import java.io.IOException;
+import java.nio.file.Path;
+
 public class HistorypinStoreService {
 
     private static final Logger LOG = LoggerFactory.getLogger(HistorypinStoreService.class);
-    
+
     private HPClient hpClient;
-    
+
     private Long hpUser;
-    
-    @Autowired
+
     private ObjectMapper objectMapper;
 
     private HistorypinStoreService(HPClient hpClient, Long hpUser) {
-		this.hpClient = hpClient;
-		this.hpUser = hpUser;
-	}
+        this.hpClient = hpClient;
+        this.hpUser = hpUser;
+        this.objectMapper = new ObjectMapper();
+    }
 
-	/**
+    /**
      * Stores contents of file into HP.
      *
      * @param projectId ID of project to save pins to.
@@ -43,8 +40,7 @@ public class HistorypinStoreService {
     public boolean storeToProject(Long projectId, Path file) throws IOException {
         final HistorypinTransformDTO transformation = objectMapper.readValue(file.toFile(), HistorypinTransformDTO.class);
         int failedPins = 0;
-        for (HistorypinTransformDTO.Record record : transformation.getRecords()) {
-            final Pin pin = record.getPin();
+        for (Pin pin : transformation.getPins()) {
             try {
                 final SaveResponseDTO response = hpClient.createPin(projectId, pin);
                 if (response.getId() != null) {
@@ -58,11 +54,11 @@ public class HistorypinStoreService {
                 LOG.error("Failed to create record with remote ID: '{}'. Exception'", pin.getRemoteId(), e);
             }
         }
-        LOG.debug("Successfully extracted and uploaded {} pins from file '{}'.", transformation.getRecords().size() - failedPins, file);
+        LOG.debug("Successfully extracted and uploaded {} pins from file '{}'.", transformation.getPins().size() - failedPins, file);
         return failedPins <= 0;
     }
-    
-    public Long createProject(String projectName, Location projectLocation){
+
+    public Long createProject(String projectName, Location projectLocation) {
         final SaveResponseDTO response = hpClient.createProject(hpUser, new Project(projectName, projectLocation));
         // verify that project is created
         if (!response.getErrors().isEmpty()) {
@@ -74,8 +70,8 @@ public class HistorypinStoreService {
             return response.getId();
         }
     }
-    
-    public static HistorypinStoreService getInstance(HPClient hpClient, Long hpUser){
-    	return new HistorypinStoreService(hpClient, hpUser);
+
+    public static HistorypinStoreService getInstance(HPClient hpClient, Long hpUser) {
+        return new HistorypinStoreService(hpClient, hpUser);
     }
 }
