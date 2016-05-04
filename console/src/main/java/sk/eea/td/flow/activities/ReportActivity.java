@@ -43,6 +43,6 @@ public class ReportActivity implements Activity {
 
     @Override
     public String getName() {
-        return "report";
+        return "Report activity";
     }
 }
