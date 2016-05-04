@@ -1,6 +1,8 @@
 package sk.eea.td.flow.activities;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.io.FileUtils;
+import org.hibernate.jpa.criteria.expression.function.AggregationFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,8 @@ import sk.eea.td.mapper.EuropeanaToHistorypinMapper;
 import sk.eea.td.util.PathUtils;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
@@ -37,6 +41,14 @@ public class TransformActivity implements Activity {
 
     @Autowired
     private LogRepository logRepository;
+
+    private static final String MINT_PREFIX = "{ \"results\": [";
+
+    private static final byte[] MINT_PREFIX_BYTES = MINT_PREFIX.getBytes();
+
+    private static final String MINT_SUFFIX = "] }";
+
+    private static final byte[] MINT_SUFFIX_BYTES = MINT_SUFFIX.getBytes();
 
     @Override
     public void execute(JobRun context) throws FlowException {
@@ -89,8 +101,19 @@ public class TransformActivity implements Activity {
                             }
                             break;
                         case "hp.json2mint.json":
-                            Files.copy(harvestedFile, transformToFile);
-                            LOG.debug("File '{}' has been transformed into file: '{}'", harvestedFile.toString(), transformToFile.toString());
+                            byte[] array = new byte[1024];
+                            try (
+                                    InputStream fis = Files.newInputStream(harvestedFile);
+                                    OutputStream fos = Files.newOutputStream(transformToFile)
+                            ) {
+                                int length;
+                                fos.write(MINT_PREFIX_BYTES);
+                                while ((length = fis.read(array)) != -1) {
+                                    fos.write(array, 0, length);
+                                }
+                                fos.write(MINT_SUFFIX_BYTES);
+                                LOG.debug("File '{}' has been transformed into file: '{}'", harvestedFile.toString(), transformToFile.toString());
+                            }
                             break;
                     }
                     return FileVisitResult.CONTINUE;
