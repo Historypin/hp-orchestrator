@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import sk.eea.td.IntegrationTest;
 import sk.eea.td.config.RESTClientsConfig;
 import sk.eea.td.config.TestConfig;
 import sk.eea.td.hp_client.api.HPClient;
@@ -25,11 +27,10 @@ import java.nio.file.Paths;
 @Ignore
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { TestConfig.class, RESTClientsConfig.class })
-public class HistorypinStoreServiceTest {
+public class HistorypinStoreServiceTest implements IntegrationTest {
 
     private static final Path PATH = Paths.get("/temp/td/job_run_1/transform/1460972240085-830.hp.json");
 
-    @Autowired
     private HistorypinStoreService historypinStoreService;
 
     private HPClient hpClient;
@@ -57,9 +58,9 @@ public class HistorypinStoreServiceTest {
 
         //        hpClient.deleteAllProjects(65543L);
         //        hpClient.deleteAllPins(65543L);
-
+    	historypinStoreService = HistorypinStoreService.getInstance(hpClient, userId);
         SaveResponseDTO saveResponseDTO = hpClient.createProject(userId, new Project("This is test collection", new Location(42d, 23d, 10000L)));
-        historypinStoreService.store(saveResponseDTO.getId(), PATH, hpClient);
+        historypinStoreService.storeToProject(saveResponseDTO.getId(), PATH);
     }
 
 }

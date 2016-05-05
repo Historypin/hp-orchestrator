@@ -116,12 +116,20 @@ public class HomeController {
         if (TaskForm.Harvesting.EU.equals(taskForm.getHarvesting())) {
             if (TaskForm.Type.REST.equals(taskForm.getType())) {
                 job.setSource(Connector.EUROPEANA);
-            } else { // OAI-PMH
+            } else if(TaskForm.Type.OAIPMH.equals(taskForm.getType())) { // OAI-PMH
                 job.setSource(Connector.OAIPMH);
+            } else {
+            	throw new IllegalArgumentException("Source protocol not recognized.");
             }
-        } else { //HP
+            
+        } else if(TaskForm.Harvesting.HP.equals(taskForm.getHarvesting())){ //HP
             job.setSource(Connector.HISTORYPIN);
+        } else if(TaskForm.Harvesting.HP_ANNOTATION.equals(taskForm.getHarvesting())){ // HP ANOTATION
+        	job.setSource(Connector.EUROPEANA_ANNOTATION);
+        } else {
+        	throw new IllegalArgumentException("Source type not recognized");
         }
+        //FIXME
         job.setTarget(taskForm.getDestinations().stream().map(Destination::toString).collect(Collectors.joining(", ")));
 
         if (taskForm.getDestinations().contains(Destination.HP)) {

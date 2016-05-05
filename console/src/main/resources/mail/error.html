@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:remove="all">Template for error email</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<p>Dear <span th:text="${userName}">user</span>!</p>
+
+<p>Error has occured during execution of your task '<b th:text="${taskName}">dummy task name</b>' You can review the reasons in 'Logs' section of console under task run #<b th:text="${taskRunId}">123</b>.<br />
+    For more information, please contact the administrator or access the console.
+</p>
+<p>
+    Regards, <br />
+    <em>Orchestrator</em>
+</p>
+</body>
+</html>

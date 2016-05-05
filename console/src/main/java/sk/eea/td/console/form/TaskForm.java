@@ -82,7 +82,7 @@ public class TaskForm {
     private String oaiSet;
 
     public enum Harvesting {
-        EU, HP, OT
+        EU, HP, OT, HP_ANNOTATION;
     }
 
     public enum Type {

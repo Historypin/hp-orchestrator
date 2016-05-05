@@ -1,23 +1,13 @@
 package sk.eea.td.flow.activities;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
-import org.glassfish.jersey.client.ClientConfig;
-import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,18 +21,13 @@ import sk.eea.td.console.model.Log;
 import sk.eea.td.console.model.ParamKey;
 import sk.eea.td.console.repository.LogRepository;
 import sk.eea.td.flow.Activity;
-import sk.eea.td.rest.model.HistorypinTransformDTO;
-import sk.eea.td.rest.service.EuropeanaToHistorypinMapper;
+import sk.eea.td.mapper.EuropeanaToHistorypinMapper;
 import sk.eea.td.util.PathUtils;
 
 public class TransformActivity extends AbstractTransformActivity implements Activity {
 
+
     private static final Logger LOG = LoggerFactory.getLogger(TransformActivity.class);
-
-    private Client client;
-
-    @Value("${mule.transform.url}")
-    private String muleTransformURL;
 
     @Value("${storage.directory}")
     private String outputDirectory;
@@ -56,10 +41,13 @@ public class TransformActivity extends AbstractTransformActivity implements Acti
     @Autowired
     private LogRepository logRepository;
 
-    public TransformActivity() {
-        ClientConfig clientConfig = new ClientConfig();
-        this.client = ClientBuilder.newClient(clientConfig).register(MultiPartFeature.class);
-    }
+    private static final String MINT_PREFIX = "{ \"results\": [";
+
+    private static final byte[] MINT_PREFIX_BYTES = MINT_PREFIX.getBytes();
+
+    private static final String MINT_SUFFIX = "] }";
+
+    private static final byte[] MINT_SUFFIX_BYTES = MINT_SUFFIX.getBytes();
 
 /*    @Override
     public void execute(JobRun context) throws FlowException {
@@ -68,18 +56,82 @@ public class TransformActivity extends AbstractTransformActivity implements Acti
             final Map<ParamKey, String> paramMap = new HashMap<>();
             context.getReadOnlyParams().stream().forEach(p -> paramMap.put(p.getKey(), p.getValue()));
 
+<<<<<<< HEAD
             Destination destination = Destination.valueOf(context.getJob().getTarget().name());
 
             //FIXME
             //if (destinations.isEmpty()) {
             //    throw new IllegalStateException("There are no destinations set for this flow, therefore no transformation can be executed.");
             //}
+=======
+            // TODO: temporary ugly solution!!!!
+            List<Destination> destinations = new ArrayList<>();
+            for (String s : context.getJob().getTarget().split(", ")) {
+                try {
+                    destinations.add(Destination.valueOf(s));
+                } catch (IllegalArgumentException e) {
+                    LOG.error("Transformation to this destination will be skipped.", e);
+                }
+            }
+            final Destination destination = destinations.iterator().next(); // first destination
 
-            final WebTarget target = client.target(muleTransformURL);
+>>>>>>> 6bf16cd705bc3ba2ab6bb0558e40762fb8efc2a2
+
             final Path harvestPath = Paths.get(paramMap.get(ParamKey.HARVEST_PATH));
             final Path transformPath = PathUtils.createTransformRunSubdir(Paths.get(outputDirectory), String.valueOf(context.getId()));
+<<<<<<< HEAD
             walkFileTree(target, harvestPath, transformPath, destination, paramMap, context);
 
+=======
+            Files.walkFileTree(harvestPath, new SimpleFileVisitor<Path>() {
+                @Override
+                public FileVisitResult visitFileFailed(Path file, IOException exc) {
+                    LOG.error(String.format("Error at accessing file '%s'. File will be skipped. Reason: ", file.toAbsolutePath().toString()), exc);
+                    return FileVisitResult.CONTINUE;
+                }
+
+                @Override
+                public FileVisitResult visitFile(Path harvestedFile, BasicFileAttributes attr) throws IOException {
+                    final String filename = harvestedFile.getFileName().toString();
+                    final String[] parts = filename.split("\\.", 2);
+                    if (parts.length != 2 && isEmpty(parts[1])) {
+                        LOG.warn("Filename '{}' does not follow pattern '[name].[source_type].[format]'. File will be skipped.");
+                        return FileVisitResult.CONTINUE;
+                    }
+
+                    Path transformToFile = PathUtils.createUniqueFilename(transformPath, destination.getFormatCode());
+                    Destination sourceType = Destination.getDestinationByFormatCode(parts[1]);
+                    final String transformer = Destination.getTransformer(sourceType, destination);
+                    switch (transformer) {
+                        case "eu.json2hp.json":
+                            if (!europeanaToHistorypinMapper.map(harvestedFile, transformToFile, paramMap)) {
+                                Log log = new Log();
+                                log.setJobRun(context);
+                                log.setLevel(Log.LogLevel.ERROR);
+                                log.setMessage(String.format("Not all pins from file '%s' were transformed successfully. See server logs for details.", harvestedFile));
+                                logRepository.save(log);
+                            }
+                            break;
+                        case "hp.json2mint.json":
+                            byte[] array = new byte[1024];
+                            try (
+                                    InputStream fis = Files.newInputStream(harvestedFile);
+                                    OutputStream fos = Files.newOutputStream(transformToFile)
+                            ) {
+                                int length;
+                                fos.write(MINT_PREFIX_BYTES);
+                                while ((length = fis.read(array)) != -1) {
+                                    fos.write(array, 0, length);
+                                }
+                                fos.write(MINT_SUFFIX_BYTES);
+                                LOG.debug("File '{}' has been transformed into file: '{}'", harvestedFile.toString(), transformToFile.toString());
+                            }
+                            break;
+                    }
+                    return FileVisitResult.CONTINUE;
+                }
+            });
+>>>>>>> 6bf16cd705bc3ba2ab6bb0558e40762fb8efc2a2
             context.addReadOnlyParam(new ReadOnlyParam(ParamKey.TRANSFORM_PATH, transformPath.toAbsolutePath().toString()));
         } catch (Exception e) {
             throw new FlowException("Exception raised during transform action", e);
@@ -143,24 +195,21 @@ public class TransformActivity extends AbstractTransformActivity implements Acti
     }
 
     @Override
-    protected Path transform(String source, Path file, Path transformPath, JobRun context) throws IOException {
+    protected Path transform(String source, Path harvestedFile, Path transformPath, JobRun context) throws IOException {
 
         final Map<ParamKey, String> paramMap = new HashMap<>();
         context.getReadOnlyParams().stream().forEach(p -> paramMap.put(p.getKey(), p.getValue()));
 
         Destination destination = Destination.valueOf(context.getJob().getTarget().name());
 //        Path transformPath = getTransformPath(Paths.get(outputDirectory), String.valueOf(context.getId()));
-        LOG.debug("transforming: ", source, file, transformPath);
+        LOG.debug("transforming: ", source, harvestedFile, transformPath);
 
 
-        final String transformer = String.format("%s2%s", source, destination.getFormatCode());
-        LOG.debug("Sending file '{}' for transformation with transformer {}", file.toString(), transformer);
+//        final String transformer = String.format("%s2%s", source, destination.getFormatCode());
+//        LOG.debug("Sending file '{}' for transformation with transformer {}", file.toString(), transformer);
 
-        final WebTarget target = client.target(muleTransformURL);
 
-        Response response = target.queryParam("transformation", transformer).request(MediaType.APPLICATION_JSON, MediaType.TEXT_XML).post(Entity.entity(file.toFile(), MediaType.TEXT_XML));
-
-        Path transformedFile = PathUtils.createUniqueFilename(transformPath, destination.getFormatCode());
+/*        Path transformedFile = PathUtils.createUniqueFilename(transformPath, destination.getFormatCode());
         if ("eu.json2hp.json".equals(transformer)) { // additional transformation logic is required for EU2HP transformation
             final HistorypinTransformDTO dto = objectMapper.readValue(response.readEntity(InputStream.class), HistorypinTransformDTO.class);
 
@@ -177,9 +226,40 @@ public class TransformActivity extends AbstractTransformActivity implements Acti
             try (InputStream inputStream = response.readEntity(InputStream.class)) {
                 Files.copy(inputStream, transformedFile);
             }
+        }*/
+
+        ////
+        Path transformToFile = PathUtils.createUniqueFilename(transformPath, destination.getFormatCode());
+        Destination sourceType = Destination.getDestinationByFormatCode(source);
+        final String transformer = Destination.getTransformer(sourceType, destination);
+        switch (transformer) {
+            case "eu.json2hp.json":
+                if (!europeanaToHistorypinMapper.map(harvestedFile, transformToFile, paramMap)) {
+                    Log log = new Log();
+                    log.setJobRun(context);
+                    log.setLevel(Log.LogLevel.ERROR);
+                    log.setMessage(String.format("Not all pins from file '%s' were transformed successfully. See server logs for details.", harvestedFile));
+                    logRepository.save(log);
+                }
+                break;
+            case "hp.json2mint.json":
+                byte[] array = new byte[1024];
+                try (
+                        InputStream fis = Files.newInputStream(harvestedFile);
+                        OutputStream fos = Files.newOutputStream(transformToFile)
+                ) {
+                    int length;
+                    fos.write(MINT_PREFIX_BYTES);
+                    while ((length = fis.read(array)) != -1) {
+                        fos.write(array, 0, length);
+                    }
+                    fos.write(MINT_SUFFIX_BYTES);
+                    LOG.debug("File '{}' has been transformed into file: '{}'", harvestedFile.toString(), transformToFile.toString());
+                }
+                break;
         }
 
-        return transformedFile;
+        return transformToFile;
     }
 
 }

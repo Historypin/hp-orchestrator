@@ -6,7 +6,6 @@
 		<artifactId>technical-demonstrator</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<groupId>sk.eea.td</groupId>
 	<artifactId>oai-client</artifactId>
 
 	<name>OAI-PMH client</name>

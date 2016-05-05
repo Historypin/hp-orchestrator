@@ -2,7 +2,9 @@ package sk.eea.td.flow;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -25,6 +27,7 @@ import sk.eea.td.console.repository.JobRunRepository;
 import sk.eea.td.console.repository.LogRepository;
 import sk.eea.td.console.repository.ParamRepository;
 import sk.eea.td.rest.model.Connector;
+import sk.eea.td.rest.service.MailService;
 
 @Component
 public class FlowManagerImpl implements FlowManager {
@@ -42,6 +45,9 @@ public class FlowManagerImpl implements FlowManager {
 
     @Autowired
     private LogRepository logRepository;
+
+    @Autowired
+    private MailService mailService;
 
     private Lock lock = new ReentrantLock();
 
@@ -71,6 +77,14 @@ public class FlowManagerImpl implements FlowManager {
     @Override
     public void setTarget(Connector target) {
         this.target = target;
+/*
+                    LOG.debug("Created a new JobRun with id: {}.", jobRun.getId());
+                    startFlow(jobRun);
+                }
+            } finally {
+                lock.unlock();
+            }
+        }*/
     }
 
     /*
@@ -102,8 +116,8 @@ public class FlowManagerImpl implements FlowManager {
 
             failFlow(context);
         } finally {
-            //this.jobRunning = false;
             persistState(context);
+            LOG.debug("Finished a JobRun with id: {}.", context.getId());
         }
     }
 
@@ -115,6 +129,26 @@ public class FlowManagerImpl implements FlowManager {
     protected void failFlow(JobRun context) {
         context.setStatus(JobRunStatus.STOPPED);
         context.setResult(JobRunResult.FAILED);
+
+        reportFailure(context);
+    }
+
+    protected void reportFailure(JobRun context) {
+        try {
+            final Map<String, String> emailParams = new HashMap<>();
+            // prepare required params for sending emails
+            emailParams.put("userName", context.getJob().getUser().getUsername());
+            emailParams.put("taskName", context.getJob().getName());
+            emailParams.put("taskRunId", context.getId().toString());
+
+            mailService.sendErrorMail(
+                    context.getJob().getUser().getEmail(),
+                    "Orchestrator task has failed",
+                    emailParams
+            );
+        } catch (Exception e) {
+            LOG.error("Exception occurred during reporting failure to user: ", e);
+        }
     }
 
     public void trigger() {

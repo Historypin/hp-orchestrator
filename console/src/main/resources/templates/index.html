@@ -54,6 +54,7 @@
                                         <option value="EU" th:text="#{create.task.harvesting.eu}">Europeana</option>
                                         <option value="HP" th:text="#{create.task.harvesting.hp}">Historypin</option>
                                         <option value="OT" th:text="#{create.task.harvesting.ot}">Ontotext</option>
+                                        <option value="HP_ANNOTATION" th:text="#{create.task.harvesting.hp_annotation}">Historypin</option>
                                     </select>
                                     <span class="help-block" th:if="${#fields.hasErrors('harvesting')}" th:errors="*{harvesting}">Harvesting error</span>
                                 </div>
@@ -80,6 +81,7 @@
                                         <option value="TAGAPP" th:text="#{create.task.dest.tagapp}">Tagapp</option>
                                         <option value="MINT" th:text="#{create.task.dest.mint}">Mint</option>
                                         <option value="EUROPEANA" th:text="#{create.task.dest.eu}">Europeana</option>
+                                        <option value="EUROPEANA_ANNOTATION" th:text="#{create.task.dest.eu_annotation}">Europeana Annotation API</option>
                                         <option value="SD" th:text="#{create.task.dest.sd}">Semantic demonstrator</option>
                                     </select>
                                     <span class="help-block" th:if="${#fields.hasErrors('destinations')}" th:errors="*{destinations}">Destinations error</span>
@@ -198,6 +200,26 @@
                                     <span class="help-block" th:if="${#fields.hasErrors('projectSlug')}" th:errors="*{oaiFrom}">Project slug error</span>
                                 </div>
                             </div>
+							
+							<!--  Historypin annotation conf group -->
+							<div id="historypin_ann-conf-group">
+                                <div class="form-group" th:classappend="${#fields.hasErrors('oaiFrom')}? 'has-error'">
+                                    <label class="col-md-4 control-label" for="dateFrom" th:text="#{create.task.oai.from}">Date from</label>
+                                    <div class="col-md-4">
+                                        <input id="dateFrom" name="dateFrom" th:field="*{oaiFrom}" placeholder="YYYY-MM-DDThh:mm:ssZ" class="form-control input-md" type="text"/>
+                                        <span class="help-block" th:if="${#fields.hasErrors('oaiFrom')}" th:errors="*{oaiFrom}">Date from error</span>
+                                    </div>
+                                </div>
+
+                                <!-- OAI-PMH date until -->
+                                <div class="form-group" th:classappend="${#fields.hasErrors('oaiUntil')}? 'has-error'">
+                                    <label class="col-md-4 control-label" for="dateUntil" th:text="#{create.task.oai.until}">Date until</label>
+                                    <div class="col-md-4">
+                                        <input id="dateUntil" name="dateUntil" th:field="*{oaiUntil}" placeholder="YYYY-MM-DDThh:mm:ssZ" class="form-control input-md" type="text"/>
+                                        <span class="help-block" th:if="${#fields.hasErrors('oaiUntil')}" th:errors="*{oaiUntil}">Date until error</span>
+                                    </div>
+                                </div>
+							</div>
 
                             <!-- Button -->
                             <div class="form-group">
@@ -281,6 +303,7 @@
         if ("EU" == harvestingOption) {
             $("#type option[value='OAIPMH']").show();
             $("#destination option[value='MINT'], option[value='EUROPEANA'], option[value='SD']").remove();
+			$("#destination option[value='EUROPEANA_ANNOTATION']").remove();
 
             if ("OAIPMH" == typeOption) {
                 $("#oaipmh-conf-group").show();
@@ -291,14 +314,30 @@
                 $("#oaipmh-conf-group").hide();
                 $("#historypin-conf-group").hide();
             }
-        } else {
+            $("#historypin_ann-conf-group").hide();
+        } else if ("HP" == harvestingOption){
             $("#type option[value='OAIPMH']").hide();
             $("#type").val("REST");
             $("#destination option[value='HP']").remove();
-
+			$("#destination option[value='EUROPEANA_ANNOTATION']").remove();
+			
             $("#historypin-conf-group").show();
             $("#oaipmh-conf-group").hide();
             $("#europeana-conf-group").hide();
+            $("#historypin_ann-conf-group").hide();
+        } else if ("HP_ANNOTATION" == harvestingOption){
+            $("#type option[value='OAIPMH']").hide();
+            $("#type").val("REST");
+            $("#destination option[value='HP']").remove();
+			$("#destination option[value='TAGAPP']").remove();
+			$("#destination option[value='EUROPEANA']").remove();
+			$("#destination option[value='MINT']").remove();
+			$("#destination option[value='SD']").remove();
+			
+            $("#historypin-conf-group").hide();
+            $("#oaipmh-conf-group").hide();
+            $("#europeana-conf-group").hide();
+            $("#historypin_ann-conf-group").show();
         }
     };
 

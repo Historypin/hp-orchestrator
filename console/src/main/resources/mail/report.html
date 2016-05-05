@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:remove="all">Template for report email</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<p>Dear <span th:text="${userName}">user</span>!</p>
+<p>Your task '<b th:text="${taskName}">dummy task name</b>' has been processed.</p>
+
+<p>
+    Task was completed <em>successfully</em>.
+    <div th:if="${errors == 'true'}">However, there were some error messages. You can see them in 'Logs' section of console under task run #<b th:text="${taskRunId}">123</b></div>
+</p>
+
+<p>
+    Regards, <br />
+    <em>Orchestrator</em>
+</p>
+</body>
+</html>
