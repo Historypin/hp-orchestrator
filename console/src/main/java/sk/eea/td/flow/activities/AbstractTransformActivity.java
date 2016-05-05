@@ -63,12 +63,6 @@ public abstract class AbstractTransformActivity implements Activity {
         return PathUtils.createTransformRunSubdir(parentDir, jobRunId);
     }
 
-    @Override
-    public String getName() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
     protected void walkFileTree(Path harvestPath, Path transformPath) throws IOException {
         Files.walkFileTree(harvestPath, new SimpleFileVisitor<Path>() {
             @Override

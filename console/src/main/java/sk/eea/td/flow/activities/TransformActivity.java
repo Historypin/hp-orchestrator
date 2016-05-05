@@ -15,13 +15,13 @@ import org.springframework.beans.factory.annotation.Value;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import sk.eea.td.console.model.Destination;
 import sk.eea.td.console.model.JobRun;
 import sk.eea.td.console.model.Log;
 import sk.eea.td.console.model.ParamKey;
 import sk.eea.td.console.repository.LogRepository;
 import sk.eea.td.flow.Activity;
 import sk.eea.td.mapper.EuropeanaToHistorypinMapper;
+import sk.eea.td.rest.model.Connector;
 import sk.eea.td.util.PathUtils;
 
 public class TransformActivity extends AbstractTransformActivity implements Activity {
@@ -200,9 +200,7 @@ public class TransformActivity extends AbstractTransformActivity implements Acti
         final Map<ParamKey, String> paramMap = new HashMap<>();
         context.getReadOnlyParams().stream().forEach(p -> paramMap.put(p.getKey(), p.getValue()));
 
-        Destination destination = Destination.valueOf(context.getJob().getTarget().name());
 //        Path transformPath = getTransformPath(Paths.get(outputDirectory), String.valueOf(context.getId()));
-        LOG.debug("transforming: ", source, harvestedFile, transformPath);
 
 
 //        final String transformer = String.format("%s2%s", source, destination.getFormatCode());
@@ -229,34 +227,32 @@ public class TransformActivity extends AbstractTransformActivity implements Acti
         }*/
 
         ////
-        Path transformToFile = PathUtils.createUniqueFilename(transformPath, destination.getFormatCode());
-        Destination sourceType = Destination.getDestinationByFormatCode(source);
-        final String transformer = Destination.getTransformer(sourceType, destination);
-        switch (transformer) {
-            case "eu.json2hp.json":
-                if (!europeanaToHistorypinMapper.map(harvestedFile, transformToFile, paramMap)) {
-                    Log log = new Log();
-                    log.setJobRun(context);
-                    log.setLevel(Log.LogLevel.ERROR);
-                    log.setMessage(String.format("Not all pins from file '%s' were transformed successfully. See server logs for details.", harvestedFile));
-                    logRepository.save(log);
+
+        Path transformToFile = PathUtils.createUniqueFilename(transformPath, context.getJob().getTarget().getFormatCode());
+        if(Connector.EUROPEANA.equals(context.getJob().getSource()) && Connector.HISTORYPIN.equals(context.getJob().getTarget())) {
+            if (!europeanaToHistorypinMapper.map(harvestedFile, transformToFile, paramMap)) {
+                Log log = new Log();
+                log.setJobRun(context);
+                log.setLevel(Log.LogLevel.ERROR);
+                log.setMessage(String.format("Not all pins from file '%s' were transformed successfully. See server logs for details.", harvestedFile));
+                logRepository.save(log);
+            }
+        }
+
+        if(Connector.HISTORYPIN.equals(context.getJob().getSource()) && Connector.MINT.equals(context.getJob().getTarget())) {
+            byte[] array = new byte[1024];
+            try (
+                    InputStream fis = Files.newInputStream(harvestedFile);
+                    OutputStream fos = Files.newOutputStream(transformToFile)
+            ) {
+                int length;
+                fos.write(MINT_PREFIX_BYTES);
+                while ((length = fis.read(array)) != -1) {
+                    fos.write(array, 0, length);
                 }
-                break;
-            case "hp.json2mint.json":
-                byte[] array = new byte[1024];
-                try (
-                        InputStream fis = Files.newInputStream(harvestedFile);
-                        OutputStream fos = Files.newOutputStream(transformToFile)
-                ) {
-                    int length;
-                    fos.write(MINT_PREFIX_BYTES);
-                    while ((length = fis.read(array)) != -1) {
-                        fos.write(array, 0, length);
-                    }
-                    fos.write(MINT_SUFFIX_BYTES);
-                    LOG.debug("File '{}' has been transformed into file: '{}'", harvestedFile.toString(), transformToFile.toString());
-                }
-                break;
+                fos.write(MINT_SUFFIX_BYTES);
+                LOG.debug("File '{}' has been transformed into file: '{}'", harvestedFile.toString(), transformToFile.toString());
+            }
         }
 
         return transformToFile;

@@ -2,11 +2,10 @@ package sk.eea.td.console.validation;
 
 import org.hibernate.validator.spi.group.DefaultGroupSequenceProvider;
 import sk.eea.td.console.form.TaskForm;
-import sk.eea.td.console.model.Destination;
+import sk.eea.td.rest.model.Connector;
 import sk.eea.td.rest.validation.EuropeanaValidation;
 import sk.eea.td.rest.validation.HistorypinTargetValidation;
 import sk.eea.td.rest.validation.HistorypinValidation;
-import sk.eea.td.rest.validation.OaipmhValidation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,26 +15,17 @@ public class TaskFormValidationSequenceProvider implements DefaultGroupSequenceP
     public List<Class<?>> getValidationGroups(TaskForm taskForm) {
         List<Class<?>> sequence = new ArrayList<>();
         sequence.add(TaskForm.class);
-
         if (taskForm != null) {
-            if(taskForm.getDestinations() != null && taskForm.getDestinations().contains(Destination.HP)) {
+            if(taskForm.getTarget() != null && Connector.HISTORYPIN.equals(taskForm.getTarget())) {
                 sequence.add(HistorypinTargetValidation.class);
             }
 
-            if (TaskForm.Harvesting.EU.equals(taskForm.getHarvesting())) {
-                if (TaskForm.Type.OAIPMH.equals(taskForm.getType())) {
-                    sequence.add(OaipmhValidation.class);
-                } else if(TaskForm.Type.REST.equals(taskForm.getType())) {
-                    sequence.add(EuropeanaValidation.class);
-                } else {
-                	throw new IllegalArgumentException("Source protocol not recognized.");
-                }
-            } else if(TaskForm.Harvesting.HP.equals(taskForm.getHarvesting())) {
+            if(taskForm.getSource() != null && Connector.EUROPEANA.equals(taskForm.getSource())) {
+                sequence.add(EuropeanaValidation.class);
+            }
+
+            if(taskForm.getSource() != null && Connector.HISTORYPIN.equals(taskForm.getSource())) {
                 sequence.add(HistorypinValidation.class);
-            } else if(TaskForm.Harvesting.HP_ANNOTATION.equals(taskForm.getHarvesting())){
-            	
-            } else {
-            	throw new IllegalArgumentException("Source type not recognized.");
             }
         }
         return sequence;

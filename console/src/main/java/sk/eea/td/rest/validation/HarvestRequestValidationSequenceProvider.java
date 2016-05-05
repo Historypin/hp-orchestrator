@@ -20,9 +20,6 @@ public class HarvestRequestValidationSequenceProvider implements DefaultGroupSeq
                 case HISTORYPIN:
                     sequence.add(HistorypinValidation.class);
                     break;
-                case OAIPMH:
-                    sequence.add(OaipmhValidation.class);
-                    break;
                 default:
                     throw new IllegalStateException("Validation logic for connector: " + harvestRequest.getConnector() + " is missing!");
             }

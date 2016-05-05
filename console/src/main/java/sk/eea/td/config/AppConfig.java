@@ -62,8 +62,8 @@ public class AppConfig implements SchedulingConfigurer {
     }
 
     @Bean
-    public FlowManager europeanaFlowManager() {
-        FlowManager flowManager = new FlowManagerImpl(Connector.EUROPEANA, Connector.OAIPMH);
+    public FlowManager europeanaToHistorypinFlowManager() {
+        FlowManager flowManager = new FlowManagerImpl(Connector.EUROPEANA, Connector.HISTORYPIN);
         flowManager.addActivity(harvestActivity());
         flowManager.addActivity(transformActivity());
         flowManager.addActivity(storeActivity());
@@ -75,8 +75,8 @@ public class AppConfig implements SchedulingConfigurer {
             //@Scheduled(cron = "${europeana.flm.cron.expression}")
             @Scheduled(fixedRate = 1000)
     )
-    public void europeanaFlowManagerTimeSignal() {
-        europeanaFlowManager().trigger();
+    public void europeanaToHistorypinTimeSignal() {
+        europeanaToHistorypinFlowManager().trigger();
     }
 
     @Bean
@@ -191,9 +191,9 @@ public class AppConfig implements SchedulingConfigurer {
 //        historypinHarvester().trigger();
 //    }
 
-    public FlowManager historypinFlowManager() {
+    public FlowManager historypinToEuropeanaFlowManager() {
         //FIXME
-        FlowManagerImpl flowManager = new FlowManagerImpl(Connector.HISTORYPIN, null);
+        FlowManagerImpl flowManager = new FlowManagerImpl(Connector.HISTORYPIN, Connector.EUROPEANA);
         flowManager.addActivity(harvestActivity());
         flowManager.addActivity(transformActivity());
         flowManager.addActivity(storeActivity());
@@ -205,8 +205,8 @@ public class AppConfig implements SchedulingConfigurer {
             //@Scheduled(cron="${historypin.flm.cron.expression}")
             @Scheduled(fixedRate = 1000)
     )
-    public void historypinFlowManagerTimeSignal() {
-        historypinFlowManager().trigger();
+    public void historypinToEuropeanaTimeSignal() {
+        historypinToEuropeanaFlowManager().trigger();
     }
 
     @Override

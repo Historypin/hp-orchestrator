@@ -7,9 +7,7 @@ import org.hibernate.validator.group.GroupSequenceProvider;
 import sk.eea.td.rest.validation.EuropeanaValidation;
 import sk.eea.td.rest.validation.HarvestRequestValidationSequenceProvider;
 import sk.eea.td.rest.validation.HistorypinValidation;
-import sk.eea.td.rest.validation.OaipmhValidation;
 
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -38,11 +36,6 @@ public class HarvestRequest {
     @Size(min = 1, max = 200)
     @ApiModelProperty(value = "projectSlug for HISTORYPIN connector to harvest. Required if HISTORYPIN connector is used!")
     private String projectSlug;
-
-    @NotNull(message = "OAI-PMH configuration is mandatory for OAIPMH connector", groups = { OaipmhValidation.class})
-    @Valid
-    @ApiModelProperty(value = "configuration object for OAIPMH connector to harvest. Required if OAIPMH connector is used!")
-    private OaipmhConfigWrapper oaipmhConfigWrapper;
 
     public String getFilePath() {
         return filePath;
@@ -76,14 +69,6 @@ public class HarvestRequest {
         this.projectSlug = projectSlug;
     }
 
-    public OaipmhConfigWrapper getOaipmhConfigWrapper() {
-        return oaipmhConfigWrapper;
-    }
-
-    public void setOaipmhConfigWrapper(OaipmhConfigWrapper oaipmhConfigWrapper) {
-        this.oaipmhConfigWrapper = oaipmhConfigWrapper;
-    }
-
     public String getSearchFacet() {
         return searchFacet;
     }
@@ -99,7 +84,6 @@ public class HarvestRequest {
                 ", luceneQuery='" + luceneQuery + '\'' +
                 ", searchFacet='" + searchFacet + '\'' +
                 ", projectSlug='" + projectSlug + '\'' +
-                ", oaipmhConfigWrapper=" + oaipmhConfigWrapper +
                 '}';
     }
 }

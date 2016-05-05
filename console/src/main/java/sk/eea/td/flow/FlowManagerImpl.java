@@ -1,33 +1,23 @@
 package sk.eea.td.flow;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import sk.eea.td.console.model.Job;
-import sk.eea.td.console.model.JobRun;
+import sk.eea.td.console.model.*;
 import sk.eea.td.console.model.JobRun.JobRunResult;
 import sk.eea.td.console.model.JobRun.JobRunStatus;
-import sk.eea.td.console.model.Log;
-import sk.eea.td.console.model.Param;
-import sk.eea.td.console.model.ReadOnlyParam;
 import sk.eea.td.console.repository.JobRepository;
 import sk.eea.td.console.repository.JobRunRepository;
 import sk.eea.td.console.repository.LogRepository;
 import sk.eea.td.console.repository.ParamRepository;
 import sk.eea.td.rest.model.Connector;
 import sk.eea.td.rest.service.MailService;
+
+import java.util.*;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 @Component
 public class FlowManagerImpl implements FlowManager {
@@ -62,29 +52,6 @@ public class FlowManagerImpl implements FlowManager {
     public FlowManagerImpl(Connector source, Connector target) {
         this.source = source;
         this.target = target;
-    }
-
-    @Override
-    public void setSource(Connector source) {
-        this.source = source;
-    }
-
-    @Override
-    public Connector getSource() {
-        return source;
-    }
-
-    @Override
-    public void setTarget(Connector target) {
-        this.target = target;
-/*
-                    LOG.debug("Created a new JobRun with id: {}.", jobRun.getId());
-                    startFlow(jobRun);
-                }
-            } finally {
-                lock.unlock();
-            }
-        }*/
     }
 
     /*
@@ -177,6 +144,7 @@ public class FlowManagerImpl implements FlowManager {
                     job.setLastJobRun(jobRun);
                     jobRepository.save(job);
 
+                    LOG.debug("Created a new JobRun with id: {}.", jobRun.getId());
                     resumeFlow(jobRun);
                 }
             } finally {
@@ -269,6 +237,21 @@ public class FlowManagerImpl implements FlowManager {
 
     private void logActivity(Activity activity, String message, JobRun context) {
         logRepository.save(new Log(new Date(), Log.LogLevel.INFO, String.format("%s has %s", activity.getName(), message), context));
+    }
+
+    @Override
+    public void setSource(Connector source) {
+        this.source = source;
+    }
+
+    @Override
+    public Connector getSource() {
+        return source;
+    }
+
+    @Override
+    public void setTarget(Connector target) {
+        this.target = target;
     }
 
 }

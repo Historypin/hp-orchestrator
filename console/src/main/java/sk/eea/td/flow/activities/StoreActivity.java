@@ -1,32 +1,10 @@
 package sk.eea.td.flow.activities;
 
-import static org.apache.commons.lang3.StringUtils.isEmpty;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.text.MessageFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-import java.util.zip.ZipOutputStream;
-
 import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-
-import sk.eea.td.console.model.Destination;
 import sk.eea.td.console.model.JobRun;
 import sk.eea.td.console.model.Log;
 import sk.eea.td.console.model.ParamKey;
@@ -35,8 +13,24 @@ import sk.eea.td.flow.Activity;
 import sk.eea.td.flow.FlowException;
 import sk.eea.td.hp_client.api.Location;
 import sk.eea.td.hp_client.impl.HPClientImpl;
+import sk.eea.td.rest.model.Connector;
 import sk.eea.td.rest.service.HistorypinStoreService;
 import sk.eea.td.rest.service.MintStoreService;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.text.MessageFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipOutputStream;
+
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 public class StoreActivity implements Activity {
 
@@ -62,7 +56,7 @@ public class StoreActivity implements Activity {
             
             final Path transformPath = Paths.get(paramMap.get(ParamKey.TRANSFORM_PATH));
 
-            if(Arrays.asList(context.getJob().getTarget().split(",")).contains(Destination.HP.toString())){            	
+            if(Connector.HISTORYPIN.equals(context.getJob().getTarget())){
             	historypinStoreService = HistorypinStoreService.getInstance(new HPClientImpl(hpUrl, paramMap.get(ParamKey.HP_API_KEY), paramMap.get(ParamKey.HP_API_SECRET)),Long.parseLong(paramMap.get(ParamKey.HP_USER_ID)));
             }
             
@@ -88,10 +82,10 @@ public class StoreActivity implements Activity {
                         LOG.warn("Filename '{}' does not follow pattern '[name].[source_type].[format]'. File will be skipped.");
                         return FileVisitResult.CONTINUE;
                     }
-                    
-                    final Destination destination = Destination.getDestinationByFormatCode(parts[1]);
-                    switch (destination) {
-                        case HP:
+
+                    Connector target = Connector.getConnectorByFormatCode(parts[1]);
+                    switch (target) {
+                        case HISTORYPIN:
                             if (this.hpProjectId == null) {
                                 // get required parameters
                                 final Location location = new Location(
@@ -119,10 +113,10 @@ public class StoreActivity implements Activity {
                         	zipOutputStream.flush();                        	
                         	break;
                         case EUROPEANA:
-                        case SD:
-                            throw new NotImplementedException("Store procedure for destination: " + destination + " is not implemented yet!");
+                        case ONTOTEXT:
+                            throw new NotImplementedException("Store procedure for destination: " + target + " is not implemented yet!");
                         default:
-                            throw new IllegalArgumentException("There is no store procedure implemented for destination: " + destination);
+                            throw new IllegalArgumentException("There is no store procedure implemented for destination: " + target);
                     }
                     LOG.debug("Storing of file '{}' has ended.", file.toString());
                     return FileVisitResult.CONTINUE;

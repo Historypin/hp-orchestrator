@@ -1,17 +1,14 @@
 package sk.eea.td.rest.controller;
 
 import io.swagger.annotations.ApiOperation;
-
 import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.SystemEnvironmentPropertySource;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import org.xml.sax.SAXException;
 import sk.eea.td.rest.model.HarvestRequest;
 import sk.eea.td.rest.model.HarvestResponse;
 import sk.eea.td.rest.service.EuropeanaHarvestService;
@@ -20,8 +17,6 @@ import sk.eea.td.rest.service.OaipmhHarvestService;
 
 import javax.annotation.PreDestroy;
 import javax.validation.Valid;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -69,15 +64,6 @@ public class HarvestController {
                         historypinHarvestService.harvest(String.valueOf(System.currentTimeMillis()), request.getProjectSlug());
                     } catch (IOException |ParseException e) {
                         LOG.error("Exception at Historypin harvest job.", e);
-                    }
-                });
-                break;
-            case OAIPMH:
-                oaipmhExecutorService.submit(() -> {
-                    try {
-                        oaipmhHarvestService.harvest(String.valueOf(System.currentTimeMillis()), request.getOaipmhConfigWrapper());
-                    } catch (NoSuchFieldException | IOException | ParserConfigurationException | SAXException | TransformerException e) {
-                        LOG.error("Exception at OAI-PMH harvest job.", e);
                     }
                 });
                 break;

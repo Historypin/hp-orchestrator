@@ -2,18 +2,14 @@ package sk.eea.td.console.form;
 
 import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.validator.group.GroupSequenceProvider;
-import org.springframework.format.annotation.DateTimeFormat;
-import sk.eea.td.console.model.Destination;
 import sk.eea.td.console.validation.TaskFormValidationSequenceProvider;
+import sk.eea.td.rest.model.Connector;
 import sk.eea.td.rest.validation.EuropeanaValidation;
 import sk.eea.td.rest.validation.HistorypinTargetValidation;
 import sk.eea.td.rest.validation.HistorypinValidation;
-import sk.eea.td.rest.validation.OaipmhValidation;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.Date;
-import java.util.List;
 
 @GroupSequenceProvider(value = TaskFormValidationSequenceProvider.class)
 public class TaskForm {
@@ -21,14 +17,14 @@ public class TaskForm {
     @NotEmpty(message = "Name is missing.")
     private String name;
 
-    @NotNull
-    private Harvesting harvesting;
+    @NotNull(message = "Source is required.")
+    private Connector source;
 
-    @NotNull
-    private Type type;
+    @NotNull(message = "Target is required.")
+    private Connector target;
 
-    @NotEmpty(message = "At least one destination is required.")
-    private List<Destination> destinations;
+    @NotEmpty(message = "Target is required.")
+    private Connector connector;
 
     @NotNull(message = "Historypin user ID is missing.", groups = { HistorypinTargetValidation.class })
     private Long historypinUserId;
@@ -69,96 +65,60 @@ public class TaskForm {
     @Size(min = 1, max = 150, groups = { HistorypinValidation.class })
     private String projectSlug;
 
-    @NotNull(message = "From date is missing.", groups = { OaipmhValidation.class })
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssX")
-    private Date oaiFrom;
-
-    @NotNull(message = "Until date is missing.", groups = { OaipmhValidation.class })
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssX")
-    private Date oaiUntil;
-
-    @NotNull(message = "Set name is missing.", groups = { OaipmhValidation.class })
-    @Size(min = 1, max = 150, groups = { OaipmhValidation.class })
-    private String oaiSet;
-
-    public enum Harvesting {
-        EU, HP, OT, HP_ANNOTATION;
-    }
-
-    public enum Type {
-        OAIPMH, REST
-    }
-
-    public Harvesting getHarvesting() {
-        return harvesting;
-    }
-
-    public void setHarvesting(Harvesting harvesting) {
-        this.harvesting = harvesting;
-    }
-
-    public Type getType() {
-        return type;
-    }
-
-    public void setType(Type type) {
-        this.type = type;
-    }
-
-    public List<Destination> getDestinations() {
-        return destinations;
-    }
-
-    public void setDestinations(List<Destination> destinations) {
-        this.destinations = destinations;
-    }
-
-    public String getLuceneQuery() {
-        return luceneQuery;
-    }
-
-    public void setLuceneQuery(String luceneQuery) {
-        this.luceneQuery = luceneQuery;
-    }
-
-    public String getProjectSlug() {
-        return projectSlug;
-    }
-
-    public void setProjectSlug(String projectSlug) {
-        this.projectSlug = projectSlug;
-    }
-
-    public Date getOaiFrom() {
-        return oaiFrom;
-    }
-
-    public void setOaiFrom(Date oaiFrom) {
-        this.oaiFrom = oaiFrom;
-    }
-
-    public Date getOaiUntil() {
-        return oaiUntil;
-    }
-
-    public void setOaiUntil(Date oaiUntil) {
-        this.oaiUntil = oaiUntil;
-    }
-
-    public String getOaiSet() {
-        return oaiSet;
-    }
-
-    public void setOaiSet(String oaiSet) {
-        this.oaiSet = oaiSet;
-    }
-
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Connector getSource() {
+        return source;
+    }
+
+    public void setSource(Connector source) {
+        this.source = source;
+    }
+
+    public Connector getTarget() {
+        return target;
+    }
+
+    public void setTarget(Connector target) {
+        this.target = target;
+    }
+
+    public Connector getConnector() {
+        return connector;
+    }
+
+    public void setConnector(Connector connector) {
+        this.connector = connector;
+    }
+
+    public Long getHistorypinUserId() {
+        return historypinUserId;
+    }
+
+    public void setHistorypinUserId(Long historypinUserId) {
+        this.historypinUserId = historypinUserId;
+    }
+
+    public String getHistorypinApiKey() {
+        return historypinApiKey;
+    }
+
+    public void setHistorypinApiKey(String historypinApiKey) {
+        this.historypinApiKey = historypinApiKey;
+    }
+
+    public String getHistorypinApiSecret() {
+        return historypinApiSecret;
+    }
+
+    public void setHistorypinApiSecret(String historypinApiSecret) {
+        this.historypinApiSecret = historypinApiSecret;
     }
 
     public String getCollectionName() {
@@ -193,30 +153,6 @@ public class TaskForm {
         this.collectionRadius = collectionRadius;
     }
 
-    public Long getHistorypinUserId() {
-        return historypinUserId;
-    }
-
-    public void setHistorypinUserId(Long historypinUserId) {
-        this.historypinUserId = historypinUserId;
-    }
-
-    public String getHistorypinApiKey() {
-        return historypinApiKey;
-    }
-
-    public void setHistorypinApiKey(String historypinApiKey) {
-        this.historypinApiKey = historypinApiKey;
-    }
-
-    public String getHistorypinApiSecret() {
-        return historypinApiSecret;
-    }
-
-    public void setHistorypinApiSecret(String historypinApiSecret) {
-        this.historypinApiSecret = historypinApiSecret;
-    }
-
     public String getCollectionDate() {
         return collectionDate;
     }
@@ -233,6 +169,14 @@ public class TaskForm {
         this.collectionTags = collectionTags;
     }
 
+    public String getLuceneQuery() {
+        return luceneQuery;
+    }
+
+    public void setLuceneQuery(String luceneQuery) {
+        this.luceneQuery = luceneQuery;
+    }
+
     public String getSearchFacet() {
         return searchFacet;
     }
@@ -241,12 +185,20 @@ public class TaskForm {
         this.searchFacet = searchFacet;
     }
 
+    public String getProjectSlug() {
+        return projectSlug;
+    }
+
+    public void setProjectSlug(String projectSlug) {
+        this.projectSlug = projectSlug;
+    }
+
     @Override public String toString() {
         return "TaskForm{" +
                 "name='" + name + '\'' +
-                ", harvesting=" + harvesting +
-                ", type=" + type +
-                ", destinations=" + destinations +
+                ", source=" + source +
+                ", target=" + target +
+                ", connector=" + connector +
                 ", historypinUserId=" + historypinUserId +
                 ", historypinApiKey='" + historypinApiKey + '\'' +
                 ", historypinApiSecret='" + historypinApiSecret + '\'' +
@@ -259,9 +211,6 @@ public class TaskForm {
                 ", luceneQuery='" + luceneQuery + '\'' +
                 ", searchFacet='" + searchFacet + '\'' +
                 ", projectSlug='" + projectSlug + '\'' +
-                ", oaiFrom=" + oaiFrom +
-                ", oaiUntil=" + oaiUntil +
-                ", oaiSet='" + oaiSet + '\'' +
                 '}';
     }
 }
