@@ -86,7 +86,7 @@ public class AppConfig implements SchedulingConfigurer {
 
     @Bean
     public FlowManager testFlowManager() {
-        FlowManager flowManager = new FlowManagerImpl(Connector.HISTORYPIN, Connector.ONTOTEXT);
+        FlowManager flowManager = new FlowManagerImpl(Connector.HISTORYPIN, Connector.SD);
 
         Activity a1 = new Activity() {
             @Override
@@ -191,8 +191,8 @@ public class AppConfig implements SchedulingConfigurer {
 //        historypinHarvester().trigger();
 //    }
 
+    @Bean
     public FlowManager historypinToEuropeanaFlowManager() {
-        //FIXME
         FlowManagerImpl flowManager = new FlowManagerImpl(Connector.HISTORYPIN, Connector.EUROPEANA);
         flowManager.addActivity(harvestActivity());
         flowManager.addActivity(transformActivity());
