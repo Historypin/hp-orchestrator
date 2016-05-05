@@ -7,8 +7,9 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 
 @Configuration
-@ComponentScan(basePackages = {"sk.eea.td.flow", "sk.eea.td.console.repository"})
-@PropertySource({ "classpath:flowManagerTest.properties", "classpath:${spring.profiles.active:dev}.properties"})
+//@ComponentScan(basePackages = {"sk.eea.td.flow", "sk.eea.td.console.repository", "sk.eea.td.rest.service"})
+@ComponentScan(basePackages = {"sk.eea.td"})
+@PropertySource({ "classpath:default.properties", "classpath:${spring.profiles.active:dev}.properties"})
 public class FlowManagerTestConfig {
 
     @Bean

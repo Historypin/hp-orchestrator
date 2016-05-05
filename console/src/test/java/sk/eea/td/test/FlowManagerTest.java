@@ -1,8 +1,5 @@
 package sk.eea.td.test;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,13 +12,17 @@ import sk.eea.td.config.PersistenceConfig;
 import sk.eea.td.console.model.Job;
 import sk.eea.td.console.model.JobRun;
 import sk.eea.td.console.model.JobRun.JobRunStatus;
+import sk.eea.td.console.model.Param;
+import sk.eea.td.console.model.ParamKey;
 import sk.eea.td.console.model.User;
 import sk.eea.td.console.repository.JobRepository;
 import sk.eea.td.console.repository.JobRunRepository;
-import sk.eea.td.console.repository.LogRepository;
-import sk.eea.td.console.repository.ParamRepository;
 import sk.eea.td.console.repository.UsersRepository;
+import sk.eea.td.flow.Activity;
 import sk.eea.td.flow.FlowManager;
+import sk.eea.td.flow.FlowManagerImpl;
+import sk.eea.td.flow.activities.HarvestActivity;
+import sk.eea.td.flow.activities.Ontotext2HistorypinTransformActivity;
 import sk.eea.td.flow.ativities.SyncActivity;
 import sk.eea.td.rest.model.Connector;
 
@@ -34,22 +35,23 @@ public class FlowManagerTest {
         FlowManager testFlowManager = testFlowManager();
         Job job = createJob();
         testFlowManager.trigger();
-        Thread.sleep(1000l);
+/*        Thread.sleep(1000l);
         updateJob(job, JobRunStatus.RESUMED);
         Thread.sleep(1000l);
         testFlowManager.trigger();
         Thread.sleep(1000l);
         updateJob(job, JobRunStatus.RESUMED);
         Thread.sleep(1000l);
-        testFlowManager.trigger();
-        System.out.println(flowManager);
+        testFlowManager.trigger();*/
     }
 
     private Job createJob() {
 
         Job job = new Job();
         job.setName("test job");
-        job.setSource(Connector.EUROPEANA);
+        job.setSource(Connector.HISTORYPIN);
+        job.setTarget(Connector.ONTOTEXT);
+        job.addParam(new Param(ParamKey.HP_PROJECT_SLUG, "london"));
         User user = usersRepository.findByUsername("admin");
         job.setUser(user);
         job = jobRepository.save(job);
@@ -80,16 +82,30 @@ public class FlowManagerTest {
     SyncActivity activity4() {
         return new SyncActivity("activity4", true);
     }
+    @Bean
+    Activity ontotext2HistorypinTransformActivity() {
+        return new Ontotext2HistorypinTransformActivity();
+    }
+    @Bean
+    public Activity harvestActivity() {
+        return new HarvestActivity();
+    }
+
+    @Autowired
+    FlowManager flowManager;
 
     @Bean
     public FlowManager testFlowManager() {
-        List<Connector> sources = new ArrayList<>();
-        sources.add(Connector.EUROPEANA);
-        flowManager.setSources(sources);
+/*        FlowManager flowManager = new FlowManagerImpl(Connector.HISTORYPIN, Connector.EUROPEANA);
         flowManager.addActivity(activity1());
         flowManager.addActivity(activity2());
         flowManager.addActivity(activity3());
-        flowManager.addActivity(activity4());
+        flowManager.addActivity(activity4());*/
+        //FlowManager flowManager = new FlowManagerImpl(Connector.HISTORYPIN, Connector.ONTOTEXT);
+        flowManager.setSource(Connector.HISTORYPIN);
+        flowManager.setTarget(Connector.ONTOTEXT);
+        flowManager.addActivity(harvestActivity());
+        flowManager.addActivity(ontotext2HistorypinTransformActivity());
         return flowManager;
     }
 
@@ -97,12 +113,6 @@ public class FlowManagerTest {
     private JobRepository jobRepository;
     @Autowired
     private JobRunRepository jobRunRepository;
-    @Autowired
-    private ParamRepository paramRepository;
-    @Autowired
-    private LogRepository logRepository;
-    @Autowired
-    private FlowManager flowManager;
     @Autowired
     private UsersRepository usersRepository;
 }

@@ -24,7 +24,8 @@ public class Job {
     private Connector source;
 
     @Column
-    private String target;
+    @Enumerated(EnumType.STRING)
+    private Connector target;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "job", orphanRemoval = true)
     private List<Param> params = new ArrayList<>();
@@ -48,11 +49,11 @@ public class Job {
         this.source = source;
     }
 
-    public String getTarget() {
+    public Connector getTarget() {
         return target;
     }
 
-    public void setTarget(String target) {
+    public void setTarget(Connector target) {
         this.target = target;
     }
 

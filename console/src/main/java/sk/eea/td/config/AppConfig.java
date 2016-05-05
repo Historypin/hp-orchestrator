@@ -1,5 +1,9 @@
 package sk.eea.td.config;
 
+import java.util.Locale;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -7,8 +11,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.annotation.Schedules;
@@ -23,16 +25,17 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 import org.thymeleaf.spring4.SpringTemplateEngine;
 import org.thymeleaf.spring4.view.ThymeleafViewResolver;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
+
+import sk.eea.td.console.model.JobRun;
 import sk.eea.td.flow.Activity;
+import sk.eea.td.flow.FlowException;
 import sk.eea.td.flow.FlowManager;
 import sk.eea.td.flow.FlowManagerImpl;
 import sk.eea.td.flow.activities.HarvestActivity;
+import sk.eea.td.flow.activities.Ontotext2HistorypinTransformActivity;
 import sk.eea.td.flow.activities.StoreActivity;
 import sk.eea.td.flow.activities.TransformActivity;
-import sk.eea.td.flow.activities.TransformAndStoreActivity;
 import sk.eea.td.rest.model.Connector;
-
-import java.util.Locale;
 
 @Configuration
 @EnableWebMvc
@@ -40,6 +43,8 @@ import java.util.Locale;
 @PropertySource({ "classpath:default.properties", "classpath:${spring.profiles.active:prod}.properties"})
 @ComponentScan(basePackages = "sk.eea.td")
 public class AppConfig extends WebMvcConfigurerAdapter {
+
+    private static final Logger LOG = LoggerFactory.getLogger(AppConfig.class);
 
     @Bean
     public ClassLoaderTemplateResolver templateResolver() {
@@ -133,7 +138,7 @@ public class AppConfig extends WebMvcConfigurerAdapter {
 
     @Bean
     public FlowManager europeanaFlowManager() {
-        FlowManagerImpl flowManager = new FlowManagerImpl(Connector.EUROPEANA, Connector.OAIPMH);
+        FlowManager flowManager = new FlowManagerImpl(Connector.EUROPEANA, Connector.OAIPMH);
         flowManager.addActivity(harvestActivity());
         flowManager.addActivity(transformActivity());
         flowManager.addActivity(storeActivity());
@@ -149,24 +154,101 @@ public class AppConfig extends WebMvcConfigurerAdapter {
     }
 
     @Bean
-    public FlowManager ontotextFetchFlowManager() {
-        FlowManagerImpl flowManager = new FlowManagerImpl(Connector.EUROPEANA, Connector.OAIPMH);
-        flowManager.addActivity(harvestActivity());
-        flowManager.addActivity(transformActivity());
-        return flowManager;
-    }
-    public void ontotextFetchFlowManagerTimeSignal() {
-        ontotextFetchFlowManager().trigger();
+    Activity ontotext2HistorypinTransformActivity() {
+        return new Ontotext2HistorypinTransformActivity();
     }
 
     @Bean
-    public FlowManager ontotextApproveFlowManager() {
-        FlowManagerImpl flowManager = new FlowManagerImpl(Connector.EUROPEANA, Connector.OAIPMH);
-        flowManager.addActivity(storeActivity());
+    public FlowManager testFlowManager() {
+        FlowManager flowManager = new FlowManagerImpl(Connector.HISTORYPIN, Connector.ONTOTEXT);
+
+        Activity a1 = new Activity() {
+            @Override
+            public void execute(JobRun context) throws FlowException {
+                LOG.debug("executing activity: ", getId());
+            }
+            @Override
+            public String getName() {
+                return getId();
+            }
+            @Override
+            public String getId() {
+                return "A1";
+            }
+            @Override
+            public boolean isSleepAfter() {
+                return false;
+            }
+        };
+        Activity a2 = new Activity() {
+            @Override
+            public void execute(JobRun context) throws FlowException {
+                LOG.debug("executing activity: ", getId());
+            }
+            @Override
+            public String getName() {
+                return getId();
+            }
+            @Override
+            public String getId() {
+                return "A2";
+            }
+            @Override
+            public boolean isSleepAfter() {
+                return true;
+            }
+        };
+        Activity a3 = new Activity() {
+            @Override
+            public void execute(JobRun context) throws FlowException {
+                LOG.debug("executing activity: ", getId());
+            }
+            @Override
+            public String getName() {
+                return getId();
+            }
+            @Override
+            public String getId() {
+                return "A3";
+            }
+            @Override
+            public boolean isSleepAfter() {
+                return false;
+            }
+        };
+        Activity a4 = new Activity() {
+            @Override
+            public void execute(JobRun context) throws FlowException {
+                LOG.debug("executing activity: ", getId());
+            }
+            @Override
+            public String getName() {
+                return getId();
+            }
+            @Override
+            public String getId() {
+                return "A4";
+            }
+            @Override
+            public boolean isSleepAfter() {
+                return true;
+            }
+        };
+//        flowManager.addActivity(a1);
+//        flowManager.addActivity(a2);
+//        flowManager.addActivity(a3);
+//        flowManager.addActivity(a4);
+
+        flowManager.addActivity(harvestActivity());
+        flowManager.addActivity(ontotext2HistorypinTransformActivity());
         return flowManager;
     }
-    public void ontotextApproveFlowManagerTimeSignal() {
-        ontotextApproveFlowManager().trigger();
+    @Schedules(@Scheduled(fixedRate = 60000))
+    public void testFlowManagerTimeSignal() {
+        FlowManager fm = testFlowManager();
+        System.out.println(fm);
+        System.out.println(fm.getSource());
+        fm.trigger();
     }
 
 //    @Bean

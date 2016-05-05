@@ -29,5 +29,8 @@ public interface FlowManager {
 
     void addActivity(Activity activity);
 
-    void setSources(List<Connector> sources);
+    void setSource(Connector source);
+    Connector getSource();
+
+    void setTarget(Connector target);
 }

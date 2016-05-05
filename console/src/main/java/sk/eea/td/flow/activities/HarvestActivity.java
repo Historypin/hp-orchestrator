@@ -53,6 +53,7 @@ public class HarvestActivity implements Activity {
             }
             context.addReadOnlyParam(new ReadOnlyParam(ParamKey.HARVEST_PATH, harvestPath.toAbsolutePath().toString()));
         } catch (Exception e) {
+            LOG.error("Harvest activity exception", e);
             throw new FlowException("Exception raised during harvest action", e);
         } finally {
             LOG.debug("Harvest activity for job ID: {} has ended.", context.getId());

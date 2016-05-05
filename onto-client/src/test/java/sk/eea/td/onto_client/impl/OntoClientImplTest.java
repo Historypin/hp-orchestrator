@@ -33,7 +33,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.fasterxml.jackson.core.JsonParseException;
 
-import sk.eea.td.onto_client.api.OntoClient;
+import sk.eea.td.onto_client.dto.ExtractResponseDTO;
 
 @PrepareForTest({ OntoClientImpl.class })
 @RunWith(PowerMockRunner.class)
@@ -62,6 +62,7 @@ public class OntoClientImplTest {
         when(builder.header(anyString(), anyString())).thenReturn(builder);
         when(webTarget.request()).thenReturn(builder);
         when(webTarget.request(MediaType.TEXT_PLAIN)).thenReturn(builder);
+        when(webTarget.request(MediaType.TEXT_XML)).thenReturn(builder);
         when(webTarget.path(anyString())).thenReturn(webTarget);
         when(webTarget.queryParam(anyString(), anyObject())).thenReturn(webTarget);
         when(client.target(anyString())).thenReturn(webTarget);
@@ -101,13 +102,6 @@ public class OntoClientImplTest {
     final String BASE_URL = "http://efd.ontotext.com/enrichment/extract";
 
     @Test
-    public void extractIT() throws JsonParseException, IOException {
-        String text = "A piece of strawberry sponge cake on a white plate with a small blue and white spotted mug of black coffee credit: Marie-Louise Avery / thePictureKitchen / TopFoto baking; strawberries; cakes; europeana food and drink; eufd; sugar; food; GEN; sweet; cooking; cookery; teatime; cream; slice; whipped; icing; break Original image mentions no place but we will say picture was taken in London or maybe Seattle.";
-        OntoClient service = new OntoClientImpl(BASE_URL, null);
-        service.extract(text);
-    }
-
-    @Test
     public void extractSuccessMockTest() throws IOException {
         InputStream responseIS = getClass().getResourceAsStream("/extract-response.json");
         StringWriter writer = new StringWriter();
@@ -115,7 +109,14 @@ public class OntoClientImplTest {
         String body = writer.toString();
 
         when(response.readEntity(String.class)).thenReturn(body);
-        String[] tags = ontoClient.extract(anyString());
+        String tags = ontoClient.extract(anyString(), anyString());
         System.out.println(tags);
     }
+
+    @Test
+    public void extract2Object() throws JsonParseException, IOException {
+        ExtractResponseDTO dto = ontoClient.extract2Object(null, null);
+        System.out.println(dto);
+    }
+
 }

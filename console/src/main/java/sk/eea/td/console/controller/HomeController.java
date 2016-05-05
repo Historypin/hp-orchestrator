@@ -71,12 +71,12 @@ public class HomeController {
         Page<Job> jobPage = jobRepository.findAll(getPageable(input));
         for (Job job : jobPage) {
             if (job.getLastJobRun() == null) {
-                tasks.add(new TaskRow(job.getName(), job.getSource().toString(), job.getTarget(), "PLANNED", "", ""));
+                tasks.add(new TaskRow(job.getName(), job.getSource().toString(), job.getTarget().toString(), "PLANNED", "", ""));
             } else {
                 tasks.add(
                         new TaskRow(job.getName(),
                                 job.getSource().toString(),
-                                job.getTarget(),
+                                job.getTarget().toString(),
                                 job.getLastJobRun().getStatus().toString(),
                                 (job.getLastJobRun().getResult() != null) ? job.getLastJobRun().getResult().toString() : "",
                                 job.getLastJobRun().getId().toString()

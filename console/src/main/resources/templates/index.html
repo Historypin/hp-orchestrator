@@ -53,6 +53,7 @@
                                     <select id="harvesting" name="harvesting" class="form-control" th:field="*{harvesting}">
                                         <option value="EU" th:text="#{create.task.harvesting.eu}">Europeana</option>
                                         <option value="HP" th:text="#{create.task.harvesting.hp}">Historypin</option>
+                                        <option value="OT" th:text="#{create.task.harvesting.ot}">Ontotext</option>
                                     </select>
                                     <span class="help-block" th:if="${#fields.hasErrors('harvesting')}" th:errors="*{harvesting}">Harvesting error</span>
                                 </div>

@@ -1,10 +1,11 @@
 package sk.eea.td.flow;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -42,46 +43,35 @@ public class FlowManagerImpl implements FlowManager {
     @Autowired
     private LogRepository logRepository;
 
+    private Lock lock = new ReentrantLock();
+
     private List<Activity> activities = new ArrayList<>();
 
-    private boolean jobRunning = false; // default value
-
-    private List<Connector> sources = new ArrayList<>();
+    private Connector source;
+    private Connector target;
 
     public FlowManagerImpl() {
     }
 
-    public FlowManagerImpl(Connector source) {
-        this.sources.add(source);
+    public FlowManagerImpl(Connector source, Connector target) {
+        this.source = source;
+        this.target = target;
     }
 
-    public FlowManagerImpl(Connector... sources) {
-        this.sources.addAll(Arrays.asList(sources));
+    @Override
+    public void setSource(Connector source) {
+        this.source = source;
     }
 
-/*    public synchronized void trigger() {
-        if (!this.jobRunning) {
-            // get next job
-            Job job = jobRepository.findFirstByLastJobRunIsNullOrderByIdAsc();
-            if(job != null && sources.contains(job.getSource())) {
-                this.jobRunning = true;
-                // create its run
-                JobRun jobRun = new JobRun();
-                jobRun.setJob(job);
-                // copy params into read-only entity
-                Set<Param> paramSet = paramRepository.findByJob(job);
-                for(Param param : paramSet) {
-                    jobRun.addReadOnlyParam(new ReadOnlyParam(param));
-                }
-                // save & mark as actual job run for this job
-                jobRun =  jobRunRepository.save(jobRun);
-                job.setLastJobRun(jobRun);
-                jobRepository.save(job);
+    @Override
+    public Connector getSource() {
+        return source;
+    }
 
-                startFlow(jobRun);
-            }
-        }
-    }*/
+    @Override
+    public void setTarget(Connector target) {
+        this.target = target;
+    }
 
     /*
      * (non-Javadoc)
@@ -112,7 +102,7 @@ public class FlowManagerImpl implements FlowManager {
 
             failFlow(context);
         } finally {
-            this.jobRunning = false;
+            //this.jobRunning = false;
             persistState(context);
         }
     }
@@ -129,31 +119,34 @@ public class FlowManagerImpl implements FlowManager {
 
     public void trigger() {
 
-        if (!this.jobRunning) {
-            // get next job
-            Job job = jobRepository.findNextJob();
-            LOG.debug("job found: ", job);
-            if (job != null && sources.contains(job.getSource())) {
+        if (lock.tryLock()) {
+            try {
+                // get next job
+                Job job = jobRepository.findNextJob(source.name(), target.name());
+                LOG.debug("job found: ", job);
+                if (job != null /*&& sources.contains(job.getSource())*/) {
 
-                JobRun jobRun = null;
-                if (job.getLastJobRun() != null && job.getLastJobRun().getStatus() != null
-                        && (JobRunStatus.RESUMED == job.getLastJobRun().getStatus())) {
-                    jobRun = job.getLastJobRun();
-                } else {
-                    jobRun = new JobRun();
-                    jobRun.setJob(job);
-                    Set<Param> paramList = paramRepository.findByJob(job);
-                    for (Param param : paramList) {
-                        jobRun.addReadOnlyParam(new ReadOnlyParam(param));
+                    JobRun jobRun = null;
+                    if (job.getLastJobRun() != null && job.getLastJobRun().getStatus() != null
+                            && (JobRunStatus.RESUMED == job.getLastJobRun().getStatus())) {
+                        jobRun = job.getLastJobRun();
+                    } else {
+                        jobRun = new JobRun();
+                        jobRun.setJob(job);
+                        Set<Param> paramList = paramRepository.findByJob(job);
+                        for (Param param : paramList) {
+                            jobRun.addReadOnlyParam(new ReadOnlyParam(param));
+                        }
                     }
+
+                    jobRun = jobRunRepository.save(jobRun);
+                    job.setLastJobRun(jobRun);
+                    jobRepository.save(job);
+
+                    resumeFlow(jobRun);
                 }
-
-                this.jobRunning = true;
-                jobRun = jobRunRepository.save(jobRun);
-                job.setLastJobRun(jobRun);
-                jobRepository.save(job);
-
-                resumeFlow(jobRun);
+            } finally {
+                lock.unlock();
             }
         }
     }
@@ -195,7 +188,6 @@ public class FlowManagerImpl implements FlowManager {
 
             failFlow(context);
         } finally {
-            this.jobRunning = false;
             persistState(context);
         }
     }
@@ -233,18 +225,6 @@ public class FlowManagerImpl implements FlowManager {
         activities.add(activity);
     }
 
-    public List<Connector> getSources() {
-        return sources;
-    }
-
-    public void setSources(List<Connector> sources) {
-        this.sources = sources;
-    }
-
-    public void addSource(Connector source) {
-        this.sources.add(source);
-    }
-
     private void logActivityStart(Activity activity, JobRun context) {
         logActivity(activity, "started", context);
     }
@@ -254,8 +234,7 @@ public class FlowManagerImpl implements FlowManager {
     }
 
     private void logActivity(Activity activity, String message, JobRun context) {
-        logRepository.save(new Log(new Date(), Log.LogLevel.INFO,
-                String.format("%s has %s", activity.getName(), message), context));
+        logRepository.save(new Log(new Date(), Log.LogLevel.INFO, String.format("%s has %s", activity.getName(), message), context));
     }
 
 }
