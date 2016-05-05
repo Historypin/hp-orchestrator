@@ -50,7 +50,7 @@ public class FlowManagerTest {
         Job job = new Job();
         job.setName("test job");
         job.setSource(Connector.HISTORYPIN);
-        job.setTarget(Connector.ONTOTEXT);
+        job.setTarget(Connector.SD);
         job.addParam(new Param(ParamKey.HP_PROJECT_SLUG, "london"));
         User user = usersRepository.findByUsername("admin");
         job.setUser(user);
@@ -103,7 +103,7 @@ public class FlowManagerTest {
         flowManager.addActivity(activity4());*/
         //FlowManager flowManager = new FlowManagerImpl(Connector.HISTORYPIN, Connector.ONTOTEXT);
         flowManager.setSource(Connector.HISTORYPIN);
-        flowManager.setTarget(Connector.ONTOTEXT);
+        flowManager.setTarget(Connector.SD);
         flowManager.addActivity(harvestActivity());
         flowManager.addActivity(ontotext2HistorypinTransformActivity());
         return flowManager;
