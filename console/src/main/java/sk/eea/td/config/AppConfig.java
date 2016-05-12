@@ -34,6 +34,9 @@ public class AppConfig implements SchedulingConfigurer {
     @Autowired
     private FlowManager historypinToEuropeanaFlowManager;
 
+    @Autowired 
+    private FlowManager dataflow4;
+    
     @Bean
     public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
         return new PropertySourcesPlaceholderConfigurer();
@@ -63,6 +66,14 @@ public class AppConfig implements SchedulingConfigurer {
         historypinToEuropeanaFlowManager.trigger();
     }
 
+    @Schedules(
+    		//@Scheduled(cron="${historypinAnnotation.flm.cron.expression}
+    		@Scheduled(fixedRate=1000)
+	)
+    public void dataflow4Trigger(){
+    	dataflow4.trigger();
+    }
+
     @Override
     public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
         taskRegistrar.setScheduler(taskExecutor());
@@ -72,4 +83,5 @@ public class AppConfig implements SchedulingConfigurer {
     public Executor taskExecutor() {
         return Executors.newScheduledThreadPool(10);
     }
+        
 }

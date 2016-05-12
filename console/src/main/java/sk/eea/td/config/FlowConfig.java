@@ -63,5 +63,15 @@ public class FlowConfig {
         flowManager.addActivity(reportActivity());
         return flowManager;
     }
+    
+    @Bean
+    public FlowManagerImpl dataflow4(){
+    	FlowManagerImpl flowManager = new FlowManagerImpl(Connector.HISTORYPIN_ANNOTATION, Connector.EUROPEANA_ANNOTATION);
+    	flowManager.addActivity(harvestActivity());
+    	flowManager.addActivity(transformActivity());
+    	flowManager.addActivity(storeActivity());
+    	flowManager.addActivity(reportActivity());
+    	return flowManager;
+    }
 
 }

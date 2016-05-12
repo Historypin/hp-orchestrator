@@ -37,7 +37,9 @@ public class HarvestActivity implements Activity {
             final Map<ParamKey, String> paramMap = new HashMap<>();
             context.getReadOnlyParams().stream().forEach(p -> paramMap.put(p.getKey(), p.getValue()));
             final Path harvestPath;
-            switch (context.getJob().getSource()) {
+            String from = paramMap.get(ParamKey.OAI_FROM);
+			String until = paramMap.get(ParamKey.OAI_UNTIL);
+			switch (context.getJob().getSource()) {
                 case EUROPEANA:
                     harvestPath = europeanaHarvestService.harvest(String.valueOf(context.getId()), paramMap.get(ParamKey.EU_REST_QUERY), paramMap.get(ParamKey.EU_REST_FACET));
                     break;
@@ -45,9 +47,11 @@ public class HarvestActivity implements Activity {
                     harvestPath = historypinHarvestService.harvest(String.valueOf(context.getId()), paramMap.get(ParamKey.HP_PROJECT_SLUG));
                     break;
                 case OAIPMH:
-                    final OaipmhConfigWrapper configWrapper = new OaipmhConfigWrapper(paramMap.get(ParamKey.OAI_FROM), paramMap.get(ParamKey.OAI_UNTIL), paramMap.get(ParamKey.OAI_SET));
+                    final OaipmhConfigWrapper configWrapper = new OaipmhConfigWrapper(from, until, paramMap.get(ParamKey.OAI_SET));
                     harvestPath = oaipmhHarvestService.harvest(String.valueOf(context.getId()), configWrapper);
                     break;
+                case HISTORYPIN_ANNOTATION:
+                	harvestPath = historypinHarvestService.harvestAnnotation(String.valueOf(context.getId()),String.valueOf(context.getJob().getId()), from, until);
                 default:
                     throw new IllegalArgumentException("There is no harvester implemented for source: " + context.getJob().getSource());
             }
