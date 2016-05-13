@@ -23,11 +23,6 @@ Username: admin
 
 Password: admin
 
-### Mule
-Application uses Mule for its powerful data transformation capabilities. Directory {project_dir}/mule-app contains mule project, which needs to be build by maven and deployed in Mule ESB server.
-1. Go to mule project dir and run `mvn clean package`.
-2. Deploy file {project_dir}/mule-app/target/mule-app-*.zip in your Mule ESB server.
-
 ## Environment properties
 Application supports to run in different profiles, depending on target environment: development, test or production. It will use different property files for each profile, and some aspects as logging and caching will behave differently in each profile.
 

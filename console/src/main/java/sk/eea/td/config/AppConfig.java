@@ -71,110 +71,17 @@ public class AppConfig implements SchedulingConfigurer {
         return flowManager;
     }
 
-    @Schedules(
-            //@Scheduled(cron = "${europeana.flm.cron.expression}")
-            @Scheduled(fixedRate = 1000)
-    )
-    public void europeanaToHistorypinTimeSignal() {
-        europeanaToHistorypinFlowManager().trigger();
-    }
+//    @Schedules(
+//            //@Scheduled(cron = "${europeana.flm.cron.expression}")
+//            @Scheduled(fixedRate = 1000)
+//    )
+//    public void europeanaToHistorypinTimeSignal() {
+//        europeanaToHistorypinFlowManager().trigger();
+//    }
 
     @Bean
     Activity ontotext2HistorypinTransformActivity() {
         return new Ontotext2HistorypinTransformActivity();
-    }
-
-    @Bean
-    public FlowManager testFlowManager() {
-        FlowManager flowManager = new FlowManagerImpl(Connector.HISTORYPIN, Connector.SD);
-
-        Activity a1 = new Activity() {
-            @Override
-            public void execute(JobRun context) throws FlowException {
-                LOG.debug("executing activity: ", getId());
-            }
-            @Override
-            public String getName() {
-                return getId();
-            }
-            @Override
-            public String getId() {
-                return "A1";
-            }
-            @Override
-            public boolean isSleepAfter() {
-                return false;
-            }
-        };
-        Activity a2 = new Activity() {
-            @Override
-            public void execute(JobRun context) throws FlowException {
-                LOG.debug("executing activity: ", getId());
-            }
-            @Override
-            public String getName() {
-                return getId();
-            }
-            @Override
-            public String getId() {
-                return "A2";
-            }
-            @Override
-            public boolean isSleepAfter() {
-                return true;
-            }
-        };
-        Activity a3 = new Activity() {
-            @Override
-            public void execute(JobRun context) throws FlowException {
-                LOG.debug("executing activity: ", getId());
-            }
-            @Override
-            public String getName() {
-                return getId();
-            }
-            @Override
-            public String getId() {
-                return "A3";
-            }
-            @Override
-            public boolean isSleepAfter() {
-                return false;
-            }
-        };
-        Activity a4 = new Activity() {
-            @Override
-            public void execute(JobRun context) throws FlowException {
-                LOG.debug("executing activity: ", getId());
-            }
-            @Override
-            public String getName() {
-                return getId();
-            }
-            @Override
-            public String getId() {
-                return "A4";
-            }
-            @Override
-            public boolean isSleepAfter() {
-                return true;
-            }
-        };
-//        flowManager.addActivity(a1);
-//        flowManager.addActivity(a2);
-//        flowManager.addActivity(a3);
-//        flowManager.addActivity(a4);
-
-        flowManager.addActivity(harvestActivity());
-        flowManager.addActivity(ontotext2HistorypinTransformActivity());
-        return flowManager;
-    }
-    @Schedules(@Scheduled(fixedRate = 60000))
-    public void testFlowManagerTimeSignal() {
-        FlowManager fm = testFlowManager();
-        System.out.println(fm);
-        System.out.println(fm.getSource());
-        fm.trigger();
     }
 
 //    @Bean
@@ -201,13 +108,13 @@ public class AppConfig implements SchedulingConfigurer {
         return flowManager;
     }
 
-    @Schedules(
-            //@Scheduled(cron="${historypin.flm.cron.expression}")
-            @Scheduled(fixedRate = 1000)
-    )
-    public void historypinToEuropeanaTimeSignal() {
-        historypinToEuropeanaFlowManager().trigger();
-    }
+//    @Schedules(
+//            //@Scheduled(cron="${historypin.flm.cron.expression}")
+//            @Scheduled(fixedRate = 1000)
+//    )
+//    public void historypinToEuropeanaTimeSignal() {
+//        historypinToEuropeanaFlowManager().trigger();
+//    }
 
     @Override
     public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
