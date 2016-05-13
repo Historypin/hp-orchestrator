@@ -3,6 +3,7 @@ package sk.eea.td.flow.activities;
 import java.io.IOException;
 import java.nio.file.Path;
 
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.util.JSONPObject;
 
 import sk.eea.td.console.model.JobRun;
 import sk.eea.td.flow.Activity;
@@ -38,7 +40,28 @@ public class HP_A2EU_ATransformActivity extends AbstractTransformActivity implem
 		JsonNode rootNode = objectMapper.readTree(file.toFile());
 		for(JsonNode record: rootNode.get("items")){
 			Path transformToFile = PathUtils.createUniqueFilename(transformPath, context.getJob().getTarget().getFormatCode());
+			JSONObject object = new JSONObject();
+			String hpObjectUrl = "https://www.historypin.org/en/item/456";
+			String generator = "http://www.historypin.org";
 			
+			JsonNode annotatedBy = record.get("annotatedBy");
+			if(annotatedBy != null){
+				JSONObject creator = new JSONObject();
+				creator.put("@id", annotatedBy);
+				creator.put("@type", hpPersonType);
+				creator.put("name", hpPersonName);
+				object.put("creator", creator);				
+			}
+			
+			
+			object.put("@context", "http://www.w3.org/ns/anno.jsonld");
+			object.put("@type", "oa:Annotation");
+			object.put("motivation", "tagging");
+			object.put("generated", created);
+			object.put("generator", generator);
+			object.put("body", body);
+			object.put("target", target);
+			object.put("oa:equivalentTo", hpObjectUrl)
 		}
 		return null;
 	}

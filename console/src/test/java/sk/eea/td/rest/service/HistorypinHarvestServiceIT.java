@@ -85,7 +85,7 @@ public class HistorypinHarvestServiceIT {
 			historypinHarvestService.harvestAnnotation("12345", "1", null, null);
 		} catch (Exception e) {
 			fail(e.toString());
-		}finally {
 		}
+		EasyMock.verify(jobRepository, jobRunRepository);
 	}
 }
