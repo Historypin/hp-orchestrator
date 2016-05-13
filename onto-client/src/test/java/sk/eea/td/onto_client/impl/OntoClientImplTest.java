@@ -25,6 +25,7 @@ import javax.ws.rs.core.Response;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.support.membermodification.MemberModifier;
@@ -109,14 +110,15 @@ public class OntoClientImplTest {
         String body = writer.toString();
 
         when(response.readEntity(String.class)).thenReturn(body);
-        String tags = ontoClient.extract(anyString(), anyString());
-        System.out.println(tags);
+        String tags = ontoClient.extract("", "");
+        System.out.println(tags); //TODO: finish the test
     }
 
     @Test
+    @Ignore // TODO: after finishing, remove annotation
     public void extract2Object() throws JsonParseException, IOException {
         ExtractResponseDTO dto = ontoClient.extract2Object(null, null);
-        System.out.println(dto);
+        System.out.println(dto); //TODO: finish the test
     }
 
 }
