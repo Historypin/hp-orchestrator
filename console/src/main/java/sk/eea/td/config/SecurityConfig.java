@@ -2,6 +2,7 @@ package sk.eea.td.config;
 
 import javax.sql.DataSource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -35,7 +36,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return manager;
     }
 
-    @Bean
+    @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth, UserDetailsManager userDetailsManager, PasswordEncoder passwordEncoder) throws Exception {
         auth
                 .userDetailsService(userDetailsManager)
