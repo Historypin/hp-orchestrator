@@ -6,6 +6,8 @@ import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.test.util.ReflectionTestUtils;
 import sk.eea.td.console.model.ParamKey;
 import sk.eea.td.eu_client.api.EuropeanaClient;
@@ -13,6 +15,7 @@ import sk.eea.td.hp_client.api.Location;
 import sk.eea.td.rest.model.HistorypinTransformDTO;
 import sk.eea.td.rest.service.PlacesCache;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -25,6 +28,8 @@ import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.*;
 
 public class EuropeanaToHistorypinMapperTest {
+
+    private static final Logger LOG = LoggerFactory.getLogger(EuropeanaToHistorypinMapperTest.class);
 
     private ObjectMapper objectMapper;
 
@@ -64,8 +69,15 @@ public class EuropeanaToHistorypinMapperTest {
         when(placesCache.getLocation(anyString())).thenReturn(new Location(42.0, 23.0, 1000L));
     }
 
+    /**
+     * Test mapping.
+     *
+     * Test is expected to throw 3 MissingRequiredFieldExceptions.
+     *
+     * @throws IOException
+     */
     @Test
-    public void testMap() throws Exception {
+    public void testMap() throws IOException {
         final Path transformFile = Files.createTempFile("tmp", ".tmp");
 
         boolean result = mapper.map(sampleFile, transformFile, params);
