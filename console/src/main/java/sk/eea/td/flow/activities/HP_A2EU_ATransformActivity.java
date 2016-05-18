@@ -1,5 +1,6 @@
 package sk.eea.td.flow.activities;
 
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
 
@@ -39,12 +40,18 @@ public class HP_A2EU_ATransformActivity extends AbstractTransformActivity implem
 	protected Path transform(String source, Path file, Path transformPath, JobRun context) throws IOException {
 		JsonNode rootNode = objectMapper.readTree(file.toFile());
 		for(JsonNode record: rootNode.get("items")){
-			Path transformToFile = PathUtils.createUniqueFilename(transformPath, context.getJob().getTarget().getFormatCode());
 			JSONObject object = new JSONObject();
-			String hpObjectUrl = "https://www.historypin.org/en/item/456";
+			
+			String hpObjectId = record.get("identifier").asText().replaceAll("^\\./", "");
 			String generator = "http://www.historypin.org";
 			
-			JsonNode annotatedBy = record.get("annotatedBy");
+			JsonNode metadata = record.get("metadata");
+			JsonNode annotatedBy = metadata.get("annotatedBy");
+			String hpPersonType = annotatedBy.get("@type").asText("Agent").replaceAll("^foaf:", "");
+			String hpPersonName = annotatedBy.get("name").asText();
+			String created = metadata.get("annotatedAt").asText();
+			String target = metadata.get("target").asText();
+			JsonNode body = metadata.get("body");
 			if(annotatedBy != null){
 				JSONObject creator = new JSONObject();
 				creator.put("@id", annotatedBy);
@@ -61,9 +68,12 @@ public class HP_A2EU_ATransformActivity extends AbstractTransformActivity implem
 			object.put("generator", generator);
 			object.put("body", body);
 			object.put("target", target);
-			object.put("oa:equivalentTo", hpObjectUrl)
+			object.put("oa:equivalentTo", "https://www.historypin.org/en/item/"+hpObjectId);
+
+			Path transformToFile = PathUtils.createUniqueFilename(transformPath, context.getJob().getTarget().getFormatCode());			
+			object.write(new FileWriter(transformToFile.toFile()));
 		}
-		return null;
+		return transformPath;
 	}
 
 }

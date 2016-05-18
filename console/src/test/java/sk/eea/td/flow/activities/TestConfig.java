@@ -2,6 +2,7 @@ package sk.eea.td.flow.activities;
 
 import org.easymock.EasyMock;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
@@ -13,6 +14,7 @@ import sk.eea.td.rest.service.MintStoreService;
 
 @Configuration
 @PropertySource({ "classpath:default.properties", "classpath:${spring.profiles.active:prod}.properties"})
+@ComponentScan(basePackages = {"sk.eea.td.flow.activities"})
 public class TestConfig {
 	
 	public TestConfig() {
@@ -34,7 +36,7 @@ public class TestConfig {
 	}
 	
     @Bean
-    public ObjectMapper objectMapper() {
+    public ObjectMapper getObjectMapper() {
         return new ObjectMapper();
     }
     
