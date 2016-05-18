@@ -20,6 +20,7 @@ import org.thymeleaf.spring4.view.ThymeleafViewResolver;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
 import java.util.Locale;
+import java.util.Properties;
 
 @Configuration
 @EnableWebMvc
@@ -97,6 +98,9 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         mailSender.setHost(environment.getProperty("mail.server.host"));
         mailSender.setPort(environment.getProperty("mail.server.port", Integer.class));
         mailSender.setProtocol(environment.getProperty("mail.server.protocol"));
+        Properties properties = new Properties();
+        properties.put("mail.smtp.localhost", environment.getProperty("mail.smtp.localhost"));
+        mailSender.setJavaMailProperties(properties);
         return mailSender;
     }
 
