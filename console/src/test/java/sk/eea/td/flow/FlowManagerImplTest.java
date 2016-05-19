@@ -16,6 +16,7 @@ import sk.eea.td.console.repository.JobRepository;
 import sk.eea.td.console.repository.JobRunRepository;
 import sk.eea.td.console.repository.LogRepository;
 import sk.eea.td.console.repository.ParamRepository;
+import sk.eea.td.rest.model.Connector;
 
 import java.util.HashSet;
 import java.util.concurrent.CountDownLatch;
@@ -33,7 +34,7 @@ public class FlowManagerImplTest {
     private static CountDownLatch threadsCreatedSignal = new CountDownLatch(10);
 
     @InjectMocks
-    private FlowManagerImpl flowManagerImpl = new FlowManagerImpl();
+    private FlowManagerImpl flowManagerImpl = new FlowManagerImpl(Connector.EUROPEANA, Connector.HISTORYPIN);
 
     @Mock
     private JobRepository jobRepository;
@@ -57,9 +58,10 @@ public class FlowManagerImplTest {
                 Thread.sleep(500); // simulate long running DB job
                 return job;
             }
-        }).when(jobRepository).findFirstByLastJobRunIsNullAndSourceIsInOrderByIdAsc(anyList());
+        }).when(jobRepository).findNextJob(anyString(), anyString());
         when(paramRepository.findByJob(any(Job.class))).thenReturn(new HashSet<>());
         JobRun jobRun = new JobRun();
+        jobRun.setStatus(JobRun.JobRunStatus.RUNNING);
         when(jobRunRepository.save(any(JobRun.class))).thenReturn(jobRun);
 
     }
@@ -83,7 +85,7 @@ public class FlowManagerImplTest {
         startSignal.countDown();
 
         // verify that only one thread had created its run
-        verify(jobRepository, timeout(1000).times(1)).findFirstByLastJobRunIsNullAndSourceIsInOrderByIdAsc(anyList());
+        verify(jobRepository, timeout(1000).times(1)).findNextJob(anyString(), anyString());
         verify(jobRunRepository, timeout(1000).times(2)).save((JobRun) any());
         verify(paramRepository, timeout(1000).times(1)).findByJob(any());
         verify(jobRepository, timeout(1000).times(1)).save((Job) any());

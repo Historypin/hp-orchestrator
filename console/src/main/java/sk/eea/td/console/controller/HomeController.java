@@ -70,9 +70,9 @@ public class HomeController {
                         new TaskRow(job.getName(),
                                 job.getSource().toString(),
                                 job.getTarget().toString(),
-                                job.getLastJobRun().getStatus().toString(),
+                                (job.getLastJobRun().getStatus() != null) ? job.getLastJobRun().getStatus().toString() : "",
                                 (job.getLastJobRun().getResult() != null) ? job.getLastJobRun().getResult().toString() : "",
-                                job.getLastJobRun().getId().toString()
+                                (job.getLastJobRun().getId() != null) ? job.getLastJobRun().getId().toString() : ""
                         )
                 );
             }

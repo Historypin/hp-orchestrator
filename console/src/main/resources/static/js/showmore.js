@@ -1,12 +1,4 @@
 jQuery.fn.dataTable.render.showmore = function (cutoff, escapeHtml) {
-    var esc = function (t) {
-        return t
-            .replace(/&/, '&amp;')
-            .replace(/</, '&lt;')
-            .replace(/>/, '&gt;')
-            .replace(/"/, '&quot;');
-    };
-
     return function (d, type, row) {
         // Order, search and type get the original data
         if (type !== 'display') {
@@ -25,7 +17,10 @@ jQuery.fn.dataTable.render.showmore = function (cutoff, escapeHtml) {
 
         // Protect against uncontrolled HTML input
         if (escapeHtml) {
-            d = esc(d);
+            var div = document.createElement('div');
+            var text = document.createTextNode(d);
+            div.appendChild(text);
+            d = div.innerHTML;
         }
 
         return '<div class="text-container">' +
