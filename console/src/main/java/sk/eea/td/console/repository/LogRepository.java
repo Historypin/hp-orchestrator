@@ -10,15 +10,9 @@ import java.util.List;
 
 public interface LogRepository extends PagingAndSortingRepository<Log, Long> {
 
-    @Deprecated
-    @Query(value = "SELECT * FROM log WHERE job_run_id IN (SELECT max(id) FROM job_run GROUP BY job_id)", nativeQuery = true)
-    List<Log> findAllRelevantLogs();
-
     @Query("select l from Log l where l.jobRun.id = ?1")
     List<Log> findByJobRunId(Long jobRunId);
 
     @Query("select l from Log l where l.jobRun.id = ?1")
     Page<Log> findByJobRunId(Long jobRunId, Pageable pageable);
-
-
 }
