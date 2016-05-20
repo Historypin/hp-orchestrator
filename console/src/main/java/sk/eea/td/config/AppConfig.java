@@ -172,8 +172,6 @@ public class AppConfig implements SchedulingConfigurer {
     @Schedules(@Scheduled(fixedRate = 60000))
     public void testFlowManagerTimeSignal() {
         FlowManager fm = testFlowManager();
-        System.out.println(fm);
-        System.out.println(fm.getSource());
         fm.trigger();
     }
 

@@ -13,6 +13,7 @@ import sk.eea.td.console.form.TaskRow;
 import sk.eea.td.console.model.Job;
 import sk.eea.td.console.model.JobRun;
 import sk.eea.td.console.model.Param;
+import sk.eea.td.console.model.ReadOnlyParam;
 import sk.eea.td.console.model.datatables.DataTablesInput;
 import sk.eea.td.console.model.datatables.DataTablesOutput;
 import sk.eea.td.console.model.datatables.RestartTaskRequest;
@@ -27,6 +28,7 @@ import javax.validation.Valid;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import static sk.eea.td.console.model.ParamKey.*;
 import static sk.eea.td.util.PageUtils.getPageable;
@@ -63,7 +65,7 @@ public class HomeController {
         List<TaskRow> tasks = new ArrayList<>();
         Page<Job> jobPage = jobRepository.findAll(getPageable(input));
         for (Job job : jobPage) {
-            if (job.getLastJobRun() == null) {
+            if (job.getLastJobRun() == null || job.getLastJobRun().getStatus() == null) {
                 tasks.add(new TaskRow(job.getName(), job.getSource().toString(), job.getTarget().toString(), "PLANNED", "", ""));
             } else {
                 tasks.add(
@@ -91,6 +93,15 @@ public class HomeController {
         if (jobRun != null) {
             Job job = jobRun.getJob();
             LOG.info("Restarting job id= {}.", job.getId());
+            jobRun = new JobRun();
+            jobRun.setJob(job);
+            jobRun.setStatus(JobRun.JobRunStatus.NEW);
+            Set<Param> paramList = paramRepository.findByJob(job);
+            for (Param param : paramList) {
+                jobRun.addReadOnlyParam(new ReadOnlyParam(param));
+            }
+            jobRunRepository.save(jobRun);
+
             job.setLastJobRun(null);
             jobRepository.save(job);
         }
@@ -98,7 +109,7 @@ public class HomeController {
     }
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
-    public String indexSubmit(@ModelAttribute @Valid TaskForm taskForm, Principal principal, BindingResult bindingResult) {
+    public String indexSubmit(@Valid @ModelAttribute TaskForm taskForm, BindingResult bindingResult, Principal principal) {
         if (bindingResult.hasErrors()) {
             return "index";
         }
@@ -136,6 +147,16 @@ public class HomeController {
         }
 
         jobRepository.save(job);
+
+        LOG.info("Created job id= {}.", job.getId());
+        JobRun jobRun = new JobRun();
+        jobRun.setJob(job);
+        jobRun.setStatus(JobRun.JobRunStatus.NEW);
+        Set<Param> paramList = paramRepository.findByJob(job);
+        for (Param param : paramList) {
+            jobRun.addReadOnlyParam(new ReadOnlyParam(param));
+        }
+        jobRunRepository.save(jobRun);
         return "redirect:/?success=true";
     }
 }
