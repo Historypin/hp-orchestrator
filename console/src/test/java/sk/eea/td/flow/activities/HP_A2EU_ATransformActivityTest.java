@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.file.Path;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import sk.eea.td.console.model.Job;
 import sk.eea.td.console.model.JobRun;
 import sk.eea.td.rest.model.Connector;
 
@@ -32,7 +34,10 @@ public class HP_A2EU_ATransformActivityTest {
 		
 	@Before
 	public void setUp() throws Exception {
-		targetDir = File.createTempFile("test", "");
+		String javaTestDir = System.getProperty("java.io.tmpdir");
+		targetDir = new File(javaTestDir, "hp_an_test");
+		targetDir.mkdirs();
+		targetDir.mkdir();
 	}
 	
 	public void tearDown(){
@@ -44,10 +49,11 @@ public class HP_A2EU_ATransformActivityTest {
 	@Test
 	public void test() throws URISyntaxException, JSONException, FileNotFoundException {
 		File historyPinFile = new File(ClassLoader.getSystemResource("hp/test_hpan.json").toURI());
-		targetDir.mkdirs();
 		File europeanaFile = new File(ClassLoader.getSystemResource("europeana/test_euan.json").toURI());
 		JSONObject object = new JSONObject(new JSONTokener(new FileReader(historyPinFile)));
 		JobRun jobContext = new JobRun();
+		jobContext.setJob(new Job());
+		jobContext.getJob().setTarget(Connector.EUROPEANA_ANNOTATION);
 		try {
 			activity.transform(Connector.HISTORYPIN_ANNOTATION.getFormatCode(), historyPinFile.toPath(), targetDir.toPath(), jobContext);
 		} catch (IOException e) {

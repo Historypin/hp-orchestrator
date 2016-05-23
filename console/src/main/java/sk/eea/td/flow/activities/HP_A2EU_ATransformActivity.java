@@ -49,12 +49,14 @@ public class HP_A2EU_ATransformActivity extends AbstractTransformActivity implem
 			JsonNode annotatedBy = metadata.get("annotatedBy");
 			String hpPersonType = annotatedBy.get("@type").asText("Agent").replaceAll("^foaf:", "");
 			String hpPersonName = annotatedBy.get("name").asText();
+			String hpPersonId = annotatedBy.get("@id").asText();
 			String created = metadata.get("annotatedAt").asText();
 			String target = metadata.get("target").asText();
 			JsonNode body = metadata.get("body");
+			String bodyTags = body.get("value").asText();
 			if(annotatedBy != null){
 				JSONObject creator = new JSONObject();
-				creator.put("@id", annotatedBy);
+				creator.put("@id", hpPersonId);
 				creator.put("@type", hpPersonType);
 				creator.put("name", hpPersonName);
 				object.put("creator", creator);				
@@ -66,12 +68,14 @@ public class HP_A2EU_ATransformActivity extends AbstractTransformActivity implem
 			object.put("motivation", "tagging");
 			object.put("generated", created);
 			object.put("generator", generator);
-			object.put("body", body);
+			object.put("body", bodyTags);
 			object.put("target", target);
 			object.put("oa:equivalentTo", "https://www.historypin.org/en/item/"+hpObjectId);
 
 			Path transformToFile = PathUtils.createUniqueFilename(transformPath, context.getJob().getTarget().getFormatCode());			
-			object.write(new FileWriter(transformToFile.toFile()));
+			FileWriter writer = new FileWriter(transformToFile.toFile());
+			object.write(writer);
+			writer.close();
 		}
 		return transformPath;
 	}
