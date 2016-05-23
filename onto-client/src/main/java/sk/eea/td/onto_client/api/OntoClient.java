@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import com.fasterxml.jackson.core.JsonParseException;
 
-import sk.eea.td.onto_client.dto.ExtractResponseDTO;
+import sk.eea.td.onto_client.dto.EnrichResponseDTO;
 
 public interface OntoClient {
 
@@ -22,5 +22,5 @@ public interface OntoClient {
     String extractCoordinatesFromTextByRelevance(String text) throws IOException;
 
     public String extract(String text, String uri) throws JsonParseException, IOException;
-    public ExtractResponseDTO extract2Object(String text, String uri) throws JsonParseException, IOException;
+    public EnrichResponseDTO extract2Object(String text, String uri) throws JsonParseException, IOException;
 }

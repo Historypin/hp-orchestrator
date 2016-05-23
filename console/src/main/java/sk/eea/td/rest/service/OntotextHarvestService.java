@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import sk.eea.td.onto_client.api.OntoClient;
-import sk.eea.td.onto_client.dto.ExtractResponseDTO;
+import sk.eea.td.onto_client.dto.EnrichResponseDTO;
 import sk.eea.td.onto_client.impl.OntoClientImpl;
 import sk.eea.td.util.PathUtils;
 
@@ -45,8 +45,8 @@ public class OntotextHarvestService {
         return outputFile;
     }
 
-    public ExtractResponseDTO extract(String harvestId, String text, String uri) throws IOException {
-        ExtractResponseDTO resp = client.extract2Object(text, uri);
+    public EnrichResponseDTO extract(String harvestId, String text, String uri) throws IOException {
+        EnrichResponseDTO resp = client.extract2Object(text, uri);
         return resp;
     }
 }

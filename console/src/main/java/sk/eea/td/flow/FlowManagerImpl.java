@@ -19,7 +19,7 @@ import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-@Component
+//@Component
 public class FlowManagerImpl implements FlowManager {
 
     private static final Logger LOG = LoggerFactory.getLogger(FlowManagerImpl.class);
@@ -144,7 +144,7 @@ public class FlowManagerImpl implements FlowManager {
                     job.setLastJobRun(jobRun);
                     jobRepository.save(job);
 
-                    LOG.debug("Created a new JobRun with id: {}.", jobRun.getId());
+                    LOG.debug("Starting/resuming a JobRun with id: {}.", jobRun.getId());
                     resumeFlow(jobRun);
                 }
             } finally {

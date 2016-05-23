@@ -46,9 +46,10 @@ public abstract class AbstractTransformActivity implements Activity {
 /*            final Path transformPath = PathUtils.createTransformRunSubdir(Paths.get(outputDirectory),
                     String.valueOf(context.getId()));*/
             final Path transformPath = getTransformPath(Paths.get(outputDirectory), String.valueOf(context.getId()));
+            getLogger().debug("harvestPath: {}, transformPath: {}", harvestPath, transformPath);
 
             walkFileTree(harvestPath, transformPath);
-            
+
             context.addReadOnlyParam(new ReadOnlyParam(ParamKey.TRANSFORM_PATH, transformPath.toAbsolutePath().toString()));
 
         } catch (Exception e) {
