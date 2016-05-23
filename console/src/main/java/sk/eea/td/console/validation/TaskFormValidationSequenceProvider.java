@@ -4,6 +4,7 @@ import org.hibernate.validator.spi.group.DefaultGroupSequenceProvider;
 import sk.eea.td.console.form.TaskForm;
 import sk.eea.td.rest.model.Connector;
 import sk.eea.td.rest.validation.EuropeanaValidation;
+import sk.eea.td.rest.validation.HistorypinAnnotationValidation;
 import sk.eea.td.rest.validation.HistorypinTargetValidation;
 import sk.eea.td.rest.validation.HistorypinValidation;
 
@@ -18,6 +19,10 @@ public class TaskFormValidationSequenceProvider implements DefaultGroupSequenceP
         if (taskForm != null) {
             if(taskForm.getTarget() != null && Connector.HISTORYPIN.equals(taskForm.getTarget())) {
                 sequence.add(HistorypinTargetValidation.class);
+            }
+
+            if(taskForm.getSource() != null && Connector.HISTORYPIN_ANNOTATION.equals(taskForm.getSource())) {
+                sequence.add(HistorypinAnnotationValidation.class);
             }
 
             if(taskForm.getSource() != null && Connector.EUROPEANA.equals(taskForm.getSource())) {

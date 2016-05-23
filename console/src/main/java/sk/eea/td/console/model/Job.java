@@ -27,7 +27,7 @@ public class Job {
     @Enumerated(EnumType.STRING)
     private Connector target;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "job", orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "job", fetch = FetchType.EAGER, orphanRemoval = true)
     private List<Param> params = new ArrayList<>();
 
     @OneToOne(fetch = FetchType.EAGER)

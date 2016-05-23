@@ -10,7 +10,7 @@ import java.util.List;
 public class JobRun {
 
     public enum JobRunStatus {
-        RUNNING, STOPPED, FINISHED, WAITING, RESUMED
+        RUNNING, STOPPED, FINISHED, WAITING, RESUMED, NEW
     }
 
     public enum JobRunResult {
@@ -33,7 +33,7 @@ public class JobRun {
     @Enumerated(EnumType.STRING)
     private JobRunResult result;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "jobRun", orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "jobRun", fetch = FetchType.EAGER, orphanRemoval = true)
     private List<ReadOnlyParam> readOnlyParams = new ArrayList<>();
 
     @Column

@@ -1,6 +1,6 @@
 # Console web-app
 
-Software requirements: Java 8, Apache Tomcat 8, Apache Maven 3, Postgres 9.4, Mule ESB 3.7.
+Software requirements: Oracle Java 8, Apache Tomcat 8, Apache Maven 3.3, PostgreSQL 9.4, configured SMTP server
 
 ## Build
 Run `mvn clean install` in main project directory to build project.
@@ -23,15 +23,16 @@ Username: admin
 
 Password: admin
 
-### Mule
-Application uses Mule for its powerful data transformation capabilities. Directory {project_dir}/mule-app contains mule project, which needs to be build by maven and deployed in Mule ESB server.
-1. Go to mule project dir and run `mvn clean package`.
-2. Deploy file {project_dir}/mule-app/target/mule-app-*.zip in your Mule ESB server.
+
+### Deploy script
+File `{project_dir}/scripts/deploy.sh` contains deploy script used in CI. It only deploys new version of `console.war`! Database changes, and others needs to be performed manually.
 
 ## Environment properties
 Application supports to run in different profiles, depending on target environment: development, test or production. It will use different property files for each profile, and some aspects as logging and caching will behave differently in each profile.
 
 Environment is specified by runtime argument. If tomcat is run with JVM argument `-Dspring.profiles.active=dev`, application will be run in development mode,  and `-Dspring.profiles.active=test` is for test environment. If no argument is specified, application will assume it is run in production mode.
+
+For now, only dev profile is supported.
 
 ## REST documentation
 Rest api documentations is available at `http://mva.eea.sk:8080/swagger-ui.html` after successful login.

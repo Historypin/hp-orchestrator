@@ -70,7 +70,7 @@ public class FlowConfig {
 
     @Bean
     public FlowManager historypinOntotextFlowManager() {
-        FlowManager flowManager = new FlowManagerImpl(Connector.HISTORYPIN, Connector.ONTOTEXT);
+        FlowManager flowManager = new FlowManagerImpl(Connector.HISTORYPIN, Connector.SD);
 
         Activity a1 = new Activity() {
             @Override

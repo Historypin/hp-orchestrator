@@ -5,6 +5,7 @@ import org.hibernate.validator.group.GroupSequenceProvider;
 import sk.eea.td.console.validation.TaskFormValidationSequenceProvider;
 import sk.eea.td.rest.model.Connector;
 import sk.eea.td.rest.validation.EuropeanaValidation;
+import sk.eea.td.rest.validation.HistorypinAnnotationValidation;
 import sk.eea.td.rest.validation.HistorypinTargetValidation;
 import sk.eea.td.rest.validation.HistorypinValidation;
 
@@ -22,9 +23,6 @@ public class TaskForm {
 
     @NotNull(message = "Target is required.")
     private Connector target;
-
-    @NotEmpty(message = "Target is required.")
-    private Connector connector;
 
     @NotNull(message = "Historypin user ID is missing.", groups = { HistorypinTargetValidation.class })
     private Long historypinUserId;
@@ -65,6 +63,12 @@ public class TaskForm {
     @Size(min = 1, max = 150, groups = { HistorypinValidation.class })
     private String projectSlug;
 
+    @NotNull(message = "Date from is missing.", groups = { HistorypinAnnotationValidation.class })
+    private String dateFrom;
+
+    @NotNull(message = "Date until is missing.", groups = { HistorypinAnnotationValidation.class })
+    private String dateUntil;
+
     public String getName() {
         return name;
     }
@@ -87,14 +91,6 @@ public class TaskForm {
 
     public void setTarget(Connector target) {
         this.target = target;
-    }
-
-    public Connector getConnector() {
-        return connector;
-    }
-
-    public void setConnector(Connector connector) {
-        this.connector = connector;
     }
 
     public Long getHistorypinUserId() {
@@ -193,12 +189,28 @@ public class TaskForm {
         this.projectSlug = projectSlug;
     }
 
-    @Override public String toString() {
+    public String getDateFrom() {
+        return dateFrom;
+    }
+
+    public void setDateFrom(String dateFrom) {
+        this.dateFrom = dateFrom;
+    }
+
+    public String getDateUntil() {
+        return dateUntil;
+    }
+
+    public void setDateUntil(String dateUntil) {
+        this.dateUntil = dateUntil;
+    }
+
+    @Override
+    public String toString() {
         return "TaskForm{" +
                 "name='" + name + '\'' +
                 ", source=" + source +
                 ", target=" + target +
-                ", connector=" + connector +
                 ", historypinUserId=" + historypinUserId +
                 ", historypinApiKey='" + historypinApiKey + '\'' +
                 ", historypinApiSecret='" + historypinApiSecret + '\'' +
@@ -211,6 +223,8 @@ public class TaskForm {
                 ", luceneQuery='" + luceneQuery + '\'' +
                 ", searchFacet='" + searchFacet + '\'' +
                 ", projectSlug='" + projectSlug + '\'' +
+                ", dateFrom='" + dateFrom + '\'' +
+                ", dateUntil='" + dateUntil + '\'' +
                 '}';
     }
 }

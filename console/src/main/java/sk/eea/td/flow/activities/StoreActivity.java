@@ -113,7 +113,7 @@ public class StoreActivity implements Activity {
                         	zipOutputStream.flush();                        	
                         	break;
                         case EUROPEANA:
-                        case ONTOTEXT:
+                        case SD:
                             throw new NotImplementedException("Store procedure for destination: " + target + " is not implemented yet!");
                         default:
                             throw new IllegalArgumentException("There is no store procedure implemented for destination: " + target);
