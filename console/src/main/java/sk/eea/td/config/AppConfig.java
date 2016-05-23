@@ -177,23 +177,9 @@ public class AppConfig implements SchedulingConfigurer {
         fm.trigger();
     }
 
-//    @Bean
-//    public FlowManager historypinHarvester(){
-//    	FlowManagerImpl flowManager = new FlowManagerImpl("HP");
-//        flowManager.addActivity(new HarvestActivity());
-//        flowManager.addActivity(new TransformActivity());
-//        flowManager.addActivity(new StoreActivity());
-//        return flowManager;
-//    }
-//
-//    @Schedules(@Scheduled(cron="${historypin.flm.cron.expression}"))
-//    public void historypinFlowManagerTimeSignal(){
-//        historypinHarvester().trigger();
-//    }
-
     @Bean
     public FlowManager historypinToEuropeanaFlowManager() {
-        FlowManagerImpl flowManager = new FlowManagerImpl(Connector.HISTORYPIN, Connector.EUROPEANA);
+        FlowManagerImpl flowManager = new FlowManagerImpl(Connector.HISTORYPIN, Connector.MINT);
         flowManager.addActivity(harvestActivity());
         flowManager.addActivity(transformActivity());
         flowManager.addActivity(storeActivity());

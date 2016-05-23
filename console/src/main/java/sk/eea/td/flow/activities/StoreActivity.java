@@ -124,21 +124,26 @@ public class StoreActivity implements Activity {
             });
             zipOutputStream.close();
             mintOutputStream.close();
-            ZipFile zipFile = new ZipFile(mintFile);
-			boolean notEmpty = zipFile.entries().hasMoreElements();
-			zipFile.close();
-			if(notEmpty){
-				LOG.debug(MessageFormat.format("Sending {0} into MINT", mintFile.getName()));
-            	if (!mintStoreService.store(mintFile.toPath())){
-                    Log log = new Log();
-                    log.setJobRun(context);
-                    log.setTimestamp(new Date());
-                    log.setLevel(Log.LogLevel.ERROR);
-                    log.setMessage(String.format("Not all pins were saved successfully. See server logs for details."));
-                    logRepository.save(log);                        		
+            if(Connector.MINT.equals(context.getJob().getTarget())){            	
+            	ZipFile zipFile = new ZipFile(mintFile);
+            	boolean notEmpty = zipFile.entries().hasMoreElements();
+            	zipFile.close();
+            	if(notEmpty){
+            		LOG.debug(MessageFormat.format("Sending {0} into MINT", mintFile.getName()));
+            		if (!mintStoreService.store(mintFile.toPath())){
+            			Log log = new Log();
+            			log.setJobRun(context);
+            			log.setTimestamp(new Date());
+            			log.setLevel(Log.LogLevel.ERROR);
+            			log.setMessage(String.format("Not all pins were saved successfully. See server logs for details."));
+            			logRepository.save(log);                        		
+            		}
+            	}else{
+            		LOG.debug(MessageFormat.format("Not sending {0} into MINT because it is empty.", zipFile.getName()));            		
             	}
-            }else{
-            	LOG.debug(MessageFormat.format("Not sending {0} into MINT because it is empty.", zipFile.getName()));
+            }
+            if(mintFile.exists()){
+            	mintFile.delete();
             }
             	
         } catch (Exception e) {
