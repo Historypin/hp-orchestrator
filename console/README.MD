@@ -1,6 +1,6 @@
 # Console web-app
 
-Software requirements: Oracle Java 8, Apache Tomcat 8, Apache Maven 3.3, PostgreSQL 9.4
+Software requirements: Oracle Java 8, Apache Tomcat 8, Apache Maven 3.3, PostgreSQL 9.4, configured SMTP server
 
 ## Build
 Run `mvn clean install` in main project directory to build project.
