@@ -5,6 +5,7 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.function.Predicate;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -104,9 +105,8 @@ public class OntoClientImpl implements OntoClient {
 
     @Override
     public String extract(String text, String uri) throws JsonParseException, IOException {
-//        String uri = "http://mint-projects.image.ntua.gr/data/foodanddrink/EUFD105370";
-        WebTarget target = client.target(baseURL).queryParam("uri", uri);
 
+        WebTarget target = client.target(baseURL).queryParam("uri", uri);
         Response resp = target.request(MediaType.TEXT_XML).post(Entity.text(text));
         String respString = resp.readEntity(String.class);
         return respString;
@@ -114,17 +114,36 @@ public class OntoClientImpl implements OntoClient {
 
     @Override
     public EnrichResponseDTO extract2Object(String text, String uri) throws JsonParseException, IOException {
-//        String uri = "http://mint-projects.image.ntua.gr/data/foodanddrink/EUFD105370";
+
         WebTarget target = client.target(baseURL).queryParam("uri", uri);
-        System.out.println(target.toString());
+        Response resp = target.request(MediaType.TEXT_XML).post(Entity.text(text));
 
-/*        Response resp = target.request(MediaType.TEXT_XML).post(Entity.text(text));
-        System.out.println(resp.getStatus());
-        String respString = resp.readEntity(String.class);*/
+        List<EnrichResponseDTO> dtos = null;
 
-        InputStream respIS = getClass().getResourceAsStream("/extract-response.json");
+        if (resp != null && Response.Status.OK.getStatusCode() == resp.getStatus()) {
+            String respString = resp.readEntity(String.class);
+            LOG.debug(respString);
+            dtos = objectMapper.readValue(respString, new TypeReference<List<EnrichResponseDTO>>(){});
+        } else {
+            LOG.error("Ontotext client request to {} failed with status {}", baseURL, resp == null ? null : resp.getStatus());
+        }
 
-        List<EnrichResponseDTO> dtos = objectMapper.readValue(/*respString*/respIS, new TypeReference<List<EnrichResponseDTO>>(){});
-        return (dtos == null || dtos.isEmpty()) ? null : dtos.get(0);
+        //InputStream respIS = getClass().getResourceAsStream("/extract-response.json");
+        //List<EnrichResponseDTO> dtos = objectMapper.readValue(/*respString*/respIS, new TypeReference<List<EnrichResponseDTO>>(){});
+        EnrichResponseDTO selected = null;
+        try {
+            selected = selectOne(dtos, uri);
+        } catch (Exception e) {
+            //failed to find one with the given url
+            LOG.warn("Ontotext client received an invalid response");
+        }
+        return selected;
+    }
+
+    private EnrichResponseDTO selectOne(List<EnrichResponseDTO> dtos, String uri) {
+        if (dtos == null || dtos.isEmpty()) {
+            return null;
+        }
+        return dtos.stream().filter(dto -> uri.equalsIgnoreCase(dto.getId())).findFirst().get();
     }
 }

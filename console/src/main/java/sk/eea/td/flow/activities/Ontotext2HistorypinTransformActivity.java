@@ -2,7 +2,9 @@ package sk.eea.td.flow.activities;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -41,8 +42,8 @@ public class Ontotext2HistorypinTransformActivity extends AbstractTransformActiv
     @Autowired
     private ObjectMapper objectMapper;
 
-    @Value("classpath:efd-context-links.json")
-    private Resource contextLinksJsonResource;
+//    @Value("classpath*:/efd-context-links.json")
+//    private Resource contextLinksJsonResource;
 
     @Value("${historypin.object.url}")
     private String hpObjectUrl;
@@ -54,7 +55,9 @@ public class Ontotext2HistorypinTransformActivity extends AbstractTransformActiv
 
     @PostConstruct
     public void init() throws JsonParseException, JsonMappingException, IOException {
-        contextLinks = objectMapper.readValue(contextLinksJsonResource.getFile(), Set.class);
+        InputStream is = getClass().getClassLoader().getResourceAsStream("efd-context-links.json");
+        //contextLinks = objectMapper.readValue(contextLinksJsonResource.getInputStream(), Set.class);
+        contextLinks = objectMapper.readValue(is, Set.class);
     }
 
     @Override
@@ -83,6 +86,9 @@ public class Ontotext2HistorypinTransformActivity extends AbstractTransformActiv
                 return null;
             }
             EnrichResponseDTO resp = ontotextHarvestService.extract(String.valueOf(context.getId()), desc, url);
+            if (resp == null) {
+                return null;
+            }
 
             List<String> tags = transformTags(resp.getSubject());
             List<String> places = transformTags(resp.getSpatial());
@@ -113,6 +119,9 @@ public class Ontotext2HistorypinTransformActivity extends AbstractTransformActiv
     }
 
     private List<String> transformTags(List<IdObject> objects) {
+        if (objects == null) {
+            return new ArrayList<String>();
+        }
         return objects.stream().map(new Function<IdObject, String>() {
             @Override
             public String apply(IdObject idObject) {

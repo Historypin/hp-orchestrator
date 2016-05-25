@@ -17,6 +17,9 @@ public class EnrichResponseDTO {
     @JsonProperty("dct:subject")
     private List<IdObject> subject;
 
+    public String getId() {
+        return id;
+    }
     public List<IdObject> getSpatial() {
         return spatial;
     }
