@@ -3,15 +3,10 @@ package sk.eea.td.config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.FilterType;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 
-import sk.eea.td.console.model.JobRun;
 import sk.eea.td.flow.Activity;
-import sk.eea.td.flow.FlowException;
 import sk.eea.td.flow.FlowManager;
 import sk.eea.td.flow.FlowManagerImpl;
 import sk.eea.td.flow.activities.HarvestActivity;
@@ -76,20 +71,6 @@ public class FlowConfig {
         return flowManager;
     }
 
-    // @Bean
-    // public FlowManager historypinHarvester(){
-    // FlowManagerImpl flowManager = new FlowManagerImpl("HP");
-    // flowManager.addActivity(new HarvestActivity());
-    // flowManager.addActivity(new TransformActivity());
-    // flowManager.addActivity(new StoreActivity());
-    // return flowManager;
-    // }
-    //
-    // @Schedules(@Scheduled(cron="${historypin.flm.cron.expression}"))
-    // public void historypinFlowManagerTimeSignal(){
-    // historypinHarvester().trigger();
-    // }
-
     @Bean
     public FlowManager historypinToEuropeanaFlowManager() {
         FlowManagerImpl flowManager = new FlowManagerImpl(Connector.HISTORYPIN, Connector.MINT);
@@ -100,10 +81,4 @@ public class FlowConfig {
         return flowManager;
     }
 
-    @Bean
-    public FlowManager updateHistorypinFlowManager() {
-        FlowManager flowManager = new FlowManagerImpl(Connector.EUROPEANA, Connector.HISTORYPIN);
-        flowManager.addActivity(storeActivity());
-        return flowManager;
-    }
 }

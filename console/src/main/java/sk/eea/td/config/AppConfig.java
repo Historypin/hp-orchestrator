@@ -52,12 +52,6 @@ public class AppConfig implements SchedulingConfigurer {
         historypinOntotextFlowManager.trigger();
     }
 
-    //FIXME
-    @Schedules(@Scheduled(cron="${historypin.flm.cron.expression}"))
-    public void historypinFlowManagerTimeSignal(){
-//        historypinHarvester().trigger();
-    }
-
     @Schedules(
             //@Scheduled(cron="${historypin.flm.cron.expression}")
             @Scheduled(fixedRate = 1000)
