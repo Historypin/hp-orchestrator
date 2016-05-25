@@ -213,4 +213,31 @@ public class HPClientImpl implements HPClient {
                 target.request().get().readEntity(PlacesResponseDTO.class)
         );
     }
+
+    @Override
+    public SaveResponseDTO updatePin(Integer id, String[] tags, String[] places) {
+        
+        WebTarget target = client.target(baseURL).path("en").path("api").path("pin").path("save.json");
+        Map<String, String> data = new HashMap<>();
+        data.put("id", String.valueOf(id));
+
+        if (tags != null && tags.length > 0) {
+            for (int i = 0; i < tags.length; i++) {
+                data.put(String.format("tags[%d][text]", i), tags[i]);
+            }
+        }
+        if (places != null && places.length > 0) {
+            for (int i = 0; i < places.length; i++) {
+                data.put(String.format("comments[%d][text]", i), places[i]);
+            }
+        }
+
+        data.put("api_key", apiKey);
+        data.put("api_path", "pin/save.json");
+        data.put("api_token", apiTokenFactory.getApiToken(data));
+
+        return Recurrent.with(retryPolicy).get(() ->
+                target.request(MediaType.TEXT_PLAIN_TYPE).post(Entity.form(new MultivaluedHashMap<>(data))).readEntity(SaveResponseDTO.class)
+        );
+    }
 }

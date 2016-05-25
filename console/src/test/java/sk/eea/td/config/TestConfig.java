@@ -11,7 +11,7 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.thymeleaf.spring4.SpringTemplateEngine;
 
 @Configuration
-@ComponentScan(basePackages = {"sk.eea.td.flow", "sk.eea.td.rest", "sk.eea.td.mapper"})
+@ComponentScan(basePackages = {"sk.eea.td.flow", "sk.eea.td.rest", "sk.eea.td.mapper", "sk.eea.td.service"})
 @PropertySource({ "classpath:default.properties", "classpath:${spring.profiles.active:dev}.properties"})
 public class TestConfig {
 

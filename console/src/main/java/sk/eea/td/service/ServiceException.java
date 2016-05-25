@@ -38,7 +38,11 @@ public class ServiceException extends Exception {
             FAILED_TO_PARSE_JSON_FROM_STRING,
             FAILED_TO_LOAD_JSON_FROM_FILE,
             FAILED_TO_FIND_LOCAL_FILENAME_IN_JSON,
-            FAILED_TO_DELETE_FILE
+            FAILED_TO_DELETE_FILE,
+            CHECKSUM_CHANGED,
+            INVALID_JSON,
+            FAILED_TO_LOAD_FILE_FOR_CHECKSUM,
+            CLIENT_REQUEST_FAILED
         }
 
     }

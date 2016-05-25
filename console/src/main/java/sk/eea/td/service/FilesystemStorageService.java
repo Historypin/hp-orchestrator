@@ -34,16 +34,6 @@ public class FilesystemStorageService {
         Files.write(path, content.getBytes());
     }
 
-    public static List<String> loadAll(Path path) throws IOException {
-
-        List<String> files = new ArrayList<>();
-        for (File file : FileUtils.listFiles(path.toFile(), TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE)) {
-            String content = load(file.toPath());
-            files.add(content);
-        }
-        return files;
-    }
-
     public static void delete(Path path) throws IOException {
         Files.delete(path);
     }

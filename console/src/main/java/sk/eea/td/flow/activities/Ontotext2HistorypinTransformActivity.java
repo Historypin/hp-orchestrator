@@ -28,7 +28,6 @@ import sk.eea.td.flow.Activity;
 import sk.eea.td.onto_client.dto.EnrichResponseDTO;
 import sk.eea.td.onto_client.dto.EnrichResponseDTO.IdObject;
 import sk.eea.td.rest.service.OntotextHarvestService;
-import sk.eea.td.service.FilesystemStorageService;
 import sk.eea.td.util.PathUtils;
 
 public class Ontotext2HistorypinTransformActivity extends AbstractTransformActivity implements Activity {
@@ -44,6 +43,9 @@ public class Ontotext2HistorypinTransformActivity extends AbstractTransformActiv
 
     @Value("classpath:efd-context-links.json")
     private Resource contextLinksJsonResource;
+
+    @Value("${historypin.object.url}")
+    private String hpObjectUrl;
 
     private Set<String> contextLinks;
 
@@ -68,46 +70,36 @@ public class Ontotext2HistorypinTransformActivity extends AbstractTransformActiv
     @Override
     protected Path transform(String source, Path file, Path transformPath, JobRun context) throws IOException {
 
-        // Path transformPath = getTransformPath(Paths.get(outputDirectory), String.valueOf(context.getId()));
         LOG.debug("transforming, source: {}, file: {}, transformPath: {}", source, file, transformPath);
 
-        Map<String, Object> pin = objectMapper.readValue(file.toFile(), new TypeReference<Map<String, Object>>() {
-        });
+        Map<String, Object> pin = objectMapper.readValue(file.toFile(), new TypeReference<Map<String, Object>>() {});
         if (pin != null) {
             String desc = (String) pin.get("description");
-            String url = (String) pin.get("link");
+            //String url = (String) pin.get("link");
             Integer id = (Integer) pin.get("id");
-            String URL = "http://www.historypin.org/en/api/pin/get.json?id=%s";
-            String uri = String.format(URL, id);
-            LOG.debug("desc: {}, url: {}", desc, uri);
+            String url = hpObjectUrl + id;
 
-            // FIXME
-            if (desc == null /* || url == null */)
+            if (desc == null) {
                 return null;
-            String text = desc;
-            EnrichResponseDTO resp = ontotextHarvestService.extract(String.valueOf(context.getId()), text, uri);
+            }
+            EnrichResponseDTO resp = ontotextHarvestService.extract(String.valueOf(context.getId()), desc, url);
 
             List<String> tags = transformTags(resp.getSubject());
+            List<String> places = transformTags(resp.getSpatial());
 
-            Path transformedFile = PathUtils.createUniqueFilename(transformPath, "HP_OT.json");
+            Path transformedFile = PathUtils.createUniqueFilename(transformPath, "hp_ot.json");
             Map<String, Object> newPin = createNewPin(pin);
             newPin.put("approved_tags", tags);
             newPin.put("original_tags", tags);
-            newPin.put("url", "http://v77-beta-3.historypin-hrd.appspot.com/en/explore/pin/" + id);
-            newPin.put("local_filename", transformedFile.getFileName());
+            newPin.put("approved_places", places);
+            newPin.put("original_places", places);
+            newPin.put("url", url);
+            newPin.put("local_filename", transformedFile.getFileName().toString());
             newPin.put("approved", true);
             newPin.put("checksum", "");
 
             objectMapper.writerWithDefaultPrettyPrinter().writeValue(new FileOutputStream(transformedFile.toFile()), newPin);
         }
-
-        /*
-         * final HistorypinTransformDTO transformation = objectMapper.readValue(file.toFile(),
-         * HistorypinTransformDTO.class); for (HistorypinTransformDTO.Record record : transformation.getRecords()) {
-         * final Pin pin = record.getPin(); String text = pin.getDescription(); String uri = pin.getLink();
-         * ExtractResponseDTO resp = ontotextHarvestService.extract(String.valueOf(context.getId()), text, uri); String
-         * tags = transformTags(resp.getSubject()); pin.setTags(tags); }
-         */
 
         return transformPath;
     }
@@ -138,11 +130,6 @@ public class Ontotext2HistorypinTransformActivity extends AbstractTransformActiv
         }
         return null;
     }
-
-/*    @Override
-    protected Path getTransformPath(Path parentDir, String jobRunId) throws IOException {
-        return PathUtils.createActivityStorageSubdir(parentDir, "job_run_", jobRunId, "transform_1");
-    }*/
 
     @Override
     public boolean isSleepAfter() {
