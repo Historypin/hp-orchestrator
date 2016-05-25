@@ -71,96 +71,6 @@ public class FlowConfig {
     @Bean
     public FlowManager historypinOntotextFlowManager() {
         FlowManager flowManager = new FlowManagerImpl(Connector.HISTORYPIN, Connector.SD);
-
-        Activity a1 = new Activity() {
-            @Override
-            public void execute(JobRun context) throws FlowException {
-                LOG.debug("executing activity: ", getId());
-            }
-
-            @Override
-            public String getName() {
-                return getId();
-            }
-
-            @Override
-            public String getId() {
-                return "A1";
-            }
-
-            @Override
-            public boolean isSleepAfter() {
-                return false;
-            }
-        };
-        Activity a2 = new Activity() {
-            @Override
-            public void execute(JobRun context) throws FlowException {
-                LOG.debug("executing activity: ", getId());
-            }
-
-            @Override
-            public String getName() {
-                return getId();
-            }
-
-            @Override
-            public String getId() {
-                return "A2";
-            }
-
-            @Override
-            public boolean isSleepAfter() {
-                return true;
-            }
-        };
-        Activity a3 = new Activity() {
-            @Override
-            public void execute(JobRun context) throws FlowException {
-                LOG.debug("executing activity: ", getId());
-            }
-
-            @Override
-            public String getName() {
-                return getId();
-            }
-
-            @Override
-            public String getId() {
-                return "A3";
-            }
-
-            @Override
-            public boolean isSleepAfter() {
-                return false;
-            }
-        };
-        Activity a4 = new Activity() {
-            @Override
-            public void execute(JobRun context) throws FlowException {
-                LOG.debug("executing activity: ", getId());
-            }
-
-            @Override
-            public String getName() {
-                return getId();
-            }
-
-            @Override
-            public String getId() {
-                return "A4";
-            }
-
-            @Override
-            public boolean isSleepAfter() {
-                return true;
-            }
-        };
-        // flowManager.addActivity(a1);
-        // flowManager.addActivity(a2);
-        // flowManager.addActivity(a3);
-        // flowManager.addActivity(a4);
-
         flowManager.addActivity(harvestActivity());
         flowManager.addActivity(ontotext2HistorypinTransformActivity());
         return flowManager;
@@ -182,8 +92,7 @@ public class FlowConfig {
 
     @Bean
     public FlowManager historypinToEuropeanaFlowManager() {
-        // FIXME
-        FlowManagerImpl flowManager = new FlowManagerImpl(Connector.HISTORYPIN, Connector.EUROPEANA);
+        FlowManagerImpl flowManager = new FlowManagerImpl(Connector.HISTORYPIN, Connector.MINT);
         flowManager.addActivity(harvestActivity());
         flowManager.addActivity(transformActivity());
         flowManager.addActivity(storeActivity());

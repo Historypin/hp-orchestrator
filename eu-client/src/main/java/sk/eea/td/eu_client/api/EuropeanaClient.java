@@ -11,5 +11,5 @@ public interface EuropeanaClient {
 
     List<String> search(String luceneQuery) throws IOException, InterruptedException;
 
-    List<String> search(String luceneQuery, String facet) throws IOException, InterruptedException;
+    List<String> search(String luceneQuery, String facet) throws IOException, InterruptedException;    
 }

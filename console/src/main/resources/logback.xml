@@ -67,6 +67,11 @@
         <appender-ref ref="FILE"/>
     </logger>
 
+    <logger name="org.springframework.beans" level="DEBUG" additivity="false" >
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="FILE"/>
+    </logger>
+
     <root level="${root.appender.level}">
         <appender-ref ref="STDOUT"/>
         <appender-ref ref="FILE"/>

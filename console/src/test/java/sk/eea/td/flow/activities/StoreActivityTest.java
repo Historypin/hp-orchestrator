@@ -8,7 +8,10 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import org.easymock.Capture;
+import org.easymock.CaptureType;
 import org.easymock.EasyMock;
+import org.easymock.IAnswer;
+import org.easymock.internal.matchers.Captures;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -51,16 +54,21 @@ public class StoreActivityTest {
 		Capture<Path> pathToZip = EasyMock.<Path>newCapture();
 		
 		try {
-			EasyMock.expect(mintStoreService.store(EasyMock.<Path>capture(pathToZip))).andReturn(Boolean.TRUE);
+			EasyMock.expect(mintStoreService.store(EasyMock.capture(pathToZip))).andStubAnswer(new IAnswer<Boolean>() {
+				@Override
+				public Boolean answer() throws Throwable {
+		            ZipFile zipFile = new ZipFile(pathToZip.getValue().toFile());
+					ZipEntry entry = zipFile.entries().nextElement();
+					if(entry == null || !entry.getName().equals("object1.mint.json")){
+						fail("Zip file empty, or not containing file.");
+					}
+					zipFile.close();
+					return Boolean.TRUE;
+				}
+			});
 			EasyMock.replay(mintStoreService);
 			activity.execute(context);
-            ZipFile zipFile = new ZipFile(pathToZip.getValue().toFile());
-			ZipEntry entry = zipFile.entries().nextElement();
-			if(entry == null || !entry.getName().equals("object1.mint.json")){
-				fail("Zip file empty, or not containing file.");
-			}
-			zipFile.close();
-		} catch (FlowException|IOException e) {
+		} catch (FlowException e) {
 			e.printStackTrace();
 			fail(e.toString());
 		}finally {

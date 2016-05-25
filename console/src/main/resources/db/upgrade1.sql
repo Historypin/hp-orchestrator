@@ -9,6 +9,7 @@ alter table "users"
 	add "email" varchar(255);
 
 ALTER TABLE job ADD CONSTRAINT user_fk FOREIGN KEY ("user") REFERENCES "users"(username) ON UPDATE CASCADE ON DELETE CASCADE;
+ALTER TABLE job_run ADD COLUMN "activity" VARCHAR(255);
 
 update "job" set "user" = 'admin';
 update "users" set "email" = 'no-reply@localhost';
