@@ -30,7 +30,7 @@ public class FlowManagerImplTest {
     private static CountDownLatch threadsCreatedSignal = new CountDownLatch(10);
 
     @InjectMocks
-    private FlowManagerImpl flowManagerImpl = new FlowManagerImpl(Connector.EUROPEANA, Connector.HISTORYPIN);
+    private FlowManagerImpl flowManagerImpl = new FlowManagerImpl(Connector.EUROPEANA, Connector.HISTORYPIN, new SingleRunJobSelector());
 
     @Mock
     private JobRepository jobRepository;

@@ -1,43 +1,45 @@
 package sk.eea.td.flow;
 
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import sk.eea.td.console.model.*;
+
+import sk.eea.td.console.model.JobRun;
 import sk.eea.td.console.model.JobRun.JobRunResult;
 import sk.eea.td.console.model.JobRun.JobRunStatus;
-import sk.eea.td.console.repository.JobRepository;
+import sk.eea.td.console.model.Log;
 import sk.eea.td.console.repository.JobRunRepository;
 import sk.eea.td.console.repository.LogRepository;
-import sk.eea.td.console.repository.ParamRepository;
 import sk.eea.td.rest.model.Connector;
 import sk.eea.td.rest.service.MailService;
-
-import java.util.*;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 @Component
 public class FlowManagerImpl implements FlowManager {
 
     private static final Logger LOG = LoggerFactory.getLogger(FlowManagerImpl.class);
 
-    @Autowired
-    private JobRepository jobRepository;
 
     @Autowired
     private JobRunRepository jobRunRepository;
-
-    @Autowired
-    private ParamRepository paramRepository;
 
     @Autowired
     private LogRepository logRepository;
 
     @Autowired
     private MailService mailService;
+    
+    private JobSelector jobSelector;
 
     private Lock lock = new ReentrantLock();
 
@@ -46,12 +48,10 @@ public class FlowManagerImpl implements FlowManager {
     private Connector source;
     private Connector target;
 
-    public FlowManagerImpl() {
-    }
-
-    public FlowManagerImpl(Connector source, Connector target) {
+    public FlowManagerImpl(Connector source, Connector target, JobSelector jobSelector) {
         this.source = source;
         this.target = target;
+        this.jobSelector = jobSelector;
     }
 
     /*
@@ -121,18 +121,15 @@ public class FlowManagerImpl implements FlowManager {
     public void trigger() {
         if (lock.tryLock()) {
             try {
-                // get next job run
-                JobRun jobRun = jobRunRepository.findNextJobRun(source.name(), target.name());
-                if (jobRun != null) {
-                    LOG.debug("jobRun found: {}", jobRun.toString());
-
-                    Job job = jobRun.getJob();
-                    job.setLastJobRun(jobRun);
-                    jobRepository.save(job);
-
-                    LOG.debug("Starting/resuming a JobRun with id: {}.", jobRun.getId());
-                    resumeFlow(jobRun);
+				JobRun jobRun = jobSelector.nextJobRun(source,target);
+				LOG.debug("Starting/resuming a JobRun with id: {}.", jobRun.getId());		
+                if(jobRun != null){
+                	resumeFlow(jobRun);
+                }else{
+                	LOG.debug(MessageFormat.format("Nothing to run for Source: {0} -> Destination: {1}.", source, target));
                 }
+            } catch (FlowException e){
+            	LOG.error("Error starting a flow:",e);
             } finally {
                 lock.unlock();
             }
