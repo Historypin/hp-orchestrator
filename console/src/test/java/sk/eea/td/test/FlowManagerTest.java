@@ -46,7 +46,19 @@ public class FlowManagerTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(FlowManagerTest.class);
 
-    @Ignore
+    @Autowired
+    private FlowManager historypinOntotextFlowManager;
+    @Autowired
+    private JobRepository jobRepository;
+    @Autowired
+    private JobRunRepository jobRunRepository;
+    @Autowired
+    private UsersRepository usersRepository;
+    @Autowired
+    private ParamRepository paramRepository;
+    @Autowired
+    private ApprovementService approvementService;
+
     @Test
     public void testFlow() throws Exception {
 
@@ -132,18 +144,4 @@ public class FlowManagerTest {
         jobRun.setStatus(status);
         jobRunRepository.save(jobRun);
     }
-
-    @Autowired
-    FlowManager historypinOntotextFlowManager;
-
-    @Autowired
-    private JobRepository jobRepository;
-    @Autowired
-    private JobRunRepository jobRunRepository;
-    @Autowired
-    private UsersRepository usersRepository;
-    @Autowired
-    private ParamRepository paramRepository;
-    @Autowired
-    private ApprovementService approvementService;
 }

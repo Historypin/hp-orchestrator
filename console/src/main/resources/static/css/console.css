@@ -162,3 +162,7 @@ div.required label.control-label:after {
 pre {
     white-space: pre-wrap;
 }
+
+.spacer {
+    margin-top: 50px;
+}

@@ -1,6 +1,7 @@
 package sk.eea.td.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -10,6 +11,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.token.KeyBasedPersistenceTokenService;
+import org.springframework.security.core.token.SecureRandomFactoryBean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
@@ -29,6 +32,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public SecureRandomFactoryBean secureRandomFactoryBean() {
+        return new SecureRandomFactoryBean();
+    }
+
+    @Bean
+    public KeyBasedPersistenceTokenService keyBasedPersistenceTokenService(@Value("${token.server.secret}") String serverSecret, @Value("${token.server.integer}") Integer serverInteger) throws Exception {
+        KeyBasedPersistenceTokenService tokenService = new KeyBasedPersistenceTokenService();
+        tokenService.setSecureRandom(secureRandomFactoryBean().getObject());
+        tokenService.setServerSecret(serverSecret);
+        tokenService.setServerInteger(serverInteger);
+        return tokenService;
     }
 
     @Bean
@@ -58,6 +75,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .ignoring()
                 .antMatchers("/static/**")
                 .antMatchers("/webjars/**")
+                .antMatchers("/review/**")
                 .antMatchers("/api/**"); // TODO: secure api as well
     }
 

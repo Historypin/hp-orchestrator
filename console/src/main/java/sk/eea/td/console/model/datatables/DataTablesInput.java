@@ -40,13 +40,13 @@ public class DataTablesInput {
 	@Min(-1)
 	private Integer length;
 
-	@NotNull
+	//@NotNull
 	private Map<SearchCriteria, String> search;
 
-	@NotEmpty
+	//@NotEmpty
 	private List<Map<ColumnCriteria, String>> columns;
 
-	@NotEmpty
+	//@NotEmpty
 	private List<Map<OrderCriteria, String>> order;
 
 	public enum SearchCriteria {
