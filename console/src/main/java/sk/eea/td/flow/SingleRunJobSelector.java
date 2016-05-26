@@ -31,9 +31,6 @@ public class SingleRunJobSelector implements JobSelector {
 
     @Autowired
     private JobRepository jobRepository;
-    
-    @Autowired
-    private ParamRepository paramRepository;
 
     @Autowired
     private JobRunRepository jobRunRepository;

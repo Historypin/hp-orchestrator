@@ -11,7 +11,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -33,7 +32,6 @@ import org.springframework.stereotype.Component;
 
 import sk.eea.td.console.model.Job;
 import sk.eea.td.console.model.JobRun;
-import sk.eea.td.console.model.JobRun.JobRunResult;
 import sk.eea.td.console.model.ParamKey;
 import sk.eea.td.console.model.ReadOnlyParam;
 import sk.eea.td.console.repository.JobRepository;
@@ -129,7 +127,7 @@ public class HistorypinHarvestService {
 	public Path harvestAnnotation(String harvestId, String jobId, String from, String until) throws IOException, java.text.ParseException, ParseException {
     	final Path harvestPath = PathUtils.createHarvestRunSubdir(Paths.get(outputDirectory), harvestId);
 		Job job = jobRepository.findOne(Long.valueOf(jobId));
-		JobRun jobRun = jobRunRepository.findFirstByJobAndJobRunResultOrderByDateCreatedDesc(job, JobRunResult.OK);
+		JobRun jobRun = jobRunRepository.findNextJobRun(Connector.HISTORYPIN_ANNOTATION.name(), Connector.EUROPEANA_ANNOTATION.name());
 		String fromLocal = from;
 		String untilLocal;
 		if(jobRun != null){

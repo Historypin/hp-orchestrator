@@ -1,7 +1,5 @@
 package sk.eea.td.util;
 
-import sk.eea.td.flow.Activity;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;

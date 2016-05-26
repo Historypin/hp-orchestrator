@@ -24,11 +24,11 @@ import sk.eea.td.config.RESTClientsConfig;
 import sk.eea.td.config.TestConfig;
 import sk.eea.td.console.model.Job;
 import sk.eea.td.console.model.JobRun;
-import sk.eea.td.console.model.JobRun.JobRunResult;
 import sk.eea.td.console.model.ParamKey;
 import sk.eea.td.console.model.ReadOnlyParam;
 import sk.eea.td.console.repository.JobRepository;
 import sk.eea.td.console.repository.JobRunRepository;
+import sk.eea.td.rest.model.Connector;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes={TestConfig.class, DaoMockConfig.class, RESTClientsConfig.class})
@@ -79,7 +79,7 @@ public class HistorypinHarvestServiceIT {
 		jobRun.addReadOnlyParam(new ReadOnlyParam(ParamKey.HP_UNTIL_CURRENT, "2010-01-01T20:21:59Z"));
 		
 		EasyMock.expect(jobRepository.findOne(EasyMock.eq(1l))).andReturn(job).once();
-		EasyMock.expect(jobRunRepository.findFirstByJobAndJobRunResultOrderByDateCreatedDesc(EasyMock.same(job), EasyMock.same(JobRunResult.OK))).andReturn(jobRun).once();
+		EasyMock.expect(jobRunRepository.findNextJobRun(EasyMock.same(Connector.HISTORYPIN_ANNOTATION.name()), EasyMock.same(Connector.EUROPEANA_ANNOTATION.name()))).andReturn(jobRun).once();
 		EasyMock.replay(jobRepository,jobRunRepository);
 		try {
 			historypinHarvestService.harvestAnnotation("12345", "1", null, null);
