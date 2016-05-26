@@ -83,5 +83,4 @@ public class AppConfig implements SchedulingConfigurer {
     public Executor taskExecutor() {
         return Executors.newScheduledThreadPool(10);
     }
-        
 }

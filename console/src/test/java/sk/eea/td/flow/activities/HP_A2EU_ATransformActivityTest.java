@@ -59,7 +59,7 @@ public class HP_A2EU_ATransformActivityTest {
 		} catch (IOException e) {
 			fail(e.toString());
 		}
-		
+		// TODO: missing verify step
 	}
 
 }
