@@ -5,6 +5,7 @@ import java.util.concurrent.Executors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -16,17 +17,7 @@ import org.springframework.scheduling.annotation.Schedules;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 
-import sk.eea.td.console.model.JobRun;
-import sk.eea.td.flow.Activity;
-import sk.eea.td.flow.FlowException;
 import sk.eea.td.flow.FlowManager;
-import sk.eea.td.flow.FlowManagerImpl;
-import sk.eea.td.flow.activities.HarvestActivity;
-import sk.eea.td.flow.activities.Ontotext2HistorypinTransformActivity;
-import sk.eea.td.flow.activities.ReportActivity;
-import sk.eea.td.flow.activities.StoreActivity;
-import sk.eea.td.flow.activities.TransformActivity;
-import sk.eea.td.rest.model.Connector;
 
 @Configuration
 @EnableScheduling
@@ -41,80 +32,33 @@ public class AppConfig implements SchedulingConfigurer {
         return new PropertySourcesPlaceholderConfigurer();
     }
 
-    @Bean
-    public Activity harvestActivity() {
-        return new HarvestActivity();
+    @Autowired
+    FlowManager historypinOntotextFlowManager;
+    @Autowired
+    FlowManager europeanaToHistorypinFlowManager;
+    @Autowired
+    FlowManager historypinToEuropeanaFlowManager;
+
+    @Schedules(
+            //@Scheduled(cron = "${europeana.flm.cron.expression}")
+            @Scheduled(fixedRate = 1000)
+    )
+    public void europeanaToHistorypinTimeSignal() {
+        europeanaToHistorypinFlowManager.trigger();
     }
 
-    @Bean
-    public Activity transformActivity() {
-        return new TransformActivity();
+    @Schedules(@Scheduled(fixedRate = 60000))
+    public void historypinOntotextTimeSignal() {
+        historypinOntotextFlowManager.trigger();
     }
 
-    @Bean
-    public Activity storeActivity() {
-        return new StoreActivity();
+    @Schedules(
+            //@Scheduled(cron="${historypin.flm.cron.expression}")
+            @Scheduled(fixedRate = 1000)
+    )
+    public void historypinToEuropeanaTimeSignal() {
+        historypinToEuropeanaFlowManager.trigger();
     }
-
-    @Bean
-    public Activity reportActivity() {
-        return new ReportActivity();
-    }
-
-    @Bean
-    public FlowManager europeanaToHistorypinFlowManager() {
-        FlowManager flowManager = new FlowManagerImpl(Connector.EUROPEANA, Connector.HISTORYPIN);
-        flowManager.addActivity(harvestActivity());
-        flowManager.addActivity(transformActivity());
-        flowManager.addActivity(storeActivity());
-        flowManager.addActivity(reportActivity());
-        return flowManager;
-    }
-
-//    @Schedules(
-//            //@Scheduled(cron = "${europeana.flm.cron.expression}")
-//            @Scheduled(fixedRate = 1000)
-//    )
-//    public void europeanaToHistorypinTimeSignal() {
-//        europeanaToHistorypinFlowManager().trigger();
-//    }
-
-    @Bean
-    Activity ontotext2HistorypinTransformActivity() {
-        return new Ontotext2HistorypinTransformActivity();
-    }
-
-//    @Bean
-//    public FlowManager historypinHarvester(){
-//    	FlowManagerImpl flowManager = new FlowManagerImpl("HP");
-//        flowManager.addActivity(new HarvestActivity());
-//        flowManager.addActivity(new TransformActivity());
-//        flowManager.addActivity(new StoreActivity());
-//        return flowManager;
-//    }
-//
-//    @Schedules(@Scheduled(cron="${historypin.flm.cron.expression}"))
-//    public void historypinFlowManagerTimeSignal(){
-//        historypinHarvester().trigger();
-//    }
-
-    @Bean
-    public FlowManager historypinToEuropeanaFlowManager() {
-        FlowManagerImpl flowManager = new FlowManagerImpl(Connector.HISTORYPIN, Connector.EUROPEANA);
-        flowManager.addActivity(harvestActivity());
-        flowManager.addActivity(transformActivity());
-        flowManager.addActivity(storeActivity());
-        flowManager.addActivity(reportActivity());
-        return flowManager;
-    }
-
-//    @Schedules(
-//            //@Scheduled(cron="${historypin.flm.cron.expression}")
-//            @Scheduled(fixedRate = 1000)
-//    )
-//    public void historypinToEuropeanaTimeSignal() {
-//        historypinToEuropeanaFlowManager().trigger();
-//    }
 
     @Override
     public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {

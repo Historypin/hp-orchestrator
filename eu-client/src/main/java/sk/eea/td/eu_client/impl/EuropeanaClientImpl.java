@@ -33,7 +33,7 @@ public class EuropeanaClientImpl implements EuropeanaClient {
     private final String baseURL;
 
     private final String wskey;
-
+    
     private final ObjectMapper objectMapper;
 
     private final JsonFactory jsonFactory;

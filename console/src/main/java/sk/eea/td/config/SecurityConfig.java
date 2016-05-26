@@ -26,6 +26,9 @@ import javax.sql.DataSource;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    @Autowired
+    private  DataSource dataSource;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -46,18 +49,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public UserDetailsManager userDetailsManager(DataSource dataSource, AuthenticationManager authenticationManager) {
+    public UserDetailsManager userDetailsManager() throws Exception {
         JdbcUserDetailsManager manager = new JdbcUserDetailsManager();
         manager.setDataSource(dataSource);
-        manager.setAuthenticationManager(authenticationManager);
+        manager.setAuthenticationManager(authenticationManagerBean());
         return manager;
     }
 
     @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth, UserDetailsManager userDetailsManager, PasswordEncoder passwordEncoder) throws Exception {
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth
-                .userDetailsService(userDetailsManager)
-                .passwordEncoder(passwordEncoder);
+                .userDetailsService(userDetailsManager())
+                .passwordEncoder(passwordEncoder());
     }
 
     @Bean(name = "authenticationManager")

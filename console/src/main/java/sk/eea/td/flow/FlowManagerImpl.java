@@ -119,32 +119,18 @@ public class FlowManagerImpl implements FlowManager {
     }
 
     public void trigger() {
-
         if (lock.tryLock()) {
             try {
-                // get next job
-                Job job = jobRepository.findNextJob(source.name(), target.name());
-                LOG.debug("job found: ", job);
-                if (job != null /*&& sources.contains(job.getSource())*/) {
+                // get next job run
+                JobRun jobRun = jobRunRepository.findNextJobRun(source.name(), target.name());
+                if (jobRun != null) {
+                    LOG.debug("jobRun found: {}", jobRun.toString());
 
-                    JobRun jobRun = null;
-                    if (job.getLastJobRun() != null && job.getLastJobRun().getStatus() != null
-                            && (JobRunStatus.RESUMED == job.getLastJobRun().getStatus())) {
-                        jobRun = job.getLastJobRun();
-                    } else {
-                        jobRun = new JobRun();
-                        jobRun.setJob(job);
-                        Set<Param> paramList = paramRepository.findByJob(job);
-                        for (Param param : paramList) {
-                            jobRun.addReadOnlyParam(new ReadOnlyParam(param));
-                        }
-                    }
-
-                    jobRun = jobRunRepository.save(jobRun);
+                    Job job = jobRun.getJob();
                     job.setLastJobRun(jobRun);
                     jobRepository.save(job);
 
-                    LOG.debug("Created a new JobRun with id: {}.", jobRun.getId());
+                    LOG.debug("Starting/resuming a JobRun with id: {}.", jobRun.getId());
                     resumeFlow(jobRun);
                 }
             } finally {
@@ -197,7 +183,7 @@ public class FlowManagerImpl implements FlowManager {
     private Activity getNextActivity(String id, JobRunStatus status) {
 
         List<Activity> activities = getActivities();
-        if (status == null) {
+        if (JobRunStatus.NEW.equals(status)) {
             return activities.get(0);
         }
 

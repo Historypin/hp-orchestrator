@@ -23,7 +23,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import sk.eea.td.onto_client.api.OntoClient;
-import sk.eea.td.onto_client.dto.ExtractResponseDTO;
+import sk.eea.td.onto_client.dto.EnrichResponseDTO;
 
 public class OntoClientImpl implements OntoClient {
 
@@ -113,7 +113,7 @@ public class OntoClientImpl implements OntoClient {
     }
 
     @Override
-    public ExtractResponseDTO extract2Object(String text, String uri) throws JsonParseException, IOException {
+    public EnrichResponseDTO extract2Object(String text, String uri) throws JsonParseException, IOException {
 //        String uri = "http://mint-projects.image.ntua.gr/data/foodanddrink/EUFD105370";
         WebTarget target = client.target(baseURL).queryParam("uri", uri);
         System.out.println(target.toString());
@@ -122,9 +122,9 @@ public class OntoClientImpl implements OntoClient {
         System.out.println(resp.getStatus());
         String respString = resp.readEntity(String.class);
 
-//        InputStream respIS = getClass().getResourceAsStream("/extract-response.json");
+        //InputStream respIS = getClass().getResourceAsStream("/extract-response.json");
 
-        List<ExtractResponseDTO> dtos = objectMapper.readValue(respString, new TypeReference<List<ExtractResponseDTO>>(){});
+        List<EnrichResponseDTO> dtos = objectMapper.readValue(respString, new TypeReference<List<EnrichResponseDTO>>(){});
         return (dtos == null || dtos.isEmpty()) ? null : dtos.get(0);
     }
 }

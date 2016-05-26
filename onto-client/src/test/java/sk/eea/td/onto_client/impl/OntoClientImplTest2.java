@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import com.fasterxml.jackson.core.JsonParseException;
 
-import sk.eea.td.onto_client.dto.ExtractResponseDTO;
+import sk.eea.td.onto_client.dto.EnrichResponseDTO;
 
 public class OntoClientImplTest2 {
 
@@ -17,7 +17,7 @@ public class OntoClientImplTest2 {
         String text = "A piece of strawberry sponge cake on a white plate with a small blue and white spotted mug of black coffee credit";
         String uri = "http://mint-projects.image.ntua.gr/data/foodanddrink/EUFD105370";
         System.out.println("base_url: " + BASE_URL);
-        ExtractResponseDTO dto = new OntoClientImpl(BASE_URL, null).extract2Object(text, uri);
+        EnrichResponseDTO dto = new OntoClientImpl(BASE_URL, null).extract2Object(text, uri);
         System.out.println(dto);
     }
 }

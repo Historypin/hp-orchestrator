@@ -34,7 +34,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.fasterxml.jackson.core.JsonParseException;
 
-import sk.eea.td.onto_client.dto.ExtractResponseDTO;
+import sk.eea.td.onto_client.dto.EnrichResponseDTO;
 
 @PrepareForTest({ OntoClientImpl.class })
 @RunWith(PowerMockRunner.class)
@@ -117,8 +117,8 @@ public class OntoClientImplTest {
     @Test
     @Ignore // TODO: after finishing, remove annotation
     public void extract2Object() throws JsonParseException, IOException {
-        ExtractResponseDTO dto = ontoClient.extract2Object(null, null);
-        System.out.println(dto); //TODO: finish the test
+        EnrichResponseDTO dto = ontoClient.extract2Object(null, null);
+        System.out.println(dto);
     }
 
 }
