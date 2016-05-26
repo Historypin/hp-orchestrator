@@ -25,19 +25,19 @@ import sk.eea.td.flow.FlowManager;
 @ComponentScan(basePackages = "sk.eea.td")
 public class AppConfig implements SchedulingConfigurer {
 
-    private static final Logger LOG = LoggerFactory.getLogger(AppConfig.class);
+    @Autowired
+    private FlowManager historypinOntotextFlowManager;
+
+    @Autowired
+    private FlowManager europeanaToHistorypinFlowManager;
+
+    @Autowired
+    private FlowManager historypinToEuropeanaFlowManager;
 
     @Bean
     public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
         return new PropertySourcesPlaceholderConfigurer();
     }
-
-    @Autowired
-    FlowManager historypinOntotextFlowManager;
-    @Autowired
-    FlowManager europeanaToHistorypinFlowManager;
-    @Autowired
-    FlowManager historypinToEuropeanaFlowManager;
 
     @Schedules(
             //@Scheduled(cron = "${europeana.flm.cron.expression}")
@@ -47,7 +47,10 @@ public class AppConfig implements SchedulingConfigurer {
         europeanaToHistorypinFlowManager.trigger();
     }
 
-    @Schedules(@Scheduled(fixedRate = 60000))
+    @Schedules(
+            //@Scheduled(cron= "${ontotext.flm.cron.expression}")
+            @Scheduled(fixedRate = 1000)
+    )
     public void historypinOntotextTimeSignal() {
         historypinOntotextFlowManager.trigger();
     }

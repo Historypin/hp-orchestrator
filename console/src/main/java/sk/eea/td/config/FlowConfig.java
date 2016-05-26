@@ -1,32 +1,15 @@
 package sk.eea.td.config;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
-
 import sk.eea.td.flow.Activity;
 import sk.eea.td.flow.FlowManager;
 import sk.eea.td.flow.FlowManagerImpl;
-import sk.eea.td.flow.activities.HarvestActivity;
-import sk.eea.td.flow.activities.Ontotext2HistorypinTransformActivity;
-import sk.eea.td.flow.activities.ReportActivity;
-import sk.eea.td.flow.activities.StoreActivity;
-import sk.eea.td.flow.activities.TransformActivity;
+import sk.eea.td.flow.activities.*;
 import sk.eea.td.rest.model.Connector;
 
 @Configuration
-//@PropertySource({"classpath:default.properties", "classpath:${spring.profiles.active:prod}.properties"})
-//@ComponentScan(basePackages = "sk.eea.td")
 public class FlowConfig {
-
-    private static final Logger LOG = LoggerFactory.getLogger(FlowConfig.class);
-
-    @Bean
-    public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
-        return new PropertySourcesPlaceholderConfigurer();
-    }
 
     @Bean
     public Activity harvestActivity() {
@@ -49,6 +32,11 @@ public class FlowConfig {
     }
 
     @Bean
+    public Activity ontotext2HistorypinTransformActivity() {
+        return new Ontotext2HistorypinTransformActivity();
+    }
+
+    @Bean
     public FlowManager europeanaToHistorypinFlowManager() {
         FlowManager flowManager = new FlowManagerImpl(Connector.EUROPEANA, Connector.HISTORYPIN);
         flowManager.addActivity(harvestActivity());
@@ -56,11 +44,6 @@ public class FlowConfig {
         flowManager.addActivity(storeActivity());
         flowManager.addActivity(reportActivity());
         return flowManager;
-    }
-
-    @Bean
-    Activity ontotext2HistorypinTransformActivity() {
-        return new Ontotext2HistorypinTransformActivity();
     }
 
     @Bean
