@@ -70,6 +70,7 @@ public class FlowManagerTest {
         historypinOntotextFlowManager.trigger();
     }
 
+    @Ignore
     @Test(expected=ServiceException.class)
     public void testFlowChecksumChanged() throws Exception {
 
