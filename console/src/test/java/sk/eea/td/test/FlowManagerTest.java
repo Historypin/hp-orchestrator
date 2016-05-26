@@ -59,6 +59,7 @@ public class FlowManagerTest {
     @Autowired
     private ApprovementService approvementService;
 
+    @Ignore
     @Test
     public void testFlow() throws Exception {
 
