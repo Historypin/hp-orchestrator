@@ -91,8 +91,8 @@ public class MailService {
      * @param subject subject of email message
      * @param params  map of parameters used in template
      */
-    public void sendApprovalMail(String email, String subject, Map<String, String> params) {
-        this.sendMail(email, "approval", subject, params);
+    public void sendReviewMail(String email, String subject, Map<String, String> params) {
+        this.sendMail(email, "review", subject, params);
     }
 
     /**
