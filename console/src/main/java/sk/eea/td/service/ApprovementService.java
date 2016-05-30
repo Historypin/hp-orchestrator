@@ -19,12 +19,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import sk.eea.td.console.model.JobRun;
 import sk.eea.td.console.model.ParamKey;
+import sk.eea.td.console.model.JobRun.JobRunStatus;
 import sk.eea.td.console.model.dto.ReviewDTO;
+import sk.eea.td.console.repository.JobRunRepository;
 import sk.eea.td.hp_client.api.HPClient;
 import sk.eea.td.hp_client.impl.HPClientImpl;
 
@@ -48,7 +49,11 @@ public class ApprovementService {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private JobRunRepository jobRunRepository;
+
     private static final Logger LOG = LoggerFactory.getLogger(ApprovementService.class);
+    private static final ParamKey PATH_TYPE = ParamKey.TRANSFORM_PATH; 
 
     @PostConstruct
     public void init() {
@@ -56,19 +61,16 @@ public class ApprovementService {
         hpClient = new HPClientImpl(hpUrl, hpApiKey, hpApiSecret);
     }
 
-    public List<ReviewDTO> load(ParamKey pathType, JobRun jobRun) throws ServiceException {
+    public List<ReviewDTO> load(JobRun jobRun) throws ServiceException {
 
-        final Map<ParamKey, String> paramMap = new HashMap<>();
-        jobRun.getReadOnlyParams().stream().forEach(p -> paramMap.put(p.getKey(), p.getValue()));
-        final Path path = Paths.get(paramMap.get(pathType));
+        Path path = getPath(jobRun);
         return loadAll(path);
     }
 
-    public void save(ParamKey pathType, JobRun jobRun, List<ReviewDTO> reviews) throws ServiceException {
+    public void save(JobRun jobRun, List<ReviewDTO> reviews) throws ServiceException {
 
-        final Map<ParamKey, String> paramMap = new HashMap<>();
-        jobRun.getReadOnlyParams().stream().forEach(p -> paramMap.put(p.getKey(), p.getValue()));
-        final Path path = Paths.get(paramMap.get(pathType));
+        Path path = getPath(jobRun);
+        checkJobNotClosed(jobRun, path);
 
         List<ServiceException.Error> errors = new ArrayList<>();
         for (ReviewDTO reviewDTO : reviews) {
@@ -104,14 +106,12 @@ public class ApprovementService {
         }
     }
 
-    public void sendApproved(ParamKey pathType, JobRun jobRun) throws ServiceException {
+    public void sendApproved(JobRun jobRun) throws ServiceException {
 
-        final Map<ParamKey, String> paramMap = new HashMap<>();
-        jobRun.getReadOnlyParams().stream().forEach(p -> paramMap.put(p.getKey(), p.getValue()));
-        final Path path = Paths.get(paramMap.get(pathType));
+        Path path = getPath(jobRun);
 
         List<ServiceException.Error> errors = new ArrayList<>();
-        List<ReviewDTO> reviews = load(pathType, jobRun);// TODO pathType?
+        List<ReviewDTO> reviews = load(jobRun);// TODO pathType?
         for (ReviewDTO reviewDTO : reviews) {
             if (reviewDTO.getApproved()) {
                 // prepare HP update reques and call update() on HP client
@@ -140,9 +140,19 @@ public class ApprovementService {
         }
     }
 
-    public void saveAndSendApproved(ParamKey pathType, JobRun jobRun, List<ReviewDTO> contents) throws ServiceException {
-        save(pathType, jobRun, contents);
-        sendApproved(pathType, jobRun);
+    public void saveAndSendApproved(JobRun jobRun, List<ReviewDTO> contents) throws ServiceException {
+
+        Path path = getPath(jobRun);
+        checkJobNotClosed(jobRun, path);
+
+        save(jobRun, contents);
+        sendApproved(jobRun);
+    }
+
+    public void finish(JobRun jobRun) {
+
+        jobRun.setStatus(JobRunStatus.RESUMED);
+        jobRunRepository.save(jobRun);
     }
 
     private List<ReviewDTO> loadAll(Path path) throws ServiceException {
@@ -169,5 +179,23 @@ public class ApprovementService {
 
     private boolean verifyCheckSum(String checksum, Path targetPath) throws IOException {
         return checksum.equalsIgnoreCase(FilesystemStorageService.checkSum(targetPath));
+    }
+
+    private void checkJobNotClosed(JobRun jobRun, Path path) throws ServiceException {
+
+        JobRunStatus status = jobRunRepository.findOne(jobRun.getId()).getStatus();
+        if (JobRunStatus.STOPPED == status || JobRunStatus.FINISHED == status || JobRunStatus.RESUMED == status) {
+            List<ServiceException.Error> errors = new ArrayList<>();
+            errors.add(new ServiceException.Error(path,
+                    ServiceException.Error.ErrorCode.JOB_ALREADY_CLOSED));
+            throw new ServiceException(errors);
+        }
+    }
+
+    private Path getPath(JobRun jobRun) {
+
+        final Map<ParamKey, String> paramMap = new HashMap<>();
+        jobRun.getReadOnlyParams().stream().forEach(p -> paramMap.put(p.getKey(), p.getValue()));
+        return Paths.get(paramMap.get(PATH_TYPE));
     }
 }

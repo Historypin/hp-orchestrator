@@ -42,7 +42,8 @@ public class ServiceException extends Exception {
             CHECKSUM_CHANGED,
             INVALID_JSON,
             FAILED_TO_LOAD_FILE_FOR_CHECKSUM,
-            CLIENT_REQUEST_FAILED
+            CLIENT_REQUEST_FAILED,
+            JOB_ALREADY_CLOSED
         }
 
     }

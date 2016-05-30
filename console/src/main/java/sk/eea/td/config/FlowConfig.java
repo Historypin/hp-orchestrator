@@ -32,6 +32,11 @@ public class FlowConfig {
     }
 
     @Bean
+    public Activity approvalSendMailActivity() {
+        return new ApprovalSendMailActivity();
+    }
+
+    @Bean
     public Activity ontotext2HistorypinTransformActivity() {
         return new Ontotext2HistorypinTransformActivity();
     }
@@ -51,6 +56,8 @@ public class FlowConfig {
         FlowManager flowManager = new FlowManagerImpl(Connector.HISTORYPIN, Connector.SD);
         flowManager.addActivity(harvestActivity());
         flowManager.addActivity(ontotext2HistorypinTransformActivity());
+        flowManager.addActivity(approvalSendMailActivity());
+        flowManager.addActivity(reportActivity());
         return flowManager;
     }
 

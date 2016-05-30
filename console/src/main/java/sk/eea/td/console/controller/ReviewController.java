@@ -77,7 +77,7 @@ public class ReviewController {
     public ReviewDTOWrapper getReviewItems(HttpServletRequest request) throws ServiceException {
         final JobRun jobRun = retrieveJobRunFromSession(request);
 
-        List<ReviewDTO> reviews = approvementService.load(ParamKey.TRANSFORM_PATH, jobRun);
+        List<ReviewDTO> reviews = approvementService.load(jobRun);
         return new ReviewDTOWrapper(reviews);
     }
 
@@ -89,7 +89,7 @@ public class ReviewController {
 
         LOG.debug("Received reviews for saving: {}", reviews);
 
-        approvementService.save(ParamKey.TRANSFORM_PATH, jobRun, reviews);
+        approvementService.save(jobRun, reviews);
         return new GenericResponse("OK");
     }
 
@@ -98,7 +98,7 @@ public class ReviewController {
     public GenericResponse sendReviewItems(@RequestBody List<ReviewDTO> reviews, HttpServletRequest request) throws ServiceException {
         final JobRun jobRun = retrieveJobRunFromSession(request);
 
-        approvementService.saveAndSendApproved(ParamKey.TRANSFORM_PATH, jobRun, reviews);
+        approvementService.saveAndSendApproved(jobRun, reviews);
         return new GenericResponse("OK");
     }
 
@@ -108,7 +108,7 @@ public class ReviewController {
             throws ServiceException {
         final JobRun jobRun = retrieveJobRunFromSession(request);
 
-        approvementService.save(ParamKey.TRANSFORM_PATH, jobRun, reviews);
+        approvementService.save(jobRun, reviews);
         // TODO: finish task
         return new GenericResponse("OK");
     }

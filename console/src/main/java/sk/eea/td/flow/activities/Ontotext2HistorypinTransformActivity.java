@@ -136,9 +136,4 @@ public class Ontotext2HistorypinTransformActivity extends AbstractTransformActiv
         }
         return null;
     }
-
-    @Override
-    public boolean isSleepAfter() {
-        return true;
-    }
 }

@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import sk.eea.td.config.FlowConfig;
@@ -71,13 +70,13 @@ public class FlowManagerTest {
 
         //3. load the jobRun, load jsons
         jobRun = jobRunRepository.findOne(jobRun.getId());
-        List<ReviewDTO> reviews = approvementService.load(ParamKey.TRANSFORM_PATH, jobRun);
+        List<ReviewDTO> reviews = approvementService.load(jobRun);
         for (ReviewDTO reviewDTO : reviews) {
             LOG.debug(reviewDTO.toString());
         }
 
         //4. save the jsons
-        approvementService.save(ParamKey.TRANSFORM_PATH, jobRun, reviews);
+        approvementService.save(jobRun, reviews);
 
         //resume the flow
         updateJobRun(jobRun, JobRunStatus.RESUMED);
@@ -95,7 +94,7 @@ public class FlowManagerTest {
 
         //3. load the jobRun, load jsons
         jobRun = jobRunRepository.findOne(jobRun.getId());
-        List<ReviewDTO> reviews = approvementService.load(ParamKey.TRANSFORM_PATH, jobRun);
+        List<ReviewDTO> reviews = approvementService.load(jobRun);
         for (ReviewDTO reviewDTO : reviews) {
             LOG.debug(reviewDTO.toString());
         }
@@ -110,7 +109,7 @@ public class FlowManagerTest {
         FilesystemStorageService.save(targetPath, reviewDTO.getLocalFilename()+ " ");
 
         //4. save the jsons, should throw ServiceException
-        approvementService.save(ParamKey.TRANSFORM_PATH, jobRun, reviews);
+        approvementService.save(jobRun, reviews);
 
         //resume the flow
         updateJobRun(jobRun, JobRunStatus.RESUMED);
