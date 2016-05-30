@@ -4,6 +4,7 @@ import sk.eea.td.hp_client.dto.PlacesResponseDTO;
 import sk.eea.td.hp_client.dto.SaveResponseDTO;
 
 import javax.ws.rs.core.Response;
+import java.util.List;
 
 public interface HPClient {
 
@@ -27,5 +28,5 @@ public interface HPClient {
 
     void deleteAllProjects(Long user);
 
-    SaveResponseDTO updatePin(Integer id, String[] tags, String[] places);
+    SaveResponseDTO updatePin(Long id, List<String> tags, List<String> places);
 }

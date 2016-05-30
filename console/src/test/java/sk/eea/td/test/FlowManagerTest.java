@@ -30,6 +30,7 @@ import sk.eea.td.console.model.Param;
 import sk.eea.td.console.model.ParamKey;
 import sk.eea.td.console.model.ReadOnlyParam;
 import sk.eea.td.console.model.User;
+import sk.eea.td.console.model.dto.ReviewDTO;
 import sk.eea.td.console.repository.JobRepository;
 import sk.eea.td.console.repository.JobRunRepository;
 import sk.eea.td.console.repository.ParamRepository;
@@ -59,7 +60,7 @@ public class FlowManagerTest {
     @Autowired
     private ApprovementService approvementService;
 
-    @Ignore
+    //@Ignore
     @Test
     public void testFlow() throws Exception {
 
@@ -70,13 +71,13 @@ public class FlowManagerTest {
 
         //3. load the jobRun, load jsons
         jobRun = jobRunRepository.findOne(jobRun.getId());
-        List<String> jsons = approvementService.load(ParamKey.TRANSFORM_PATH, jobRun);
-        for (String json : jsons) {
-            LOG.debug(json);
+        List<ReviewDTO> reviews = approvementService.load(ParamKey.TRANSFORM_PATH, jobRun);
+        for (ReviewDTO reviewDTO : reviews) {
+            LOG.debug(reviewDTO.toString());
         }
 
         //4. save the jsons
-        approvementService.save(ParamKey.TRANSFORM_PATH, jobRun, jsons);
+        approvementService.save(ParamKey.TRANSFORM_PATH, jobRun, reviews);
 
         //resume the flow
         updateJobRun(jobRun, JobRunStatus.RESUMED);
@@ -94,9 +95,9 @@ public class FlowManagerTest {
 
         //3. load the jobRun, load jsons
         jobRun = jobRunRepository.findOne(jobRun.getId());
-        List<String> jsons = approvementService.load(ParamKey.TRANSFORM_PATH, jobRun);
-        for (String json : jsons) {
-            LOG.debug(json);
+        List<ReviewDTO> reviews = approvementService.load(ParamKey.TRANSFORM_PATH, jobRun);
+        for (ReviewDTO reviewDTO : reviews) {
+            LOG.debug(reviewDTO.toString());
         }
 
         //change the content of the first file
@@ -104,14 +105,12 @@ public class FlowManagerTest {
         jobRun.getReadOnlyParams().stream().forEach(p -> paramMap.put(p.getKey(), p.getValue()));
         final Path path = Paths.get(paramMap.get(ParamKey.TRANSFORM_PATH));
         ObjectMapper objectMapper = new ObjectMapper();
-        String content = jsons.get(0);
-        Map<String, Object> map = objectMapper.readValue(content, new TypeReference<Map<String, Object>>() {});
-        String localFilename = (String) map.get("local_filename");
-        Path targetPath = path.resolve(localFilename);
-        FilesystemStorageService.save(targetPath, content + " ");
+        ReviewDTO reviewDTO = reviews.get(0);
+        Path targetPath = path.resolve(reviewDTO.getLocalFilename());
+        FilesystemStorageService.save(targetPath, reviewDTO.getLocalFilename()+ " ");
 
         //4. save the jsons, should throw ServiceException
-        approvementService.save(ParamKey.TRANSFORM_PATH, jobRun, jsons);
+        approvementService.save(ParamKey.TRANSFORM_PATH, jobRun, reviews);
 
         //resume the flow
         updateJobRun(jobRun, JobRunStatus.RESUMED);
@@ -124,7 +123,7 @@ public class FlowManagerTest {
         job.setName("test job");
         job.setSource(Connector.HISTORYPIN);
         job.setTarget(Connector.SD);
-        job.addParam(new Param(ParamKey.HP_PROJECT_SLUG, "london"));
+        job.addParam(new Param(ParamKey.HP_PROJECT_SLUG, "central-institue-catalogue"));
         User user = usersRepository.findByUsername("admin");
         job.setUser(user);
         job = jobRepository.save(job);
@@ -136,9 +135,7 @@ public class FlowManagerTest {
         for (Param param : paramList) {
             jobRun.addReadOnlyParam(new ReadOnlyParam(param));
         }
-        jobRunRepository.save(jobRun);
-
-        return jobRun;
+        return jobRunRepository.save(jobRun);
     }
 
     private void updateJobRun(JobRun jobRun, JobRunStatus status) {

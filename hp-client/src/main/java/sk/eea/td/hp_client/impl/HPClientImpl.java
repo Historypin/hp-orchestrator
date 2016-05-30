@@ -3,6 +3,8 @@ package sk.eea.td.hp_client.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.jodah.recurrent.Recurrent;
 import net.jodah.recurrent.RetryPolicy;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.filter.LoggingFilter;
 import org.glassfish.jersey.jackson.JacksonFeature;
@@ -25,6 +27,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.Response;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
@@ -215,20 +218,20 @@ public class HPClientImpl implements HPClient {
     }
 
     @Override
-    public SaveResponseDTO updatePin(Integer id, String[] tags, String[] places) {
+    public SaveResponseDTO updatePin(Long id, List<String> tags, List<String> places) {
         
         WebTarget target = client.target(baseURL).path("en").path("api").path("pin").path("save.json");
         Map<String, String> data = new HashMap<>();
         data.put("id", String.valueOf(id));
 
-        if (tags != null && tags.length > 0) {
-            for (int i = 0; i < tags.length; i++) {
-                data.put(String.format("tags[%d][text]", i), tags[i]);
+        if (CollectionUtils.isNotEmpty(tags)) {
+            for (int i = 0; i < tags.size(); i++) {
+                data.put(String.format("tags[%d][text]", i), tags.get(i));
             }
         }
-        if (places != null && places.length > 0) {
-            for (int i = 0; i < places.length; i++) {
-                data.put(String.format("comments[%d][text]", i), places[i]);
+        if (CollectionUtils.isNotEmpty(places)) {
+            for (int i = 0; i < places.size(); i++) {
+                data.put(String.format("comments[%d][text]", i), places.get(i));
             }
         }
 

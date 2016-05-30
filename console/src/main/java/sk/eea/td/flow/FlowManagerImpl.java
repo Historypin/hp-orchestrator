@@ -149,19 +149,18 @@ public class FlowManagerImpl implements FlowManager {
                     break;
                 }
                 context.setActivity(activity.getId());
-                if (JobRunStatus.WAITING != context.getStatus()) {
-                    context.setStatus(JobRunStatus.RUNNING);
-                    logActivityStart(activity, context);
-                    activity.execute(context);
-                    if (activity.isSleepAfter()) {
-                        context.setStatus(JobRunStatus.WAITING);
-                        context = persistState(context);
-                        break;
-                    } else {
-                        context = persistState(context);
-                        logActivityEnd(activity, context);
-                    }
+                context.setStatus(JobRunStatus.RUNNING);
+                logActivityStart(activity, context);
+                activity.execute(context);
+                if (activity.isSleepAfter()) {
+                    context.setStatus(JobRunStatus.WAITING);
+                    context = persistState(context);
+                    break;
+                } else {
+                    context = persistState(context);
+                    logActivityEnd(activity, context);
                 }
+
             }
 
         } catch (Exception e) {
@@ -190,11 +189,7 @@ public class FlowManagerImpl implements FlowManager {
         for (int i = 0; i < activities.size(); i++) {
             Activity activity = activities.get(i);
             if (id.equalsIgnoreCase(activity.getId())) {
-                if (JobRunStatus.WAITING == status/* || JobRunStatus.RESUMED == status*/) {
-                    return activity;
-                } else {
-                    return (activities.size() > i + 1) ? activities.get(i + 1) : null;
-                }
+                return (activities.size() > i + 1) ? activities.get(i + 1) : null;
             }
         }
         return null;
@@ -222,7 +217,9 @@ public class FlowManagerImpl implements FlowManager {
     }
 
     private void logActivity(Activity activity, String message, JobRun context) {
-        logRepository.save(new Log(new Date(), Log.LogLevel.INFO, String.format("%s has %s", activity.getName(), message), context));
+        logRepository
+                .save(new Log(new Date(), Log.LogLevel.INFO, String.format("%s has %s", activity.getName(), message),
+                        context));
     }
 
     @Override
