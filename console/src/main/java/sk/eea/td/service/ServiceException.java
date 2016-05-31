@@ -11,6 +11,7 @@ public class ServiceException extends Exception {
     private List<Error> errors = new ArrayList<>();
 
     public ServiceException(List<Error> errors) {
+        super();
         this.errors = errors;
     }
     public List<Error> getErrors() {

@@ -13,6 +13,8 @@
     <link href="../static/css/bootstrap-tagsinput.css" th:href="@{/static/css/bootstrap-tagsinput.css}"
           rel="stylesheet"/>
 
+    <link href="../static/css/datatables.min.css" th:href="@{/static/css/datatables.min.css}" rel="stylesheet"/>
+
     <link href="../static/css/console.css" th:href="@{/static/css/console.css}" rel="stylesheet"/>
 </head>
 <body>
@@ -58,8 +60,7 @@
                             <th th:text="#{review.approved}">Approved</th>
                         </tr>
                         </thead>
-                        <tbody>
-                        <!-- ko foreach: reviews() -->
+                        <tbody data-bind="foreach: reviews()">
                         <tr>
                             <td><span data-bind="text: $data.caption"></span></td>
                             <td><span data-bind="text: $data.description"></span></td>
@@ -67,7 +68,6 @@
                             <td><input data-bind="tagsinput: $data.approvedTags"/></td>
                             <td><input type="checkbox" data-bind="checked: $data.approved"/></td>
                         </tr>
-                        <!-- /ko -->
                         </tbody>
                         <tfoot>
                         <tr>
@@ -109,82 +109,96 @@
         th:src="@{/webjars/knockout/3.4.0/knockout.js}"></script>
 <script src="../static/js/knockout-mapping.js" th:src="@{/static/js/knockout-mapping.js}"></script>
 <script src="../static/js/datatables.min.js" th:src="@{/static/js/datatables.min.js}"></script>
+<script src="../static/js/datatables.processing.plugin.js"
+        th:src="@{/static/js/datatables.processing.plugin.js}"></script>
 <script src="../static/js/bootstrap-tagsinput.min.js" th:src="@{/static/js/bootstrap-tagsinput.min.js}"></script>
 <script th:inline="javascript">
     /* <![CDATA[*/
-    $(document).ready(function () {
-        var viewModel;
+    var bindingApplied;
+    var dataTable;
 
-        ko.bindingHandlers.tagsinput = {
-            init: function (element, valueAccessor, allBindings) {
-                var options = allBindings().tagsinputOptions || {};
-                var value = valueAccessor();
-                var valueUnwrapped = ko.unwrap(value);
+    ko.bindingHandlers.tagsinput = {
+        init: function (element, valueAccessor, allBindings) {
+            var options = allBindings().tagsinputOptions || {};
+            var value = valueAccessor();
+            var valueUnwrapped = ko.unwrap(value);
 
-                var el = $(element);
-                el.tagsinput(options);
+            var el = $(element);
+            el.tagsinput(options);
 
-                for (var i = 0; i < valueUnwrapped.length; i++) {
-                    el.tagsinput('add', valueUnwrapped[i]);
-                }
-
-                el.on('itemAdded', function (event) {
-                    if (valueUnwrapped.indexOf(event.item) === -1) {
-                        value.push(event.item);
-                    }
-                });
-
-                el.on('itemRemoved', function (event) {
-                    value.remove(event.item);
-                });
-            },
-            update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
-                var value = valueAccessor();
-                var valueUnwrapped = ko.unwrap(value);
-
-                var el = $(element);
-                var prev = el.tagsinput('items');
-
-                var added = valueUnwrapped.filter(function (i) {
-                    return prev.indexOf(i) === -1;
-                });
-                var removed = prev.filter(function (i) {
-                    return valueUnwrapped.indexOf(i) === -1;
-                });
-
-                // remove tags no longer in bound model
-                for (var i = 0; i < removed.length; i++) {
-                    el.tagsinput('remove', removed[i]);
-                }
-
-                // refresh remaining tags
-                el.tagsinput('refresh');
-
-                // add new items in model as tags
-                for (i = 0; i < added.length; i++) {
-                    el.tagsinput('add', added[i]);
-                }
+            for (var i = 0; i < valueUnwrapped.length; i++) {
+                el.tagsinput('add', valueUnwrapped[i]);
             }
-        };
 
-        // knockout view model
-        function ViewModel(data) {
-            var self = this;
-            // knockout mapping JSON data to view model
-            ko.mapping.fromJS(data, {}, self);
+            el.on('itemAdded', function (event) {
+                if (valueUnwrapped.indexOf(event.item) === -1) {
+                    value.push(event.item);
+                }
+            });
+
+            el.on('itemRemoved', function (event) {
+                value.remove(event.item);
+            });
+        },
+        update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+            var value = valueAccessor();
+            var valueUnwrapped = ko.unwrap(value);
+
+            var el = $(element);
+            var prev = el.tagsinput('items');
+
+            var added = valueUnwrapped.filter(function (i) {
+                return prev.indexOf(i) === -1;
+            });
+            var removed = prev.filter(function (i) {
+                return valueUnwrapped.indexOf(i) === -1;
+            });
+
+            // remove tags no longer in bound model
+            for (var i = 0; i < removed.length; i++) {
+                el.tagsinput('remove', removed[i]);
+            }
+
+            // refresh remaining tags
+            el.tagsinput('refresh');
+
+            // add new items in model as tags
+            for (i = 0; i < added.length; i++) {
+                el.tagsinput('add', added[i]);
+            }
         }
+    };
 
-        // get data from controller
+    // knockout view model
+    function ViewModel(data) {
+        var self = this;
+        // knockout mapping JSON data to view model
+        ko.mapping.fromJS(data, {}, self);
+    }
+
+    $(document).ready(function () {
         $.getJSON([[@{/review/get.items}]], function (data) {
             viewModel = new ViewModel(data);
             ko.applyBindings(viewModel);
             // initialize Datatables
-            $("#reviewTable").DataTable({
+            dataTable = $("#reviewTable").DataTable({
                 'searching': false,
-                'ordering': false
+                'ordering': false,
+                oLanguage: {
+                    sProcessing: '<i class="fa fa-spinner fa-spin" style="font-size:42px"></i> Processing, please wait'
+                },
+                'processing': true
             });
         });
 
+        $(document).ajaxStart(function () {
+            dataTable.processing(true);
+        });
+        $(document).ajaxComplete(function () {
+            dataTable.processing(false);
+        });
+
+        // SAVE action
         $('#save').click(function () {
             var unmappedModel = ko.mapping.toJS(viewModel.reviews());
 
@@ -193,26 +207,68 @@
                 url: [[@{/review/save.items}]],
                 data: JSON.stringify(unmappedModel),
                 contentType: 'application/json',
-                success: function(data) {
-                    if(data.status == 'OK'){
-                        $("#response").html(
-                        '<div class="alert alert-success text-center"> \
-                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a> \
-                            <strong>Successfully</strong> saved review items. \
-                        </div>');
+                success: function (data) {
+                    if (data.status == 'OK') {
+                        location.reload();
+//                    $("#response").html(
+//                            '<div class="alert alert-success text-center"> \
+//                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a> \
+//                            <strong>Successfully</strong> saved review items. \
+//                        </div>');
+//
+//                    window.setTimeout(function () {
+//                        $(".alert").fadeTo(500, 0).slideUp(500, function () {
+//                            $(this).remove();
+//                        });
+//                    }, 5000);
                     } else {
                         $("#response").html(
-                                '<div class="alert alert-danger alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert"></button>There was a problem during save action!</div>'
+                                '<div class="alert alert-danger alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert"></button>' + data.errorMessages + '</div>'
                         );
                     }
-
-                    window.setTimeout(function() {
-                        $(".alert").fadeTo(500, 0).slideUp(500, function(){
-                            $(this).remove();
-                        });
-                    }, 3000);
                 }
             });
+        });
+
+        // SEND action
+        $('#send-approved').click(function () {
+            var unmappedModel = ko.mapping.toJS(viewModel.reviews());
+
+            $.ajax({
+                type: "POST",
+                url: [[@{/review/send.items}]],
+                data: JSON.stringify(unmappedModel),
+                contentType: 'application/json',
+                success: function (data) {
+                    if (data.status == 'OK') {
+                        location.reload();
+                    } else {
+                        $("#response").html(
+                                '<div class="alert alert-danger alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert"></button>' + data.errorMessages + '</div>'
+                        );
+                    }
+                }
+            });
+        });
+
+        // FINISH action
+        $('#finish').click(function () {
+            var unmappedModel = ko.mapping.toJS(viewModel.reviews());
+            $.ajax({
+                type: "POST",
+                url: [[@{/review/finish.items}]],
+            data: JSON.stringify(unmappedModel),
+                    contentType: 'application/json',
+                    success: function (data) {
+                if (data.status == 'OK') {
+                    location.reload();
+                } else {
+                    $("#response").html(
+                            '<div class="alert alert-danger alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert"></button>' + data.errorMessages + '</div>'
+                    );
+                }
+            }
+        });
         });
     });
     /* ]]> */
