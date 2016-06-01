@@ -102,12 +102,15 @@
 
     $(document).ready(function () {
         table = $("#taskListTable").DataTable({
-            'bFilter': false,
+//            'bFilter': false,
             'ajax': {
                 'url': /*[[@{/tasks/get.tasks}]]*/,
                 'data': function (data) {
                     remapDatatables(data);
                 }
+            },
+            'language': {
+                search: "Search by task name:"
             },
             'serverSide': true,
             'processing': true,

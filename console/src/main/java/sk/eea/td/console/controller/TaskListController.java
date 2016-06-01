@@ -12,10 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import sk.eea.td.console.form.TaskForm;
 import sk.eea.td.console.form.TaskRow;
-import sk.eea.td.console.model.Job;
-import sk.eea.td.console.model.JobRun;
-import sk.eea.td.console.model.Param;
-import sk.eea.td.console.model.ReadOnlyParam;
+import sk.eea.td.console.model.*;
 import sk.eea.td.console.model.datatables.DataTablesInput;
 import sk.eea.td.console.model.datatables.DataTablesOutput;
 import sk.eea.td.console.model.datatables.RestartTaskRequest;
@@ -26,8 +23,10 @@ import sk.eea.td.console.repository.ParamRepository;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static sk.eea.td.util.PageUtils.getPageable;
 
 @Controller
@@ -56,8 +55,14 @@ public class TaskListController {
         DataTablesOutput<TaskRow> output = new DataTablesOutput<>();
         output.setDraw(input.getDraw());
 
+        Map<DataTablesInput.SearchCriteria, String> searchMap = input.getSearch();
+        Page<Job> jobPage;
+        if (isEmpty(searchMap.get(DataTablesInput.SearchCriteria.value))) {
+            jobPage = jobRepository.findAll(getPageable(input));
+        } else {
+            jobPage = jobRepository.findByNameIsContainingIgnoreCase(searchMap.get(DataTablesInput.SearchCriteria.value), getPageable(input));
+        }
         List<TaskRow> tasks = new ArrayList<>();
-        Page<Job> jobPage = jobRepository.findAll(getPageable(input));
         for (Job job : jobPage) {
             if (job.getLastJobRun() == null || job.getLastJobRun().getStatus() == null) {
                 tasks.add(new TaskRow(job.getName(), job.getSource().toString(), job.getTarget().toString(), "PLANNED",
