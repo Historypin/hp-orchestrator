@@ -57,6 +57,7 @@
                             <th th:text="#{review.desc}">Description</th>
                             <th th:text="#{review.link}">Link to</th>
                             <th th:text="#{review.tags}">Tags</th>
+                            <th th:text="#{review.places}">Places</th>
                             <th th:text="#{review.approved}">Approved</th>
                         </tr>
                         </thead>
@@ -66,6 +67,7 @@
                             <td><span data-bind="text: $data.description"></span></td>
                             <td><a data-bind="attr: { href: $data.url }" target="_blank">link</a></td>
                             <td><input data-bind="tagsinput: $data.approvedTags"/></td>
+                            <td><input data-bind="tagsinput: $data.approvedPlaces"/></td>
                             <td><input type="checkbox" data-bind="checked: $data.approved"/></td>
                         </tr>
                         </tbody>
@@ -75,6 +77,7 @@
                             <th th:text="#{review.desc}">Description</th>
                             <th th:text="#{review.link}">Link to</th>
                             <th th:text="#{review.tags}">Tags</th>
+                            <th th:text="#{review.places}">Places</th>
                             <th th:text="#{review.approved}">Approved</th>
                         </tr>
                         </tfoot>

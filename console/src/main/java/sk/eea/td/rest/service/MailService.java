@@ -92,7 +92,7 @@ public class MailService {
      * @param params  map of parameters used in template
      */
     public void sendReviewMail(String email, String subject, Map<String, String> params) {
-        this.sendMail(email, "review", subject, params);
+        this.sendMail(email, "review_request", subject, params);
     }
 
     /**
