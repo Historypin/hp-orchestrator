@@ -180,7 +180,7 @@
     }
 
     $(document).ready(function () {
-        $.getJSON([[@{/review/get.items}]], function (data) {
+        $.getJSON(/*[[@{/review/get.items}]]*/, function (data) {
             viewModel = new ViewModel(data);
             ko.applyBindings(viewModel);
             // initialize Datatables
@@ -207,7 +207,7 @@
 
             $.ajax({
                 type: "POST",
-                url: [[@{/review/save.items}]],
+                url: /*[[@{/review/save.items}]]*/,
                 data: JSON.stringify(unmappedModel),
                 contentType: 'application/json',
                 success: function (data) {
@@ -239,7 +239,7 @@
 
             $.ajax({
                 type: "POST",
-                url: [[@{/review/send.items}]],
+                url: /*[[@{/review/send.items}]]*/,
                 data: JSON.stringify(unmappedModel),
                 contentType: 'application/json',
                 success: function (data) {
@@ -259,7 +259,7 @@
             var unmappedModel = ko.mapping.toJS(viewModel.reviews());
             $.ajax({
                 type: "POST",
-                url: [[@{/review/finish.items}]],
+                url: /*[[@{/review/finish.items}]]*/,
             data: JSON.stringify(unmappedModel),
                     contentType: 'application/json',
                     success: function (data) {
