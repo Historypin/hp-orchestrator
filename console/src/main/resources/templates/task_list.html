@@ -70,6 +70,7 @@
 <script th:inline="javascript">
     /* <![CDATA[ */
     var table; // datatable
+    var logsURL = /*[[@{/logs}]]*/;
 
     function remapDatatables(data) {
         for (var i = 0; i < data.columns.length; i++) {
@@ -102,7 +103,6 @@
 
     $(document).ready(function () {
         table = $("#taskListTable").DataTable({
-//            'bFilter': false,
             'ajax': {
                 'url': /*[[@{/tasks/get.tasks}]]*/,
                 'data': function (data) {
@@ -110,22 +110,66 @@
                 }
             },
             'language': {
-                search: "Search by task name:"
+                search: 'Search by task name:'
             },
+            'oSearch': {'sSearch': getURLParameter('search')},
             'serverSide': true,
-            'processing': true,
             'columns': [
                 {'data': 'name'},
                 {'data': 'source'},
                 {'data': 'target'},
-                {'data': 'lastRunStatus', 'orderable': false},
-                {'data': 'lastRunResult', 'orderable': false},
-                {'data': 'lastRunId'},
+                {
+                    'data': 'lastRunStatus',
+                    'orderable': false,
+                    'render': function (data, type, row, meta) {
+                        if(row != null || row != undefined ) {
+                            if(data == 'RUNNING') {
+                                return '<i class="fa fa-cog fa-spin fa-2x fa-fw" aria-hidden="true"></i>'
+                            } else if(data == 'FINISHED') {
+                                return '<i class="fa fa-check-circle-o fa-2x fa-fw" aria-hidden="true"></i>';
+                            } else if(data == 'STOPPED') {
+                                return '<i class="fa fa-stop-circle-o fa-2x fa-fw" aria-hidden="true"></i>';
+                            } else if(data == 'WAITING') {
+                                return '<i class="fa fa-pause fa-2x fa-fw" aria-hidden="true"></i>';
+                            } else if(data == 'RESUMED') {
+                                return '<i class="fa fa-clock-o fa-2x fa-fw" aria-hidden="true"></i>';
+                            } else if(data == 'NEW' || data == 'PLANNED') {
+                                return '<i class="fa fa-play-circle-o fa-2x fa-fw" aria-hidden="true"></i>';
+                            }
+                            return data;
+                        }
+                    }
+                },
+                {
+                    'data': 'lastRunResult',
+                    'orderable': false,
+                    'render': function (data, type, row, meta) {
+                        if(row != null || row != undefined ) {
+                            if(data == 'OK') {
+                                return '<i class="fa fa-check fa-2x fa-fw" aria-hidden="true"></i>';
+                            } else if (data == 'FAILED'){
+                                return '<i class="fa fa-exclamation fa-2x fa-fw" aria-hidden="true"></i>';
+                            }
+                            return data;
+                        }
+                    }
+                },
+                {
+                    'data': 'lastRunId',
+                    'render' : function (data, type, row, meta) {
+                        if(row != null || row != undefined) {
+                            return `<a href="${logsURL}?search=${data}"> ${data}</a>`;
+                        } else {
+                            return '';
+                        }
+
+                    }
+                },
                 {
                     'data': 'actions',
                     'render': function ( data, type, row, meta ) {
                         if((row != null || row != undefined) && row.lastRunId != "") {
-                            return '<button onclick="restartTask(' + row.lastRunId +')" title="Restart task"><i class="fa fa-repeat" aria-hidden="true"></i></button>';
+                            return `<button onclick="restartTask(${row.lastRunId})" title="Restart task"><i class="fa fa-repeat" aria-hidden="true"></i></button>`;
                         } else {
                             return '';
                         }
@@ -133,6 +177,10 @@
                 }
             ]
         });
+
+        setInterval( function () {
+            table.ajax.reload( null, false ); // user paging is not reset on reload
+        }, 2000 );
     });
     /* ]]> */
 </script>
