@@ -8,7 +8,7 @@ import sk.eea.td.hp_client.api.Location;
 import sk.eea.td.hp_client.api.Pin;
 import sk.eea.td.hp_client.api.Project;
 import sk.eea.td.hp_client.dto.SaveResponseDTO;
-import sk.eea.td.rest.model.HistorypinTransformDTO;
+import sk.eea.td.console.model.dto.HistorypinTransformDTO;
 
 import java.io.IOException;
 import java.nio.file.Path;

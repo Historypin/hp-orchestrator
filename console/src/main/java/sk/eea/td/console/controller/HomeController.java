@@ -3,35 +3,27 @@ package sk.eea.td.console.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import sk.eea.td.console.form.TaskForm;
-import sk.eea.td.console.form.TaskRow;
 import sk.eea.td.console.model.Job;
 import sk.eea.td.console.model.JobRun;
 import sk.eea.td.console.model.Param;
 import sk.eea.td.console.model.ReadOnlyParam;
-import sk.eea.td.console.model.datatables.DataTablesInput;
-import sk.eea.td.console.model.datatables.DataTablesOutput;
-import sk.eea.td.console.model.datatables.RestartTaskRequest;
 import sk.eea.td.console.repository.JobRepository;
 import sk.eea.td.console.repository.JobRunRepository;
 import sk.eea.td.console.repository.ParamRepository;
 import sk.eea.td.console.repository.UsersRepository;
-import sk.eea.td.rest.model.Connector;
+import sk.eea.td.console.model.Connector;
 import sk.eea.td.util.DateUtils;
 
 import javax.validation.Valid;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 import static sk.eea.td.console.model.ParamKey.*;
-import static sk.eea.td.util.PageUtils.getPageable;
 
 @Controller
 @PreAuthorize("hasRole('ADMIN')")
@@ -65,8 +57,8 @@ public class HomeController {
         Job job = new Job();
         job.setName(taskForm.getName());
         job.setUser(usersRepository.findByUsername(principal.getName()));
-        job.setSource(taskForm.getSource());
-        job.setTarget(taskForm.getTarget());
+        job.setSource(taskForm.getFlow().getSource());
+        job.setTarget(taskForm.getFlow().getTarget());
 
         if (Connector.HISTORYPIN.equals(job.getTarget())) {
             // validate date and tags

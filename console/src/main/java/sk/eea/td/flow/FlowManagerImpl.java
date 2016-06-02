@@ -12,7 +12,7 @@ import sk.eea.td.console.repository.JobRepository;
 import sk.eea.td.console.repository.JobRunRepository;
 import sk.eea.td.console.repository.LogRepository;
 import sk.eea.td.console.repository.ParamRepository;
-import sk.eea.td.rest.model.Connector;
+import sk.eea.td.console.model.Connector;
 import sk.eea.td.rest.service.MailService;
 
 import java.util.*;

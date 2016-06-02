@@ -124,17 +124,17 @@
                     'render': function (data, type, row, meta) {
                         if(row != null || row != undefined ) {
                             if(data == 'RUNNING') {
-                                return '<i class="fa fa-cog fa-spin fa-2x fa-fw" aria-hidden="true"></i>'
+                                return '<i class="fa fa-cog fa-spin fa-2x fa-fw"  data-toggle="tooltip" title="Running..." aria-hidden="true"></i>'
                             } else if(data == 'FINISHED') {
-                                return '<i class="fa fa-check-circle-o fa-2x fa-fw" aria-hidden="true"></i>';
+                                return '<i class="fa fa-check-circle-o fa-2x fa-fw" data-toggle="tooltip" title="Finished" aria-hidden="true"></i>';
                             } else if(data == 'STOPPED') {
-                                return '<i class="fa fa-stop-circle-o fa-2x fa-fw" aria-hidden="true"></i>';
+                                return '<i class="fa fa-stop-circle-o fa-2x fa-fw" data-toggle="tooltip" title="Stopped" aria-hidden="true"></i>';
                             } else if(data == 'WAITING') {
-                                return '<i class="fa fa-pause fa-2x fa-fw" aria-hidden="true"></i>';
+                                return '<i class="fa fa-pause fa-2x fa-fw"  data-toggle="tooltip" title="Waiting" aria-hidden="true"></i>';
                             } else if(data == 'RESUMED') {
-                                return '<i class="fa fa-clock-o fa-2x fa-fw" aria-hidden="true"></i>';
+                                return '<i class="fa fa-clock-o fa-2x fa-fw"  data-toggle="tooltip" title="Resumed" aria-hidden="true"></i>';
                             } else if(data == 'NEW' || data == 'PLANNED') {
-                                return '<i class="fa fa-play-circle-o fa-2x fa-fw" aria-hidden="true"></i>';
+                                return '<i class="fa fa-play-circle-o fa-2x fa-fw"  data-toggle="tooltip" title="Planned" aria-hidden="true"></i>';
                             }
                             return data;
                         }
@@ -146,9 +146,9 @@
                     'render': function (data, type, row, meta) {
                         if(row != null || row != undefined ) {
                             if(data == 'OK') {
-                                return '<i class="fa fa-check fa-2x fa-fw" aria-hidden="true"></i>';
+                                return '<i class="fa fa-check fa-2x fa-fw"  data-toggle="tooltip" title="Success" aria-hidden="true"></i>';
                             } else if (data == 'FAILED'){
-                                return '<i class="fa fa-exclamation fa-2x fa-fw" aria-hidden="true"></i>';
+                                return '<i class="fa fa-exclamation fa-2x fa-fw"  data-toggle="tooltip" title="Failed" aria-hidden="true"></i>';
                             }
                             return data;
                         }

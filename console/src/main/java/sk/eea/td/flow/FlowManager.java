@@ -1,9 +1,7 @@
 package sk.eea.td.flow;
 
-import java.util.List;
-
 import sk.eea.td.console.model.JobRun;
-import sk.eea.td.rest.model.Connector;
+import sk.eea.td.console.model.Connector;
 
 public interface FlowManager {
 

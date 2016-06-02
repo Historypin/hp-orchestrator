@@ -8,10 +8,8 @@ import sk.eea.td.console.model.ParamKey;
 import sk.eea.td.console.model.ReadOnlyParam;
 import sk.eea.td.flow.Activity;
 import sk.eea.td.flow.FlowException;
-import sk.eea.td.rest.model.OaipmhConfigWrapper;
 import sk.eea.td.rest.service.EuropeanaHarvestService;
 import sk.eea.td.rest.service.HistorypinHarvestService;
-import sk.eea.td.rest.service.OaipmhHarvestService;
 
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -23,9 +21,6 @@ public class HarvestActivity implements Activity {
 
     @Autowired
     private EuropeanaHarvestService europeanaHarvestService;
-
-    @Autowired
-    private OaipmhHarvestService oaipmhHarvestService;
 
     @Autowired
     private HistorypinHarvestService historypinHarvestService;
@@ -43,10 +38,6 @@ public class HarvestActivity implements Activity {
                     break;
                 case HISTORYPIN:
                     harvestPath = historypinHarvestService.harvest(String.valueOf(context.getId()), paramMap.get(ParamKey.HP_PROJECT_SLUG));
-                    break;
-                case OAIPMH:
-                    final OaipmhConfigWrapper configWrapper = new OaipmhConfigWrapper(paramMap.get(ParamKey.OAI_FROM), paramMap.get(ParamKey.OAI_UNTIL), paramMap.get(ParamKey.OAI_SET));
-                    harvestPath = oaipmhHarvestService.harvest(String.valueOf(context.getId()), configWrapper);
                     break;
                 default:
                     throw new IllegalArgumentException("There is no harvester implemented for source: " + context.getJob().getSource());

@@ -13,7 +13,7 @@ import sk.eea.td.flow.Activity;
 import sk.eea.td.flow.FlowException;
 import sk.eea.td.hp_client.api.Location;
 import sk.eea.td.hp_client.impl.HPClientImpl;
-import sk.eea.td.rest.model.Connector;
+import sk.eea.td.console.model.Connector;
 import sk.eea.td.rest.service.HistorypinStoreService;
 import sk.eea.td.rest.service.MintStoreService;
 

@@ -6,7 +6,7 @@ import sk.eea.td.flow.Activity;
 import sk.eea.td.flow.FlowManager;
 import sk.eea.td.flow.FlowManagerImpl;
 import sk.eea.td.flow.activities.*;
-import sk.eea.td.rest.model.Connector;
+import sk.eea.td.console.model.Connector;
 
 @Configuration
 public class FlowConfig {

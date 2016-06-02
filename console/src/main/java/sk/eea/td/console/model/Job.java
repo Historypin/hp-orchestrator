@@ -1,7 +1,5 @@
 package sk.eea.td.console.model;
 
-import sk.eea.td.rest.model.Connector;
-
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
