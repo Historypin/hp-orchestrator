@@ -35,6 +35,13 @@
                 <div class="col-md-12">
                     <form class="form-horizontal" action="#" th:action="@{/}" th:object="${taskForm}" method="post" accept-charset="UTF-8">
                         <fieldset>
+                            <div th:if="*{jobId}">
+                                <div class="alert alert-warning" role="alert">
+                                    Warning! You are editing existing item with ID: <span th:text="*{jobId}"></span>
+                                </div>
+                                <input name="jobId" th:field="*{jobId}" type="hidden"/>
+                            </div>
+
                             <!-- Flow -->
                             <div class="form-group" th:classappend="${#fields.hasErrors('flow')}? 'has-error'">
                                 <label class="col-md-4 control-label" for="flow" th:text="#{create.task.flow}">Flow</label>
@@ -54,36 +61,6 @@
                                     <span class="help-block" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name error</span>
                                 </div>
                             </div>
-
-                            <!--&lt;!&ndash; Source &ndash;&gt;-->
-                            <!--<div class="form-group required" th:classappend="${#fields.hasErrors('source')}? 'has-error'">-->
-                                <!--<label class="col-md-4 control-label" for="source" th:text="#{create.task.source}">Source</label>-->
-                                <!--<div class="col-md-4">-->
-                                    <!--<select id="source" required="required" name="source" class="form-control" th:field="*{source}">-->
-                                        <!--<option value="EUROPEANA" selected="selected" th:text="#{create.task.source.eu}">Europeana</option>-->
-                                        <!--<option value="HISTORYPIN" th:text="#{create.task.source.hp}">Historypin</option>-->
-                                        <!--<option value="HISTORYPIN_ANNOTATION" th:text="#{create.task.source.hp_annotation}">Historypin annotation</option>-->
-                                    <!--</select>-->
-                                    <!--<span class="help-block" th:if="${#fields.hasErrors('source')}" th:errors="*{source}">Source error</span>-->
-                                <!--</div>-->
-                            <!--</div>-->
-
-                            <!--&lt;!&ndash; Target &ndash;&gt;-->
-                            <!--<div class="form-group required" th:classappend="${#fields.hasErrors('target')}? 'has-error'">-->
-                                <!--<label class="col-md-4 control-label" for="target" th:text="#{create.task.target}">Target</label>-->
-                                <!--<div class="col-md-4">-->
-                                    <!--<select id="target" required="required" name="target" class="form-control" th:field="*{target}">-->
-                                        <!--<option value="HISTORYPIN" th:text="#{create.task.target.hp}">Historypin</option>-->
-                                        <!--<option value="TAGAPP" th:text="#{create.task.target.tagapp}">Tagapp</option>-->
-                                        <!--<option value="MINT" th:text="#{create.task.target.mint}">Mint</option>-->
-                                        <!--<option value="EUROPEANA_ANNOTATION" th:text="#{create.task.target.eu_annotation}">Europeana Annotation API</option>-->
-                                        <!--<option value="SD" th:text="#{create.task.target.sd}">Semantic demonstrator</option>-->
-                                    <!--</select>-->
-                                    <!--<span class="help-block" th:if="${#fields.hasErrors('target')}" th:errors="*{target}">Target error</span>-->
-                                <!--</div>-->
-                            <!--</div>-->
-
-                            <!-- Configuration -->
 
                             <!-- Flow 1 configuration -->
                             <div id="flow-1-conf-group">
@@ -194,11 +171,18 @@
 
                             <!-- Button -->
                             <div class="form-group">
-                                <label class="col-md-4 control-label" for="createTaskButton"></label>
-                                <div class="col-md-4">
+                                <label class="col-md-4 control-label" for="createTaskButton"  th:if="*{jobId} == null"></label>
+                                <div class="col-md-4" th:if="*{jobId} == null">
                                     <p th:inline="text" class="help-block"><em><span style="color:red;">*</span> [[#{create.task.required}]]</em></p>
                                     <button id="createTaskButton" name="createTaskButton" class="btn btn-primary" th:text="#{create.task.button}">Create task</button>
-                                    <span id="successMessage" class="help-block" style="color: green" th:text="#{create.task.success}" th:unless="${param.success == null}">Success.</span>
+                                    <span id="successCreateMessage" class="help-block" style="color: green" th:text="#{create.task.create.success}" th:unless="${param.create_succes == null}">Success.</span>
+                                </div>
+
+                                <label class="col-md-4 control-label" for="saveChangesButton"  th:if="*{jobId} != null"></label>
+                                <div class="col-md-4" th:if="*{jobId} != null">
+                                    <p th:inline="text" class="help-block"><em><span style="color:red;">*</span> [[#{create.task.required}]]</em></p>
+                                    <button id="saveChangesButton" name="saveChangesButton" class="btn btn-primary success" th:text="#{save.task.button}">Save changes</button>
+                                    <span id="successSaveMessage" class="help-block" style="color: green" th:text="#{create.task.save.success}" th:unless="${param.save_success == null}">Success.</span>
                                 </div>
                             </div>
                         </fieldset>

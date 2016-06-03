@@ -24,7 +24,7 @@ public enum Flow {
      * @param target
      * @return flow or throws IllegalArgumentException if none matching flow is found.
      */
-    public Flow getFlow(Connector source, Connector target){
+    public static Flow getFlow(Connector source, Connector target){
         for(Flow flow : values()) {
             if(flow.getSource().equals(source) && flow.getTarget().equals(target)) {
                 return flow;

@@ -16,6 +16,8 @@ import javax.validation.constraints.Size;
 @GroupSequenceProvider(value = TaskFormValidationSequenceProvider.class)
 public class TaskForm {
 
+    private Long jobId;
+
     @NotNull(message = "Flow is required")
     private Flow flow = Flow.FLOW_1; // default value
 
@@ -195,10 +197,19 @@ public class TaskForm {
         this.dateUntil = dateUntil;
     }
 
+    public Long getJobId() {
+        return jobId;
+    }
+
+    public void setJobId(Long jobId) {
+        this.jobId = jobId;
+    }
+
     @Override
     public String toString() {
         return "TaskForm{" +
-                "flow=" + flow +
+                "jobId=" + jobId +
+                ", flow=" + flow +
                 ", name='" + name + '\'' +
                 ", historypinUserId=" + historypinUserId +
                 ", historypinApiKey='" + historypinApiKey + '\'' +

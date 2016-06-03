@@ -6,24 +6,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.ui.Model;
 import sk.eea.td.console.form.TaskForm;
-import sk.eea.td.console.model.Job;
-import sk.eea.td.console.model.JobRun;
-import sk.eea.td.console.model.Param;
-import sk.eea.td.console.model.ReadOnlyParam;
+import sk.eea.td.console.model.*;
 import sk.eea.td.console.repository.JobRepository;
 import sk.eea.td.console.repository.JobRunRepository;
 import sk.eea.td.console.repository.ParamRepository;
 import sk.eea.td.console.repository.UsersRepository;
-import sk.eea.td.console.model.Connector;
+import sk.eea.td.mapper.JobToTaskFormMapper;
+import sk.eea.td.mapper.TaskFormtoJobMapper;
 import sk.eea.td.util.DateUtils;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.Set;
-
-import static sk.eea.td.console.model.ParamKey.*;
 
 @Controller
 @PreAuthorize("hasRole('ADMIN')")
@@ -43,60 +44,72 @@ public class HomeController {
     @Autowired
     private UsersRepository usersRepository;
 
+    @Autowired
+    private TaskFormtoJobMapper taskFormtoJobMapper;
+
+    @Autowired
+    private JobToTaskFormMapper jobToTaskFormMapper;
+
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    public String indexView(TaskForm taskForm) {
+    public String indexView(@RequestParam(name = "edit", required = false) Long lastJobRunId, Model model) {
+        if (lastJobRunId != null) {
+            final JobRun jobRun = jobRunRepository.findOne(lastJobRunId);
+            if (jobRun != null) {
+                final Job job = jobRun.getJob();
+                final Set<Param> paramList = paramRepository.findByJob(job);
+                model.addAttribute(jobToTaskFormMapper.map(job, paramList));
+                return "index";
+            }
+        }
+        model.addAttribute(new TaskForm());
         return "index";
     }
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
-    public String indexSubmit(@Valid @ModelAttribute TaskForm taskForm, BindingResult bindingResult, Principal principal) {
+    public String indexSubmit(@Valid @ModelAttribute TaskForm taskForm,
+            BindingResult bindingResult,
+            Principal principal) {
         if (bindingResult.hasErrors()) {
             return "index";
         }
 
-        Job job = new Job();
-        job.setName(taskForm.getName());
-        job.setUser(usersRepository.findByUsername(principal.getName()));
-        job.setSource(taskForm.getFlow().getSource());
-        job.setTarget(taskForm.getFlow().getTarget());
-
-        if (Connector.HISTORYPIN.equals(job.getTarget())) {
-            // validate date and tags
+        if (Flow.FLOW_1.equals(taskForm.getFlow())) {
+            // validate date
             if (!DateUtils.isHistorypinDateValid(taskForm.getCollectionDate())) {
                 bindingResult.rejectValue("collectionDate", "parseError.collectionDate");
                 return "index";
             }
-            job.addParam(new Param(HP_USER_ID, taskForm.getHistorypinUserId().toString()));
-            job.addParam(new Param(HP_API_KEY, taskForm.getHistorypinApiKey()));
-            job.addParam(new Param(HP_API_SECRET, taskForm.getHistorypinApiSecret()));
-            job.addParam(new Param(HP_DATE, taskForm.getCollectionDate()));
-            job.addParam(new Param(HP_TAGS, taskForm.getCollectionTags()));
-            job.addParam(new Param(HP_NAME, taskForm.getCollectionName()));
-            job.addParam(new Param(HP_LAT, taskForm.getCollectionLat().toString()));
-            job.addParam(new Param(HP_LNG, taskForm.getCollectionLng().toString()));
-            job.addParam(new Param(HP_RADIUS, taskForm.getCollectionRadius().toString()));
         }
 
-        if (Connector.EUROPEANA.equals(job.getSource())) {
-            job.addParam(new Param(EU_REST_QUERY, taskForm.getLuceneQuery()));
-            job.addParam(new Param(EU_REST_FACET, taskForm.getSearchFacet()));
+        if (taskForm.getJobId() != null) { // we are editing item
+            Job job = jobRepository.findOne(taskForm.getJobId());
+            if (job != null) {
+                // delete old params
+                job.setParams(new ArrayList<>());
+                job = jobRepository.save(job);
+
+                job = taskFormtoJobMapper.map(job, taskForm);
+                job = jobRepository.save(job);
+                LOG.info("Edited job id= {}.", job.getId());
+                return String.format("redirect:/?edit=%s&save_success=true", job.getLastJobRun().getId());
+            }
+        } else { // we are creating item
+            final Job job = taskFormtoJobMapper.map(taskForm);
+            job.setUser(usersRepository.findByUsername(principal.getName()));
+            jobRepository.save(job);
+
+            LOG.info("Created job id= {}.", job.getId());
+            JobRun jobRun = new JobRun();
+            jobRun.setJob(job);
+            jobRun.setStatus(JobRun.JobRunStatus.NEW);
+            Set<Param> paramList = paramRepository.findByJob(job);
+            for (Param param : paramList) {
+                jobRun.addReadOnlyParam(new ReadOnlyParam(param));
+            }
+            jobRunRepository.save(jobRun);
+            return "redirect:/?create_success=true";
         }
 
-        if (Connector.HISTORYPIN.equals(job.getSource())) {
-            job.addParam(new Param(HP_PROJECT_SLUG, taskForm.getProjectSlug()));
-        }
-
-        jobRepository.save(job);
-
-        LOG.info("Created job id= {}.", job.getId());
-        JobRun jobRun = new JobRun();
-        jobRun.setJob(job);
-        jobRun.setStatus(JobRun.JobRunStatus.NEW);
-        Set<Param> paramList = paramRepository.findByJob(job);
-        for (Param param : paramList) {
-            jobRun.addReadOnlyParam(new ReadOnlyParam(param));
-        }
-        jobRunRepository.save(jobRun);
-        return "redirect:/?success=true";
+        return "index";
     }
 }
