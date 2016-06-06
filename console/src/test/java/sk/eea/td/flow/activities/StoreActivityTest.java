@@ -2,16 +2,13 @@ package sk.eea.td.flow.activities;
 
 import static org.junit.Assert.fail;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import org.easymock.Capture;
-import org.easymock.CaptureType;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
-import org.easymock.internal.matchers.Captures;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import sk.eea.td.config.DaoMockConfig;
 import sk.eea.td.console.model.Job;
 import sk.eea.td.console.model.JobRun;
 import sk.eea.td.console.model.ParamKey;
@@ -28,7 +26,7 @@ import sk.eea.td.rest.model.Connector;
 import sk.eea.td.rest.service.MintStoreService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes={TestConfig.class}, initializers=SpringTestIntializer.class)
+@ContextConfiguration(classes={TestConfig.class, DaoMockConfig.class}, initializers=SpringTestIntializer.class)
 public class StoreActivityTest {
 	
 	@Autowired
