@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sk.eea.td.console.model.JobRun;
 import sk.eea.td.console.model.Log;
 import sk.eea.td.console.repository.LogRepository;
-import sk.eea.td.flow.Activity;
 import sk.eea.td.flow.FlowException;
 import sk.eea.td.rest.service.MailService;
 
@@ -20,7 +19,7 @@ public class ReportActivity implements Activity {
     private LogRepository logRepository;
 
     @Override
-    public void execute(JobRun context) throws FlowException {
+    public ActivityAction execute(JobRun context) throws FlowException {
         final Map<String, String> emailParams = new HashMap<>();
         // prepare required params for sending emails
         emailParams.put("userName", context.getJob().getUser().getUsername());
@@ -39,6 +38,7 @@ public class ReportActivity implements Activity {
                 "Orchestrator task is finished",
                 emailParams
         );
+        return ActivityAction.CONTINUE;
     }
 
     @Override

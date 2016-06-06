@@ -8,6 +8,7 @@ import sk.eea.td.eu_client.api.EuropeanaClient;
 import sk.eea.td.eu_client.impl.EuropeanaClientImpl;
 import sk.eea.td.hp_client.api.HPClient;
 import sk.eea.td.hp_client.impl.HPClientImpl;
+import sk.eea.td.rest.service.HistorypinHarvestService;
 
 @Configuration
 public class RESTClientsConfig {
@@ -31,5 +32,5 @@ public class RESTClientsConfig {
             @Value("${europeana.base.url}") String baseURL,
             @Value("${europeana.ws.key}") String wsKey) {
         return new EuropeanaClientImpl(baseURL, wsKey);
-    }
+    }    
 }

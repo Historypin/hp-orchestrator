@@ -25,7 +25,6 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import sk.eea.td.console.model.JobRun;
-import sk.eea.td.flow.Activity;
 import sk.eea.td.onto_client.dto.EnrichResponseDTO;
 import sk.eea.td.onto_client.dto.EnrichResponseDTO.IdObject;
 import sk.eea.td.rest.service.OntotextHarvestService;

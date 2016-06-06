@@ -3,8 +3,6 @@ package sk.eea.td.config;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -33,7 +31,10 @@ public class AppConfig implements SchedulingConfigurer {
 
     @Autowired
     private FlowManager historypinToEuropeanaFlowManager;
-
+    
+    @Autowired 
+    private FlowManager dataflow4;
+    
     @Bean
     public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
         return new PropertySourcesPlaceholderConfigurer();
@@ -63,6 +64,14 @@ public class AppConfig implements SchedulingConfigurer {
         historypinToEuropeanaFlowManager.trigger();
     }
 
+    @Schedules(
+    		//@Scheduled(cron="${historypinAnnotation.flm.cron.expression}
+    		@Scheduled(fixedRate=1000)
+	)
+    public void dataflow4Trigger(){
+    	dataflow4.trigger();
+    }
+
     @Override
     public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
         taskRegistrar.setScheduler(taskExecutor());
@@ -71,5 +80,5 @@ public class AppConfig implements SchedulingConfigurer {
     @Bean(destroyMethod = "shutdown")
     public Executor taskExecutor() {
         return Executors.newScheduledThreadPool(10);
-    }
+    }    
 }

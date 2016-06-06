@@ -19,7 +19,6 @@ import sk.eea.td.console.model.JobRun;
 import sk.eea.td.console.model.Log;
 import sk.eea.td.console.model.ParamKey;
 import sk.eea.td.console.repository.LogRepository;
-import sk.eea.td.flow.Activity;
 import sk.eea.td.mapper.EuropeanaToHistorypinMapper;
 import sk.eea.td.rest.model.Connector;
 import sk.eea.td.util.PathUtils;
@@ -56,14 +55,6 @@ public class TransformActivity extends AbstractTransformActivity implements Acti
             final Map<ParamKey, String> paramMap = new HashMap<>();
             context.getReadOnlyParams().stream().forEach(p -> paramMap.put(p.getKey(), p.getValue()));
 
-<<<<<<< HEAD
-            Destination destination = Destination.valueOf(context.getJob().getTarget().name());
-
-            //FIXME
-            //if (destinations.isEmpty()) {
-            //    throw new IllegalStateException("There are no destinations set for this flow, therefore no transformation can be executed.");
-            //}
-=======
             // TODO: temporary ugly solution!!!!
             List<Destination> destinations = new ArrayList<>();
             for (String s : context.getJob().getTarget().split(", ")) {
@@ -75,14 +66,8 @@ public class TransformActivity extends AbstractTransformActivity implements Acti
             }
             final Destination destination = destinations.iterator().next(); // first destination
 
->>>>>>> 6bf16cd705bc3ba2ab6bb0558e40762fb8efc2a2
-
             final Path harvestPath = Paths.get(paramMap.get(ParamKey.HARVEST_PATH));
             final Path transformPath = PathUtils.createTransformRunSubdir(Paths.get(outputDirectory), String.valueOf(context.getId()));
-<<<<<<< HEAD
-            walkFileTree(target, harvestPath, transformPath, destination, paramMap, context);
-
-=======
             Files.walkFileTree(harvestPath, new SimpleFileVisitor<Path>() {
                 @Override
                 public FileVisitResult visitFileFailed(Path file, IOException exc) {
@@ -131,7 +116,6 @@ public class TransformActivity extends AbstractTransformActivity implements Acti
                     return FileVisitResult.CONTINUE;
                 }
             });
->>>>>>> 6bf16cd705bc3ba2ab6bb0558e40762fb8efc2a2
             context.addReadOnlyParam(new ReadOnlyParam(ParamKey.TRANSFORM_PATH, transformPath.toAbsolutePath().toString()));
         } catch (Exception e) {
             throw new FlowException("Exception raised during transform action", e);

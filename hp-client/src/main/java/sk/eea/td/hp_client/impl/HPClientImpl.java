@@ -1,20 +1,11 @@
 package sk.eea.td.hp_client.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import net.jodah.recurrent.Recurrent;
-import net.jodah.recurrent.RetryPolicy;
-import org.glassfish.jersey.client.ClientConfig;
-import org.glassfish.jersey.filter.LoggingFilter;
-import org.glassfish.jersey.jackson.JacksonFeature;
-import sk.eea.td.hp_client.api.HPClient;
-import sk.eea.td.hp_client.api.Pin;
-import sk.eea.td.hp_client.api.PinnerType;
-import sk.eea.td.hp_client.api.Project;
-import sk.eea.td.hp_client.dto.ListingsResponseDTO;
-import sk.eea.td.hp_client.dto.PlacesResponseDTO;
-import sk.eea.td.hp_client.dto.SaveResponseDTO;
-import sk.eea.td.hp_client.util.ApiTokenFactory;
-import sk.eea.td.hp_client.util.JacksonObjectMapperProvider;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.Client;
@@ -24,12 +15,24 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.Response;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
 
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.filter.LoggingFilter;
+import org.glassfish.jersey.jackson.JacksonFeature;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import net.jodah.recurrent.Recurrent;
+import net.jodah.recurrent.RetryPolicy;
+import sk.eea.td.hp_client.api.HPClient;
+import sk.eea.td.hp_client.api.Pin;
+import sk.eea.td.hp_client.api.PinnerType;
+import sk.eea.td.hp_client.api.Project;
+import sk.eea.td.hp_client.dto.ListingsResponseDTO;
+import sk.eea.td.hp_client.dto.PlacesResponseDTO;
+import sk.eea.td.hp_client.dto.SaveResponseDTO;
+import sk.eea.td.hp_client.util.ApiTokenFactory;
+import sk.eea.td.hp_client.util.JacksonObjectMapperProvider;
 
 public class HPClientImpl implements HPClient {
 
@@ -239,5 +242,13 @@ public class HPClientImpl implements HPClient {
         return Recurrent.with(retryPolicy).get(() ->
                 target.request(MediaType.TEXT_PLAIN_TYPE).post(Entity.form(new MultivaluedHashMap<>(data))).readEntity(SaveResponseDTO.class)
         );
+    }
+    
+    @Override
+    public Response getAnnotations(String from, String until) throws IllegalArgumentException {
+    	if(from == null||until == null)
+    		throw new IllegalArgumentException("'from' and 'until' have to be set in order to harvest annotations");
+		WebTarget target = client.target(baseURL).path("api").path("services/").path("annotations").queryParam("from", from).queryParam("until", until);
+    	return Recurrent.with(retryPolicy).get(() -> target.request().get());
     }
 }
