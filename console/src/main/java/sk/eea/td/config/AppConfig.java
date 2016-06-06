@@ -31,7 +31,7 @@ public class AppConfig implements SchedulingConfigurer {
 
     @Autowired
     private FlowManager historypinToEuropeanaFlowManager;
-
+    
     @Autowired 
     private FlowManager dataflow4;
     

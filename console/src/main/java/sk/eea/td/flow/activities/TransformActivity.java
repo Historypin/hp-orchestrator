@@ -19,7 +19,6 @@ import sk.eea.td.console.model.JobRun;
 import sk.eea.td.console.model.Log;
 import sk.eea.td.console.model.ParamKey;
 import sk.eea.td.console.repository.LogRepository;
-import sk.eea.td.flow.Activity;
 import sk.eea.td.mapper.EuropeanaToHistorypinMapper;
 import sk.eea.td.rest.model.Connector;
 import sk.eea.td.util.PathUtils;

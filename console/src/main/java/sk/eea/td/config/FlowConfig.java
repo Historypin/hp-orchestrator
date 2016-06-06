@@ -3,7 +3,6 @@ package sk.eea.td.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import sk.eea.td.flow.Activity;
 import sk.eea.td.flow.Dataflow4JobSelector;
 import sk.eea.td.flow.FlowManager;
 import sk.eea.td.flow.FlowManagerImpl;
@@ -14,6 +13,11 @@ import sk.eea.td.rest.model.Connector;
 
 @Configuration
 public class FlowConfig {
+	
+	@Bean
+	public Activity cleanupActivity(){
+		return new CleanupActivity();
+	}
 
     @Bean
     public Activity harvestActivity() {
@@ -24,6 +28,11 @@ public class FlowConfig {
     public Activity transformActivity() {
         return new TransformActivity();
     }
+
+    @Bean
+	public HP_A2EU_ATransformActivity hp_a2eu_ATransformActivity() {
+		return new HP_A2EU_ATransformActivity();
+	}
 
     @Bean
     public Activity storeActivity() {
@@ -48,6 +57,11 @@ public class FlowConfig {
     @Bean
     public JobSelector dataflow4JobSelector(){
     	return new Dataflow4JobSelector();
+    }
+    
+    @Bean
+    public Activity dataflow4isFinalActivity(){
+    	return new Dataflow4isFinalActivity();
     }
     
     @Bean
@@ -82,9 +96,11 @@ public class FlowConfig {
     public FlowManagerImpl dataflow4(){
     	FlowManagerImpl flowManager = new FlowManagerImpl(Connector.HISTORYPIN_ANNOTATION, Connector.EUROPEANA_ANNOTATION, dataflow4JobSelector());
     	flowManager.addActivity(harvestActivity());
-    	flowManager.addActivity(transformActivity());
+    	flowManager.addActivity(hp_a2eu_ATransformActivity());
     	flowManager.addActivity(storeActivity());
+    	flowManager.addActivity(cleanupActivity());
     	flowManager.addActivity(reportActivity());
+    	flowManager.addActivity(dataflow4isFinalActivity());
     	return flowManager;
     }
 

@@ -38,7 +38,7 @@ public class OntotextHarvestService {
     public Path harvest(String harvestId, String text, String uri) throws IOException {
         String respString = client.extract(text, uri);
         LOG.info("Harvesting for harvestId: " + harvestId + " is completed.");
-        final Path harvestPath = PathUtils.createActivityStorageSubdir(Paths.get(outputDirectory), "job_run_", harvestId, "harvest_2");
+        final Path harvestPath = PathUtils.createActivityStorageSubdir(Paths.get(outputDirectory), harvestId, "harvest_2");
         Path outputFile = PathUtils.createUniqueFilename(harvestPath, "ot.jsonld");
         Files.write(outputFile, respString.getBytes());
 

@@ -7,15 +7,15 @@ import java.nio.file.Path;
 public class PathUtils {
 
     public static Path createHarvestRunSubdir(Path parentDir, String flowId) throws IOException {
-        return createActivityStorageSubdir(parentDir, "job_run_", flowId, "harvest");
+        return createActivityStorageSubdir(parentDir, flowId, "harvest");
     }
 
     public static Path createTransformRunSubdir(Path parentDir, String flowId) throws IOException {
-        return createActivityStorageSubdir(parentDir, "job_run_", flowId, "transform");
+        return createActivityStorageSubdir(parentDir, flowId, "transform");
     }
 
-    public static Path createActivityStorageSubdir(Path parentDir, String identificationPrefix, String flowId, String separationFolderName) throws IOException {
-        final Path dir = parentDir.resolve(identificationPrefix.concat(flowId)).resolve(separationFolderName);
+    public static Path createActivityStorageSubdir(Path parentDir, String flowId, String separationFolderName) throws IOException {
+        final Path dir = getJobRunPath(parentDir, flowId).resolve(separationFolderName);
         if(Files.exists(dir)) {
             throw new IllegalStateException(String.format("Directory %s already exists! Harvester output directory needs to be cleared or harvest ID is not unique.", dir.toString()));
         } else {
@@ -29,5 +29,10 @@ public class PathUtils {
             filename = parentDir.resolve(String.format("%s-%s.%s", System.currentTimeMillis(), (int) Math.floor(Math.random() * 1000), extension));
         } while (Files.exists(filename));
         return filename;
-    }
+    }    
+
+	public static Path getJobRunPath(Path parentDir, String flowId) {
+		Path jobRunPath = parentDir.resolve("job_run_".concat(flowId));
+		return jobRunPath;
+	}
 }

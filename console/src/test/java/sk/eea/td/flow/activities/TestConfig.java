@@ -9,6 +9,7 @@ import org.springframework.context.annotation.PropertySource;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import sk.eea.td.console.repository.LogRepository;
+import sk.eea.td.rest.service.EuropeanaStoreService;
 import sk.eea.td.rest.service.HistorypinStoreService;
 import sk.eea.td.rest.service.MintStoreService;
 
@@ -43,5 +44,15 @@ public class TestConfig {
     @Bean
     public LogRepository getLogRepository(){
     	return EasyMock.createStrictMock(LogRepository.class);
+    }
+    
+    @Bean
+    public EuropeanaStoreService getEuropeanaStoreService(){
+    	return new EuropeanaStoreService();
+    }
+    
+    @Bean 
+    public HP_A2EU_ATransformActivity geHp_A2EU_ATransformActivity(){
+    	return new HP_A2EU_ATransformActivity();
     }
 }

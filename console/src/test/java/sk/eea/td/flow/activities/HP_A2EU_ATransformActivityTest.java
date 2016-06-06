@@ -7,7 +7,9 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.nio.file.Path;
+
+import javax.inject.Inject;
+import javax.xml.ws.WebServiceProvider;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,7 +33,7 @@ public class HP_A2EU_ATransformActivityTest {
 	HP_A2EU_ATransformActivity activity;
 	
 	private File targetDir;
-		
+	
 	@Before
 	public void setUp() throws Exception {
 		String javaTestDir = System.getProperty("java.io.tmpdir");

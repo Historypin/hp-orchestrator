@@ -6,10 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import sk.eea.td.eu_client.api.EuropeanaClient;
-import sk.eea.td.eu_client.impl.EuropeanaClientImpl;
 import sk.eea.td.util.PathUtils;
 
-import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;

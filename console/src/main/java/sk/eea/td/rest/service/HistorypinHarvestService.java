@@ -126,7 +126,6 @@ public class HistorypinHarvestService {
 
 	public Path harvestAnnotation(String harvestId, String jobId, String from, String until) throws IOException, java.text.ParseException, ParseException {
     	final Path harvestPath = PathUtils.createHarvestRunSubdir(Paths.get(outputDirectory), harvestId);
-		Job job = jobRepository.findOne(Long.valueOf(jobId));
 		JobRun jobRun = jobRunRepository.findNextJobRun(Connector.HISTORYPIN_ANNOTATION.name(), Connector.EUROPEANA_ANNOTATION.name());
 		String fromLocal = from;
 		String untilLocal;
@@ -154,14 +153,13 @@ public class HistorypinHarvestService {
 		}
 		
 		if(parseDate(fromLocal).after(parseDate(untilLocal))){
-			//todo finish flow
+			//finish flow
 			LOG.info("We have reached 'until' date. We are not harvesting.");
 			return harvestPath;
 		}
 		Response response = hpClient.getAnnotations(fromLocal, untilLocal);
         Path filename = PathUtils.createUniqueFilename(harvestPath, Connector.HISTORYPIN_ANNOTATION.getFormatCode());
         JSONObject object = storeJson(response, filename);
-
 		return harvestPath;
 	}
 

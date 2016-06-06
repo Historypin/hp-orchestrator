@@ -23,5 +23,6 @@ public enum ParamKey {
     EU_REST_FACET,
     HARVEST_PATH,
     TRANSFORM_PATH,
-    HP_UNTIL_CURRENT
+    HP_UNTIL_CURRENT, 
+    LAST_SUCCESS
 }

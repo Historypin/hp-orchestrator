@@ -11,16 +11,13 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import sk.eea.td.console.model.JobRun;
-import sk.eea.td.flow.Activity;
 import sk.eea.td.util.PathUtils;
 
-@Component
 public class HP_A2EU_ATransformActivity extends AbstractTransformActivity implements Activity {
 
 	private final Logger LOG = LoggerFactory.getLogger(HP_A2EU_ATransformActivity.class);
@@ -59,8 +56,8 @@ public class HP_A2EU_ATransformActivity extends AbstractTransformActivity implem
 			String bodyTags = body.get(0).get("value").asText();
 			if(annotatedBy != null){
 				JSONObject creator = new JSONObject();
-				creator.put("@id", hpPersonId);
-				creator.put("@type", hpPersonType);
+				creator.put("id", hpPersonId);
+				creator.put("type", hpPersonType);
 				creator.put("name", hpPersonName);
 				object.put("creator", creator);				
 			}
@@ -71,7 +68,7 @@ public class HP_A2EU_ATransformActivity extends AbstractTransformActivity implem
 			}
 			
 			object.put("@context", "http://www.w3.org/ns/anno.jsonld");
-			object.put("@type", "oa:Annotation");
+			object.put("type", "oa:Annotation");
 			object.put("motivation", "tagging");
 			object.put("generated", created);
 			object.put("generator", generator);
@@ -81,7 +78,7 @@ public class HP_A2EU_ATransformActivity extends AbstractTransformActivity implem
 			Matcher matcher = pattern.matcher(bodyTags);
 			while(matcher.find()){
 				String group = matcher.group(1); 
-				object.put("body", group.trim());
+				object.put("bodyValue", group.trim());
 				Path transformToFile = PathUtils.createUniqueFilename(transformPath, context.getJob().getTarget().getFormatCode());			
 				FileWriter writer = new FileWriter(transformToFile.toFile());
 				object.write(writer);

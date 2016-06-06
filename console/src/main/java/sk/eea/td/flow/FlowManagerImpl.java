@@ -1,5 +1,6 @@
 package sk.eea.td.flow;
 
+import java.text.DateFormat;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -13,18 +14,21 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import sk.eea.td.console.model.JobRun;
 import sk.eea.td.console.model.JobRun.JobRunResult;
 import sk.eea.td.console.model.JobRun.JobRunStatus;
 import sk.eea.td.console.model.Log;
+import sk.eea.td.console.model.ParamKey;
+import sk.eea.td.console.model.ReadOnlyParam;
 import sk.eea.td.console.repository.JobRunRepository;
 import sk.eea.td.console.repository.LogRepository;
+import sk.eea.td.flow.activities.Activity;
+import sk.eea.td.flow.activities.Activity.ActivityAction;
 import sk.eea.td.rest.model.Connector;
 import sk.eea.td.rest.service.MailService;
+import sk.eea.td.util.DateUtils;
 
-@Component
 public class FlowManagerImpl implements FlowManager {
 
     private static final Logger LOG = LoggerFactory.getLogger(FlowManagerImpl.class);
@@ -96,6 +100,7 @@ public class FlowManagerImpl implements FlowManager {
     protected void failFlow(JobRun context) {
         context.setStatus(JobRunStatus.STOPPED);
         context.setResult(JobRunResult.FAILED);
+        context = persistState(context);
 
         reportFailure(context);
     }
@@ -122,8 +127,8 @@ public class FlowManagerImpl implements FlowManager {
         if (lock.tryLock()) {
             try {
 				JobRun jobRun = jobSelector.nextJobRun(source,target);
-				LOG.debug("Starting/resuming a JobRun with id: {}.", jobRun.getId());		
                 if(jobRun != null){
+                	LOG.debug("Starting/resuming a JobRun with id: {}.", jobRun.getId());		
                 	resumeFlow(jobRun);
                 }else{
                 	LOG.debug(MessageFormat.format("Nothing to run for Source: {0} -> Destination: {1}.", source, target));
@@ -139,6 +144,7 @@ public class FlowManagerImpl implements FlowManager {
     public void resumeFlow(JobRun context) {
 
         try {
+        	context.setLast_started(new Date());
             while (true) {
                 Activity activity = getNextActivity(context.getActivity(), context.getStatus());
                 if (activity == null) {
@@ -149,19 +155,29 @@ public class FlowManagerImpl implements FlowManager {
                 if (JobRunStatus.WAITING != context.getStatus()) {
                     context.setStatus(JobRunStatus.RUNNING);
                     logActivityStart(activity, context);
-                    activity.execute(context);
-                    if (activity.isSleepAfter()) {
-                        context.setStatus(JobRunStatus.WAITING);
-                        context = persistState(context);
-                        break;
-                    } else {
-                        context = persistState(context);
-                        logActivityEnd(activity, context);
+                    ActivityAction action = activity.execute(context);
+                    switch(action){
+	                    case SLEEP:
+	                        context.setStatus(JobRunStatus.WAITING);
+	                        context = persistState(context);
+	                        break;
+	                    case NEXT_CYCLE:
+	                        context.setStatus(JobRunStatus.NEW);
+	                        context = persistState(context);
+	                        logActivityEnd(activity, context);
+	                        break;                    	
+	                    default:
+	                        context = persistState(context);
+	                        logActivityEnd(activity, context);
+	                        break;
+                    }
+                    if(action != ActivityAction.CONTINUE){
+                    	break;
                     }
                 }
             }
-
-        } catch (Exception e) {
+            context.addReadOnlyParam(new ReadOnlyParam(ParamKey.LAST_SUCCESS, DateUtils.SYSTEM_TIME_FORMAT.format(context.getLast_started().toInstant())));
+        } catch (Throwable e) {
             LOG.error("Exception at executing flow:", e);
 
             Log log = new Log();
@@ -196,7 +212,7 @@ public class FlowManagerImpl implements FlowManager {
         }
         return null;
     }
-
+    
     @Override
     public JobRun persistState(JobRun config) {
         return jobRunRepository.save(config);
