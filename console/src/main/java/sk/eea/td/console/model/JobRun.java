@@ -42,8 +42,8 @@ public class JobRun {
     @Column(insertable = false, updatable = false)
     private Date created;
     
-    @Column
-    private Date last_started;
+    @Column(name = "last_started")
+    private Date lastStarted;
 
     public Long getId() {
         return id;
@@ -123,11 +123,11 @@ public class JobRun {
                 '}';
     }
 
-	public Date getLast_started() {
-		return last_started;
-	}
+    public Date getLastStarted() {
+        return lastStarted;
+    }
 
-	public void setLast_started(Date last_start) {
-		this.last_started = last_start;
-	}
+    public void setLastStarted(Date lastStarted) {
+        this.lastStarted = lastStarted;
+    }
 }
