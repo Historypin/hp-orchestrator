@@ -2,6 +2,8 @@ package sk.eea.td.console.form;
 
 public class TaskRow {
 
+    private Long id;
+
     private String name;
 
     private String source;
@@ -17,13 +19,27 @@ public class TaskRow {
     public TaskRow() {
     }
 
-    public TaskRow(String name, String source, String target, String lastRunStatus, String lastRunResult, String lastRunId) {
+    public TaskRow(Long id,
+            String name,
+            String source,
+            String target,
+            String lastRunStatus,
+            String lastRunResult, String lastRunId) {
+        this.id = id;
         this.name = name;
         this.source = source;
         this.target = target;
         this.lastRunStatus = lastRunStatus;
         this.lastRunResult = lastRunResult;
         this.lastRunId = lastRunId;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -74,14 +90,16 @@ public class TaskRow {
         this.lastRunId = lastRunId;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "TaskRow{" +
-                "name='" + name + '\'' +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
                 ", source='" + source + '\'' +
                 ", target='" + target + '\'' +
                 ", lastRunStatus='" + lastRunStatus + '\'' +
                 ", lastRunResult='" + lastRunResult + '\'' +
-                ", lastRunId=" + lastRunId +
+                ", lastRunId='" + lastRunId + '\'' +
                 '}';
     }
 }

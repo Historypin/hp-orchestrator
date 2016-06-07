@@ -35,6 +35,7 @@
                     <table id="taskListTable" class="table table-striped table-bordered" cellspacing="0" width="100%">
                         <thead>
                         <tr>
+                            <th>Id</th>
                             <th th:text="#{tasks.name}">Name</th>
                             <th th:text="#{tasks.source}">Source</th>
                             <th th:text="#{tasks.target}">Target</th>
@@ -46,6 +47,7 @@
                         </thead>
                         <tfoot>
                         <tr>
+                            <th>Id</th>
                             <th th:text="#{tasks.name}">Name</th>
                             <th th:text="#{tasks.source}">Source</th>
                             <th th:text="#{tasks.target}">Target</th>
@@ -56,6 +58,25 @@
                         </tr>
                         </tfoot>
                     </table>
+                </div>
+            </div>
+
+            <!-- remove task modal window-->
+            <div class="modal fade" id="deleteTaskModal" tabindex="-1" role="dialog" aria-labelledby="deleteTaskModalLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="deleteTaskModalLabel">Warning: Delete item</h4>
+                        </div>
+                        <div class="modal-body">
+                            You are about to remove a task. This cannot be undone later. Do you want to continue?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button id="deleteTaskButton" type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-trash-o" aria-hidden="true"></i> Remove</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -71,6 +92,8 @@
     /* <![CDATA[ */
     var table; // datatable
     var logsURL = /*[[@{/logs}]]*/;
+    var editURL = /*[[@{/}]]*/;
+    var filterColumns = [2,3,4,5];
 
     function remapDatatables(data) {
         for (var i = 0; i < data.columns.length; i++) {
@@ -101,6 +124,27 @@
         });
     }
 
+    function deleteTask(jobId) {
+        var json = {'jobId' : jobId};
+        $.ajax({
+            'type' : 'POST',
+            'url' : /*[[@{/tasks/delete.task}]]*/,
+            'beforeSend' : function(xhr) {
+                xhr.setRequestHeader("Accept", "application/json");
+                xhr.setRequestHeader("Content-Type", "application/json");
+                xhr.setRequestHeader($("meta[name='_csrf_header']").attr("content"), $("meta[name='_csrf']").attr("content"));
+            },
+            'data' : JSON.stringify(json),
+            dataType : 'json',
+            success : function(data) {
+                if(table != null) {
+                    table.ajax.reload(null, false);
+
+                }
+            }
+        });
+    }
+
     $(document).ready(function () {
         table = $("#taskListTable").DataTable({
             'ajax': {
@@ -113,8 +157,34 @@
                 search: 'Search by task name:'
             },
             'oSearch': {'sSearch': getURLParameter('search')},
+            'order': [[ 0, 'desc' ]],
             'serverSide': true,
+            'initComplete': function () {
+                this.api().columns().every( function () {
+                    var column = this;
+                    if( filterColumns.indexOf(column.index()) != -1 ) {
+                        var select = $('<select><option value=""></option></select>')
+                                .appendTo($(column.footer()).empty())
+                                .on('change', function () {
+                                    column
+                                            .search($(this).val(), false, false)
+                                            .draw();
+                                });
+
+                        column.data().unique().sort().each(function (d, j) {
+                            if( d != '') {
+                                select.append('<option value="' + d + '">' + d + '</option>');
+                            }
+                        });
+                    }
+                } );
+            },
             'columns': [
+                {
+                    'data': 'id',
+                    'visible': false,
+                    'searchable': false
+                },
                 {'data': 'name'},
                 {'data': 'source'},
                 {'data': 'target'},
@@ -168,14 +238,26 @@
                 {
                     'data': 'actions',
                     'render': function ( data, type, row, meta ) {
-                        if((row != null || row != undefined) && row.lastRunId != "") {
-                            return `<button onclick="restartTask(${row.lastRunId})" title="Restart task"><i class="fa fa-repeat" aria-hidden="true"></i></button>`;
-                        } else {
-                            return '';
+                        var output = "";
+                        if((row != null || row != undefined)) {
+                            // edit button
+                            output = output.concat(`<a href="${editURL}?edit=${row.id}" class="btn btn-default" data-toggle="tooltip" title="Edit task"><i class="fa fa-pencil" aria-hidden="true"></i></a>`);
+                            // delete button
+                            output = output.concat(`<a href="#deleteTaskModel" data-target="#deleteTaskModal" data-toggle="modal" data-id="${row.id}" title="Delete task" class="open-delete-confirmation btn btn-default"><i class="fa fa-trash-o" aria-hidden="true"></i></a>`);
+                            if(row.lastRunId != "") {
+                                // restart button
+                                output = output.concat(`<button class="btn btn-default" onclick="restartTask(${row.lastRunId})" title="Restart task"><i class="fa fa-repeat" aria-hidden="true"></i></button>`);
+                            }
                         }
+                        return output;
                     }
                 }
             ]
+        });
+
+        $(document).on("click", ".open-delete-confirmation", function () {
+            var jobId = $(this).data('id');
+            $("#deleteTaskButton").attr('onclick', `deleteTask(${jobId})`);
         });
 
         setInterval( function () {

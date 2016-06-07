@@ -51,11 +51,10 @@ public class HomeController {
     private JobToTaskFormMapper jobToTaskFormMapper;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    public String indexView(@RequestParam(name = "edit", required = false) Long lastJobRunId, Model model) {
-        if (lastJobRunId != null) {
-            final JobRun jobRun = jobRunRepository.findOne(lastJobRunId);
-            if (jobRun != null) {
-                final Job job = jobRun.getJob();
+    public String indexView(@RequestParam(name = "edit", required = false) Long jobId, Model model) {
+        if (jobId != null) {
+            final Job job = jobRepository.findOne(jobId);
+            if (job != null) {
                 final Set<Param> paramList = paramRepository.findByJob(job);
                 model.addAttribute(jobToTaskFormMapper.map(job, paramList));
                 return "index";
@@ -91,7 +90,7 @@ public class HomeController {
                 job = taskFormtoJobMapper.map(job, taskForm);
                 job = jobRepository.save(job);
                 LOG.info("Edited job id= {}.", job.getId());
-                return String.format("redirect:/?edit=%s&save_success=true", job.getLastJobRun().getId());
+                return "task_list";
             }
         } else { // we are creating item
             final Job job = taskFormtoJobMapper.map(taskForm);
@@ -107,7 +106,7 @@ public class HomeController {
                 jobRun.addReadOnlyParam(new ReadOnlyParam(param));
             }
             jobRunRepository.save(jobRun);
-            return "redirect:/?create_success=true";
+            return "task_list";
         }
 
         return "index";

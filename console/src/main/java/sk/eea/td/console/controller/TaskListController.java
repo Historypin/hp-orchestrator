@@ -15,6 +15,7 @@ import sk.eea.td.console.form.TaskRow;
 import sk.eea.td.console.model.*;
 import sk.eea.td.console.model.datatables.DataTablesInput;
 import sk.eea.td.console.model.datatables.DataTablesOutput;
+import sk.eea.td.console.model.datatables.RemoveTaskRequest;
 import sk.eea.td.console.model.datatables.RestartTaskRequest;
 import sk.eea.td.console.repository.JobRepository;
 import sk.eea.td.console.repository.JobRunRepository;
@@ -27,6 +28,7 @@ import java.util.Map;
 import java.util.Set;
 
 import static org.apache.commons.lang3.StringUtils.isEmpty;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static sk.eea.td.util.PageUtils.getPageable;
 
 @Controller
@@ -64,12 +66,14 @@ public class TaskListController {
         }
         List<TaskRow> tasks = new ArrayList<>();
         for (Job job : jobPage) {
+            TaskRow taskRow =  null;
             if (job.getLastJobRun() == null || job.getLastJobRun().getStatus() == null) {
-                tasks.add(new TaskRow(job.getName(), job.getSource().toString(), job.getTarget().toString(), "PLANNED",
-                        "", ""));
+                taskRow = new TaskRow(job.getId(), job.getName(), job.getSource().toString(), job.getTarget().toString(), "PLANNED",
+                        "", "");
             } else {
-                tasks.add(
-                        new TaskRow(job.getName(),
+                taskRow = new TaskRow(
+                                job.getId(),
+                                job.getName(),
                                 job.getSource().toString(),
                                 job.getTarget().toString(),
                                 (job.getLastJobRun().getStatus() != null) ? job.getLastJobRun().getStatus().toString() :
@@ -77,13 +81,46 @@ public class TaskListController {
                                 (job.getLastJobRun().getResult() != null) ? job.getLastJobRun().getResult().toString() :
                                         "",
                                 (job.getLastJobRun().getId() != null) ? job.getLastJobRun().getId().toString() : ""
-                        )
                 );
             }
+
+            // source filter
+            String searchValue = input.getColumns().get(2).get(DataTablesInput.ColumnCriteria.searchValue);
+            if (isNotEmpty(searchValue)) {
+                if( !taskRow.getSource().equals(searchValue)) {
+                    continue;
+                }
+            }
+
+            // target filter
+            searchValue = input.getColumns().get(3).get(DataTablesInput.ColumnCriteria.searchValue);
+            if (isNotEmpty(searchValue)) {
+                if( !taskRow.getTarget().equals(searchValue)) {
+                    continue;
+                }
+            }
+
+            // status filter
+            searchValue = input.getColumns().get(4).get(DataTablesInput.ColumnCriteria.searchValue);
+            if (isNotEmpty(searchValue)) {
+                if( !taskRow.getLastRunStatus().equals(searchValue)) {
+                    continue;
+                }
+            }
+
+            // result filter
+            searchValue = input.getColumns().get(5).get(DataTablesInput.ColumnCriteria.searchValue);
+            if (isNotEmpty(searchValue)) {
+                if( !taskRow.getLastRunResult().equals(searchValue)) {
+                    continue;
+                }
+            }
+
+            tasks.add(taskRow);
         }
         output.setData(tasks);
         output.setRecordsTotal(jobRepository.count());
-        output.setRecordsFiltered(jobPage.getTotalElements());
+        output.setRecordsFiltered((long) tasks.size());
 
         return output;
     }
@@ -106,6 +143,16 @@ public class TaskListController {
 
             job.setLastJobRun(null);
             jobRepository.save(job);
+        }
+        return "{}";
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/tasks/delete.task", method = RequestMethod.POST)
+    public String deleteTask(@RequestBody RemoveTaskRequest request) {
+        Job job = jobRepository.findOne(request.getJobId());
+        if (job != null) {
+            LOG.info("Deleting job id= {}.", job.getId());
         }
         return "{}";
     }

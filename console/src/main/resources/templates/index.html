@@ -46,7 +46,7 @@
                             <div class="form-group" th:classappend="${#fields.hasErrors('flow')}? 'has-error'">
                                 <label class="col-md-4 control-label" for="flow" th:text="#{create.task.flow}">Flow</label>
                                 <div class="col-md-4">
-                                    <select id="flow" required="required" name="flow" class="form-control" th:field="*{flow}">
+                                    <select id="flow" required="required" name="flow" class="form-control" data-toggle="tooltip" th:title="#{create.task.flow.tooltip}" th:field="*{flow}">
                                         <option th:each="fl : ${T(sk.eea.td.console.model.Flow).values()}" th:value="${fl}" th:text="#{${'create.task.' + fl}}" th:title="#{${'create.task.title.' + fl}}"></option>
                                     </select>
                                     <span class="help-block" th:if="${#fields.hasErrors('flow')}" th:errors="*{flow}">Flow error</span>
@@ -57,7 +57,7 @@
                             <div class="form-group required" th:classappend="${#fields.hasErrors('name')}? 'has-error'">
                                 <label class="col-md-4 control-label" for="name" th:text="#{create.task.name}">Name</label>
                                 <div class="col-md-4">
-                                    <input id="name" name="name" th:field="*{name}" th:placeholder="#{create.task.name.placeholder}" placeholder="name of the task" class="form-control input-md" type="text"/>
+                                    <input id="name" name="name" th:field="*{name}" th:placeholder="#{create.task.name.placeholder}" placeholder="name of the task" class="form-control input-md" type="text" data-toggle="tooltip" th:title="#{create.task.name.tooltip}"/>
                                     <span class="help-block" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name error</span>
                                 </div>
                             </div>
@@ -101,7 +101,7 @@
                                 <!-- default coordinates (lat, lng, range) -->
                                 <div class="form-group" th:classappend="${#fields.hasErrors('collectionLat')}? 'has-error'">
                                     <label class="col-md-4 control-label" for="map" th:text="#{create.task.collectionLocation}">Collection location</label>
-                                    <div id="map" class="col-md-4"></div>
+                                    <div id="map" class="col-md-4" data-toggle="tooltip" title="this is map"></div>
                                     <input type="hidden" th:field="*{collectionLat}" name="circleLat" id="circleLat"/>
                                     <input type="hidden" th:field="*{collectionLng}" name="circleLng" id="circleLng"/>
                                     <input type="hidden" th:field="*{collectionRadius}" name="circleRadius" id="circleRadius"/>
