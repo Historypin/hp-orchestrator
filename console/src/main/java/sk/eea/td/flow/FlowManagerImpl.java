@@ -134,7 +134,7 @@ public class FlowManagerImpl implements FlowManager {
     public void resumeFlow(JobRun context) {
 
         try {
-        	context.setLast_started(new Date());
+        	context.setLastStarted(new Date());
             while (true) {
                 Activity activity = getNextActivity(context.getActivity(), context.getStatus());
                 if (activity == null) {
@@ -166,7 +166,7 @@ public class FlowManagerImpl implements FlowManager {
                     }
                 }
             }
-            context.addReadOnlyParam(new ReadOnlyParam(ParamKey.LAST_SUCCESS, DateUtils.SYSTEM_TIME_FORMAT.format(context.getLast_started().toInstant())));
+            context.addReadOnlyParam(new ReadOnlyParam(ParamKey.LAST_SUCCESS, DateUtils.SYSTEM_TIME_FORMAT.format(context.getLastStarted().toInstant())));
         } catch (Throwable e) {
             LOG.error("Exception at executing flow:", e);
 
