@@ -1,0 +1,163 @@
+{
+	"Status": "ok",
+	"header": 
+	{
+		"from": "2010-03-15T13:45:30",
+		"until": "2015-06-15T13:45:30"
+	},
+
+	"items": 
+	[
+		{
+			"status": "created",
+			"identifier": "./136287",
+			"metadata": 
+			{
+				"body": 
+				[
+					{
+						"language": "en",
+						"@type": 
+						[
+							"oa:Tag",
+							"oa:EmbeddedContent"
+						],
+
+						"value": "Tags: travel; urban; 2242010; http://www.europeana.eu/portal/record/9200257/BibliographicResource_3000055619186.html?start=51&query=london&startPage=25&qf=TYPE%3ASOUND&qt=false&rows=96"
+					}
+				],
+
+				"motivation": "oa:tagging",
+				"oa:equivalentTo": "http://www.historypin.org/map/#!/dialog:252915/",
+				"serializedAt": "2015-05-20T14:11:43",
+				"serializedBy": "http://data.europeana.eu/provider/Historypin",
+				"@id": "./136287",
+				"annotatedBy": 
+				{
+					"@id": "https://www.historypin.org/en/person/55201/",
+					"@type": "foaf:Person",
+					"name": "Lise den Brok"
+				},
+
+				"target": "/9200257/BibliographicResource_3000055619328_source",
+				"annotatedAt": "2015-05-20T14:11:43",
+				"@context": "",
+				"@type": "oa:Annotation"
+			}
+		},
+
+		{
+			"status": "created",
+			"identifier": "./136287",
+			"metadata": 
+			{
+				"body": 
+				[
+					{
+						"language": "en",
+						"@type": 
+						[
+							"oa:Tag",
+							"oa:EmbeddedContent"
+						],
+
+						"value": "Tags: travel; urban; 2242010; http://www.europeana.eu/portal/record/9200257/BibliographicResource_3000055619186.html?start=51&query=london&startPage=25&qf=TYPE%3ASOUND&qt=false&rows=96"
+					}
+				],
+
+				"motivation": "oa:tagging",
+				"oa:equivalentTo": "http://www.historypin.org/map/#!/dialog:252915/",
+				"serializedAt": "2015-05-20T14:11:43",
+				"serializedBy": "http://data.europeana.eu/provider/Historypin",
+				"@id": "./136287",
+				"annotatedBy": 
+				{
+					"@id": "https://www.historypin.org/en/person/55201/",
+					"@type": "foaf:Person",
+					"name": "Lise den Brok"
+				},
+
+				"target": "/9200257/BibliographicResource_3000055619328_source",
+				"annotatedAt": "2015-05-20T14:11:43",
+				"@context": "",
+				"@type": "oa:Annotation"
+			}
+		},
+
+		{
+			"status": "created",
+			"identifier": "./136290",
+			"metadata": 
+			{
+				"body": 
+				[
+					{
+						"language": "en",
+						"@type": 
+						[
+							"oa:Tag",
+							"oa:EmbeddedContent"
+						],
+
+						"value": "Tags: bus; dalston; hackney; http://www.europeana.eu/portal/record/2022326/F30457ECCBFF2F5252DD8CB925463C478E910FD1.html?start=2&query=dalston+lane&startPage=1&qt=false&rows=24"
+					}
+				],
+
+				"motivation": "oa:tagging",
+				"oa:equivalentTo": "http://www.historypin.org/map/#!/dialog:252957/",
+				"serializedAt": "2015-05-20T14:17:45",
+				"serializedBy": "http://data.europeana.eu/provider/Historypin",
+				"@id": "./136290",
+				"annotatedBy": 
+				{
+					"@id": "https://www.historypin.org/en/person/55201/",
+					"@type": "foaf:Person",
+					"name": "Lise den Brok"
+				},
+
+				"target": "/9200257/BibliographicResource_3000055619928_source",
+				"annotatedAt": "2015-05-20T14:17:45",
+				"@context": "",
+				"@type": "oa:Annotation"
+			}
+		},
+
+		{
+			"status": "created",
+			"identifier": "./136290",
+			"metadata": 
+			{
+				"body": 
+				[
+					{
+						"language": "en",
+						"@type": 
+						[
+							"oa:Tag",
+							"oa:EmbeddedContent"
+						],
+
+						"value": "Tags: bus; dalston; hackney; http://www.europeana.eu/portal/record/2022326/F30457ECCBFF2F5252DD8CB925463C478E910FD1.html?start=2&query=dalston+lane&startPage=1&qt=false&rows=24"
+					}
+				],
+
+				"motivation": "oa:tagging",
+				"oa:equivalentTo": "http://www.historypin.org/map/#!/dialog:252957/",
+				"serializedAt": "2015-05-20T14:17:45",
+				"serializedBy": "http://data.europeana.eu/provider/Historypin",
+				"@id": "./136290",
+				"annotatedBy": 
+				{
+					"@id": "https://www.historypin.org/en/person/55201/",
+					"@type": "foaf:Person",
+					"name": "Lise den Brok"
+				},
+
+				"target": "/9200257/BibliographicResource_3000055619928_source",
+				"annotatedAt": "2015-05-20T14:17:45",
+				"@context": "",
+				"@type": "oa:Annotation"
+			}
+		}
+	]
+}

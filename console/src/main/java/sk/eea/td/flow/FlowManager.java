@@ -2,6 +2,7 @@ package sk.eea.td.flow;
 
 import sk.eea.td.console.model.JobRun;
 import sk.eea.td.console.model.Connector;
+import sk.eea.td.flow.activities.Activity;
 
 public interface FlowManager {
 

@@ -14,7 +14,7 @@ import sk.eea.td.IntegrationTest;
 import sk.eea.td.eu_client.api.EuropeanaAnnotationClient;
 
 @Category(IntegrationTest.class)
-public class EuropeanaAnnotationClientImplTest {
+public class EuropeanaAnnotationClientIT {
 
 	@Before
 	public void setUp() throws Exception {
