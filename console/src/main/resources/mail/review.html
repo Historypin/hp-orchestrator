@@ -6,8 +6,11 @@
 </head>
 <body>
 <p>Dear <span th:text="${userName}">user</span>!</p>
-<p>The enrichment of the HistoryPin collection needs to be reviewed. You can do it on the following page:</p>
-<p><a th:href="@{${reviewLink}}"></p>
+<p>
+The enrichment of the HistoryPin collection needs to be reviewed. You can do it on the following page:
+<br/>
+<a th:href="@{${reviewLink}}">Link to a review page</a>
+</p>
 
 <p>
     Regards, <br />

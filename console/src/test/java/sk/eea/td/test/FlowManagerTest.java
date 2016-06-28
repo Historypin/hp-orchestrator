@@ -59,7 +59,7 @@ public class FlowManagerTest {
     @Autowired
     private ApprovementService approvementService;
 
-    //@Ignore
+    @Ignore
     @Test
     public void testFlow() throws Exception {
 
@@ -79,7 +79,17 @@ public class FlowManagerTest {
         approvementService.save(jobRun, reviews);
 
         //resume the flow
-        updateJobRun(jobRun, JobRunStatus.RESUMED);
+        //updateJobRun(jobRun, JobRunStatus.RESUMED);
+        approvementService.finish(jobRun);
+        historypinOntotextFlowManager.trigger();
+    }
+
+    @Test
+    public void testNewFlow2() throws Exception {
+
+        //1. create a new job/jobRun
+        JobRun jobRun = createJobRun();
+        //2. run the flow (activities: harvest, transform), then pause the flow
         historypinOntotextFlowManager.trigger();
     }
 

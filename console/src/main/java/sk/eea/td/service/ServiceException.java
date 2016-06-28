@@ -13,6 +13,11 @@ public class ServiceException extends Exception {
     public ServiceException(List<Error> errors) {
         this.errors = errors;
     }
+    public ServiceException(Error error) {
+        List<Error> errors = new ArrayList<>();
+        errors.add(error);
+        this.errors = errors;
+    }
     public List<Error> getErrors() {
         return errors;
     }

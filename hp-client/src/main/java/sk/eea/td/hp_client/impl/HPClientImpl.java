@@ -1,13 +1,34 @@
 package sk.eea.td.hp_client.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import net.jodah.recurrent.Recurrent;
-import net.jodah.recurrent.RetryPolicy;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.ws.rs.ProcessingException;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedHashMap;
+import javax.ws.rs.core.Response;
+
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.filter.LoggingFilter;
 import org.glassfish.jersey.jackson.JacksonFeature;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import net.jodah.recurrent.Recurrent;
+import net.jodah.recurrent.RetryPolicy;
 import sk.eea.td.hp_client.api.HPClient;
 import sk.eea.td.hp_client.api.Pin;
 import sk.eea.td.hp_client.api.PinnerType;
@@ -18,25 +39,11 @@ import sk.eea.td.hp_client.dto.SaveResponseDTO;
 import sk.eea.td.hp_client.util.ApiTokenFactory;
 import sk.eea.td.hp_client.util.JacksonObjectMapperProvider;
 
-import javax.ws.rs.ProcessingException;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.Response;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
-
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
-
 public class HPClientImpl implements HPClient {
 
     private final static Logger LOG = Logger.getLogger(HPClientImpl.class.getName());
+    private static final String FAILED_TO_UPDATE_PIN_COMMENTS = "Failed to update pin comments for id: %s";
+    private static final String FAILED_TO_UPDATE_PIN_TAGS = "Failed to update pin tags for id: %s";
 
     private final Client client;
 
@@ -218,29 +225,52 @@ public class HPClientImpl implements HPClient {
     }
 
     @Override
-    public SaveResponseDTO updatePin(Long id, List<String> tags, List<String> places) {
-        
-        WebTarget target = client.target(baseURL).path("en").path("api").path("pin").path("save.json");
-        Map<String, String> data = new HashMap<>();
-        data.put("id", String.valueOf(id));
+    public List<String> updatePin(Long id, List<String> tags, List<String> places) {
+
+        String sTags = StringUtils.join(tags, ',');
+        String sPlaces = StringUtils.join(places, ',');
+        String l = String.format("HPClient: Update pin id: %s, tags: %s, places: %s", id, sTags, sPlaces);
+        LOG.log(Level.FINE, l);
+
+        List<String> errors = new ArrayList<>();
 
         if (CollectionUtils.isNotEmpty(tags)) {
+
+            WebTarget pinTarget = client.target(baseURL).path("en").path("api").path("pin").path("save.json");
+            Map<String, String> pinData = new HashMap<>();
+            pinData.put("id", String.valueOf(id));
+
             for (int i = 0; i < tags.size(); i++) {
-                data.put(String.format("tags[%d][text]", i), tags.get(i));
+                pinData.put(String.format("tags[%d][text]", i), tags.get(i));
+            }
+            pinData.put("api_key", apiKey);
+            pinData.put("api_path", "pin/save.json");
+            pinData.put("api_token", apiTokenFactory.getApiToken(pinData));
+
+            Response r = Recurrent.with(retryPolicy).get(() ->
+                pinTarget.request(MediaType.TEXT_PLAIN_TYPE).post(Entity.form(new MultivaluedHashMap<>(pinData))));
+            if (r.getStatus() != Response.Status.OK.getStatusCode()) {
+                errors.add(String.format(FAILED_TO_UPDATE_PIN_TAGS, id));
             }
         }
+
         if (CollectionUtils.isNotEmpty(places)) {
-            for (int i = 0; i < places.size(); i++) {
-                data.put(String.format("comments[%d][text]", i), places.get(i));
+
+            WebTarget commentTarget = client.target(baseURL).path("en").path("api").path("comments").path("post.json");
+            Map<String, String> commentData = new HashMap<>();
+            commentData.put("item_id", String.valueOf(id));
+            commentData.put("copy", StringUtils.join(places, ','));
+            commentData.put("api_key", apiKey);
+            commentData.put("api_path", "comments/post.json");
+            commentData.put("api_token", apiTokenFactory.getApiToken(commentData));
+
+            Response r = Recurrent.with(retryPolicy).get(() ->
+                commentTarget.request(MediaType.TEXT_PLAIN_TYPE).post(Entity.form(new MultivaluedHashMap<>(commentData))));
+            if (r.getStatus() != Response.Status.OK.getStatusCode()) {
+                errors.add(String.format(FAILED_TO_UPDATE_PIN_COMMENTS, id));
             }
         }
 
-        data.put("api_key", apiKey);
-        data.put("api_path", "pin/save.json");
-        data.put("api_token", apiTokenFactory.getApiToken(data));
-
-        return Recurrent.with(retryPolicy).get(() ->
-                target.request(MediaType.TEXT_PLAIN_TYPE).post(Entity.form(new MultivaluedHashMap<>(data))).readEntity(SaveResponseDTO.class)
-        );
+        return errors;
     }
 }

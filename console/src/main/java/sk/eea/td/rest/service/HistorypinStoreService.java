@@ -1,17 +1,19 @@
 package sk.eea.td.rest.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.nio.file.Path;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import sk.eea.td.hp_client.api.HPClient;
 import sk.eea.td.hp_client.api.Location;
 import sk.eea.td.hp_client.api.Pin;
 import sk.eea.td.hp_client.api.Project;
 import sk.eea.td.hp_client.dto.SaveResponseDTO;
 import sk.eea.td.rest.model.HistorypinTransformDTO;
-
-import java.io.IOException;
-import java.nio.file.Path;
 
 public class HistorypinStoreService {
 
@@ -74,4 +76,5 @@ public class HistorypinStoreService {
     public static HistorypinStoreService getInstance(HPClient hpClient, Long hpUser) {
         return new HistorypinStoreService(hpClient, hpUser);
     }
+
 }

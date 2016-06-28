@@ -28,5 +28,5 @@ public interface HPClient {
 
     void deleteAllProjects(Long user);
 
-    SaveResponseDTO updatePin(Long id, List<String> tags, List<String> places);
+    List<String> updatePin(Long id, List<String> tags, List<String> places);
 }

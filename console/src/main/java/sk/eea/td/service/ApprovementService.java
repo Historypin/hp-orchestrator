@@ -117,7 +117,8 @@ public class ApprovementService {
                 // prepare HP update reques and call update() on HP client
                 try {
                     //TODO process response
-                    hpClient.updatePin(reviewDTO.getId(), reviewDTO.getApprovedTags(), reviewDTO.getApprovedPlaces());
+//                    hpClient.updatePin(reviewDTO.getId(), reviewDTO.getApprovedTags(), reviewDTO.getApprovedPlaces());
+                    System.out.println();
                 } catch (Exception e) {
                     LOG.error(ServiceException.Error.ErrorCode.CLIENT_REQUEST_FAILED.name(), e);
                     errors.add(new ServiceException.Error(path,

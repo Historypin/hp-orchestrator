@@ -4,8 +4,11 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -15,6 +18,12 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.glassfish.jersey.client.ClientConfig;
+import org.openrdf.model.Statement;
+import org.openrdf.rio.RDFHandlerException;
+import org.openrdf.rio.RDFParseException;
+import org.openrdf.rio.RDFParser;
+import org.openrdf.rio.helpers.StatementCollector;
+import org.openrdf.rio.jsonld.JSONLDParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,10 +34,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import sk.eea.td.onto_client.api.OntoClient;
 import sk.eea.td.onto_client.dto.EnrichResponseDTO;
+import sk.eea.td.onto_client.dto.EnrichmentDTO;
 
 public class OntoClientImpl implements OntoClient {
 
-    protected static Logger LOG = LoggerFactory.getLogger(OntoClientImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(OntoClientImpl.class);
 
     private final Client client;
 
@@ -128,8 +138,6 @@ public class OntoClientImpl implements OntoClient {
             LOG.error("Ontotext client request to {} failed with status {}", baseURL, resp == null ? null : resp.getStatus());
         }
 
-        //InputStream respIS = getClass().getResourceAsStream("/extract-response.json");
-        //List<EnrichResponseDTO> dtos = objectMapper.readValue(/*respString*/respIS, new TypeReference<List<EnrichResponseDTO>>(){});
         EnrichResponseDTO selected = null;
         try {
             selected = selectOne(dtos, uri);
@@ -138,6 +146,43 @@ public class OntoClientImpl implements OntoClient {
             LOG.warn("Ontotext client received an invalid response");
         }
         return selected;
+    }
+
+    @Override
+    public EnrichmentDTO extractUsingJsonLDParser(String text, String uri) throws RDFParseException, RDFHandlerException, IOException {
+
+        EnrichmentDTO result = null;
+        WebTarget target = client.target(baseURL).queryParam("uri", uri);
+        Response resp = target.request(MediaType.TEXT_XML).post(Entity.text(text));
+        if (resp != null && Response.Status.OK.getStatusCode() == resp.getStatus()) {
+            InputStream respIS = resp.readEntity(InputStream.class);
+
+            //RDFParser parser = new SesameJSONLDParser();
+            RDFParser parser = new JSONLDParser();
+            StatementCollector collector = new StatementCollector(new LinkedList<>());
+            parser.setRDFHandler(collector);
+            parser.parse(respIS, "http://efd.ontotext.com/context/efd-context.jsonld");
+            Collection<Statement> statements = collector.getStatements();
+            
+            Collection<Statement> tags = findTags(statements);
+            Collection<Statement> places = findPlaces(statements);
+
+            List<String> t = tags.stream().map(tag -> tag.getObject().stringValue()).collect(Collectors.toList());
+            List<String> p = places.stream().map(place -> place.getObject().stringValue()).collect(Collectors.toList());
+
+            result = new EnrichmentDTO();
+            result.setPlaces(p);
+            result.setTags(t);
+        }
+
+        return result;
+    }
+
+    private static Collection<Statement> findTags(Collection<Statement> statements) {
+        return statements.stream().filter(s -> "dct:subject".equalsIgnoreCase(s.getPredicate().toString())).collect(Collectors.toList());
+    }
+    private static Collection<Statement> findPlaces(Collection<Statement> statements) {
+        return statements.stream().filter(s -> "dct:spatial".equalsIgnoreCase(s.getPredicate().toString())).collect(Collectors.toList());
     }
 
     private EnrichResponseDTO selectOne(List<EnrichResponseDTO> dtos, String uri) {

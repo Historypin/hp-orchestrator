@@ -2,9 +2,13 @@ package sk.eea.td.onto_client.api;
 
 import java.io.IOException;
 
+import org.openrdf.rio.RDFHandlerException;
+import org.openrdf.rio.RDFParseException;
+
 import com.fasterxml.jackson.core.JsonParseException;
 
 import sk.eea.td.onto_client.dto.EnrichResponseDTO;
+import sk.eea.td.onto_client.dto.EnrichmentDTO;
 
 public interface OntoClient {
 
@@ -23,4 +27,6 @@ public interface OntoClient {
 
     public String extract(String text, String uri) throws JsonParseException, IOException;
     public EnrichResponseDTO extract2Object(String text, String uri) throws JsonParseException, IOException;
+
+    public EnrichmentDTO extractUsingJsonLDParser(String text, String uri) throws RDFParseException, RDFHandlerException, IOException;
 }

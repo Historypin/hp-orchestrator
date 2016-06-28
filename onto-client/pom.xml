@@ -29,20 +29,19 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>${jackson.version}</version>
         </dependency>
 
-        <dependency>
+<!--        <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
             <version>${jackson.version}</version>
-        </dependency>
+        </dependency>-->
 
-        <dependency>
+<!--        <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
             <version>${jackson.version}</version>
-        </dependency>
+        </dependency>-->
 
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -63,11 +62,17 @@
             <version>1.1.5</version>
         </dependency>
 
-        <dependency>
+<dependency>
+    <groupId>org.openrdf.sesame</groupId>
+    <artifactId>sesame-rio-jsonld</artifactId>
+    <version>4.1.2</version>
+</dependency>
+
+<!--        <dependency>
             <groupId>com.github.jsonld-java</groupId>
             <artifactId>jsonld-java</artifactId>
             <version>0.8.2</version>
-        </dependency>
+        </dependency>-->
 
         <!-- TESTING dependencies -->
         <dependency>
@@ -94,5 +99,11 @@
             <version>1.6.4</version>
             <scope>test</scope>
         </dependency>
+
+		<dependency>
+		    <groupId>org.glassfish.jersey.containers</groupId>
+		    <artifactId>jersey-container-grizzly2-http</artifactId>
+		    <version>2.23</version>
+		</dependency>
     </dependencies>
 </project>
