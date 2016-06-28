@@ -24,7 +24,7 @@ CREATE TABLE "job" (
   "target"          VARCHAR(255),
   "last_job_run_id" INT8,
   "user"            VARCHAR(255) NOT NULL,
-  "created"         TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+  "created"         TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 );
 -- JOB TABLE END --
 
@@ -50,6 +50,7 @@ CREATE TABLE "job_run" (
   "id"        INT8 PRIMARY KEY DEFAULT nextval('seq_job_run') NOT NULL,
   "status"    VARCHAR(255),
   "result"    VARCHAR(255),
+  "activity"  VARCHAR(255),
   "job_id"    INT8 REFERENCES job(id) ON UPDATE CASCADE ON DELETE CASCADE,
   "created"   TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
   "last_started"  TIMESTAMP WITH TIME ZONE
@@ -111,10 +112,6 @@ CREATE TABLE "authorities" (
 );
 CREATE UNIQUE INDEX ix_authority_username on "authorities"(username, authority);
 -- AUTHORITIES TABLE END --
-
-ALTER TABLE job ADD COLUMN  "last_job_run_id"  INT8 REFERENCES job_run(id);
-
-ALTER TABLE job_run ADD COLUMN "activity" VARCHAR(255);
 
 ALTER TABLE job ADD CONSTRAINT last_job_run_fk FOREIGN KEY ("last_job_run_id") REFERENCES job_run(id) ON DELETE SET NULL;
 ALTER TABLE job ADD CONSTRAINT user_fk FOREIGN KEY ("user") REFERENCES "users"(username) ON UPDATE CASCADE ON DELETE CASCADE;
