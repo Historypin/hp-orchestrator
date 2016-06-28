@@ -1,7 +1,5 @@
 package sk.eea.td.console.model;
 
-import sk.eea.td.rest.model.Connector;
-
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
@@ -99,6 +97,14 @@ public class Job {
         params.remove(param);
     }
 
+    public List<Param> getParams() {
+        return params;
+    }
+
+    public void setParams(List<Param> params) {
+        this.params = params;
+    }
+
     public User getUser() {
         return user;
     }
@@ -118,5 +124,23 @@ public class Job {
                 ", created=" + created +
                 ", username=" + ((user != null) ?  user.getUsername() : null) +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+
+        Job job = (Job) o;
+
+        return id.equals(job.id);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
     }
 }

@@ -29,4 +29,13 @@ public interface HPClient {
     void deleteAllProjects(Long user);
 
     List<String> updatePin(Long id, List<String> tags, List<String> places);
+
+    /**
+     * Returns annotations to PINs within period 'from', 'until'.
+     *
+     * @param from
+     * @param until
+     * @return
+     */
+    Response getAnnotations(String from, String until);
 }

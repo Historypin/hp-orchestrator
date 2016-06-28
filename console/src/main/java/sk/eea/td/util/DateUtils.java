@@ -1,13 +1,13 @@
 package sk.eea.td.util;
 
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static org.apache.commons.lang3.StringUtils.isEmpty;
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 public class DateUtils {
 
@@ -16,7 +16,9 @@ public class DateUtils {
     public static Pattern YEAR_RANGE_PATTERN = Pattern.compile("(^\\d{4})[-/](\\d{4})$");
 
     public static DateTimeFormatter HP_CONCRETE_DATE_FORMAT = DateTimeFormatter.ISO_LOCAL_DATE;
-
+    
+    public static DateTimeFormatter SYSTEM_TIME_FORMAT = DateTimeFormatter.ISO_INSTANT;
+    
     /**
      * Method will try to parse input String into Historypin acceptable date format ("YYYY-MM-DD", "YYYY-YYYY", "YYYY") in best effort basis.
      *
@@ -74,4 +76,5 @@ public class DateUtils {
 
         return YEAR_RANGE_PATTERN.matcher(date).matches() || YEAR_PATTERN.matcher(date).matches();
     }
+	
 }

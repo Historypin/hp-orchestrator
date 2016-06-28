@@ -2,12 +2,13 @@ package sk.eea.td.console.form;
 
 import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.validator.group.GroupSequenceProvider;
+import sk.eea.td.console.model.Flow;
 import sk.eea.td.console.validation.TaskFormValidationSequenceProvider;
-import sk.eea.td.rest.model.Connector;
-import sk.eea.td.rest.validation.EuropeanaValidation;
-import sk.eea.td.rest.validation.HistorypinAnnotationValidation;
-import sk.eea.td.rest.validation.HistorypinTargetValidation;
-import sk.eea.td.rest.validation.HistorypinValidation;
+import sk.eea.td.console.model.Connector;
+import sk.eea.td.rest.validation.Flow1Validation;
+import sk.eea.td.rest.validation.Flow2Validation;
+import sk.eea.td.rest.validation.Flow4Validation;
+import sk.eea.td.rest.validation.Flow5Validation;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -15,59 +16,66 @@ import javax.validation.constraints.Size;
 @GroupSequenceProvider(value = TaskFormValidationSequenceProvider.class)
 public class TaskForm {
 
+    private Long jobId;
+
+    @NotNull(message = "Flow is required")
+    private Flow flow = Flow.FLOW_1; // default value
+
     @NotEmpty(message = "Name is missing.")
     private String name;
 
-    @NotNull(message = "Source is required.")
-    private Connector source;
-
-    @NotNull(message = "Target is required.")
-    private Connector target;
-
-    @NotNull(message = "Historypin user ID is missing.", groups = { HistorypinTargetValidation.class })
+    @NotNull(message = "Historypin user ID is missing.", groups = { Flow1Validation.class })
     private Long historypinUserId;
 
-    @NotEmpty(message = "Historypin API Key is missing.", groups = { HistorypinTargetValidation.class })
+    @NotEmpty(message = "Historypin API Key is missing.", groups = { Flow1Validation.class })
     private String historypinApiKey;
 
-    @NotEmpty(message = "Historypin API Secret is missing.", groups = { HistorypinTargetValidation.class })
+    @NotEmpty(message = "Historypin API Secret is missing.", groups = { Flow1Validation.class })
     private String historypinApiSecret;
 
-    @NotNull(message = "Target collection name is missing.", groups = { HistorypinTargetValidation.class })
-    @Size(min = 6, max = 150, groups = { HistorypinTargetValidation.class })
+    @NotNull(message = "Target collection name is missing.", groups = { Flow1Validation.class })
+    @Size(min = 6, max = 150, groups = { Flow1Validation.class })
     private String collectionName;
 
-    @NotNull(message = "Target collection location (latitude) is missing.", groups = { HistorypinTargetValidation.class })
+    @NotNull(message = "Target collection location (latitude) is missing.", groups = { Flow1Validation.class })
     private Double collectionLat = 46.517482; // default value
 
-    @NotNull(message = "Target collection location (longitude) is missing.", groups = { HistorypinTargetValidation.class })
+    @NotNull(message = "Target collection location (longitude) is missing.", groups = { Flow1Validation.class })
     private Double collectionLng = 8.1034214; // default value
 
-    @NotNull(message = "Target collection location (radius) is missing.", groups = { HistorypinTargetValidation.class })
+    @NotNull(message = "Target collection location (radius) is missing.", groups = { Flow1Validation.class })
     private Long collectionRadius = 600000L; // default value
 
-    @NotEmpty(message = "Default collection date is missing.", groups = { HistorypinTargetValidation.class })
+    @NotEmpty(message = "Default collection date is missing.", groups = { Flow1Validation.class })
     private String collectionDate;
 
     // this field is optional
     private String collectionTags;
 
-    @NotNull(message = "Lucene query is missing.", groups = { EuropeanaValidation.class })
-    @Size(min = 1, max = 150, groups = { EuropeanaValidation.class })
+    @NotNull(message = "Lucene query is missing.", groups = { Flow1Validation.class })
+    @Size(min = 1, max = 300, groups = { Flow1Validation.class })
     private String luceneQuery;
 
     // this field is optional
     private String searchFacet;
 
-    @NotNull(message = "Project slug is missing.", groups = { HistorypinValidation.class })
-    @Size(min = 1, max = 150, groups = { HistorypinValidation.class })
+    @NotNull(message = "Project slug is missing.", groups = { Flow2Validation.class, Flow5Validation.class})
+    @Size(min = 1, max = 150, groups = { Flow2Validation.class, Flow5Validation.class })
     private String projectSlug;
 
-    @NotNull(message = "Date from is missing.", groups = { HistorypinAnnotationValidation.class })
+    @NotNull(message = "Date from is missing.", groups = { Flow4Validation.class })
     private String dateFrom;
 
-    @NotNull(message = "Date until is missing.", groups = { HistorypinAnnotationValidation.class })
+    @NotNull(message = "Date until is missing.", groups = { Flow4Validation.class })
     private String dateUntil;
+
+    public Flow getFlow() {
+        return flow;
+    }
+
+    public void setFlow(Flow flow) {
+        this.flow = flow;
+    }
 
     public String getName() {
         return name;
@@ -75,22 +83,6 @@ public class TaskForm {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Connector getSource() {
-        return source;
-    }
-
-    public void setSource(Connector source) {
-        this.source = source;
-    }
-
-    public Connector getTarget() {
-        return target;
-    }
-
-    public void setTarget(Connector target) {
-        this.target = target;
     }
 
     public Long getHistorypinUserId() {
@@ -205,12 +197,20 @@ public class TaskForm {
         this.dateUntil = dateUntil;
     }
 
+    public Long getJobId() {
+        return jobId;
+    }
+
+    public void setJobId(Long jobId) {
+        this.jobId = jobId;
+    }
+
     @Override
     public String toString() {
         return "TaskForm{" +
-                "name='" + name + '\'' +
-                ", source=" + source +
-                ", target=" + target +
+                "jobId=" + jobId +
+                ", flow=" + flow +
+                ", name='" + name + '\'' +
                 ", historypinUserId=" + historypinUserId +
                 ", historypinApiKey='" + historypinApiKey + '\'' +
                 ", historypinApiSecret='" + historypinApiSecret + '\'' +

@@ -13,7 +13,7 @@ import sk.eea.td.console.repository.JobRepository;
 import sk.eea.td.console.repository.JobRunRepository;
 import sk.eea.td.console.repository.LogRepository;
 import sk.eea.td.console.repository.ParamRepository;
-import sk.eea.td.rest.model.Connector;
+import sk.eea.td.console.model.Connector;
 
 import java.util.HashSet;
 import java.util.concurrent.CountDownLatch;
@@ -30,8 +30,11 @@ public class FlowManagerImplTest {
     private static CountDownLatch threadsCreatedSignal = new CountDownLatch(10);
 
     @InjectMocks
-    private FlowManagerImpl flowManagerImpl = new FlowManagerImpl(Connector.EUROPEANA, Connector.HISTORYPIN);
+    private JobSelector singleRunJobSelector = new SingleRunJobSelector();
 
+    @InjectMocks
+    private FlowManagerImpl flowManagerImpl = new FlowManagerImpl(Connector.EUROPEANA, Connector.HISTORYPIN, singleRunJobSelector);
+    
     @Mock
     private JobRepository jobRepository;
 

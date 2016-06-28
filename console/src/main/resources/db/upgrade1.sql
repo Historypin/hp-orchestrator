@@ -16,3 +16,4 @@ update "users" set "email" = 'no-reply@localhost';
 
 alter table "job" alter "user" set not null;
 alter table "users" alter "email" set not null;
+alter table "job_run" add "last_started" TIMESTAMP WITH TIME ZONE;

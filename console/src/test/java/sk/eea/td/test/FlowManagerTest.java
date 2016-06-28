@@ -35,7 +35,7 @@ import sk.eea.td.console.repository.JobRunRepository;
 import sk.eea.td.console.repository.ParamRepository;
 import sk.eea.td.console.repository.UsersRepository;
 import sk.eea.td.flow.FlowManager;
-import sk.eea.td.rest.model.Connector;
+import sk.eea.td.console.model.Connector;
 import sk.eea.td.service.ApprovementService;
 import sk.eea.td.service.FilesystemStorageService;
 import sk.eea.td.service.ServiceException;

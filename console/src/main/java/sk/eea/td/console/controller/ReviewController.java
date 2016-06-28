@@ -77,7 +77,12 @@ public class ReviewController {
     public ReviewDTOWrapper getReviewItems(HttpServletRequest request) throws ServiceException {
         final JobRun jobRun = retrieveJobRunFromSession(request);
 
+        LOG.debug("Retrieving reviews for jobRunId: {}", jobRun.getId());
+
         List<ReviewDTO> reviews = approvementService.load(jobRun);
+
+        LOG.debug("Retrieved reviews: {}", reviews);
+
         return new ReviewDTOWrapper(reviews);
     }
 
@@ -98,18 +103,23 @@ public class ReviewController {
     public GenericResponse sendReviewItems(@RequestBody List<ReviewDTO> reviews, HttpServletRequest request) throws ServiceException {
         final JobRun jobRun = retrieveJobRunFromSession(request);
 
+        LOG.debug("Received reviews for sending: {}", reviews);
+
         approvementService.saveAndSendApproved(jobRun, reviews);
         return new GenericResponse("OK");
     }
 
     @ResponseBody
-    @RequestMapping(value = "/review", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+    @RequestMapping(value = "/review/finish.items", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     public GenericResponse finishReviewItems(@RequestBody List<ReviewDTO> reviews, HttpServletRequest request)
             throws ServiceException {
         final JobRun jobRun = retrieveJobRunFromSession(request);
 
+        LOG.debug("Received reviews for finishing: {}", reviews);
+
         approvementService.save(jobRun, reviews);
-        // TODO: finish task
+        approvementService.finish(jobRun);
+
         return new GenericResponse("OK");
     }
 
@@ -131,7 +141,7 @@ public class ReviewController {
     }
 
     @ExceptionHandler(ServiceException.class)
-    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(value = HttpStatus.OK)
     @ResponseBody
     public
     GenericResponse handleServiceException(ServiceException e) {

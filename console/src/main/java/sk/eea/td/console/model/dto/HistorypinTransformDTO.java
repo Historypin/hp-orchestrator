@@ -1,4 +1,4 @@
-package sk.eea.td.rest.model;
+package sk.eea.td.console.model.dto;
 
 import sk.eea.td.hp_client.api.Pin;
 

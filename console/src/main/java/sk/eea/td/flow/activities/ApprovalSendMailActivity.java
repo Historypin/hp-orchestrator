@@ -12,7 +12,6 @@ import org.springframework.security.core.token.KeyBasedPersistenceTokenService;
 import org.springframework.stereotype.Component;
 
 import sk.eea.td.console.model.JobRun;
-import sk.eea.td.flow.Activity;
 import sk.eea.td.flow.FlowException;
 import sk.eea.td.rest.service.MailService;
 
@@ -34,7 +33,7 @@ public class ApprovalSendMailActivity implements Activity {
     private static final Logger LOG = LoggerFactory.getLogger(ApprovalSendMailActivity.class);
 
     @Override
-    public void execute(JobRun context) throws FlowException {
+    public ActivityAction execute(JobRun context) throws FlowException {
 
         String token = keyBasedPersistenceTokenService.allocateToken(context.getId().toString()).getKey();
         String link = MessageFormat.format(reviewLinkTemplate, hostname, token);
@@ -52,15 +51,12 @@ public class ApprovalSendMailActivity implements Activity {
                 "Review of the HistoryPin collection enrichment",
                 emailParams
         );
+
+        return ActivityAction.CONTINUE;
     }
 
     @Override
     public String getName() {
         return "ApprovalSendMailActivity";
-    }
-
-    @Override
-    public boolean isSleepAfter() {
-        return true;
     }
 }

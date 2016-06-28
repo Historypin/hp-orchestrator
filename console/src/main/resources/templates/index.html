@@ -13,8 +13,6 @@
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css"
           th:href="@{/webjars/font-awesome/4.5.0/css/font-awesome.min.css}" rel="stylesheet"/>
 
-    <link href="../static/css/datatables.min.css" th:href="@{/static/css/datatables.min.css}" rel="stylesheet"/>
-
     <link href="../static/css/console.css" th:href="@{/static/css/console.css}" rel="stylesheet"/>
 
     <meta name="_csrf" th:content="${_csrf.token}" />
@@ -34,50 +32,39 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-lg-12">
+                <div class="col-md-12">
                     <form class="form-horizontal" action="#" th:action="@{/}" th:object="${taskForm}" method="post" accept-charset="UTF-8">
                         <fieldset>
+                            <div th:if="*{jobId}">
+                                <div class="alert alert-warning" role="alert">
+                                    Warning! You are editing existing item with ID: <span th:text="*{jobId}"></span>
+                                </div>
+                                <input name="jobId" th:field="*{jobId}" type="hidden"/>
+                            </div>
+
+                            <!-- Flow -->
+                            <div class="form-group" th:classappend="${#fields.hasErrors('flow')}? 'has-error'">
+                                <label class="col-md-4 control-label" for="flow" th:text="#{create.task.flow}">Flow</label>
+                                <div class="col-md-4">
+                                    <select id="flow" required="required" name="flow" class="form-control" data-toggle="tooltip" th:title="#{create.task.flow.tooltip}" th:field="*{flow}">
+                                        <option th:each="fl : ${T(sk.eea.td.console.model.Flow).values()}" th:value="${fl}" th:text="#{${'create.task.' + fl}}" th:title="#{${'create.task.title.' + fl}}"></option>
+                                    </select>
+                                    <span class="help-block" th:if="${#fields.hasErrors('flow')}" th:errors="*{flow}">Flow error</span>
+                                </div>
+                            </div>
+
                             <!-- Name -->
                             <div class="form-group required" th:classappend="${#fields.hasErrors('name')}? 'has-error'">
                                 <label class="col-md-4 control-label" for="name" th:text="#{create.task.name}">Name</label>
                                 <div class="col-md-4">
-                                    <input id="name" name="name" th:field="*{name}" th:placeholder="#{create.task.name.placeholder}" placeholder="name of the task" class="form-control input-md" type="text"/>
+                                    <input id="name" name="name" th:field="*{name}" th:placeholder="#{create.task.name.placeholder}" placeholder="name of the task" class="form-control input-md" type="text" data-toggle="tooltip" th:title="#{create.task.name.tooltip}"/>
                                     <span class="help-block" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name error</span>
                                 </div>
                             </div>
 
-                            <!-- Source -->
-                            <div class="form-group required" th:classappend="${#fields.hasErrors('source')}? 'has-error'">
-                                <label class="col-md-4 control-label" for="source" th:text="#{create.task.source}">Source</label>
-                                <div class="col-md-4">
-                                    <select id="source" required="required" name="source" class="form-control" th:field="*{source}">
-                                        <option value="EUROPEANA" selected="selected" th:text="#{create.task.source.eu}">Europeana</option>
-                                        <option value="HISTORYPIN" th:text="#{create.task.source.hp}">Historypin</option>
-                                        <option value="HISTORYPIN_ANNOTATION" th:text="#{create.task.source.hp_annotation}">Historypin annotation</option>
-                                    </select>
-                                    <span class="help-block" th:if="${#fields.hasErrors('source')}" th:errors="*{source}">Source error</span>
-                                </div>
-                            </div>
-
-                            <!-- Target -->
-                            <div class="form-group required" th:classappend="${#fields.hasErrors('target')}? 'has-error'">
-                                <label class="col-md-4 control-label" for="target" th:text="#{create.task.target}">Target</label>
-                                <div class="col-md-4">
-                                    <select id="target" required="required" name="target" class="form-control" th:field="*{target}">
-                                        <option value="HISTORYPIN" th:text="#{create.task.target.hp}">Historypin</option>
-                                        <option value="TAGAPP" th:text="#{create.task.target.tagapp}">Tagapp</option>
-                                        <option value="MINT" th:text="#{create.task.target.mint}">Mint</option>
-                                        <option value="EUROPEANA_ANNOTATION" th:text="#{create.task.target.eu_annotation}">Europeana Annotation API</option>
-                                        <option value="SD" th:text="#{create.task.target.sd}">Semantic demonstrator</option>
-                                    </select>
-                                    <span class="help-block" th:if="${#fields.hasErrors('target')}" th:errors="*{target}">Target error</span>
-                                </div>
-                            </div>
-
-                            <!-- Configuration -->
-
-                            <!-- HP target configuration -->
-                            <div id="historypin-target-conf-group">
+                            <!-- Flow 1 configuration -->
+                            <div id="flow-1-conf-group">
+                                <!-- HP user ID -->
                                 <div class="form-group required" th:classappend="${#fields.hasErrors('historypinUserId')}? 'has-error'">
                                     <label class="col-md-4 control-label" for="historypinUserId" th:text="#{create.task.historypinUserId}">Historypin User ID</label>
                                     <div class="col-md-4">
@@ -85,6 +72,7 @@
                                         <span class="help-block" th:if="${#fields.hasErrors('historypinUserId')}" th:errors="*{historypinUserId}">historypinUserId error</span>
                                     </div>
                                 </div>
+                                <!-- HP API key -->
                                 <div class="form-group required" th:classappend="${#fields.hasErrors('historypinApiKey')}? 'has-error'">
                                     <label class="col-md-4 control-label" for="name" th:text="#{create.task.historypinApiKey}">Historypin API key</label>
                                     <div class="col-md-4">
@@ -93,6 +81,7 @@
                                         <span class="help-block" th:if="${#fields.hasErrors('historypinApiKey')}" th:errors="*{historypinApiKey}">historypinApiKey error</span>
                                     </div>
                                 </div>
+                                <!-- HP API secret -->
                                 <div class="form-group required" th:classappend="${#fields.hasErrors('historypinApiSecret')}? 'has-error'">
                                     <label class="col-md-4 control-label" for="name" th:text="#{create.task.historypinApiSecret}">Historypin API secret</label>
                                     <div class="col-md-4">
@@ -101,6 +90,7 @@
                                         <span class="help-block" th:if="${#fields.hasErrors('historypinApiSecret')}" th:errors="*{historypinApiSecret}">historypinApiSecret error</span>
                                     </div>
                                 </div>
+                                <!-- HP collection name -->
                                 <div class="form-group required" th:classappend="${#fields.hasErrors('collectionName')}? 'has-error'">
                                     <label class="col-md-4 control-label" for="name" th:text="#{create.task.collectionName}">Collection name</label>
                                     <div class="col-md-4">
@@ -108,13 +98,15 @@
                                         <span class="help-block" th:if="${#fields.hasErrors('collectionName')}" th:errors="*{collectionName}">Collection name error</span>
                                     </div>
                                 </div>
+                                <!-- default coordinates (lat, lng, range) -->
                                 <div class="form-group" th:classappend="${#fields.hasErrors('collectionLat')}? 'has-error'">
                                     <label class="col-md-4 control-label" for="map" th:text="#{create.task.collectionLocation}">Collection location</label>
-                                    <div id="map" class="col-md-4"></div>
+                                    <div id="map" class="col-md-4" data-toggle="tooltip" title="this is map"></div>
                                     <input type="hidden" th:field="*{collectionLat}" name="circleLat" id="circleLat"/>
                                     <input type="hidden" th:field="*{collectionLng}" name="circleLng" id="circleLng"/>
                                     <input type="hidden" th:field="*{collectionRadius}" name="circleRadius" id="circleRadius"/>
                                 </div>
+                                <!-- default collection date -->
                                 <div class="form-group required" th:classappend="${#fields.hasErrors('collectionDate')}? 'has-error'">
                                     <label class="col-md-4 control-label" for="name" th:text="#{create.task.collectionDate}">Collection date</label>
                                     <div class="col-md-4">
@@ -123,6 +115,7 @@
                                         <span class="help-block" th:if="${#fields.hasErrors('collectionDate')}" th:errors="*{collectionDate}">Collection date error</span>
                                     </div>
                                 </div>
+                                <!-- default tags in HP -->
                                 <div class="form-group">
                                     <label class="col-md-4 control-label" for="collectionTags" th:text="#{create.task.collectionTags}">Collection tags</label>
                                     <div class="col-md-4">
@@ -130,10 +123,7 @@
                                                class="form-control input-md" type="text"/>
                                     </div>
                                 </div>
-                            </div>
-
-                            <!-- Europeana conf query-->
-                            <div id="europeana-source-conf-group">
+                                <!-- lucene query -->
                                 <div class="form-group required" th:classappend="${#fields.hasErrors('luceneQuery')}? 'has-error'">
                                     <label class="col-md-4 control-label" for="luceneQuery" th:text="#{create.task.lucene}">Lucene query</label>
                                     <div class="col-md-4">
@@ -141,6 +131,7 @@
                                         <span class="help-block" th:if="${#fields.hasErrors('luceneQuery')}" th:errors="*{luceneQuery}">Lucene query error</span>
                                     </div>
                                 </div>
+                                <!-- search facet -->
                                 <div class="form-group">
                                     <label class="col-md-4 control-label" for="searchFacet" th:text="#{create.task.search.facet }">Search facet</label>
                                     <div class="col-md-4">
@@ -149,8 +140,8 @@
                                 </div>
                             </div>
 
-                            <!-- Historypin project slug-->
-                            <div id="historypin-source-conf-group" class="form-group required" th:classappend="${#fields.hasErrors('projectSlug')}? 'has-error'">
+                            <!-- Flow 2 and 5 configuration (project slug)-->
+                            <div id="flow-2-and-5-conf-group" class="form-group required" th:classappend="${#fields.hasErrors('projectSlug')}? 'has-error'">
                                 <label class="col-md-4 control-label" for="projectSlug" th:text="#{create.task.slug}">Project slug</label>
                                 <div class="col-md-4">
                                     <input id="projectSlug" name="projectSlug" th:field="*{projectSlug}" th:placeholder="#{create.task.slug.placeholder}" placeholder="path to project in Historypin" class="form-control input-md" type="text"/>
@@ -158,8 +149,9 @@
                                 </div>
                             </div>
 							
-							<!--  Historypin annotation conf group -->
-							<div id="historypin_ann-conf-group">
+							<!--  Flow 4 conf group -->
+							<div id="flow-4-conf-group">
+                                <!-- date from-->
                                 <div class="form-group" th:classappend="${#fields.hasErrors('dateFrom')}? 'has-error'">
                                     <label class="col-md-4 control-label" for="dateFrom" th:text="#{create.task.hp_annotation.from}">Date from</label>
                                     <div class="col-md-4">
@@ -167,6 +159,7 @@
                                         <span class="help-block" th:if="${#fields.hasErrors('dateFrom')}" th:errors="*{dateFrom}">Date from error</span>
                                     </div>
                                 </div>
+                                <!-- date until-->
                                 <div class="form-group" th:classappend="${#fields.hasErrors('dateUntil')}? 'has-error'">
                                     <label class="col-md-4 control-label" for="dateUntil" th:text="#{create.task.hp_annotation.until}">Date until</label>
                                     <div class="col-md-4">
@@ -178,45 +171,22 @@
 
                             <!-- Button -->
                             <div class="form-group">
-                                <label class="col-md-4 control-label" for="createTaskButton"></label>
-                                <div class="col-md-4">
+                                <label class="col-md-4 control-label" for="createTaskButton"  th:if="*{jobId} == null"></label>
+                                <div class="col-md-4" th:if="*{jobId} == null">
                                     <p th:inline="text" class="help-block"><em><span style="color:red;">*</span> [[#{create.task.required}]]</em></p>
                                     <button id="createTaskButton" name="createTaskButton" class="btn btn-primary" th:text="#{create.task.button}">Create task</button>
-                                    <span id="successMessage" class="help-block" style="color: green" th:text="#{create.task.success}" th:unless="${param.success == null}">Success.</span>
+                                    <span id="successCreateMessage" class="help-block" style="color: green" th:text="#{create.task.create.success}" th:unless="${param.create_succes == null}">Success.</span>
+                                </div>
+
+                                <label class="col-md-4 control-label" for="saveChangesButton"  th:if="*{jobId} != null"></label>
+                                <div class="col-md-4" th:if="*{jobId} != null">
+                                    <p th:inline="text" class="help-block"><em><span style="color:red;">*</span> [[#{create.task.required}]]</em></p>
+                                    <button id="saveChangesButton" name="saveChangesButton" class="btn btn-primary success" th:text="#{save.task.button}">Save changes</button>
+                                    <span id="successSaveMessage" class="help-block" style="color: green" th:text="#{create.task.save.success}" th:unless="${param.save_success == null}">Success.</span>
                                 </div>
                             </div>
                         </fieldset>
                     </form>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-lg-12">
-                    <h1>Task list</h1>
-                    <table id="taskListTable" class="table table-striped table-bordered" cellspacing="0" width="100%">
-                        <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Source</th>
-                            <th>Target</th>
-                            <th>Last run status</th>
-                            <th>Last run result</th>
-                            <th>Last run ID</th>
-                            <th>Actions</th>
-                        </tr>
-                        </thead>
-                        <tfoot>
-                        <tr>
-                            <th>Name</th>
-                            <th>Source</th>
-                            <th>Target</th>
-                            <th>Last run status</th>
-                            <th>Last run result</th>
-                            <th>Last run ID</th>
-                            <th>Actions</th>
-                        </tr>
-                        </tfoot>
-                    </table>
                 </div>
             </div>
         </div>
@@ -231,61 +201,12 @@
 
 <script th:inline="javascript">
     /* <![CDATA[ */
-    var defaultTargetOptions = $("#target option"); // save default destination options
-
-    var table; // datatable
-
-    var resolveConfiguration = function () {
-        var sourceOption = $("#source option:selected").val();
-        var targetOption = $("#target option:selected").val();
-
-        // restore default destination options
-        $("#target option").remove();
-        $("#target").append(defaultTargetOptions);
-        $("#target").val(targetOption);
-
-        if ("EUROPEANA" == sourceOption) {
-            $("#target option[value='MINT'], option[value='EUROPEANA_ANNOTATION'], option[value='SD']").remove();
-            $("#europeana-source-conf-group").show();
-
-            if ("HISTORYPIN" == targetOption) {
-                $("#historypin-target-conf-group").show();
-                try {
-                    initMap();
-                } catch (e) {
-                    // ignore for now
-                }
-            } else if ("TAGAPP" == targetOption){
-                $("#historypin-target-conf-group").hide();
-            }
-
-            $("#historypin-source-conf-group").hide();
-            $("#historypin_ann-conf-group").hide();
-        } else if ("HISTORYPIN" == sourceOption){
-            $("#target option[value='HISTORYPIN'], option[value='EUROPEANA_ANNOTATION'], option[value='TAGAPP']").remove();
-            $("#historypin-source-conf-group").show();
-
-            $("#europeana-source-conf-group").hide();
-            $("#historypin-target-conf-group").hide();
-            $("#historypin_ann-conf-group").hide();
-        } else if ("HISTORYPIN_ANNOTATION" == sourceOption){
-            $("#target option[value='HISTORYPIN'], option[value='SD'], option[value='TAGAPP'], option[value='MINT']").remove();
-			$("#historypin_ann-conf-group").show();
-
-            $("#europeana-source-conf-group").hide();
-            $("#historypin-target-conf-group").hide();
-            $("#historypin-source-conf-group").hide();
-        }
-    };
-
-    function remapDatatables(data) {
-        for (var i = 0; i < data.columns.length; i++) {
-            column = data.columns[i];
-            column.searchRegex = column.search.regex;
-            column.searchValue = column.search.value;
-            delete(column.search);
-        }
-    }
+    var configurationGroups = ["#flow-1-conf-group", "#flow-2-and-5-conf-group", "#flow-4-conf-group"];
+    var configurationMap = {};
+    configurationMap["FLOW_1"] = configurationGroups[0];
+    configurationMap["FLOW_2"] = configurationGroups[1];
+    configurationMap["FLOW_4"] = configurationGroups[2];
+    configurationMap["FLOW_5"] = configurationGroups[1];
 
     function initMap() {
         var map = new google.maps.Map(document.getElementById('map'), {
@@ -328,66 +249,15 @@
         document.getElementById('circleRadius').value = Math.floor(circle.getRadius());
     }
 
-    function restartTask(lastRunId) {
-        var json = {'lastRunId' : lastRunId};
-        $.ajax({
-            'type' : 'POST',
-            'url' : /*[[@{/restart.task}]]*/,
-            'beforeSend' : function(xhr) {
-                xhr.setRequestHeader("Accept", "application/json");
-                xhr.setRequestHeader("Content-Type", "application/json");
-                xhr.setRequestHeader($("meta[name='_csrf_header']").attr("content"), $("meta[name='_csrf']").attr("content"));
-            },
-            'data' : JSON.stringify(json),
-            dataType : 'json',
-            success : function(data) {
-                if(table != null) {
-                    table.ajax.reload(null, false);
-                }
-            }
-        });
-    }
 
     $(document).ready(function () {
-        table = $("#taskListTable").DataTable({
-            'bFilter': false,
-            'ajax': {
-                'url': /*[[@{/get.jobs}]]*/,
-                'data': function (data) {
-                    remapDatatables(data);
-                }
-            },
-            'serverSide': true,
-            'processing': true,
-            'columns': [
-                {'data': 'name'},
-                {'data': 'source'},
-                {'data': 'target'},
-                {'data': 'lastRunStatus', 'orderable': false},
-                {'data': 'lastRunResult', 'orderable': false},
-                {'data': 'lastRunId'},
-                {
-                    'data': 'actions',
-                    'render': function ( data, type, row, meta ) {
-                        if((row != null || row != undefined) && row.lastRunId != "") {
-                            return '<button onclick="restartTask(' + row.lastRunId +')" title="Restart task"><i class="fa fa-repeat" aria-hidden="true"></i></button>';
-                        } else {
-                            return '';
-                        }
-                    }
-                }
-            ]
-        });
-
-        resolveConfiguration();
-
-        $("#source").change(function () {
-            resolveConfiguration();
-        });
-
-        $("#target").change(function () {
-            resolveConfiguration();
-        });
+        $("select").change(function () {
+            configurationGroups.forEach(function(entry) {
+                $(entry).hide();
+            });
+            var selectedFlow = $("select option:selected").val();
+            $(configurationMap[selectedFlow]).show();
+        }).change();
     });
     /* ]]> */
 </script>

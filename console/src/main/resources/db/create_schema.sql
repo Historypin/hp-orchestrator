@@ -24,7 +24,7 @@ CREATE TABLE "job" (
   "target"          VARCHAR(255),
   "last_job_run_id" INT8,
   "user"            VARCHAR(255) NOT NULL,
-  "created"         TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
+  "created"         TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
 );
 -- JOB TABLE END --
 
@@ -51,7 +51,8 @@ CREATE TABLE "job_run" (
   "status"    VARCHAR(255),
   "result"    VARCHAR(255),
   "job_id"    INT8 REFERENCES job(id) ON UPDATE CASCADE ON DELETE CASCADE,
-  "created"   TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
+  "created"   TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+  "last_started"  TIMESTAMP WITH TIME ZONE
 );
 CREATE INDEX "ix_job_run_job_id" ON "job_run" ("job_id");
 -- JOB_RUN TABLE END --

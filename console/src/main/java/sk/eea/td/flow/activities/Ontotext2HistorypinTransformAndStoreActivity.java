@@ -20,7 +20,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 
 import sk.eea.td.console.model.JobRun;
-import sk.eea.td.flow.Activity;
 import sk.eea.td.hp_client.api.HPClient;
 import sk.eea.td.onto_client.dto.EnrichmentDTO;
 import sk.eea.td.rest.service.OntotextHarvestService;
