@@ -11,6 +11,12 @@ public class ServiceException extends Exception {
     private List<Error> errors = new ArrayList<>();
 
     public ServiceException(List<Error> errors) {
+        super();
+        this.errors = errors;
+    }
+    public ServiceException(Error error) {
+        List<Error> errors = new ArrayList<>();
+        errors.add(error);
         this.errors = errors;
     }
     public List<Error> getErrors() {
@@ -42,7 +48,8 @@ public class ServiceException extends Exception {
             CHECKSUM_CHANGED,
             INVALID_JSON,
             FAILED_TO_LOAD_FILE_FOR_CHECKSUM,
-            CLIENT_REQUEST_FAILED
+            CLIENT_REQUEST_FAILED,
+            JOB_ALREADY_CLOSED
         }
 
     }

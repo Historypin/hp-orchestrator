@@ -14,18 +14,21 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import sk.eea.td.console.form.*;
 import sk.eea.td.console.model.JobRun;
+import sk.eea.td.console.model.ParamKey;
 import sk.eea.td.console.model.datatables.DataTablesInput;
 import sk.eea.td.console.model.datatables.DataTablesOutput;
+import sk.eea.td.console.model.dto.ReviewDTO;
+import sk.eea.td.console.model.dto.ReviewDTOWrapper;
 import sk.eea.td.console.repository.JobRunRepository;
 import sk.eea.td.console.validation.BadTokenException;
 import sk.eea.td.console.validation.ExecutionNotFoundException;
+import sk.eea.td.service.ApprovementService;
+import sk.eea.td.service.ServiceException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
@@ -43,30 +46,9 @@ public class ReviewController {
     @Autowired
     private JobRunRepository jobRunRepository;
 
-    private List<String> newPopulateItems(){
-        List<String> list = new ArrayList<>();
-        list.add("{"
-                + "  \"id\" : 14929,"
-                + "  \"caption\" : \"Plummer Roddis Hastings 1927\","
-                + "  \"description\" : \"Plummer Roddis store in Hastings designed by architect Henry ward ARIBA and opened in 1927 now in use as a Debenhams Store.\","
-                + "  \"url\" : \"http://v77-beta-3.historypin-hrd.appspot.com/en/explore/pin/14929\","
-                + "  \"original_tags\" : [ \"Cake\", \"Cooking\", \"Coffee\", \"Sponge_cake\", \"Strawberry\", \"Sugar\", \"Food\" ],"
-                + "  \"approved_tags\" : [ \"Cake\", \"Cooking\", \"Coffee\", \"Sponge_cake\", \"Strawberry\", \"Sugar\", \"Food\" ],"
-                + "  \"approved\": false"
-                + "}");
+    @Autowired
+    private ApprovementService approvementService;
 
-        list.add("{"
-                + "  \"id\" : 14930,"
-                + "  \"caption\" : \"tin/chocolate\","
-                + "  \"description\" : \"Octagonal tin with push-on lid. Mottled blue sides. Lid printed in black and white with heavily retouched portrait of T.R.H PRINCESS ELIZABETH AND PRINCESS MARGARET ROSE, FROM A PORTRAIT BY MARCUS ADAMS. The image is dated 1936. An octagonal printed paper label showing a photograph of the contents is fixed to the base. A torn section reveals printing on the base.\","
-                + "  \"url\" : \"http://v77-beta-3.historypin-hrd.appspot.com/en/explore/pin/14930\","
-                + "  \"original_tags\" : [ \"tin\", \"Chocolate\" ],"
-                + "  \"approved_tags\" : [ \"tin\", \"Chocolate\" ],"
-                + "  \"approved\": true"
-                + "}");
-
-        return list;
-    }
 
     @RequestMapping(value = "/review", method = RequestMethod.GET)
     public String review(@RequestParam(name = "token", required = false) String inputToken, HttpServletRequest request) {
@@ -77,83 +59,113 @@ public class ReviewController {
 
         final Long jobRunId = Long.parseLong(token.getExtendedInformation());
         final JobRun jobRun = jobRunRepository.findOne(jobRunId);
-        if(jobRun == null || JobRun.JobRunStatus.FINISHED.equals(jobRun.getStatus())) {
-            LOG.error("JobRun was not found, or has already finished.");
-            // TODO: go away
-            //throw new BadTokenException();
+        if(jobRun == null || !JobRun.JobRunStatus.WAITING.equals(jobRun.getStatus())) {
+            throw new ExecutionNotFoundException(jobRunId, "JobRun missing or not in WAITING state.");
         }
         request.getSession().setAttribute("jobRunId", jobRunId);
         return "review";
     }
 
     @ResponseBody
-    @RequestMapping(value = "/review/get.items", method = RequestMethod.GET, produces = "application/json")
-    public String getReviewItems(HttpServletRequest request) {
-        final Long jobRunId = (Long) request.getSession().getAttribute("jobRunId");
-        if(jobRunId == null) {
-            throw new BadTokenException();
-        }
-        LOG.debug("get items from jobRun: {}", jobRunId);
+    @RequestMapping(value = "/review/get.token", method = RequestMethod.GET, produces = "application/json")
+    public String getToken() {
+        return keyBasedPersistenceTokenService.allocateToken("402").getKey();
+    }
 
-        List<String> items = newPopulateItems(); // TODO: call Mano's service
-        return "{\"reviews\": [" + String.join(",", items) + " ]}";
+    @ResponseBody
+    @RequestMapping(value = "/review/get.items", method = RequestMethod.GET, produces = "application/json")
+    public ReviewDTOWrapper getReviewItems(HttpServletRequest request) throws ServiceException {
+        final JobRun jobRun = retrieveJobRunFromSession(request);
+
+        LOG.debug("Retrieving reviews for jobRunId: {}", jobRun.getId());
+
+        List<ReviewDTO> reviews = approvementService.load(jobRun);
+
+        LOG.debug("Retrieved reviews: {}", reviews);
+
+        return new ReviewDTOWrapper(reviews);
     }
 
     @ResponseBody
     @RequestMapping(value = "/review/save.items", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-    public GenericResponse saveReviewItems(@RequestBody String reviews,  HttpServletRequest request) {
-        final Long jobRunId = (Long) request.getSession().getAttribute("jobRunId");
-        if(jobRunId == null) {
-            throw new BadTokenException();
-        }
+    public GenericResponse saveReviewItems(@RequestBody List<ReviewDTO> reviews,  HttpServletRequest request)
+            throws ServiceException {
+        final JobRun jobRun = retrieveJobRunFromSession(request);
 
-        LOG.debug("saving items of jobRun: {}", jobRunId);
-        LOG.debug("received reviews: {}", reviews);
+        LOG.debug("Received reviews for saving: {}", reviews);
+
+        approvementService.save(jobRun, reviews);
         return new GenericResponse("OK");
     }
 
     @ResponseBody
     @RequestMapping(value = "/review/send.items", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-    public String sendReviewItems(HttpServletRequest request) {
-        final Long jobRunId = (Long) request.getSession().getAttribute("jobRunId");
-        if(jobRunId == null) {
-            throw new BadTokenException();
-        }
-        LOG.debug("sending approved items of jobRun: {}", jobRunId);
-        return "review";
+    public GenericResponse sendReviewItems(@RequestBody List<ReviewDTO> reviews, HttpServletRequest request) throws ServiceException {
+        final JobRun jobRun = retrieveJobRunFromSession(request);
+
+        LOG.debug("Received reviews for sending: {}", reviews);
+
+        approvementService.saveAndSendApproved(jobRun, reviews);
+        return new GenericResponse("OK");
     }
 
     @ResponseBody
-    @RequestMapping(value = "/review", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-    public String finishReviewItems(HttpServletRequest request) {
-        final Long jobRunId = (Long) request.getSession().getAttribute("jobRunId");
-        if(jobRunId == null) {
-            throw new BadTokenException();
-        }
-        LOG.debug("finishing of jobRun: {}", jobRunId);
-        return "review";
+    @RequestMapping(value = "/review/finish.items", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+    public GenericResponse finishReviewItems(@RequestBody List<ReviewDTO> reviews, HttpServletRequest request)
+            throws ServiceException {
+        final JobRun jobRun = retrieveJobRunFromSession(request);
+
+        LOG.debug("Received reviews for finishing: {}", reviews);
+
+        approvementService.save(jobRun, reviews);
+        approvementService.finish(jobRun);
+
+        return new GenericResponse("OK");
     }
 
     @ExceptionHandler({BadTokenException.class, IllegalArgumentException.class, NumberFormatException.class})
     @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
-    public
     @ResponseBody
-    String handleException(Exception e) {
+    public  String handleException(Exception e) {
         LOG.error("Exception thrown during processing of review token. Access to review page was denied.", e);
         return "Token is missing, not valid or already expired!";
     }
 
     @ExceptionHandler(ExecutionNotFoundException.class)
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
-    public
     @ResponseBody
-    String handleExecutionNotFoundException(Exception e) {
-        LOG.error("Exception thrown during processing of review token. Access to review page was denied.", e);
-        return e.getMessage();
+    public
+    String handleExecutionNotFoundException(ExecutionNotFoundException e) {
+        LOG.error("Execution with id: {} could not be found, or has already finished.", e.getExecutionId(), e);
+        return "Execution not found or already finished!";
+    }
+
+    @ExceptionHandler(ServiceException.class)
+    @ResponseStatus(value = HttpStatus.OK)
+    @ResponseBody
+    public
+    GenericResponse handleServiceException(ServiceException e) {
+        final String errors = e.getErrors().stream().map( error -> error.getErrorCode().toString()).collect(Collectors.joining(", "));
+        LOG.error("Exception occurred during review action. Error codes: {}", errors, e);
+        return new GenericResponse("FAILURE", "Following errors occurred: " + errors + ". Please try again or contact the administrator.");
     }
 
     private boolean isExpiredToken(Token token) {
         Date validUntil = DateUtils.addDays(new Date(token.getKeyCreationTime()), tokenDaysValid);
         return new Date().after(validUntil);
+    }
+
+    private JobRun retrieveJobRunFromSession(HttpServletRequest request) {
+        final Long jobRunId = (Long) request.getSession().getAttribute("jobRunId");
+        if(jobRunId == null) {
+            LOG.error("Session does not contain 'jobRunId' attribute.");
+            throw new BadTokenException();
+        }
+
+        final JobRun jobRun = jobRunRepository.findOne(jobRunId);
+        if(jobRun == null || !JobRun.JobRunStatus.WAITING.equals(jobRun.getStatus())) {
+            throw new ExecutionNotFoundException(jobRunId, "JobRun missing or not in WAITING state.");
+        }
+        return jobRun;
     }
 }

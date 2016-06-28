@@ -9,7 +9,7 @@ import sk.eea.td.flow.FlowManagerImpl;
 import sk.eea.td.flow.JobSelector;
 import sk.eea.td.flow.SingleRunJobSelector;
 import sk.eea.td.flow.activities.*;
-import sk.eea.td.rest.model.Connector;
+import sk.eea.td.console.model.Connector;
 
 @Configuration
 public class FlowConfig {
@@ -45,8 +45,13 @@ public class FlowConfig {
     }
 
     @Bean
-    public Activity ontotext2HistorypinTransformActivity() {
-        return new Ontotext2HistorypinTransformActivity();
+    public Activity approvalSendMailActivity() {
+        return new ApprovalSendMailActivity();
+    }
+
+    @Bean
+    public Activity ontotext2HistorypinTransformAndStoreActivity() {
+        return new Ontotext2HistorypinTransformAndStoreActivity();
     }
 
     @Bean
@@ -78,7 +83,10 @@ public class FlowConfig {
     public FlowManager historypinOntotextFlowManager() {
         FlowManager flowManager = new FlowManagerImpl(Connector.HISTORYPIN, Connector.SD, singleRunJobSelector());
         flowManager.addActivity(harvestActivity());
-        flowManager.addActivity(ontotext2HistorypinTransformActivity());
+        flowManager.addActivity(ontotext2HistorypinTransformAndStoreActivity());
+        //flowManager.addActivity(approvalSendMailActivity());
+        flowManager.addActivity(storeActivity());
+        flowManager.addActivity(reportActivity());
         return flowManager;
     }
 

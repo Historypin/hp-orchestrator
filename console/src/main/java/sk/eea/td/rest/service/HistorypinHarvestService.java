@@ -30,7 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import sk.eea.td.console.model.Job;
+import sk.eea.td.console.model.Connector;
 import sk.eea.td.console.model.JobRun;
 import sk.eea.td.console.model.ParamKey;
 import sk.eea.td.console.model.ReadOnlyParam;
@@ -38,7 +38,6 @@ import sk.eea.td.console.repository.JobRepository;
 import sk.eea.td.console.repository.JobRunRepository;
 import sk.eea.td.hp_client.api.HPClient;
 import sk.eea.td.hp_client.impl.HPClientImpl;
-import sk.eea.td.rest.model.Connector;
 import sk.eea.td.util.PathUtils;
 
 @Component

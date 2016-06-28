@@ -3,22 +3,15 @@
  */
 package sk.eea.td.flow;
 
-import java.util.Set;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
+import sk.eea.td.console.model.Connector;
 import sk.eea.td.console.model.Job;
 import sk.eea.td.console.model.JobRun;
-import sk.eea.td.console.model.JobRun.JobRunStatus;
-import sk.eea.td.console.model.Param;
-import sk.eea.td.console.model.ReadOnlyParam;
 import sk.eea.td.console.repository.JobRepository;
 import sk.eea.td.console.repository.JobRunRepository;
-import sk.eea.td.console.repository.ParamRepository;
-import sk.eea.td.rest.model.Connector;
 
 /**
  * @author Maros Strmensky

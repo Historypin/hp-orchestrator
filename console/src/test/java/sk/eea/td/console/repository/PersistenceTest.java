@@ -12,7 +12,7 @@ import sk.eea.td.config.PersistenceConfig;
 import sk.eea.td.console.model.Job;
 import sk.eea.td.console.model.JobRun;
 import sk.eea.td.console.model.User;
-import sk.eea.td.rest.model.Connector;
+import sk.eea.td.console.model.Connector;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;

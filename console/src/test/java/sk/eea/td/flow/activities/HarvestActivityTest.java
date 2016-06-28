@@ -1,31 +1,23 @@
 package sk.eea.td.flow.activities;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
-import java.text.ParseException;
-import java.time.Clock;
-import java.time.Instant;
-import java.time.format.DateTimeParseException;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.TimeZone;
-
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
 import sk.eea.td.rest.service.EuropeanaHarvestService;
 import sk.eea.td.rest.service.HistorypinHarvestService;
-import sk.eea.td.rest.service.OaipmhHarvestService;
 import sk.eea.td.util.DateUtils;
+
+import java.text.ParseException;
+import java.time.Instant;
+import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class HarvestActivityTest {
 
@@ -36,9 +28,6 @@ public class HarvestActivityTest {
 	
 	@Mock
 	EuropeanaHarvestService europeanaHarvestService;
-	
-	@Mock
-	OaipmhHarvestService oaipmhHarvestService;
 	
 	@Mock
 	HistorypinHarvestService historypinHarvestService;

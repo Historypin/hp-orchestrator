@@ -15,14 +15,17 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import sk.eea.td.console.model.JobRun;
 import sk.eea.td.console.model.ParamKey;
+import sk.eea.td.console.model.JobRun.JobRunStatus;
+import sk.eea.td.console.model.dto.ReviewDTO;
+import sk.eea.td.console.repository.JobRunRepository;
 import sk.eea.td.hp_client.api.HPClient;
 import sk.eea.td.hp_client.impl.HPClientImpl;
 
@@ -33,14 +36,24 @@ public class ApprovementService {
 
     @Value("${historypin.user}")
     private Long userId;
+
     @Value("${historypin.base.url}")
     private String hpUrl;
+
     @Value("${historypin.api.key}")
     private String hpApiKey;
+
     @Value("${historypin.api.secret}")
     private String hpApiSecret;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @Autowired
+    private JobRunRepository jobRunRepository;
+
     private static final Logger LOG = LoggerFactory.getLogger(ApprovementService.class);
+    private static final ParamKey PATH_TYPE = ParamKey.TRANSFORM_PATH; 
 
     @PostConstruct
     public void init() {
@@ -48,46 +61,22 @@ public class ApprovementService {
         hpClient = new HPClientImpl(hpUrl, hpApiKey, hpApiSecret);
     }
 
-    public List<String> load(ParamKey pathType, JobRun jobRun) throws ServiceException {
+    public List<ReviewDTO> load(JobRun jobRun) throws ServiceException {
 
-        final Map<ParamKey, String> paramMap = new HashMap<>();
-        jobRun.getReadOnlyParams().stream().forEach(p -> paramMap.put(p.getKey(), p.getValue()));
-        final Path path = Paths.get(paramMap.get(pathType));
+        Path path = getPath(jobRun);
         return loadAll(path);
     }
 
-    public void save(ParamKey pathType, JobRun jobRun, List<String> contents) throws ServiceException {
+    public void save(JobRun jobRun, List<ReviewDTO> reviews) throws ServiceException {
 
-        final Map<ParamKey, String> paramMap = new HashMap<>();
-        jobRun.getReadOnlyParams().stream().forEach(p -> paramMap.put(p.getKey(), p.getValue()));
-        final Path path = Paths.get(paramMap.get(pathType));
+        Path path = getPath(jobRun);
+        checkJobNotClosed(jobRun, path);
 
         List<ServiceException.Error> errors = new ArrayList<>();
-        ObjectMapper objectMapper = new ObjectMapper();
-        for (String content : contents) {
-            Map<String, Object> map = null;
+        for (ReviewDTO reviewDTO : reviews) {
+            Path targetPath = path.resolve(reviewDTO.getLocalFilename());
             try {
-                map = objectMapper.readValue(content, new TypeReference<Map<String, Object>>() {
-                });
-            } catch (IOException e) {
-                LOG.error(ServiceException.Error.ErrorCode.FAILED_TO_PARSE_JSON_FROM_STRING.name(), e);
-                errors.add(new ServiceException.Error(null,
-                        ServiceException.Error.ErrorCode.FAILED_TO_PARSE_JSON_FROM_STRING));
-                continue;
-            }
-
-            String checkSum = (String) map.get("checksum");
-
-            String localFilename = (String) map.get("local_filename");
-            if (localFilename == null) {
-                LOG.error(ServiceException.Error.ErrorCode.INVALID_JSON.name());
-                errors.add(new ServiceException.Error(null, ServiceException.Error.ErrorCode.INVALID_JSON));
-                continue;
-            }
-
-            Path targetPath = path.resolve(localFilename);
-            try {
-                boolean checksumOK = verifyCheckSum(checkSum, targetPath);
+                boolean checksumOK = verifyCheckSum(reviewDTO.getChecksum(), targetPath);
                 if (!checksumOK) {
                     LOG.error(ServiceException.Error.ErrorCode.CHECKSUM_CHANGED.name());
                     errors.add(
@@ -103,14 +92,12 @@ public class ApprovementService {
 
             try {
                 // set checksum to empty string before saving
-                map.put("checksum", "");
-                FilesystemStorageService.save(targetPath,
-                        objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(map));
+                reviewDTO.setChecksum("");
+                FilesystemStorageService.save(targetPath, objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(reviewDTO));
             } catch (IOException e) {
                 LOG.error(ServiceException.Error.ErrorCode.FAILED_TO_SAVE_FILE.name(), e);
                 errors.add(
                         new ServiceException.Error(targetPath, ServiceException.Error.ErrorCode.FAILED_TO_SAVE_FILE));
-                continue;
             }
         }
 
@@ -119,49 +106,19 @@ public class ApprovementService {
         }
     }
 
-    public void sendApproved(ParamKey pathType, JobRun jobRun) throws ServiceException {
+    public void sendApproved(JobRun jobRun) throws ServiceException {
 
-        final Map<ParamKey, String> paramMap = new HashMap<>();
-        jobRun.getReadOnlyParams().stream().forEach(p -> paramMap.put(p.getKey(), p.getValue()));
-        final Path path = Paths.get(paramMap.get(pathType));
+        Path path = getPath(jobRun);
 
         List<ServiceException.Error> errors = new ArrayList<>();
-        ObjectMapper objectMapper = new ObjectMapper();
-        List<String> jsons = load(pathType, jobRun);// TODO pathType?
-        for (String json : jsons) {
-            Map<String, Object> map;
-            try {
-                map = objectMapper.readValue(json, new TypeReference<Map<String, Object>>() {
-                });
-            } catch (IOException e) {
-                // TODO: log json content
-                LOG.error(ServiceException.Error.ErrorCode.FAILED_TO_PARSE_JSON_FROM_STRING.name(), e);
-                errors.add(new ServiceException.Error(path,
-                        ServiceException.Error.ErrorCode.FAILED_TO_PARSE_JSON_FROM_STRING));
-                throw new ServiceException(errors);
-            }
-
-            String localFilename = (String) map.get("local_filename");
-            if (localFilename == null) {
-                // TODO: log json content
-                LOG.error(ServiceException.Error.ErrorCode.FAILED_TO_FIND_LOCAL_FILENAME_IN_JSON.name());
-                errors.add(new ServiceException.Error(path,
-                        ServiceException.Error.ErrorCode.FAILED_TO_FIND_LOCAL_FILENAME_IN_JSON));
-                throw new ServiceException(errors);
-            }
-
-            Boolean approved = (Boolean) map.get("approved");
-            if (Boolean.TRUE.equals(approved)) {
-                // 1.
-                Integer id = (Integer) map.get("id");
-                String[] approvedTags = (String[]) map.get("approved_tags");
-                String[] approvedPlaces = (String[]) map.get("approved_places");
-
-                // 2. prepare HP update request
-                // 3. call update() on HP client
+        List<ReviewDTO> reviews = load(jobRun);// TODO pathType?
+        for (ReviewDTO reviewDTO : reviews) {
+            if (reviewDTO.getApproved()) {
+                // prepare HP update reques and call update() on HP client
                 try {
                     //TODO process response
-                    hpClient.updatePin(id, approvedTags, approvedPlaces);
+//                    hpClient.updatePin(reviewDTO.getId(), reviewDTO.getApprovedTags(), reviewDTO.getApprovedPlaces());
+                    System.out.println();
                 } catch (Exception e) {
                     LOG.error(ServiceException.Error.ErrorCode.CLIENT_REQUEST_FAILED.name(), e);
                     errors.add(new ServiceException.Error(path,
@@ -169,8 +126,8 @@ public class ApprovementService {
                     throw new ServiceException(errors);
                 }
 
-                // 4. delete file
-                Path targetPath = path.resolve(localFilename);// TODO catch exception
+                // delete file
+                Path targetPath = path.resolve(reviewDTO.getLocalFilename());// TODO catch exception
                 try {
                     FilesystemStorageService.delete(targetPath);
                 } catch (IOException e) {
@@ -184,26 +141,29 @@ public class ApprovementService {
         }
     }
 
-    public void saveAndSendApproved(ParamKey pathType, JobRun jobRun, List<String> contents) throws ServiceException {
+    public void saveAndSendApproved(JobRun jobRun, List<ReviewDTO> contents) throws ServiceException {
 
-        save(pathType, jobRun, contents);
-        sendApproved(pathType, jobRun);
+        Path path = getPath(jobRun);
+        checkJobNotClosed(jobRun, path);
+
+        save(jobRun, contents);
+        sendApproved(jobRun);
     }
 
-    private static List<String> loadAll(Path path) throws ServiceException {
+    public void finish(JobRun jobRun) {
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        List<ServiceException.Error> errors = new ArrayList<>();
-        List<String> files = new ArrayList<>();
+        jobRun.setStatus(JobRunStatus.RESUMED);
+        jobRunRepository.save(jobRun);
+    }
+
+    private List<ReviewDTO> loadAll(Path path) throws ServiceException {
+        final List<ServiceException.Error> errors = new ArrayList<>();
+        final List<ReviewDTO> reviews = new ArrayList<>();
         for (File file : FileUtils.listFiles(path.toFile(), TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE)) {
-
             try {
-                String content = FilesystemStorageService.load(file.toPath());
-                Map<String, Object> map = objectMapper.readValue(content, new TypeReference<Map<String, Object>>() {
-                });
-                map.put("checksum", FilesystemStorageService.checkSum(file.toPath()));
-                files.add(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(map));
-
+                ReviewDTO reviewDTO = objectMapper.readValue(FilesystemStorageService.load(file.toPath()), ReviewDTO.class);
+                reviewDTO.setChecksum(FilesystemStorageService.checkSum(file.toPath()));
+                reviews.add(reviewDTO);
             } catch (Exception e) {
                 LOG.error(ServiceException.Error.ErrorCode.FAILED_TO_LOAD_JSON_FROM_FILE.name(), e);
                 errors.add(new ServiceException.Error(path,
@@ -215,10 +175,28 @@ public class ApprovementService {
             throw new ServiceException(errors);
         }
 
-        return files;
+        return reviews;
     }
 
     private boolean verifyCheckSum(String checksum, Path targetPath) throws IOException {
         return checksum.equalsIgnoreCase(FilesystemStorageService.checkSum(targetPath));
+    }
+
+    private void checkJobNotClosed(JobRun jobRun, Path path) throws ServiceException {
+
+        JobRunStatus status = jobRunRepository.findOne(jobRun.getId()).getStatus();
+        if (JobRunStatus.STOPPED == status || JobRunStatus.FINISHED == status || JobRunStatus.RESUMED == status) {
+            List<ServiceException.Error> errors = new ArrayList<>();
+            errors.add(new ServiceException.Error(path,
+                    ServiceException.Error.ErrorCode.JOB_ALREADY_CLOSED));
+            throw new ServiceException(errors);
+        }
+    }
+
+    private Path getPath(JobRun jobRun) {
+
+        final Map<ParamKey, String> paramMap = new HashMap<>();
+        jobRun.getReadOnlyParams().stream().forEach(p -> paramMap.put(p.getKey(), p.getValue()));
+        return Paths.get(paramMap.get(PATH_TYPE));
     }
 }

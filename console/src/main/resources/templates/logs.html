@@ -91,11 +91,13 @@
     $(document).ready(function () {
         var table = $("#logListTable").DataTable({
             'ajax': {
-                'url': [[@{/logs/get.logs}]],
+                'url': /*[[@{/logs/get.logs}]]*/,
                 'data': function (data) {
                     remapDatatables(data);
                 }
             },
+            'order': [[ 0, 'desc' ]],
+            'oSearch': {"sSearch": getURLParameter("search")},
             'language': {
                 search: "Search by task run #:"
             },

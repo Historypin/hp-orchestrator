@@ -1,33 +1,23 @@
 package sk.eea.td.flow;
 
-import java.text.DateFormat;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import sk.eea.td.console.model.JobRun;
+import sk.eea.td.console.model.*;
 import sk.eea.td.console.model.JobRun.JobRunResult;
 import sk.eea.td.console.model.JobRun.JobRunStatus;
-import sk.eea.td.console.model.Log;
-import sk.eea.td.console.model.ParamKey;
-import sk.eea.td.console.model.ReadOnlyParam;
 import sk.eea.td.console.repository.JobRunRepository;
 import sk.eea.td.console.repository.LogRepository;
 import sk.eea.td.flow.activities.Activity;
 import sk.eea.td.flow.activities.Activity.ActivityAction;
-import sk.eea.td.rest.model.Connector;
 import sk.eea.td.rest.service.MailService;
 import sk.eea.td.util.DateUtils;
+
+import java.text.MessageFormat;
+import java.util.*;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class FlowManagerImpl implements FlowManager {
 

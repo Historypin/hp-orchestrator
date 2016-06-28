@@ -1,16 +1,5 @@
 package sk.eea.td.flow.activities;
 
-import static org.junit.Assert.fail;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.net.URISyntaxException;
-
-import javax.inject.Inject;
-import javax.xml.ws.WebServiceProvider;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -20,11 +9,18 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
 import sk.eea.td.config.DaoMockConfig;
+import sk.eea.td.console.model.Connector;
 import sk.eea.td.console.model.Job;
 import sk.eea.td.console.model.JobRun;
-import sk.eea.td.rest.model.Connector;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.net.URISyntaxException;
+
+import static org.junit.Assert.fail;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {TestConfig.class, DaoMockConfig.class})

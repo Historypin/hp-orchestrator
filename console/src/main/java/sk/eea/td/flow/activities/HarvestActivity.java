@@ -1,35 +1,21 @@
 package sk.eea.td.flow.activities;
 
-import java.nio.file.Path;
-import java.text.DateFormatSymbols;
-import java.text.MessageFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
-import java.time.ZonedDateTime;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TimeZone;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import sk.eea.td.console.model.JobRun;
 import sk.eea.td.console.model.ParamKey;
 import sk.eea.td.console.model.ReadOnlyParam;
 import sk.eea.td.flow.FlowException;
-import sk.eea.td.rest.model.OaipmhConfigWrapper;
 import sk.eea.td.rest.service.EuropeanaHarvestService;
 import sk.eea.td.rest.service.HistorypinHarvestService;
-import sk.eea.td.rest.service.OaipmhHarvestService;
 import sk.eea.td.util.DateUtils;
+
+import java.nio.file.Path;
+import java.text.MessageFormat;
+import java.text.ParseException;
+import java.time.Instant;
+import java.util.*;
 
 public class HarvestActivity implements Activity {
 
@@ -39,9 +25,6 @@ public class HarvestActivity implements Activity {
 
     @Autowired
     private EuropeanaHarvestService europeanaHarvestService;
-
-    @Autowired
-    private OaipmhHarvestService oaipmhHarvestService;
 
     @Autowired
     private HistorypinHarvestService historypinHarvestService;
@@ -62,10 +45,6 @@ public class HarvestActivity implements Activity {
                     break;
                 case HISTORYPIN:
                     harvestPath = historypinHarvestService.harvest(String.valueOf(context.getId()), paramMap.get(ParamKey.HP_PROJECT_SLUG));
-                    break;
-                case OAIPMH:
-                    final OaipmhConfigWrapper configWrapper = new OaipmhConfigWrapper(from, until, paramMap.get(ParamKey.OAI_SET));
-                    harvestPath = oaipmhHarvestService.harvest(String.valueOf(context.getId()), configWrapper);
                     break;
                 case HISTORYPIN_ANNOTATION:
                 	Date fromDate = calculateFromDate(from, lastSuccess);

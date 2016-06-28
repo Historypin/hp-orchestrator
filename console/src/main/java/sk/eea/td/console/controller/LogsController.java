@@ -29,7 +29,7 @@ import static sk.eea.td.util.PageUtils.getPageable;
 @PreAuthorize("hasRole('ADMIN')")
 public class LogsController {
 
-    DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:SS");
+    private DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:SS");
 
     @Autowired
     private LogRepository logRepository;

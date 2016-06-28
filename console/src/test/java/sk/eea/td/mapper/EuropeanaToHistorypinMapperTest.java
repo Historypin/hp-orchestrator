@@ -12,7 +12,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import sk.eea.td.console.model.ParamKey;
 import sk.eea.td.eu_client.api.EuropeanaClient;
 import sk.eea.td.hp_client.api.Location;
-import sk.eea.td.rest.model.HistorypinTransformDTO;
+import sk.eea.td.console.model.dto.HistorypinTransformDTO;
 import sk.eea.td.rest.service.PlacesCache;
 
 import java.io.IOException;
