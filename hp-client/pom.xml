@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>sk.eea.td</groupId>
-        <artifactId>technical-demonstrator</artifactId>
+        <artifactId>orchestrator</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
