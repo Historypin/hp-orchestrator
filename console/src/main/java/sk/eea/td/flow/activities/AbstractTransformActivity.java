@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Value;
 import sk.eea.td.console.model.JobRun;
 import sk.eea.td.console.model.ParamKey;
 import sk.eea.td.console.model.ReadOnlyParam;
-import sk.eea.td.flow.Activity;
 import sk.eea.td.flow.FlowException;
 import sk.eea.td.util.PathUtils;
 
@@ -32,7 +31,7 @@ public abstract class AbstractTransformActivity implements Activity {
     protected JobRun context;
 
     @Override
-    public void execute(JobRun context) throws FlowException {
+    public ActivityAction execute(JobRun context) throws FlowException {
         this.context = context;
 
         getLogger().debug("Starting transform activity for job ID: {}", context.getId());
@@ -46,9 +45,10 @@ public abstract class AbstractTransformActivity implements Activity {
 /*            final Path transformPath = PathUtils.createTransformRunSubdir(Paths.get(outputDirectory),
                     String.valueOf(context.getId()));*/
             final Path transformPath = getTransformPath(Paths.get(outputDirectory), String.valueOf(context.getId()));
+            getLogger().debug("harvestPath: {}, transformPath: {}", harvestPath, transformPath);
 
             walkFileTree(harvestPath, transformPath);
-            
+
             context.addReadOnlyParam(new ReadOnlyParam(ParamKey.TRANSFORM_PATH, transformPath.toAbsolutePath().toString()));
 
         } catch (Exception e) {
@@ -56,7 +56,12 @@ public abstract class AbstractTransformActivity implements Activity {
         } finally {
             getLogger().debug("Transform activity for job ID: {} has ended.", context.getId());
         }
-
+        
+        if(isSleepAfter()){
+        	return ActivityAction.SLEEP;
+        }else{
+        	return ActivityAction.CONTINUE;
+        }
     }
 
     protected Path getTransformPath(Path parentDir, String jobRunId) throws IOException {
@@ -92,4 +97,8 @@ public abstract class AbstractTransformActivity implements Activity {
     }
 
     abstract protected Path transform(String source, Path file, Path transformPath, JobRun context) throws IOException;
+    
+    public boolean isSleepAfter(){
+    	return false;
+    }
 }

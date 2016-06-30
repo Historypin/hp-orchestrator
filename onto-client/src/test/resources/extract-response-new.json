@@ -1,0 +1,29 @@
+[ {
+  "@id" : "http://dbpedia.org/resource/East_Sussex",
+  "efd:name" : [ {
+    "@value" : "East Sussex"
+  } ],
+  "wgs:lat" : [ {
+    "@type" : "http://www.w3.org/2001/XMLSchema#double",
+    "@value" : "50.91667"
+  } ],
+  "wgs:long" : [ {
+    "@type" : "http://www.w3.org/2001/XMLSchema#double",
+    "@value" : "0.33333167"
+  } ]
+}, {
+  "@id" : "http://dbpedia.org/resource/Hyde_Park",
+  "efd:name" : [ {
+    "@value" : "Hyde Park"
+  } ]
+}, {
+  "@id" : "http://v77-beta-3.historypin-hrd.appspot.com/en/explore/pin/4125",
+  "dct:spatial" : [ {
+    "@id" : "http://dbpedia.org/resource/Hyde_Park"
+  }, {
+    "@id" : "http://dbpedia.org/resource/East_Sussex"
+  } ],
+  "dct:subject" : [ {
+    "@id" : "http://dbpedia.org/resource/Carriage"
+  } ]
+} ]

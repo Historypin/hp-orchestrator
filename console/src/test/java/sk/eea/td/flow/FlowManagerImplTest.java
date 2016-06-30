@@ -13,7 +13,7 @@ import sk.eea.td.console.repository.JobRepository;
 import sk.eea.td.console.repository.JobRunRepository;
 import sk.eea.td.console.repository.LogRepository;
 import sk.eea.td.console.repository.ParamRepository;
-import sk.eea.td.rest.model.Connector;
+import sk.eea.td.console.model.Connector;
 
 import java.util.HashSet;
 import java.util.concurrent.CountDownLatch;
@@ -30,8 +30,11 @@ public class FlowManagerImplTest {
     private static CountDownLatch threadsCreatedSignal = new CountDownLatch(10);
 
     @InjectMocks
-    private FlowManagerImpl flowManagerImpl = new FlowManagerImpl(Connector.EUROPEANA, Connector.HISTORYPIN);
+    private JobSelector singleRunJobSelector = new SingleRunJobSelector();
 
+    @InjectMocks
+    private FlowManagerImpl flowManagerImpl = new FlowManagerImpl(Connector.EUROPEANA, Connector.HISTORYPIN, singleRunJobSelector);
+    
     @Mock
     private JobRepository jobRepository;
 
@@ -50,15 +53,12 @@ public class FlowManagerImplTest {
         doAnswer((Answer<JobRun>) invocation -> {
             Job job = new Job();
             JobRun jobRun = new JobRun();
+            jobRun.setStatus(JobRun.JobRunStatus.RUNNING);
             jobRun.setJob(job);
             Thread.sleep(500); // simulate long running DB job
             return jobRun;
         }).when(jobRunRepository).findNextJobRun(anyString(), anyString());
         when(paramRepository.findByJob(any(Job.class))).thenReturn(new HashSet<>());
-        JobRun jobRun = new JobRun();
-        jobRun.setStatus(JobRun.JobRunStatus.RUNNING);
-        when(jobRunRepository.save(any(JobRun.class))).thenReturn(jobRun);
-
     }
 
     @Test
@@ -80,6 +80,7 @@ public class FlowManagerImplTest {
         startSignal.countDown();
 
         // verify that only one thread had created its run
+        verify(jobRunRepository, timeout(1000).times(1)).save((JobRun) any());
         verify(jobRunRepository, timeout(1000).times(1)).findNextJobRun(anyString(), anyString());
         verify(jobRunRepository, timeout(1000).times(1)).save((JobRun) any());
         verify(jobRepository, timeout(1000).times(1)).save((Job) any());

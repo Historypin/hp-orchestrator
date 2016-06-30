@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title th:text="#{tasks.title}">Task list - Orchestrator</title>
+
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+          th:href="@{/webjars/bootstrap/3.3.6/css/bootstrap.min.css}" rel="stylesheet"/>
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css"
+          th:href="@{/webjars/font-awesome/4.5.0/css/font-awesome.min.css}" rel="stylesheet"/>
+
+    <link href="../static/css/datatables.min.css" th:href="@{/static/css/datatables.min.css}" rel="stylesheet"/>
+
+    <link href="../static/css/console.css" th:href="@{/static/css/console.css}" rel="stylesheet"/>
+
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+</head>
+<body>
+<div id="wrapper">
+    <!-- Navigation -->
+    <nav th:replace="fragments/navigation::navigation"></nav>
+
+    <!-- Page Content -->
+    <div id="page-wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header" th:text="#{nav.task.list}">Task list</h1>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <table id="taskListTable" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                        <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th th:text="#{tasks.name}">Name</th>
+                            <th th:text="#{tasks.source}">Source</th>
+                            <th th:text="#{tasks.target}">Target</th>
+                            <th th:text="#{tasks.status}">Last run status</th>
+                            <th th:text="#{tasks.result}">Last run result</th>
+                            <th th:text="#{tasks.id}">Last run ID</th>
+                            <th th:text="#{tasks.actions}">Actions</th>
+                        </tr>
+                        </thead>
+                        <tfoot>
+                        <tr>
+                            <th>Id</th>
+                            <th th:text="#{tasks.name}">Name</th>
+                            <th th:text="#{tasks.source}">Source</th>
+                            <th th:text="#{tasks.target}">Target</th>
+                            <th th:text="#{tasks.status}">Last run status</th>
+                            <th th:text="#{tasks.result}">Last run result</th>
+                            <th th:text="#{tasks.id}">Last run ID</th>
+                            <th th:text="#{tasks.actions}">Actions</th>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+
+            <!-- remove task modal window-->
+            <div class="modal fade" id="deleteTaskModal" tabindex="-1" role="dialog" aria-labelledby="deleteTaskModalLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="deleteTaskModalLabel">Warning: Delete item</h4>
+                        </div>
+                        <div class="modal-body">
+                            You are about to remove a task. This cannot be undone later. Do you want to continue?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button id="deleteTaskButton" type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-trash-o" aria-hidden="true"></i> Remove</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-2.2.1.min.js" th:src="@{/webjars/jquery/2.2.1/jquery.min.js}"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" th:src="@{/webjars/bootstrap/3.3.6/js/bootstrap.min.js}"></script>
+<script src="../static/js/datatables.min.js" th:src="@{/static/js/datatables.min.js}"></script>
+<script src="../static/js/console.js" th:src="@{/static/js/console.js}"></script>
+<script th:inline="javascript">
+    /* <![CDATA[ */
+    var table; // datatable
+    var logsURL = /*[[@{/logs}]]*/;
+    var editURL = /*[[@{/}]]*/;
+    var filterColumns = [2,3,4,5];
+
+    function remapDatatables(data) {
+        for (var i = 0; i < data.columns.length; i++) {
+            column = data.columns[i];
+            column.searchRegex = column.search.regex;
+            column.searchValue = column.search.value;
+            delete(column.search);
+        }
+    }
+
+    function restartTask(lastRunId) {
+        var json = {'lastRunId' : lastRunId};
+        $.ajax({
+            'type' : 'POST',
+            'url' : /*[[@{/tasks/restart.task}]]*/,
+            'beforeSend' : function(xhr) {
+                xhr.setRequestHeader("Accept", "application/json");
+                xhr.setRequestHeader("Content-Type", "application/json");
+                xhr.setRequestHeader($("meta[name='_csrf_header']").attr("content"), $("meta[name='_csrf']").attr("content"));
+            },
+            'data' : JSON.stringify(json),
+            dataType : 'json',
+            success : function(data) {
+                if(table != null) {
+                    table.ajax.reload(null, false);
+                }
+            }
+        });
+    }
+
+    function deleteTask(jobId) {
+        var json = {'jobId' : jobId};
+        $.ajax({
+            'type' : 'POST',
+            'url' : /*[[@{/tasks/delete.task}]]*/,
+            'beforeSend' : function(xhr) {
+                xhr.setRequestHeader("Accept", "application/json");
+                xhr.setRequestHeader("Content-Type", "application/json");
+                xhr.setRequestHeader($("meta[name='_csrf_header']").attr("content"), $("meta[name='_csrf']").attr("content"));
+            },
+            'data' : JSON.stringify(json),
+            dataType : 'json',
+            success : function(data) {
+                if(table != null) {
+                    table.ajax.reload(null, false);
+
+                }
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        table = $("#taskListTable").DataTable({
+            'ajax': {
+                'url': /*[[@{/tasks/get.tasks}]]*/,
+                'data': function (data) {
+                    remapDatatables(data);
+                }
+            },
+            'language': {
+                search: 'Search by task name:'
+            },
+            'oSearch': {'sSearch': getURLParameter('search')},
+            'order': [[ 0, 'desc' ]],
+            'serverSide': true,
+            'initComplete': function () {
+                this.api().columns().every( function () {
+                    var column = this;
+                    if( filterColumns.indexOf(column.index()) != -1 ) {
+                        var select = $('<select><option value=""></option></select>')
+                                .appendTo($(column.footer()).empty())
+                                .on('change', function () {
+                                    column
+                                            .search($(this).val(), false, false)
+                                            .draw();
+                                });
+
+                        column.data().unique().sort().each(function (d, j) {
+                            if( d != '') {
+                                select.append('<option value="' + d + '">' + d + '</option>');
+                            }
+                        });
+                    }
+                } );
+            },
+            'columns': [
+                {
+                    'data': 'id',
+                    'visible': false,
+                    'searchable': false
+                },
+                {'data': 'name'},
+                {'data': 'source'},
+                {'data': 'target'},
+                {
+                    'data': 'lastRunStatus',
+                    'orderable': false,
+                    'render': function (data, type, row, meta) {
+                        if(row != null || row != undefined ) {
+                            if(data == 'RUNNING') {
+                                return '<i class="fa fa-cog fa-spin fa-2x fa-fw"  data-toggle="tooltip" title="Running..." aria-hidden="true"></i>'
+                            } else if(data == 'FINISHED') {
+                                return '<i class="fa fa-check-circle-o fa-2x fa-fw" data-toggle="tooltip" title="Finished" aria-hidden="true"></i>';
+                            } else if(data == 'STOPPED') {
+                                return '<i class="fa fa-stop-circle-o fa-2x fa-fw" data-toggle="tooltip" title="Stopped" aria-hidden="true"></i>';
+                            } else if(data == 'WAITING') {
+                                return '<i class="fa fa-pause fa-2x fa-fw"  data-toggle="tooltip" title="Waiting" aria-hidden="true"></i>';
+                            } else if(data == 'RESUMED') {
+                                return '<i class="fa fa-clock-o fa-2x fa-fw"  data-toggle="tooltip" title="Resumed" aria-hidden="true"></i>';
+                            } else if(data == 'NEW' || data == 'PLANNED') {
+                                return '<i class="fa fa-play-circle-o fa-2x fa-fw"  data-toggle="tooltip" title="Planned" aria-hidden="true"></i>';
+                            }
+                            return data;
+                        }
+                    }
+                },
+                {
+                    'data': 'lastRunResult',
+                    'orderable': false,
+                    'render': function (data, type, row, meta) {
+                        if(row != null || row != undefined ) {
+                            if(data == 'OK') {
+                                return '<i class="fa fa-check fa-2x fa-fw"  data-toggle="tooltip" title="Success" aria-hidden="true"></i>';
+                            } else if (data == 'FAILED'){
+                                return '<i class="fa fa-exclamation fa-2x fa-fw"  data-toggle="tooltip" title="Failed" aria-hidden="true"></i>';
+                            }
+                            return data;
+                        }
+                    }
+                },
+                {
+                    'data': 'lastRunId',
+                    'render' : function (data, type, row, meta) {
+                        if(row != null || row != undefined) {
+                            return `<a href="${logsURL}?search=${data}"> ${data}</a>`;
+                        } else {
+                            return '';
+                        }
+
+                    }
+                },
+                {
+                    'data': 'actions',
+                    'render': function ( data, type, row, meta ) {
+                        var output = "";
+                        if((row != null || row != undefined)) {
+                            // edit button
+                            output = output.concat(`<a href="${editURL}?edit=${row.id}" class="btn btn-default" data-toggle="tooltip" title="Edit task"><i class="fa fa-pencil" aria-hidden="true"></i></a>`);
+                            // delete button
+                            output = output.concat(`<a href="#deleteTaskModel" data-target="#deleteTaskModal" data-toggle="modal" data-id="${row.id}" title="Delete task" class="open-delete-confirmation btn btn-default"><i class="fa fa-trash-o" aria-hidden="true"></i></a>`);
+                            if(row.lastRunId != "") {
+                                // restart button
+                                output = output.concat(`<button class="btn btn-default" onclick="restartTask(${row.lastRunId})" title="Restart task"><i class="fa fa-repeat" aria-hidden="true"></i></button>`);
+                            }
+                        }
+                        return output;
+                    }
+                }
+            ]
+        });
+
+        $(document).on("click", ".open-delete-confirmation", function () {
+            var jobId = $(this).data('id');
+            $("#deleteTaskButton").attr('onclick', `deleteTask(${jobId})`);
+        });
+
+        setInterval( function () {
+            table.ajax.reload( null, false ); // user paging is not reset on reload
+        }, 2000 );
+    });
+    /* ]]> */
+</script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:remove="all">Template for report email</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<p>Dear <span th:text="${userName}">user</span>!</p>
+<p>
+The enrichment of the HistoryPin collection needs to be reviewed. You can do it on the following page:
+<br/>
+<a th:href="@{${reviewLink}}">Link to a review page</a>
+</p>
+
+<p>
+    Regards, <br />
+    <em>Orchestrator</em>
+</p>
+</body>
+</html>

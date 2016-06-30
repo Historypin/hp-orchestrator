@@ -3,8 +3,7 @@ package sk.eea.td.config;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -16,17 +15,7 @@ import org.springframework.scheduling.annotation.Schedules;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 
-import sk.eea.td.console.model.JobRun;
-import sk.eea.td.flow.Activity;
-import sk.eea.td.flow.FlowException;
 import sk.eea.td.flow.FlowManager;
-import sk.eea.td.flow.FlowManagerImpl;
-import sk.eea.td.flow.activities.HarvestActivity;
-import sk.eea.td.flow.activities.Ontotext2HistorypinTransformActivity;
-import sk.eea.td.flow.activities.ReportActivity;
-import sk.eea.td.flow.activities.StoreActivity;
-import sk.eea.td.flow.activities.TransformActivity;
-import sk.eea.td.rest.model.Connector;
 
 @Configuration
 @EnableScheduling
@@ -34,41 +23,21 @@ import sk.eea.td.rest.model.Connector;
 @ComponentScan(basePackages = "sk.eea.td")
 public class AppConfig implements SchedulingConfigurer {
 
-    private static final Logger LOG = LoggerFactory.getLogger(AppConfig.class);
+    @Autowired
+    private FlowManager historypinOntotextFlowManager;
 
+    @Autowired
+    private FlowManager europeanaToHistorypinFlowManager;
+
+    @Autowired
+    private FlowManager historypinToEuropeanaFlowManager;
+    
+    @Autowired 
+    private FlowManager dataflow4;
+    
     @Bean
     public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
         return new PropertySourcesPlaceholderConfigurer();
-    }
-
-    @Bean
-    public Activity harvestActivity() {
-        return new HarvestActivity();
-    }
-
-    @Bean
-    public Activity transformActivity() {
-        return new TransformActivity();
-    }
-
-    @Bean
-    public Activity storeActivity() {
-        return new StoreActivity();
-    }
-
-    @Bean
-    public Activity reportActivity() {
-        return new ReportActivity();
-    }
-
-    @Bean
-    public FlowManager europeanaToHistorypinFlowManager() {
-        FlowManager flowManager = new FlowManagerImpl(Connector.EUROPEANA, Connector.HISTORYPIN);
-        flowManager.addActivity(harvestActivity());
-        flowManager.addActivity(transformActivity());
-        flowManager.addActivity(storeActivity());
-        flowManager.addActivity(reportActivity());
-        return flowManager;
     }
 
     @Schedules(
@@ -76,113 +45,15 @@ public class AppConfig implements SchedulingConfigurer {
             @Scheduled(fixedRate = 1000)
     )
     public void europeanaToHistorypinTimeSignal() {
-        europeanaToHistorypinFlowManager().trigger();
+        europeanaToHistorypinFlowManager.trigger();
     }
 
-    @Bean
-    Activity ontotext2HistorypinTransformActivity() {
-        return new Ontotext2HistorypinTransformActivity();
-    }
-
-    @Bean
-    public FlowManager testFlowManager() {
-        FlowManager flowManager = new FlowManagerImpl(Connector.HISTORYPIN, Connector.SD);
-
-        Activity a1 = new Activity() {
-            @Override
-            public void execute(JobRun context) throws FlowException {
-                LOG.debug("executing activity: ", getId());
-            }
-            @Override
-            public String getName() {
-                return getId();
-            }
-            @Override
-            public String getId() {
-                return "A1";
-            }
-            @Override
-            public boolean isSleepAfter() {
-                return false;
-            }
-        };
-        Activity a2 = new Activity() {
-            @Override
-            public void execute(JobRun context) throws FlowException {
-                LOG.debug("executing activity: ", getId());
-            }
-            @Override
-            public String getName() {
-                return getId();
-            }
-            @Override
-            public String getId() {
-                return "A2";
-            }
-            @Override
-            public boolean isSleepAfter() {
-                return true;
-            }
-        };
-        Activity a3 = new Activity() {
-            @Override
-            public void execute(JobRun context) throws FlowException {
-                LOG.debug("executing activity: ", getId());
-            }
-            @Override
-            public String getName() {
-                return getId();
-            }
-            @Override
-            public String getId() {
-                return "A3";
-            }
-            @Override
-            public boolean isSleepAfter() {
-                return false;
-            }
-        };
-        Activity a4 = new Activity() {
-            @Override
-            public void execute(JobRun context) throws FlowException {
-                LOG.debug("executing activity: ", getId());
-            }
-            @Override
-            public String getName() {
-                return getId();
-            }
-            @Override
-            public String getId() {
-                return "A4";
-            }
-            @Override
-            public boolean isSleepAfter() {
-                return true;
-            }
-        };
-//        flowManager.addActivity(a1);
-//        flowManager.addActivity(a2);
-//        flowManager.addActivity(a3);
-//        flowManager.addActivity(a4);
-
-        flowManager.addActivity(harvestActivity());
-        flowManager.addActivity(ontotext2HistorypinTransformActivity());
-        return flowManager;
-    }
-    @Schedules(@Scheduled(fixedRate = 60000))
-    public void testFlowManagerTimeSignal() {
-        FlowManager fm = testFlowManager();
-        fm.trigger();
-    }
-
-    @Bean
-    public FlowManager historypinToEuropeanaFlowManager() {
-        FlowManagerImpl flowManager = new FlowManagerImpl(Connector.HISTORYPIN, Connector.MINT);
-        flowManager.addActivity(harvestActivity());
-        flowManager.addActivity(transformActivity());
-        flowManager.addActivity(storeActivity());
-        flowManager.addActivity(reportActivity());
-        return flowManager;
+    @Schedules(
+            //@Scheduled(cron= "${ontotext.flm.cron.expression}")
+            @Scheduled(fixedRate = 1000)
+    )
+    public void historypinOntotextTimeSignal() {
+        historypinOntotextFlowManager.trigger();
     }
 
     @Schedules(
@@ -190,7 +61,15 @@ public class AppConfig implements SchedulingConfigurer {
             @Scheduled(fixedRate = 1000)
     )
     public void historypinToEuropeanaTimeSignal() {
-        historypinToEuropeanaFlowManager().trigger();
+        historypinToEuropeanaFlowManager.trigger();
+    }
+
+    @Schedules(
+    		//@Scheduled(cron="${historypinAnnotation.flm.cron.expression}
+    		@Scheduled(fixedRate=1000)
+	)
+    public void dataflow4Trigger(){
+    	dataflow4.trigger();
     }
 
     @Override
@@ -201,5 +80,5 @@ public class AppConfig implements SchedulingConfigurer {
     @Bean(destroyMethod = "shutdown")
     public Executor taskExecutor() {
         return Executors.newScheduledThreadPool(10);
-    }
+    }    
 }

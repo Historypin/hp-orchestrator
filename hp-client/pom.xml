@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>sk.eea.td</groupId>
-        <artifactId>technical-demonstrator</artifactId>
+        <artifactId>orchestrator</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
@@ -24,6 +24,12 @@
         </dependency>
 
         <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>net.jodah</groupId>
             <artifactId>recurrent</artifactId>
         </dependency>
@@ -36,6 +42,11 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
         </dependency>
 
         <!-- LOGGING dependencies -->

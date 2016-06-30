@@ -1,7 +1,5 @@
 package sk.eea.td.console.form;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class LogRow {
 
     private String timestamp;

@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>sk.eea.td</groupId>
-    <artifactId>technical-demonstrator</artifactId>
+    <artifactId>orchestrator</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
     <packaging>pom</packaging>
@@ -17,7 +17,7 @@
     <properties>
         <java.version>1.8</java.version>
         <jersey.version>2.22.2</jersey.version>
-        <jackson.version>2.7.1</jackson.version>
+        <jackson.version>2.7.4</jackson.version>
         <spring.version>4.2.4.RELEASE</spring.version>
         <spring.security.version>4.0.4.RELEASE</spring.security.version>
         <spring.data.version>1.9.4.RELEASE</spring.data.version>
@@ -65,16 +65,37 @@
                 <artifactId>commons-codec</artifactId>
                 <version>1.10</version>
             </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-collections4</artifactId>
+                <version>4.1</version>
+            </dependency>
             <!-- Retry library -->
             <dependency>
                 <groupId>net.jodah</groupId>
                 <artifactId>recurrent</artifactId>
                 <version>0.7.1</version>
-	    </dependency>
+            </dependency>
             <dependency>
-            	<groupId>org.slf4j</groupId>
-            	<artifactId>slf4j-api</artifactId>
-            	<version>1.7.16</version>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>1.7.16</version>
+            </dependency>
+            <!-- Jackson library -->
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>${jackson.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

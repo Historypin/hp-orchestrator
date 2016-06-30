@@ -8,6 +8,9 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isEmptyString;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.FileWriter;
 import java.io.Writer;
@@ -259,5 +262,15 @@ public class HPClientImplIT {
             String status = (String) jsonObject.get("Status");
             assertThat(status, is(equalTo("Done")));
         }
+    }
+    
+    @Test
+    public void test_G_Annotations(){
+    	Response response = client.getAnnotations("2010-03-15T13:45:30Z", "2016-05-15T13:45:30Z");
+    	String entity = response.readEntity(String.class);
+		org.json.JSONObject object = new org.json.JSONObject(entity);
+    	assertEquals(object.get("Status"),"ok");
+    	assertTrue(object.has("items"));
+    	assertNotNull(object.getJSONArray("items"));
     }
 }

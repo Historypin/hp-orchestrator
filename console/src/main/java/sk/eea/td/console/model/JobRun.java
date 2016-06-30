@@ -41,6 +41,9 @@ public class JobRun {
 
     @Column(insertable = false, updatable = false)
     private Date created;
+    
+    @Column(name = "last_started")
+    private Date lastStarted;
 
     public Long getId() {
         return id;
@@ -103,6 +106,12 @@ public class JobRun {
     public void setCreated(Date created) {
         this.created = created;
     }
+    
+    public void clearReadonlyParams(){
+    	this.readOnlyParams = new ArrayList<ReadOnlyParam>();
+    }
+
+
 
     @Override public String toString() {
         return "JobRun{" +
@@ -114,5 +123,13 @@ public class JobRun {
                 ", readOnlyParams size=" + readOnlyParams.size() +
                 ", created=" + created +
                 '}';
+    }
+
+    public Date getLastStarted() {
+        return lastStarted;
+    }
+
+    public void setLastStarted(Date lastStarted) {
+        this.lastStarted = lastStarted;
     }
 }

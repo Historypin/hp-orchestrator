@@ -46,6 +46,9 @@ public class PersistenceConfig {
     @Value("${hibernate.format_sql}")
     private String hibernateFormatSql;
 
+    @Value("${hibernate.use_sql_comments}")
+    private String hibernateUseSqlComments;
+
     @Bean
     public DataSource dataSource() {
         HikariDataSource ds = new HikariDataSource();
@@ -69,6 +72,7 @@ public class PersistenceConfig {
         jpaProperties.put("hibernate.ejb.naming_strategy", hibernateNamingStrategy);
         jpaProperties.put("hibernate.show_sql", hibernateShowSql);
         jpaProperties.put("hibernate.format_sql", hibernateFormatSql);
+        jpaProperties.put("hibernate.use_sql_comments", hibernateUseSqlComments);
 
         entityManagerFactoryBean.setJpaProperties(jpaProperties);
         return entityManagerFactoryBean;

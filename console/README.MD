@@ -1,6 +1,6 @@
 # Console web-app
 
-Software requirements: Oracle Java 8, Apache Tomcat 8, Apache Maven 3.3, PostgreSQL 9.4
+Software requirements: Oracle Java 8, Apache Tomcat 8, Apache Maven 3.3, PostgreSQL 9.4, configured SMTP server
 
 ## Build
 Run `mvn clean install` in main project directory to build project.
@@ -23,7 +23,6 @@ Username: admin
 
 Password: admin
 
-
 ### Deploy script
 File `{project_dir}/scripts/deploy.sh` contains deploy script used in CI. It only deploys new version of `console.war`! Database changes, and others needs to be performed manually.
 
@@ -36,3 +35,10 @@ For now, only dev profile is supported.
 
 ## REST documentation
 Rest api documentations is available at `http://mva.eea.sk:8080/swagger-ui.html` after successful login.
+
+## Known problems
+
+### Application deployment in tomcat takes too long
+This issue has occurred during deployment on HP machine in the cloud infrastructure. On out machines, this issue has not occurred. To generate session tokens,
+tomcat needs to feed its random number generator. If server is short of entropy, it takes a long time to initialize PRNG. This can be solved with using different source of "randomness".
+In linux machines, run tomcat with parameter: `-Djava.security.egd=file:/dev/./urandom`. More about this issue: https://wiki.apache.org/tomcat/HowTo/FasterStartUp#Entropy_Source.

@@ -1,31 +1,23 @@
 [ {
-  "@id" : "http://mint-projects.image.ntua.gr/data/foodanddrink/EUFD105370",
+  "@id" : "http://www.historypin.org/en/api/pin/get.json?id=14929",
   "dct:spatial" : [ {
     "@id" : "dbr:Seattle"
   }, {
     "@id" : "dbr:London"
   } ],
   "dct:subject" : [ {
-    "@id" : "dbr:Chess_piece"
+    "@id" : "http://dbpedia.org/resource/Cake"
   }, {
-    "@id" : "dbr:Cooking"
+    "@id" : "http://dbpedia.org/resource/Cooking"
   }, {
-    "@id" : "dbr:Sponge_cake"
+    "@id" : "http://dbpedia.org/resource/Coffee"
   }, {
-    "@id" : "dbr:Blue"
+    "@id" : "http://dbpedia.org/resource/Sponge_cake"
   }, {
-    "@id" : "dbr:Strawberry"
+    "@id" : "http://dbpedia.org/resource/Strawberry"
   }, {
-    "@id" : "dbr:Cake"
+    "@id" : "http://dbpedia.org/resource/Sugar"
   }, {
-    "@id" : "dbr:Plate_tectonics"
-  }, {
-    "@id" : "dbr:Coffee"
-  }, {
-    "@id" : "dbr:Black_people"
-  }, {
-    "@id" : "dbr:Sugar"
-  }, {
-    "@id" : "dbr:Food"
+    "@id" : "http://dbpedia.org/resource/Food"
   } ]
 } ]

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!-- Choose appropriate properties file based on profile -->
+    <property resource="default.properties"/>
+    <if condition='"dev".equalsIgnoreCase(property("spring.profiles.active"))'>
+        <then>
+            <property resource="dev.properties"/>
+        </then>
+        <else>
+            <if condition='"test".equalsIgnoreCase(property("spring.profiles.active"))'>
+                <then>
+                    <property resource="test.properties"/>
+                </then>
+                <else>
+                    <property resource="prod.properties"/>
+                </else>
+            </if>
+        </else>
+    </if>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{5} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="sk.eea.td" level="${sk.eea.td.appender.level}" additivity="false" >
+        <appender-ref ref="STDOUT"/>
+    </logger>
+
+    <logger name="com.zaxxer.hikari" level="WARN" additivity="false" >
+        <appender-ref ref="STDOUT"/>
+    </logger>
+
+    <logger name="org.springframework.orm" level="WARN" additivity="false" >
+        <appender-ref ref="STDOUT"/>
+    </logger>
+
+    <logger name="org.springframework" level="WARN" additivity="false" >
+        <appender-ref ref="STDOUT"/>
+    </logger>
+
+    <logger name="org.hibernate" level="WARN" additivity="false" >
+        <appender-ref ref="STDOUT"/>
+    </logger>
+
+    <logger name="org.thymeleaf" level="WARN" additivity="false" >
+        <appender-ref ref="STDOUT"/>
+    </logger>
+
+    <logger name="springfox" level="WARN" additivity="false" >
+        <appender-ref ref="STDOUT"/>
+    </logger>
+
+    <logger name="org.springframework.beans" level="DEBUG" additivity="false" >
+        <appender-ref ref="STDOUT"/>
+    </logger>
+
+    <root level="${root.appender.level}">
+        <appender-ref ref="STDOUT"/>
+    </root>
+</configuration>

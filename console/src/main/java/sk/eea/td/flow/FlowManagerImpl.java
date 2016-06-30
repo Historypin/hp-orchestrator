@@ -4,43 +4,36 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import sk.eea.td.console.model.*;
 import sk.eea.td.console.model.JobRun.JobRunResult;
 import sk.eea.td.console.model.JobRun.JobRunStatus;
-import sk.eea.td.console.repository.JobRepository;
 import sk.eea.td.console.repository.JobRunRepository;
 import sk.eea.td.console.repository.LogRepository;
-import sk.eea.td.console.repository.ParamRepository;
-import sk.eea.td.rest.model.Connector;
+import sk.eea.td.flow.activities.Activity;
+import sk.eea.td.flow.activities.Activity.ActivityAction;
 import sk.eea.td.rest.service.MailService;
+import sk.eea.td.util.DateUtils;
 
+import java.text.MessageFormat;
 import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import static sk.eea.td.console.model.JobRun.JobRunStatus.NEW;
-import static sk.eea.td.console.model.JobRun.JobRunStatus.RESUMED;
-
-@Component
 public class FlowManagerImpl implements FlowManager {
 
     private static final Logger LOG = LoggerFactory.getLogger(FlowManagerImpl.class);
 
-    @Autowired
-    private JobRepository jobRepository;
 
     @Autowired
     private JobRunRepository jobRunRepository;
-
-    @Autowired
-    private ParamRepository paramRepository;
 
     @Autowired
     private LogRepository logRepository;
 
     @Autowired
     private MailService mailService;
+    
+    private JobSelector jobSelector;
 
     private Lock lock = new ReentrantLock();
 
@@ -49,12 +42,10 @@ public class FlowManagerImpl implements FlowManager {
     private Connector source;
     private Connector target;
 
-    public FlowManagerImpl() {
-    }
-
-    public FlowManagerImpl(Connector source, Connector target) {
+    public FlowManagerImpl(Connector source, Connector target, JobSelector jobSelector) {
         this.source = source;
         this.target = target;
+        this.jobSelector = jobSelector;
     }
 
     /*
@@ -99,6 +90,7 @@ public class FlowManagerImpl implements FlowManager {
     protected void failFlow(JobRun context) {
         context.setStatus(JobRunStatus.STOPPED);
         context.setResult(JobRunResult.FAILED);
+        context = persistState(context);
 
         reportFailure(context);
     }
@@ -124,17 +116,15 @@ public class FlowManagerImpl implements FlowManager {
     public void trigger() {
         if (lock.tryLock()) {
             try {
-                // get next job run
-                JobRun jobRun = jobRunRepository.findNextJobRun(source.name(), target.name());
-                if (jobRun != null) {
-                    LOG.debug("jobRun found: {}", jobRun.toString());
-
-                    Job job = jobRun.getJob();
-                    job.setLastJobRun(jobRun);
-                    jobRepository.save(job);
-
-                    resumeFlow(jobRun);
+				JobRun jobRun = jobSelector.nextJobRun(source,target);
+                if(jobRun != null){
+                	LOG.debug("Starting/resuming a JobRun with id: {}.", jobRun.getId());		
+                	resumeFlow(jobRun);
+                }else{
+                	LOG.debug(MessageFormat.format("Nothing to run for Source: {0} -> Destination: {1}.", source, target));
                 }
+            } catch (FlowException e){
+            	LOG.error("Error starting a flow:",e);
             } finally {
                 lock.unlock();
             }
@@ -144,6 +134,7 @@ public class FlowManagerImpl implements FlowManager {
     public void resumeFlow(JobRun context) {
 
         try {
+        	context.setLastStarted(new Date());
             while (true) {
                 Activity activity = getNextActivity(context.getActivity(), context.getStatus());
                 if (activity == null) {
@@ -154,19 +145,29 @@ public class FlowManagerImpl implements FlowManager {
                 if (JobRunStatus.WAITING != context.getStatus()) {
                     context.setStatus(JobRunStatus.RUNNING);
                     logActivityStart(activity, context);
-                    activity.execute(context);
-                    if (activity.isSleepAfter()) {
-                        context.setStatus(JobRunStatus.WAITING);
-                        context = persistState(context);
-                        break;
-                    } else {
-                        context = persistState(context);
-                        logActivityEnd(activity, context);
+                    ActivityAction action = activity.execute(context);
+                    switch(action){
+	                    case SLEEP:
+	                        context.setStatus(JobRunStatus.WAITING);
+	                        context = persistState(context);
+	                        break;
+	                    case NEXT_CYCLE:
+	                        context.setStatus(JobRunStatus.NEW);
+	                        context = persistState(context);
+	                        logActivityEnd(activity, context);
+	                        break;                    	
+	                    default:
+	                        context = persistState(context);
+	                        logActivityEnd(activity, context);
+	                        break;
+                    }
+                    if(action != ActivityAction.CONTINUE){
+                    	break;
                     }
                 }
             }
-
-        } catch (Exception e) {
+            context.addReadOnlyParam(new ReadOnlyParam(ParamKey.LAST_SUCCESS, DateUtils.SYSTEM_TIME_FORMAT.format(context.getLastStarted().toInstant())));
+        } catch (Throwable e) {
             LOG.error("Exception at executing flow:", e);
 
             Log log = new Log();
@@ -185,7 +186,7 @@ public class FlowManagerImpl implements FlowManager {
     private Activity getNextActivity(String id, JobRunStatus status) {
 
         List<Activity> activities = getActivities();
-        if (NEW.equals(status)) {
+        if (JobRunStatus.NEW.equals(status)) {
             return activities.get(0);
         }
 
@@ -201,7 +202,7 @@ public class FlowManagerImpl implements FlowManager {
         }
         return null;
     }
-
+    
     @Override
     public JobRun persistState(JobRun config) {
         return jobRunRepository.save(config);
