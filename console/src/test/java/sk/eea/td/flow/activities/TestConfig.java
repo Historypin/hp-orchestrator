@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.security.core.token.KeyBasedPersistenceTokenService;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -12,6 +13,7 @@ import sk.eea.td.console.repository.LogRepository;
 import sk.eea.td.rest.service.CleanupService;
 import sk.eea.td.rest.service.EuropeanaStoreService;
 import sk.eea.td.rest.service.HistorypinStoreService;
+import sk.eea.td.rest.service.MailService;
 import sk.eea.td.rest.service.MintStoreService;
 
 @Configuration
@@ -60,5 +62,15 @@ public class TestConfig {
     @Bean
     public CleanupService getCleanupService(){
     	return EasyMock.createMock(CleanupService.class);
+    }
+    
+    @Bean
+    public KeyBasedPersistenceTokenService getTokenService(){
+        return EasyMock.createMock(KeyBasedPersistenceTokenService.class);
+    }
+    
+    @Bean
+    public MailService getMailService(){
+        return EasyMock.createMock(MailService.class);
     }
 }
