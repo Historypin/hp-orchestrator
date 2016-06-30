@@ -31,6 +31,7 @@
         <module>eu-client</module>
         <module>onto-client</module>
         <module>mint-client</module>
+        <module>tagapp-client</module>
     </modules>
 
     <build>

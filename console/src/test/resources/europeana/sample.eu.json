@@ -1,1730 +1,5190 @@
 {
-  "apikey": "api2demo",
-  "action": "--deprecated--",
-  "success": true,
-  "requestNumber": 999,
-  "itemsCount": 12,
-  "totalResults": 39,
-  "nextCursor": "AoE/DS85MjAwMTQzL0JpYmxpb2dyYXBoaWNSZXNvdXJjZV8yMDAwMDY5Mzc4MjY3",
-  "items": [{
-    "id": "/92054/BibliographicResource_1000097998894",
-    "ugc": [false],
-    "completeness": 5,
-    "country": ["slovenia"],
-    "europeanaCollectionName": ["92054_Ag_EU_TEL_a0309_Slovenia"],
-    "dcLanguage": ["sl"],
-    "edmLandingPage": ["http://europeana.eu/portal/record/92054/BibliographicResource_1000097998894.html"],
-    "dcTypeLangAware": {
-      "def": ["tekstovno gradivo, tiskano"],
-      "en": ["Still image"]
-    },
-    "europeanaCompleteness": 5,
-    "edmTimespan": ["http://semium.org/time/1898", "http://semium.org/time/18xx_4_quarter", "http://semium.org/time/18xx_2_half", "http://semium.org/time/18xx", "http://semium.org/time/AD2xxx", "http://semium.org/time/ChronologicalPeriod", "http://semium.org/time/Time"],
-    "edmTimespanLabel": [{
-      "def": "1898"
-    }, {
-      "def": "19.."
-    }, {
-      "def": "19??"
-    }, {
-      "def": "19e"
-    }, {
-      "def": "4e quart 19e siècle"
-    }, {
-      "def": "19e (fin)"
-    }, {
-      "def": "19e siècle"
-    }, {
-      "def": "2e millénaire après J.-C."
-    }, {
-      "def": "4 quarter of the 19th century"
-    }, {
-      "def": "Second half of the 19th century"
-    }, {
-      "def": "19-th"
-    }, {
-      "def": "19th"
-    }, {
-      "def": "19th century"
-    }, {
-      "def": "Second millenium AD"
-    }, {
-      "def": "Second millenium AD, years 1001-2000"
-    }, {
-      "def": "Chronological period"
-    }, {
-      "def": "Time"
-    }, {
-      "def": "4-я четверть 19-го века"
-    }, {
-      "def": "Вторая половина 19-го века"
-    }, {
-      "def": "19й век"
-    }, {
-      "def": "19de eeuw"
-    }],
-    "rights": ["http://creativecommons.org/publicdomain/zero/1.0/"],
-    "edmIsShownAt": ["http://www.europeana.eu/api/api2demo/redirect?shownAt=http%3A%2F%2Fwww.dlib.si%2F%3FURN%3DURN%3ANBN%3ASI%3Adoc-L0VESGJ5&provider=The+European+Library&id=http%3A%2F%2Fwww.europeana.eu%2Fresolve%2Frecord%2F92054%2FBibliographicResource_1000097998894&profile=rich"],
-    "edmAgent": ["http://dbpedia.org/resource/Leonardo_da_Vinci"],
-    "edmAgentLabel": [{
-      "def": "Leonardo da Vinci"
-    }, {
-      "def": "列奥纳多·达·芬奇"
-    }, {
-      "def": "Leonardo da Vinci"
-    }, {
-      "def": "Leonardo da Vinci"
-    }, {
-      "def": "Leonardo da Vinci"
-    }, {
-      "def": "Leonardo da Vinci"
-    }, {
-      "def": "Léonard de Vinci"
-    }, {
-      "def": "Leonardo da Vinci"
-    }, {
-      "def": "Леонардо да Винчи"
-    }, {
-      "def": "Leonardo da Vinci"
-    }, {
-      "def": "Leonardo da Vinci"
-    }, {
-      "def": "レオナルド・ダ・ヴィンチ"
-    }],
-    "dcContributor": ["Da Vinci, Leonardo", "Da Vinci, Leonardo", "http://dbpedia.org/resource/Leonardo_da_Vinci", "http://dbpedia.org/resource/Leonardo_da_Vinci"],
-    "edmPreview": ["http://europeanastatic.eu/api/image?uri=http%3A%2F%2Fwww.dlib.si%2FStreamDB.aspx%3FURN%3DURN%3ANBN%3ASI%3Adoc-L0VESGJ5&size=LARGE&type=IMAGE"],
-    "score": 10.965751,
-    "edmTimespanLabelLangAware": {
-      "ru": ["4-я четверть 19-го века", "Вторая половина 19-го века", "19й век"],
-      "def": ["1898", "19..", "19??", "19e"],
-      "en": ["4 quarter of the 19th century", "Second half of the 19th century", "19-th", "19th", "19th century", "Second millenium AD", "Second millenium AD, years 1001-2000", "Chronological period", "Time"],
-      "fr": ["4e quart 19e siècle", "19e (fin)", "19e siècle", "2e millénaire après J.-C."],
-      "nl": ["19de eeuw"]
-    },
-    "edmAgentLabelLangAware": {
-      "de": ["Leonardo da Vinci"],
-      "sv": ["Leonardo da Vinci"],
-      "ru": ["Леонардо да Винчи"],
-      "pt": ["Leonardo da Vinci"],
-      "ja": ["レオナルド・ダ・ヴィンチ"],
-      "en": ["Leonardo da Vinci"],
-      "it": ["Leonardo da Vinci"],
-      "pl": ["Leonardo da Vinci"],
-      "fr": ["Léonard de Vinci"],
-      "zh": ["列奥纳多·达·芬奇"],
-      "es": ["Leonardo da Vinci"],
-      "nl": ["Leonardo da Vinci"]
-    },
-    "previewNoDistribute": false,
-    "dcTitleLangAware": {
-      "def": ["Sv. Družina"]
-    },
-    "dcContributorLangAware": {
-      "def": ["Da Vinci, Leonardo", "http://dbpedia.org/resource/Leonardo_da_Vinci"]
-    },
-    "dcLanguageLangAware": {
-      "def": ["sl"]
-    },
-    "title": ["Sv. Družina"],
-    "dataProvider": ["National and University Library of Slovenia"],
-    "timestamp": 1437294735505,
-    "provider": ["The European Library"],
-    "year": ["1898"],
-    "language": ["sl"],
-    "type": "IMAGE",
-    "edmDatasetName": ["92054_Ag_EU_TEL_a0309_Slovenia"],
-    "guid": "http://www.europeana.eu/portal/record/92054/BibliographicResource_1000097998894.html?utm_source=api&utm_medium=api&utm_campaign=api2demo",
-    "link": "http://www.europeana.eu/api/v2/record/92054/BibliographicResource_1000097998894.json?wskey=api2demo",
-    "timestamp_created_epoch": 1404121093336,
-    "timestamp_update_epoch": 1404121093336,
-    "timestamp_created": "2014-06-30T09:38:13.336Z",
-    "timestamp_update": "2014-06-30T09:38:13.336Z"
-  }, {
-    "id": "/92054/BibliographicResource_1000097997293",
-    "ugc": [false],
-    "completeness": 5,
-    "country": ["slovenia"],
-    "europeanaCollectionName": ["92054_Ag_EU_TEL_a0309_Slovenia"],
-    "dcLanguage": ["sl"],
-    "edmLandingPage": ["http://europeana.eu/portal/record/92054/BibliographicResource_1000097997293.html"],
-    "dcTypeLangAware": {
-      "def": ["tekstovno gradivo, tiskano"],
-      "en": ["Still image"]
-    },
-    "europeanaCompleteness": 5,
-    "edmTimespan": ["http://semium.org/time/1897", "http://semium.org/time/18xx_4_quarter", "http://semium.org/time/18xx_2_half", "http://semium.org/time/18xx", "http://semium.org/time/AD2xxx", "http://semium.org/time/ChronologicalPeriod", "http://semium.org/time/Time"],
-    "edmTimespanLabel": [{
-      "def": "1897"
-    }, {
-      "def": "19.."
-    }, {
-      "def": "19??"
-    }, {
-      "def": "19e"
-    }, {
-      "def": "4e quart 19e siècle"
-    }, {
-      "def": "19e (fin)"
-    }, {
-      "def": "19e siècle"
-    }, {
-      "def": "2e millénaire après J.-C."
-    }, {
-      "def": "4 quarter of the 19th century"
-    }, {
-      "def": "Second half of the 19th century"
-    }, {
-      "def": "19-th"
-    }, {
-      "def": "19th"
-    }, {
-      "def": "19th century"
-    }, {
-      "def": "Second millenium AD"
-    }, {
-      "def": "Second millenium AD, years 1001-2000"
-    }, {
-      "def": "Chronological period"
-    }, {
-      "def": "Time"
-    }, {
-      "def": "4-я четверть 19-го века"
-    }, {
-      "def": "Вторая половина 19-го века"
-    }, {
-      "def": "19й век"
-    }, {
-      "def": "19de eeuw"
-    }],
-    "rights": ["http://creativecommons.org/publicdomain/zero/1.0/"],
-    "edmIsShownAt": ["http://www.europeana.eu/api/api2demo/redirect?shownAt=http%3A%2F%2Fwww.dlib.si%2F%3FURN%3DURN%3ANBN%3ASI%3Adoc-HJY9WDZ9&provider=The+European+Library&id=http%3A%2F%2Fwww.europeana.eu%2Fresolve%2Frecord%2F92054%2FBibliographicResource_1000097997293&profile=rich"],
-    "edmAgent": ["http://dbpedia.org/resource/Leonardo_da_Vinci"],
-    "edmAgentLabel": [{
-      "def": "Leonardo da Vinci"
-    }, {
-      "def": "列奥纳多·达·芬奇"
-    }, {
-      "def": "Leonardo da Vinci"
-    }, {
-      "def": "Leonardo da Vinci"
-    }, {
-      "def": "Leonardo da Vinci"
-    }, {
-      "def": "Leonardo da Vinci"
-    }, {
-      "def": "Léonard de Vinci"
-    }, {
-      "def": "Leonardo da Vinci"
-    }, {
-      "def": "Леонардо да Винчи"
-    }, {
-      "def": "Leonardo da Vinci"
-    }, {
-      "def": "Leonardo da Vinci"
-    }, {
-      "def": "レオナルド・ダ・ヴィンチ"
-    }],
-    "dcContributor": ["Da Vinci, Leonardo", "Da Vinci, Leonardo", "http://dbpedia.org/resource/Leonardo_da_Vinci", "http://dbpedia.org/resource/Leonardo_da_Vinci"],
-    "edmPreview": ["http://europeanastatic.eu/api/image?uri=http%3A%2F%2Fwww.dlib.si%2FStreamDB.aspx%3FURN%3DURN%3ANBN%3ASI%3Adoc-HJY9WDZ9&size=LARGE&type=IMAGE"],
-    "score": 10.993431,
-    "edmTimespanLabelLangAware": {
-      "ru": ["4-я четверть 19-го века", "Вторая половина 19-го века", "19й век"],
-      "def": ["1897", "19..", "19??", "19e"],
-      "en": ["4 quarter of the 19th century", "Second half of the 19th century", "19-th", "19th", "19th century", "Second millenium AD", "Second millenium AD, years 1001-2000", "Chronological period", "Time"],
-      "fr": ["4e quart 19e siècle", "19e (fin)", "19e siècle", "2e millénaire après J.-C."],
-      "nl": ["19de eeuw"]
-    },
-    "edmAgentLabelLangAware": {
-      "de": ["Leonardo da Vinci"],
-      "sv": ["Leonardo da Vinci"],
-      "ru": ["Леонардо да Винчи"],
-      "pt": ["Leonardo da Vinci"],
-      "ja": ["レオナルド・ダ・ヴィンチ"],
-      "en": ["Leonardo da Vinci"],
-      "it": ["Leonardo da Vinci"],
-      "pl": ["Leonardo da Vinci"],
-      "fr": ["Léonard de Vinci"],
-      "zh": ["列奥纳多·达·芬奇"],
-      "es": ["Leonardo da Vinci"],
-      "nl": ["Leonardo da Vinci"]
-    },
-    "previewNoDistribute": false,
-    "dcTitleLangAware": {
-      "def": ["Kristus v »Zadnji večerji«"]
-    },
-    "dcContributorLangAware": {
-      "def": ["Da Vinci, Leonardo", "http://dbpedia.org/resource/Leonardo_da_Vinci"]
-    },
-    "dcLanguageLangAware": {
-      "def": ["sl"]
-    },
-    "title": ["Kristus v »Zadnji večerji«"],
-    "dataProvider": ["National and University Library of Slovenia"],
-    "timestamp": 1437294734573,
-    "provider": ["The European Library"],
-    "year": ["1897"],
-    "language": ["sl"],
-    "type": "IMAGE",
-    "edmDatasetName": ["92054_Ag_EU_TEL_a0309_Slovenia"],
-    "guid": "http://www.europeana.eu/portal/record/92054/BibliographicResource_1000097997293.html?utm_source=api&utm_medium=api&utm_campaign=api2demo",
-    "link": "http://www.europeana.eu/api/v2/record/92054/BibliographicResource_1000097997293.json?wskey=api2demo",
-    "timestamp_created_epoch": 1404121012966,
-    "timestamp_update_epoch": 1404121012966,
-    "timestamp_created": "2014-06-30T09:36:52.966Z",
-    "timestamp_update": "2014-06-30T09:36:52.966Z"
-  }, {
-    "id": "/92054/BibliographicResource_1000097992009",
-    "ugc": [false],
-    "completeness": 5,
-    "country": ["slovenia"],
-    "europeanaCollectionName": ["92054_Ag_EU_TEL_a0309_Slovenia"],
-    "dcLanguage": ["sl"],
-    "edmLandingPage": ["http://europeana.eu/portal/record/92054/BibliographicResource_1000097992009.html"],
-    "dcTypeLangAware": {
-      "def": ["tekstovno gradivo, tiskano"],
-      "en": ["Still image"]
-    },
-    "europeanaCompleteness": 5,
-    "edmTimespan": ["http://semium.org/time/1893", "http://semium.org/time/18xx_4_quarter", "http://semium.org/time/18xx_2_half", "http://semium.org/time/18xx", "http://semium.org/time/AD2xxx", "http://semium.org/time/ChronologicalPeriod", "http://semium.org/time/Time"],
-    "edmTimespanLabel": [{
-      "def": "1893"
-    }, {
-      "def": "19.."
-    }, {
-      "def": "19??"
-    }, {
-      "def": "19e"
-    }, {
-      "def": "4e quart 19e siècle"
-    }, {
-      "def": "19e (fin)"
-    }, {
-      "def": "19e siècle"
-    }, {
-      "def": "2e millénaire après J.-C."
-    }, {
-      "def": "4 quarter of the 19th century"
-    }, {
-      "def": "Second half of the 19th century"
-    }, {
-      "def": "19-th"
-    }, {
-      "def": "19th"
-    }, {
-      "def": "19th century"
-    }, {
-      "def": "Second millenium AD"
-    }, {
-      "def": "Second millenium AD, years 1001-2000"
-    }, {
-      "def": "Chronological period"
-    }, {
-      "def": "Time"
-    }, {
-      "def": "4-я четверть 19-го века"
-    }, {
-      "def": "Вторая половина 19-го века"
-    }, {
-      "def": "19й век"
-    }, {
-      "def": "19de eeuw"
-    }],
-    "rights": ["http://creativecommons.org/publicdomain/zero/1.0/"],
-    "edmIsShownAt": ["http://www.europeana.eu/api/api2demo/redirect?shownAt=http%3A%2F%2Fwww.dlib.si%2F%3FURN%3DURN%3ANBN%3ASI%3Adoc-6D60ZV9K&provider=The+European+Library&id=http%3A%2F%2Fwww.europeana.eu%2Fresolve%2Frecord%2F92054%2FBibliographicResource_1000097992009&profile=rich"],
-    "edmAgent": ["http://dbpedia.org/resource/Leonardo_da_Vinci"],
-    "edmAgentLabel": [{
-      "def": "Leonardo da Vinci"
-    }, {
-      "def": "列奥纳多·达·芬奇"
-    }, {
-      "def": "Leonardo da Vinci"
-    }, {
-      "def": "Leonardo da Vinci"
-    }, {
-      "def": "Leonardo da Vinci"
-    }, {
-      "def": "Leonardo da Vinci"
-    }, {
-      "def": "Léonard de Vinci"
-    }, {
-      "def": "Leonardo da Vinci"
-    }, {
-      "def": "Леонардо да Винчи"
-    }, {
-      "def": "Leonardo da Vinci"
-    }, {
-      "def": "Leonardo da Vinci"
-    }, {
-      "def": "レオナルド・ダ・ヴィンチ"
-    }],
-    "dcContributor": ["Da Vinci, Leonardo", "Da Vinci, Leonardo", "http://dbpedia.org/resource/Leonardo_da_Vinci", "http://dbpedia.org/resource/Leonardo_da_Vinci"],
-    "edmPreview": ["http://europeanastatic.eu/api/image?uri=http%3A%2F%2Fwww.dlib.si%2FStreamDB.aspx%3FURN%3DURN%3ANBN%3ASI%3Adoc-6D60ZV9K&size=LARGE&type=IMAGE"],
-    "score": 10.965751,
-    "edmTimespanLabelLangAware": {
-      "ru": ["4-я четверть 19-го века", "Вторая половина 19-го века", "19й век"],
-      "def": ["1893", "19..", "19??", "19e"],
-      "en": ["4 quarter of the 19th century", "Second half of the 19th century", "19-th", "19th", "19th century", "Second millenium AD", "Second millenium AD, years 1001-2000", "Chronological period", "Time"],
-      "fr": ["4e quart 19e siècle", "19e (fin)", "19e siècle", "2e millénaire après J.-C."],
-      "nl": ["19de eeuw"]
-    },
-    "edmAgentLabelLangAware": {
-      "de": ["Leonardo da Vinci"],
-      "sv": ["Leonardo da Vinci"],
-      "ru": ["Леонардо да Винчи"],
-      "pt": ["Leonardo da Vinci"],
-      "ja": ["レオナルド・ダ・ヴィンチ"],
-      "en": ["Leonardo da Vinci"],
-      "it": ["Leonardo da Vinci"],
-      "pl": ["Leonardo da Vinci"],
-      "fr": ["Léonard de Vinci"],
-      "zh": ["列奥纳多·达·芬奇"],
-      "es": ["Leonardo da Vinci"],
-      "nl": ["Leonardo da Vinci"]
-    },
-    "previewNoDistribute": false,
-    "dcTitleLangAware": {
-      "def": ["Jezus uči farizeje"]
-    },
-    "dcContributorLangAware": {
-      "def": ["Da Vinci, Leonardo", "http://dbpedia.org/resource/Leonardo_da_Vinci"]
-    },
-    "dcLanguageLangAware": {
-      "def": ["sl"]
-    },
-    "title": ["Jezus uči farizeje"],
-    "dataProvider": ["National and University Library of Slovenia"],
-    "timestamp": 1437294662821,
-    "provider": ["The European Library"],
-    "year": ["1893"],
-    "language": ["sl"],
-    "type": "IMAGE",
-    "edmDatasetName": ["92054_Ag_EU_TEL_a0309_Slovenia"],
-    "guid": "http://www.europeana.eu/portal/record/92054/BibliographicResource_1000097992009.html?utm_source=api&utm_medium=api&utm_campaign=api2demo",
-    "link": "http://www.europeana.eu/api/v2/record/92054/BibliographicResource_1000097992009.json?wskey=api2demo",
-    "timestamp_created_epoch": 1404120526434,
-    "timestamp_update_epoch": 1404120526434,
-    "timestamp_created": "2014-06-30T09:28:46.434Z",
-    "timestamp_update": "2014-06-30T09:28:46.434Z"
-  }, {
-    "id": "/9200386/BibliographicResource_3000045159597",
-    "ugc": [false],
-    "completeness": 8,
-    "country": ["germany"],
-    "europeanaCollectionName": ["9200386_Ag_EU_TEL_a1194_BSB"],
-    "dcLanguage": ["it"],
-    "dcDescription": ["con nuove note e comm. di Gaetano Milanesi", "Besitzer: München, Bayerische Staatsbibliothek -- 4 Art. 25 b"],
-    "edmLandingPage": ["http://europeana.eu/portal/record/9200386/BibliographicResource_3000045159597.html"],
-    "dcDescriptionLangAware": {
-      "def": ["con nuove note e comm. di Gaetano Milanesi", "Besitzer: München, Bayerische Staatsbibliothek -- 4 Art. 25 b"]
-    },
-    "dcTypeLangAware": {
-      "en": ["Monograph"]
-    },
-    "europeanaCompleteness": 8,
-    "edmPlaceLatitude": ["41.89474"],
-    "dctermsSpatial": ["http://sws.geonames.org/3169070/"],
-    "edmTimespan": ["http://semium.org/time/1890", "http://semium.org/time/18xx_4_quarter", "http://semium.org/time/18xx_2_half", "http://semium.org/time/18xx", "http://semium.org/time/AD2xxx", "http://semium.org/time/ChronologicalPeriod", "http://semium.org/time/Time"],
-    "edmTimespanLabel": [{
-      "def": "1890"
-    }, {
-      "def": "19.."
-    }, {
-      "def": "19??"
-    }, {
-      "def": "19e"
-    }, {
-      "def": "4e quart 19e siècle"
-    }, {
-      "def": "19e (fin)"
-    }, {
-      "def": "19e siècle"
-    }, {
-      "def": "2e millénaire après J.-C."
-    }, {
-      "def": "4 quarter of the 19th century"
-    }, {
-      "def": "Second half of the 19th century"
-    }, {
-      "def": "19-th"
-    }, {
-      "def": "19th"
-    }, {
-      "def": "19th century"
-    }, {
-      "def": "Second millenium AD"
-    }, {
-      "def": "Second millenium AD, years 1001-2000"
-    }, {
-      "def": "Chronological period"
-    }, {
-      "def": "Time"
-    }, {
-      "def": "4-я четверть 19-го века"
-    }, {
-      "def": "Вторая половина 19-го века"
-    }, {
-      "def": "19й век"
-    }, {
-      "def": "19de eeuw"
-    }],
-    "rights": ["http://creativecommons.org/licenses/by-nc-sa/4.0/"],
-    "edmPlaceLongitude": ["12.4839"],
-    "edmPlace": ["http://sws.geonames.org/3169070/", "http://lod.b3kat.de/bib/DE-12"],
-    "edmPlaceLabel": [{
-      "def": "Roma"
-    }],
-    "edmIsShownAt": ["http://www.europeana.eu/api/api2demo/redirect?shownAt=http%3A%2F%2Fnbn-resolving.de%2Furn%2Fresolver.pl%3Furn%3Durn%3Anbn%3Ade%3Abvb%3A12-bsb00079539-6&provider=The+European+Library&id=http%3A%2F%2Fwww.europeana.eu%2Fresolve%2Frecord%2F9200386%2FBibliographicResource_3000045159597&profile=rich"],
-    "edmAgent": ["http://d-nb.info/gnd/118640445", "http://d-nb.info/gnd/101948956", "http://d-nb.info/gnd/118626213"],
-    "edmAgentLabel": [{
-      "def": "Leonardo <da Vinci>"
-    }],
-    "dcContributor": ["http://d-nb.info/gnd/101948956", "http://d-nb.info/gnd/101948956", "http://d-nb.info/gnd/118626213", "http://d-nb.info/gnd/118626213"],
-    "edmPreview": ["http://europeanastatic.eu/api/image?uri=http%3A%2F%2Fbsb0mdz-upload.bsb.lrz.de%2F%7Eeuropeana%2Fbsb00079539%2Fdownload%2Fthumbs%2Fbsb00079539_00001.jpg&size=LARGE&type=TEXT"],
-    "score": 3.8991282,
-    "edmPlaceLabelLangAware": {
-      "def": ["Roma"]
-    },
-    "edmTimespanLabelLangAware": {
-      "ru": ["4-я четверть 19-го века", "Вторая половина 19-го века", "19й век"],
-      "def": ["1890", "19..", "19??", "19e"],
-      "en": ["4 quarter of the 19th century", "Second half of the 19th century", "19-th", "19th", "19th century", "Second millenium AD", "Second millenium AD, years 1001-2000", "Chronological period", "Time"],
-      "fr": ["4e quart 19e siècle", "19e (fin)", "19e siècle", "2e millénaire après J.-C."],
-      "nl": ["19de eeuw"]
-    },
-    "edmAgentLabelLangAware": {
-      "def": ["Leonardo <da Vinci>"]
-    },
-    "previewNoDistribute": false,
-    "dcTitleLangAware": {
-      "def": ["Trattato della pittura di Leonardo da Vinci condotto sul Cod. Vaticano Urbinate 1270"]
-    },
-    "dcCreatorLangAware": {
-      "def": ["http://d-nb.info/gnd/118640445"]
-    },
-    "dcContributorLangAware": {
-      "def": ["http://d-nb.info/gnd/101948956", "http://d-nb.info/gnd/118626213"]
-    },
-    "dcLanguageLangAware": {
-      "def": ["it"]
-    },
-    "title": ["Trattato della pittura di Leonardo da Vinci condotto sul Cod. Vaticano Urbinate 1270", "Trattato della pittura"],
-    "dataProvider": ["Bavarian State Library"],
-    "dcCreator": ["http://d-nb.info/gnd/118640445"],
-    "timestamp": 1456517070018,
-    "provider": ["The European Library"],
-    "year": ["1890"],
-    "language": ["de"],
-    "type": "TEXT",
-    "edmDatasetName": ["9200386_Ag_EU_TEL_a1194_BSB"],
-    "guid": "http://www.europeana.eu/portal/record/9200386/BibliographicResource_3000045159597.html?utm_source=api&utm_medium=api&utm_campaign=api2demo",
-    "link": "http://www.europeana.eu/api/v2/record/9200386/BibliographicResource_3000045159597.json?wskey=api2demo",
-    "timestamp_created_epoch": 1417912802522,
-    "timestamp_update_epoch": 1456279453329,
-    "timestamp_created": "2014-12-07T00:40:02.522Z",
-    "timestamp_update": "2016-02-24T02:04:13.329Z"
-  }, {
-    "id": "/9200386/BibliographicResource_3000044989583",
-    "ugc": [false],
-    "completeness": 8,
-    "country": ["germany"],
-    "europeanaCollectionName": ["9200386_Ag_EU_TEL_a1194_BSB"],
-    "dcLanguage": ["de"],
-    "dcDescription": ["Neue Ausg.", "gehalten von Anton Joseph Binterim. [[Illustr.:] L[eonardo da Vinci ; E[duard] Schuler]", "Besitzer: München, Bayerische Staatsbibliothek -- H.eccl. 3203 c#Beibd.1"],
-    "edmLandingPage": ["http://europeana.eu/portal/record/9200386/BibliographicResource_3000044989583.html"],
-    "dcDescriptionLangAware": {
-      "def": ["Neue Ausg.", "gehalten von Anton Joseph Binterim. [[Illustr.:] L[eonardo da Vinci ; E[duard] Schuler]", "Besitzer: München, Bayerische Staatsbibliothek -- H.eccl. 3203 c#Beibd.1"]
-    },
-    "dcTypeLangAware": {
-      "en": ["Monograph"]
-    },
-    "europeanaCompleteness": 8,
-    "edmPlaceLatitude": ["50.93333"],
-    "dctermsSpatial": ["http://sws.geonames.org/2886242/"],
-    "edmTimespan": ["http://semium.org/time/1837", "http://semium.org/time/18xx_2_third", "http://semium.org/time/18xx", "http://semium.org/time/AD2xxx", "http://semium.org/time/ChronologicalPeriod", "http://semium.org/time/Time"],
-    "edmTimespanLabel": [{
-      "def": "1837"
-    }, {
-      "def": "19.."
-    }, {
-      "def": "19??"
-    }, {
-      "def": "19e"
-    }, {
-      "def": "Mid 19th century"
-    }, {
-      "def": "19-th"
-    }, {
-      "def": "19th"
-    }, {
-      "def": "19th century"
-    }, {
-      "def": "Second millenium AD"
-    }, {
-      "def": "Second millenium AD, years 1001-2000"
-    }, {
-      "def": "Chronological period"
-    }, {
-      "def": "Time"
-    }, {
-      "def": "Середина 19-го века"
-    }, {
-      "def": "19й век"
-    }, {
-      "def": "19e siècle"
-    }, {
-      "def": "2e millénaire après J.-C."
-    }, {
-      "def": "19de eeuw"
-    }],
-    "rights": ["http://www.europeana.eu/rights/out-of-copyright-non-commercial/"],
-    "edmPlaceLongitude": ["6.95"],
-    "edmPlace": ["http://sws.geonames.org/2886242/", "http://lod.b3kat.de/bib/DE-12"],
-    "edmPlaceLabel": [{
-      "def": "Cologne"
-    }, {
-      "def": "Lungsod ng Cologne"
-    }, {
-      "def": "Colònia"
-    }, {
-      "def": "Köln"
-    }, {
-      "def": "Köln"
-    }, {
-      "def": "Köln"
-    }, {
-      "def": "Köln"
-    }, {
-      "def": "โคโลญ"
-    }, {
-      "def": "Köln"
-    }, {
-      "def": "Cologne"
-    }, {
-      "def": "Köln"
-    }, {
-      "def": "Кьолн"
-    }, {
-      "def": "Köln"
-    }, {
-      "def": "Kolín nad Rýnom"
-    }, {
-      "def": "Köln"
-    }, {
-      "def": "Келн"
-    }, {
-      "def": "Köln"
-    }, {
-      "def": "Köln"
-    }, {
-      "def": "쾰른"
-    }, {
-      "def": "קלן"
-    }, {
-      "def": "Kolín nad Rýnem"
-    }, {
-      "def": "Kölle"
-    }, {
-      "def": "Colonia Agrippina"
-    }, {
-      "def": "Colonia Claudia Agrippina"
-    }, {
-      "def": "Kolonia"
-    }, {
-      "def": "Köln"
-    }, {
-      "def": "Кёльн"
-    }, {
-      "def": "Köln"
-    }, {
-      "def": "科隆"
-    }, {
-      "def": "Köln"
-    }, {
-      "def": "Köln"
-    }, {
-      "def": "Köln"
-    }, {
-      "def": "Ķelne"
-    }, {
-      "def": "Kelnas"
-    }, {
-      "def": "Köln"
-    }, {
-      "def": "Köln"
-    }, {
-      "def": "Köln"
-    }, {
-      "def": "Augusta Ubiorum"
-    }, {
-      "def": "Colonia Agrippinensis"
-    }, {
-      "def": "Koeln"
-    }, {
-      "def": "Köln"
-    }, {
-      "def": "Келн"
-    }, {
-      "def": "Köln"
-    }, {
-      "def": "Colonia"
-    }, {
-      "def": "Cologne"
-    }, {
-      "def": "کلن"
-    }, {
-      "def": "كولونيا"
-    }, {
-      "def": "Κολωνία"
-    }, {
-      "def": "Colônia"
-    }, {
-      "def": "Kolonjo"
-    }, {
-      "def": "Cologne"
-    }, {
-      "def": "Köln"
-    }, {
-      "def": "Colonia"
-    }, {
-      "def": "Keulen"
-    }, {
-      "def": "ケルン"
-    }, {
-      "def": "Keulen"
-    }],
-    "edmIsShownAt": ["http://www.europeana.eu/api/api2demo/redirect?shownAt=http%3A%2F%2Fwww.mdz-nbn-resolving.de%2Furn%2Fresolver.pl%3Furn%3Durn%3Anbn%3Ade%3Abvb%3A12-bsb11006357-3&provider=The+European+Library&id=http%3A%2F%2Fwww.europeana.eu%2Fresolve%2Frecord%2F9200386%2FBibliographicResource_3000044989583&profile=rich"],
-    "edmAgent": ["http://d-nb.info/gnd/116184221", "http://d-nb.info/gnd/118640445", "http://d-nb.info/gnd/104117044"],
-    "edmAgentLabel": [{
-      "def": "Leonardo <da Vinci>"
-    }],
-    "dcContributor": ["http://d-nb.info/gnd/118640445", "http://d-nb.info/gnd/118640445", "http://d-nb.info/gnd/104117044", "http://d-nb.info/gnd/104117044"],
-    "edmPreview": ["http://europeanastatic.eu/api/image?uri=http%3A%2F%2Fbsb0mdz-upload.bsb.lrz.de%2F%7Eeuropeana%2Fbsb11006357%2Fdownload%2Fthumbs%2Fbsb11006357_00012.jpg&size=LARGE&type=TEXT"],
-    "score": 3.8991282,
-    "edmPlaceLabelLangAware": {
-      "de": ["Köln"],
-      "def": ["Augusta Ubiorum", "Colonia Agrippinensis", "Koeln", "Köln"],
-      "pt": ["Colônia"],
-      "lt": ["Kelnas"],
-      "hr": ["Köln"],
-      "lv": ["Ķelne"],
-      "hu": ["Köln"],
-      "id": ["Köln"],
-      "mk": ["Келн"],
-      "af": ["Keulen"],
-      "ms": ["Cologne"],
-      "el": ["Κολωνία"],
-      "en": ["Cologne"],
-      "is": ["Köln"],
-      "eo": ["Kolonjo"],
-      "it": ["Colonia"],
-      "zh": ["科隆"],
-      "es": ["Colonia"],
-      "et": ["Köln"],
-      "ar": ["كولونيا"],
-      "vi": ["Köln"],
-      "ja": ["ケルン"],
-      "vo": ["Köln"],
-      "fa": ["کلن"],
-      "ro": ["Köln"],
-      "nl": ["Keulen"],
-      "nn": ["Köln"],
-      "no": ["Köln"],
-      "fi": ["Köln"],
-      "ru": ["Кёльн"],
-      "bg": ["Кьолн"],
-      "fr": ["Cologne"],
-      "bs": ["Köln"],
-      "sk": ["Kolín nad Rýnom"],
-      "sl": ["Köln"],
-      "ca": ["Colònia"],
-      "sq": ["Köln"],
-      "sr": ["Келн"],
-      "sv": ["Köln"],
-      "ko": ["쾰른"],
-      "ku": ["Köln"],
-      "cs": ["Kolín nad Rýnem"],
-      "th": ["โคโลญ"],
-      "la": ["Colonia Agrippina", "Colonia Claudia Agrippina"],
-      "lb": ["Köln"],
-      "tl": ["Cologne", "Lungsod ng Cologne"],
-      "pl": ["Kolonia"],
-      "da": ["Köln"],
-      "he": ["קלן"],
-      "li": ["Kölle"],
-      "tr": ["Köln"]
-    },
-    "edmTimespanLabelLangAware": {
-      "ru": ["Середина 19-го века", "19й век"],
-      "def": ["1837", "19..", "19??", "19e"],
-      "en": ["Mid 19th century", "19-th", "19th", "19th century", "Second millenium AD", "Second millenium AD, years 1001-2000", "Chronological period", "Time"],
-      "fr": ["19e siècle", "2e millénaire après J.-C."],
-      "nl": ["19de eeuw"]
-    },
-    "edmAgentLabelLangAware": {
-      "def": ["Leonardo <da Vinci>"]
-    },
-    "previewNoDistribute": false,
-    "dcTitleLangAware": {
-      "def": ["Zwölf Reden bei der Feierlichkeit der ersten heiligen Communion der Kinder"]
-    },
-    "dcCreatorLangAware": {
-      "def": ["http://d-nb.info/gnd/116184221"]
-    },
-    "dcContributorLangAware": {
-      "def": ["http://d-nb.info/gnd/118640445", "http://d-nb.info/gnd/104117044"]
-    },
-    "dcLanguageLangAware": {
-      "def": ["de"]
-    },
-    "title": ["Zwölf Reden bei der Feierlichkeit der ersten heiligen Communion der Kinder", "Reden bei der Feierlichkeit der ersten heiligen Communion der Kinder"],
-    "dataProvider": ["Bavarian State Library"],
-    "dcCreator": ["http://d-nb.info/gnd/116184221"],
-    "timestamp": 1456512920158,
-    "provider": ["The European Library"],
-    "year": ["1837"],
-    "language": ["de"],
-    "type": "TEXT",
-    "edmDatasetName": ["9200386_Ag_EU_TEL_a1194_BSB"],
-    "guid": "http://www.europeana.eu/portal/record/9200386/BibliographicResource_3000044989583.html?utm_source=api&utm_medium=api&utm_campaign=api2demo",
-    "link": "http://www.europeana.eu/api/v2/record/9200386/BibliographicResource_3000044989583.json?wskey=api2demo",
-    "timestamp_created_epoch": 1417907189569,
-    "timestamp_update_epoch": 1456275567722,
-    "timestamp_created": "2014-12-06T23:06:29.569Z",
-    "timestamp_update": "2016-02-24T00:59:27.722Z"
-  }, {
-    "id": "/9200386/BibliographicResource_3000044907765",
-    "ugc": [false],
-    "completeness": 9,
-    "country": ["germany"],
-    "europeanaCollectionName": ["9200386_Ag_EU_TEL_a1194_BSB"],
-    "dcLanguage": ["it"],
-    "dcDescription": ["di Lionardo da Vinci", "Besitzer: München, Bayerische Staatsbibliothek -- 4 Art. 25-1/2"],
-    "edmLandingPage": ["http://europeana.eu/portal/record/9200386/BibliographicResource_3000044907765.html"],
-    "dcDescriptionLangAware": {
-      "def": ["di Lionardo da Vinci", "Besitzer: München, Bayerische Staatsbibliothek -- 4 Art. 25-1/2"]
-    },
-    "dcTypeLangAware": {
-      "en": ["Monograph"]
-    },
-    "europeanaCompleteness": 9,
-    "edmPlaceLatitude": ["41.89474"],
-    "dctermsSpatial": ["http://sws.geonames.org/3169070/"],
-    "edmTimespan": ["http://semium.org/time/1817", "http://semium.org/time/18xx_1_third", "http://semium.org/time/18xx", "http://semium.org/time/AD2xxx", "http://semium.org/time/ChronologicalPeriod", "http://semium.org/time/Time"],
-    "edmTimespanLabel": [{
-      "def": "1817"
-    }, {
-      "def": "19.."
-    }, {
-      "def": "19??"
-    }, {
-      "def": "19e"
-    }, {
-      "def": "Early 19th century"
-    }, {
-      "def": "19-th"
-    }, {
-      "def": "19th"
-    }, {
-      "def": "19th century"
-    }, {
-      "def": "Second millenium AD"
-    }, {
-      "def": "Second millenium AD, years 1001-2000"
-    }, {
-      "def": "Chronological period"
-    }, {
-      "def": "Time"
-    }, {
-      "def": "Начало 19-го века"
-    }, {
-      "def": "19й век"
-    }, {
-      "def": "19e siècle"
-    }, {
-      "def": "2e millénaire après J.-C."
-    }, {
-      "def": "19de eeuw"
-    }],
-    "rights": ["http://www.europeana.eu/rights/out-of-copyright-non-commercial/"],
-    "edmPlaceLongitude": ["12.4839"],
-    "edmPlace": ["http://sws.geonames.org/3169070/", "http://lod.b3kat.de/bib/DE-12"],
-    "edmPlaceLabel": [{
-      "def": "Roma"
-    }],
-    "edmIsShownAt": ["http://www.europeana.eu/api/api2demo/redirect?shownAt=http%3A%2F%2Fwww.mdz-nbn-resolving.de%2Furn%2Fresolver.pl%3Furn%3Durn%3Anbn%3Ade%3Abvb%3A12-bsb10222300-4&provider=The+European+Library&id=http%3A%2F%2Fwww.europeana.eu%2Fresolve%2Frecord%2F9200386%2FBibliographicResource_3000044907765&profile=rich"],
-    "edmAgent": ["http://d-nb.info/gnd/118640445", "http://d-nb.info/gnd/116737581"],
-    "edmAgentLabel": [{
-      "def": "Leonardo <da Vinci>"
-    }],
-    "dcContributor": ["http://d-nb.info/gnd/116737581", "http://d-nb.info/gnd/116737581"],
-    "edmPreview": ["http://europeanastatic.eu/api/image?uri=http%3A%2F%2Fbsb0mdz-upload.bsb.lrz.de%2F%7Eeuropeana%2Fbsb10222300%2Fdownload%2Fthumbs%2Fbsb10222300_00003.jpg&size=LARGE&type=TEXT"],
-    "score": 3.9067786,
-    "edmPlaceLabelLangAware": {
-      "def": ["Roma"]
-    },
-    "edmTimespanLabelLangAware": {
-      "ru": ["Начало 19-го века", "19й век"],
-      "def": ["1817", "19..", "19??", "19e"],
-      "en": ["Early 19th century", "19-th", "19th", "19th century", "Second millenium AD", "Second millenium AD, years 1001-2000", "Chronological period", "Time"],
-      "fr": ["19e siècle", "2e millénaire après J.-C."],
-      "nl": ["19de eeuw"]
-    },
-    "edmAgentLabelLangAware": {
-      "def": ["Leonardo <da Vinci>"]
-    },
-    "previewNoDistribute": false,
-    "dcTitleLangAware": {
-      "def": ["Trattato della pittura tratto da un codice della Biblioteca Vaticana - [2]: Disegni che illustrano l'opera del trattato della pittura di Lionardo da Vinci, tratti fedelmente dagli originale del codice Vaticano"]
-    },
-    "dcCreatorLangAware": {
-      "def": ["http://d-nb.info/gnd/118640445"]
-    },
-    "dcContributorLangAware": {
-      "def": ["http://d-nb.info/gnd/116737581"]
-    },
-    "dcLanguageLangAware": {
-      "def": ["it"]
-    },
-    "title": ["Trattato della pittura tratto da un codice della Biblioteca Vaticana - [2]: Disegni che illustrano l'opera del trattato della pittura di Lionardo da Vinci, tratti fedelmente dagli originale del codice Vaticano"],
-    "dataProvider": ["Bavarian State Library"],
-    "dcCreator": ["http://d-nb.info/gnd/118640445"],
-    "timestamp": 1456511093799,
-    "provider": ["The European Library"],
-    "year": ["1817"],
-    "language": ["de"],
-    "type": "TEXT",
-    "edmDatasetName": ["9200386_Ag_EU_TEL_a1194_BSB"],
-    "guid": "http://www.europeana.eu/portal/record/9200386/BibliographicResource_3000044907765.html?utm_source=api&utm_medium=api&utm_campaign=api2demo",
-    "link": "http://www.europeana.eu/api/v2/record/9200386/BibliographicResource_3000044907765.json?wskey=api2demo",
-    "timestamp_created_epoch": 1417904536623,
-    "timestamp_update_epoch": 1456273640405,
-    "timestamp_created": "2014-12-06T22:22:16.623Z",
-    "timestamp_update": "2016-02-24T00:27:20.405Z"
-  }, {
-    "id": "/9200386/BibliographicResource_3000044907447",
-    "ugc": [false],
-    "completeness": 6,
-    "country": ["germany"],
-    "europeanaCollectionName": ["9200386_Ag_EU_TEL_a1194_BSB"],
-    "dcLanguage": ["it"],
-    "edmConceptPrefLabelLangAware": {
-      "no": ["hydraulikk"],
-      "de": ["Hydraulik"],
-      "fi": ["hydrauliikka, nestemekaniikka"],
-      "ru": ["гидравлика"],
-      "def": ["水利学", "hydraulics"],
-      "pt": ["hidráulica"],
-      "bg": ["Хидравлика"],
-      "lt": ["hidraulika"],
-      "lv": ["hidraulika"],
-      "fr": ["hydraulique"],
-      "hu": ["hidraulika"],
-      "sk": ["hydraulika"],
-      "sl": ["hidravlika"],
-      "sv": ["hydraulik; vattenbyggnad"],
-      "mt": ["idrawlika"],
-      "el": ["υδραυλική"],
-      "en": ["hydraulics"],
-      "it": ["idraulica"],
-      "es": ["hidráulica"],
-      "et": ["hüdraulika"],
-      "eu": ["hidraulika"],
-      "cs": ["hydraulika"],
-      "ar": ["ميكانيكا الموائع"],
-      "pl": ["hydraulika"],
-      "da": ["hydraulik"],
-      "ro": ["hidraulică"],
-      "tr": ["hidrolik"],
-      "nl": ["hydraulica"]
-    },
-    "dcDescription": ["Raccolta d'autori Italiani che trattano del moto dell'acque ; 10", "Besitzer: München, Bayerische Staatsbibliothek -- 4 A.hydr. 73 y-10"],
-    "edmLandingPage": ["http://europeana.eu/portal/record/9200386/BibliographicResource_3000044907447.html"],
-    "dcDescriptionLangAware": {
-      "def": ["Raccolta d'autori Italiani che trattano del moto dell'acque ; 10", "Besitzer: München, Bayerische Staatsbibliothek -- 4 A.hydr. 73 y-10"]
-    },
-    "dcSubjectLangAware": {
-      "def": ["http://d-nb.info/gnd/118640445", "Library of Congress Classification: TC160", "Dewey Decimal Classification: 627.01", "Hydrodynamics, 15th cent", "Hydraulik", "http://d-nb.info/gnd/4026288-1", "sh85063354", "http://dewey.info/class/627/about", "http://www.eionet.europa.eu/gemet/concept/4085"]
-    },
-    "dcTypeLangAware": {
-      "en": ["Monograph"]
-    },
-    "edmConcept": ["http://www.eionet.europa.eu/gemet/concept/4085"],
-    "edmConceptLabel": [{
-      "def": "hidravlika"
-    }, {
-      "def": "hydraulika"
-    }, {
-      "def": "hydraulik"
-    }, {
-      "def": "hidraulika"
-    }, {
-      "def": "hidraulică"
-    }, {
-      "def": "idraulica"
-    }, {
-      "def": "hidrolik"
-    }, {
-      "def": "idrawlika"
-    }, {
-      "def": "hydraulikk"
-    }, {
-      "def": "hidraulika"
-    }, {
-      "def": "hidraulika"
-    }, {
-      "def": "ميكانيكا الموائع"
-    }, {
-      "def": "hidraulika"
-    }, {
-      "def": "hydraulika"
-    }, {
-      "def": "Hydraulik"
-    }, {
-      "def": "hydraulics"
-    }, {
-      "def": "水利学"
-    }, {
-      "def": "υδραυλική"
-    }, {
-      "def": "hydrauliikka, nestemekaniikka"
-    }, {
-      "def": "hidráulica"
-    }, {
-      "def": "hydraulika"
-    }, {
-      "def": "hydraulique"
-    }, {
-      "def": "hydraulik; vattenbyggnad"
-    }, {
-      "def": "Хидравлика"
-    }, {
-      "def": "hydraulics"
-    }, {
-      "def": "гидравлика"
-    }, {
-      "def": "hüdraulika"
-    }, {
-      "def": "hidráulica"
-    }, {
-      "def": "hydraulica"
-    }],
-    "europeanaCompleteness": 6,
-    "edmPlaceLatitude": ["44.49381"],
-    "dctermsSpatial": ["http://sws.geonames.org/3181928/"],
-    "edmTimespan": ["http://semium.org/time/1828", "http://semium.org/time/18xx_2_quarter", "http://semium.org/time/18xx_1_half", "http://semium.org/time/18xx", "http://semium.org/time/AD2xxx", "http://semium.org/time/ChronologicalPeriod", "http://semium.org/time/Time"],
-    "edmTimespanLabel": [{
-      "def": "1828"
-    }, {
-      "def": "19.."
-    }, {
-      "def": "19??"
-    }, {
-      "def": "19e"
-    }, {
-      "def": "2e quart 19e siècle"
-    }, {
-      "def": "19e (début)"
-    }, {
-      "def": "19e siècle"
-    }, {
-      "def": "2e millénaire après J.-C."
-    }, {
-      "def": "2 quarter of the 19th century"
-    }, {
-      "def": "First half of the 19th century"
-    }, {
-      "def": "19-th"
-    }, {
-      "def": "19th"
-    }, {
-      "def": "19th century"
-    }, {
-      "def": "Second millenium AD"
-    }, {
-      "def": "Second millenium AD, years 1001-2000"
-    }, {
-      "def": "Chronological period"
-    }, {
-      "def": "Time"
-    }, {
-      "def": "2-я четверть 19-го века"
-    }, {
-      "def": "Первая половниа 19-го века"
-    }, {
-      "def": "19й век"
-    }, {
-      "def": "19de eeuw"
-    }],
-    "rights": ["http://www.europeana.eu/rights/out-of-copyright-non-commercial/"],
-    "edmPlaceLongitude": ["11.33875"],
-    "edmPlace": ["http://sws.geonames.org/3181928/", "http://lod.b3kat.de/bib/DE-12"],
-    "edmPlaceLabel": [{
-      "def": "Bologna"
-    }],
-    "edmIsShownAt": ["http://www.europeana.eu/api/api2demo/redirect?shownAt=http%3A%2F%2Fwww.mdz-nbn-resolving.de%2Furn%2Fresolver.pl%3Furn%3Durn%3Anbn%3Ade%3Abvb%3A12-bsb10048809-3&provider=The+European+Library&id=http%3A%2F%2Fwww.europeana.eu%2Fresolve%2Frecord%2F9200386%2FBibliographicResource_3000044907447&profile=rich"],
-    "edmAgent": ["http://d-nb.info/gnd/118640445"],
-    "edmAgentLabel": [{
-      "def": "Leonardo <da Vinci>"
-    }],
-    "edmPreview": ["http://europeanastatic.eu/api/image?uri=http%3A%2F%2Fbsb0mdz-upload.bsb.lrz.de%2F%7Eeuropeana%2Fbsb10048809%2Fdownload%2Fthumbs%2Fbsb10048809_00005.jpg&size=LARGE&type=TEXT"],
-    "score": 4.554639,
-    "edmPlaceLabelLangAware": {
-      "def": ["Bologna"]
-    },
-    "edmTimespanLabelLangAware": {
-      "ru": ["2-я четверть 19-го века", "Первая половниа 19-го века", "19й век"],
-      "def": ["1828", "19..", "19??", "19e"],
-      "en": ["2 quarter of the 19th century", "First half of the 19th century", "19-th", "19th", "19th century", "Second millenium AD", "Second millenium AD, years 1001-2000", "Chronological period", "Time"],
-      "fr": ["2e quart 19e siècle", "19e (début)", "19e siècle", "2e millénaire après J.-C."],
-      "nl": ["19de eeuw"]
-    },
-    "edmAgentLabelLangAware": {
-      "def": ["Leonardo <da Vinci>"]
-    },
-    "previewNoDistribute": false,
-    "dcTitleLangAware": {
-      "def": ["Del moto e misura dell'acqua"]
-    },
-    "dcCreatorLangAware": {
-      "def": ["http://d-nb.info/gnd/118640445"]
-    },
-    "dcLanguageLangAware": {
-      "def": ["it"]
-    },
-    "title": ["Del moto e misura dell'acqua"],
-    "dataProvider": ["Bavarian State Library"],
-    "dcCreator": ["http://d-nb.info/gnd/118640445"],
-    "timestamp": 1456511087816,
-    "provider": ["The European Library"],
-    "year": ["1828"],
-    "language": ["de"],
-    "type": "TEXT",
-    "edmDatasetName": ["9200386_Ag_EU_TEL_a1194_BSB"],
-    "guid": "http://www.europeana.eu/portal/record/9200386/BibliographicResource_3000044907447.html?utm_source=api&utm_medium=api&utm_campaign=api2demo",
-    "link": "http://www.europeana.eu/api/v2/record/9200386/BibliographicResource_3000044907447.json?wskey=api2demo",
-    "timestamp_created_epoch": 1417904532701,
-    "timestamp_update_epoch": 1456273633805,
-    "timestamp_created": "2014-12-06T22:22:12.701Z",
-    "timestamp_update": "2016-02-24T00:27:13.805Z"
-  }, {
-    "id": "/9200386/BibliographicResource_3000044907435",
-    "ugc": [false],
-    "completeness": 7,
-    "country": ["germany"],
-    "europeanaCollectionName": ["9200386_Ag_EU_TEL_a1194_BSB"],
-    "dcLanguage": ["it"],
-    "dcDescription": ["di Lionardo da Vinci", "Besitzer: München, Bayerische Staatsbibliothek -- 4 Art. 25-1/2"],
-    "edmLandingPage": ["http://europeana.eu/portal/record/9200386/BibliographicResource_3000044907435.html"],
-    "dcDescriptionLangAware": {
-      "def": ["di Lionardo da Vinci", "Besitzer: München, Bayerische Staatsbibliothek -- 4 Art. 25-1/2"]
-    },
-    "dcTypeLangAware": {
-      "en": ["Monograph"]
-    },
-    "europeanaCompleteness": 7,
-    "edmPlaceLatitude": ["41.89474"],
-    "dctermsSpatial": ["http://sws.geonames.org/3169070/"],
-    "edmTimespan": ["http://semium.org/time/1817", "http://semium.org/time/18xx_1_third", "http://semium.org/time/18xx", "http://semium.org/time/AD2xxx", "http://semium.org/time/ChronologicalPeriod", "http://semium.org/time/Time"],
-    "edmTimespanLabel": [{
-      "def": "1817"
-    }, {
-      "def": "19.."
-    }, {
-      "def": "19??"
-    }, {
-      "def": "19e"
-    }, {
-      "def": "Early 19th century"
-    }, {
-      "def": "19-th"
-    }, {
-      "def": "19th"
-    }, {
-      "def": "19th century"
-    }, {
-      "def": "Second millenium AD"
-    }, {
-      "def": "Second millenium AD, years 1001-2000"
-    }, {
-      "def": "Chronological period"
-    }, {
-      "def": "Time"
-    }, {
-      "def": "Начало 19-го века"
-    }, {
-      "def": "19й век"
-    }, {
-      "def": "19e siècle"
-    }, {
-      "def": "2e millénaire après J.-C."
-    }, {
-      "def": "19de eeuw"
-    }],
-    "rights": ["http://www.europeana.eu/rights/out-of-copyright-non-commercial/"],
-    "edmPlaceLongitude": ["12.4839"],
-    "edmPlace": ["http://sws.geonames.org/3169070/", "http://lod.b3kat.de/bib/DE-12"],
-    "edmPlaceLabel": [{
-      "def": "Roma"
-    }],
-    "edmIsShownAt": ["http://www.europeana.eu/api/api2demo/redirect?shownAt=http%3A%2F%2Fwww.mdz-nbn-resolving.de%2Furn%2Fresolver.pl%3Furn%3Durn%3Anbn%3Ade%3Abvb%3A12-bsb10222299-5&provider=The+European+Library&id=http%3A%2F%2Fwww.europeana.eu%2Fresolve%2Frecord%2F9200386%2FBibliographicResource_3000044907435&profile=rich"],
-    "edmAgent": ["http://d-nb.info/gnd/118640445", "http://d-nb.info/gnd/116737581"],
-    "edmAgentLabel": [{
-      "def": "Leonardo <da Vinci>"
-    }],
-    "dcContributor": ["http://d-nb.info/gnd/116737581", "http://d-nb.info/gnd/116737581"],
-    "edmPreview": ["http://europeanastatic.eu/api/image?uri=http%3A%2F%2Fbsb0mdz-upload.bsb.lrz.de%2F%7Eeuropeana%2Fbsb10222299%2Fdownload%2Fthumbs%2Fbsb10222299_00045.jpg&size=LARGE&type=TEXT"],
-    "score": 3.9088588,
-    "edmPlaceLabelLangAware": {
-      "def": ["Roma"]
-    },
-    "edmTimespanLabelLangAware": {
-      "ru": ["Начало 19-го века", "19й век"],
-      "def": ["1817", "19..", "19??", "19e"],
-      "en": ["Early 19th century", "19-th", "19th", "19th century", "Second millenium AD", "Second millenium AD, years 1001-2000", "Chronological period", "Time"],
-      "fr": ["19e siècle", "2e millénaire après J.-C."],
-      "nl": ["19de eeuw"]
-    },
-    "edmAgentLabelLangAware": {
-      "def": ["Leonardo <da Vinci>"]
-    },
-    "previewNoDistribute": false,
-    "dcTitleLangAware": {
-      "def": ["Trattato della pittura tratto da un codice della Biblioteca Vaticana - [1]"]
-    },
-    "dcCreatorLangAware": {
-      "def": ["http://d-nb.info/gnd/118640445"]
-    },
-    "dcContributorLangAware": {
-      "def": ["http://d-nb.info/gnd/116737581"]
-    },
-    "dcLanguageLangAware": {
-      "def": ["it"]
-    },
-    "title": ["Trattato della pittura tratto da un codice della Biblioteca Vaticana - [1]"],
-    "dataProvider": ["Bavarian State Library"],
-    "dcCreator": ["http://d-nb.info/gnd/118640445"],
-    "timestamp": 1456511087441,
-    "provider": ["The European Library"],
-    "year": ["1817"],
-    "language": ["de"],
-    "type": "TEXT",
-    "edmDatasetName": ["9200386_Ag_EU_TEL_a1194_BSB"],
-    "guid": "http://www.europeana.eu/portal/record/9200386/BibliographicResource_3000044907435.html?utm_source=api&utm_medium=api&utm_campaign=api2demo",
-    "link": "http://www.europeana.eu/api/v2/record/9200386/BibliographicResource_3000044907435.json?wskey=api2demo",
-    "timestamp_created_epoch": 1417904527834,
-    "timestamp_update_epoch": 1456273633671,
-    "timestamp_created": "2014-12-06T22:22:07.834Z",
-    "timestamp_update": "2016-02-24T00:27:13.671Z"
-  }, {
-    "id": "/9200386/BibliographicResource_3000044747440",
-    "ugc": [false],
-    "completeness": 7,
-    "country": ["germany"],
-    "europeanaCollectionName": ["9200386_Ag_EU_TEL_a1194_BSB"],
-    "dcLanguage": ["de"],
-    "dcDescription": ["von Hugo Grafen von Gallenberg", "In Fraktur", "Besitzer: München, Bayerische Staatsbibliothek -- Biogr. 296 po"],
-    "edmLandingPage": ["http://europeana.eu/portal/record/9200386/BibliographicResource_3000044747440.html"],
-    "dcDescriptionLangAware": {
-      "def": ["von Hugo Grafen von Gallenberg", "In Fraktur", "Besitzer: München, Bayerische Staatsbibliothek -- Biogr. 296 po"]
-    },
-    "dcSubjectLangAware": {
-      "def": ["http://d-nb.info/gnd/118640445", "Library of Congress Classification: ND623.L5", "Library of Congress Classification: ND623.L5", "LI 53255"]
-    },
-    "dcTypeLangAware": {
-      "en": ["Monograph"]
-    },
-    "europeanaCompleteness": 7,
-    "edmPlaceLatitude": ["51.33962"],
-    "dctermsSpatial": ["http://sws.geonames.org/2879139/"],
-    "edmTimespan": ["http://semium.org/time/1834", "http://semium.org/time/18xx_2_third", "http://semium.org/time/18xx", "http://semium.org/time/AD2xxx", "http://semium.org/time/ChronologicalPeriod", "http://semium.org/time/Time"],
-    "edmTimespanLabel": [{
-      "def": "1834"
-    }, {
-      "def": "19.."
-    }, {
-      "def": "19??"
-    }, {
-      "def": "19e"
-    }, {
-      "def": "Mid 19th century"
-    }, {
-      "def": "19-th"
-    }, {
-      "def": "19th"
-    }, {
-      "def": "19th century"
-    }, {
-      "def": "Second millenium AD"
-    }, {
-      "def": "Second millenium AD, years 1001-2000"
-    }, {
-      "def": "Chronological period"
-    }, {
-      "def": "Time"
-    }, {
-      "def": "Середина 19-го века"
-    }, {
-      "def": "19й век"
-    }, {
-      "def": "19e siècle"
-    }, {
-      "def": "2e millénaire après J.-C."
-    }, {
-      "def": "19de eeuw"
-    }],
-    "rights": ["http://www.europeana.eu/rights/out-of-copyright-non-commercial/"],
-    "edmPlaceLongitude": ["12.37129"],
-    "edmPlace": ["http://sws.geonames.org/2879139/", "http://lod.b3kat.de/bib/DE-12"],
-    "edmPlaceLabel": [{
-      "def": "Leipzig"
-    }],
-    "edmIsShownAt": ["http://www.europeana.eu/api/api2demo/redirect?shownAt=http%3A%2F%2Fwww.mdz-nbn-resolving.de%2Furn%2Fresolver.pl%3Furn%3Durn%3Anbn%3Ade%3Abvb%3A12-bsb10062732-1&provider=The+European+Library&id=http%3A%2F%2Fwww.europeana.eu%2Fresolve%2Frecord%2F9200386%2FBibliographicResource_3000044747440&profile=rich"],
-    "edmAgent": ["http://d-nb.info/gnd/100138276", "http://d-nb.info/gnd/118640445"],
-    "edmAgentLabel": [{
-      "def": "Leonardo <da Vinci>"
-    }],
-    "edmPreview": ["http://europeanastatic.eu/api/image?uri=http%3A%2F%2Fbsb0mdz-upload.bsb.lrz.de%2F%7Eeuropeana%2Fbsb10062732%2Fdownload%2Fthumbs%2Fbsb10062732_00019.jpg&size=LARGE&type=TEXT"],
-    "score": 4.554639,
-    "edmPlaceLabelLangAware": {
-      "def": ["Leipzig"]
-    },
-    "edmTimespanLabelLangAware": {
-      "ru": ["Середина 19-го века", "19й век"],
-      "def": ["1834", "19..", "19??", "19e"],
-      "en": ["Mid 19th century", "19-th", "19th", "19th century", "Second millenium AD", "Second millenium AD, years 1001-2000", "Chronological period", "Time"],
-      "fr": ["19e siècle", "2e millénaire après J.-C."],
-      "nl": ["19de eeuw"]
-    },
-    "edmAgentLabelLangAware": {
-      "def": ["Leonardo <da Vinci>"]
-    },
-    "previewNoDistribute": false,
-    "dcTitleLangAware": {
-      "def": ["Leonardo da Vinci"]
-    },
-    "dcCreatorLangAware": {
-      "def": ["http://d-nb.info/gnd/100138276"]
-    },
-    "dcLanguageLangAware": {
-      "def": ["de"]
-    },
-    "title": ["Leonardo da Vinci"],
-    "dataProvider": ["Bavarian State Library"],
-    "dcCreator": ["http://d-nb.info/gnd/100138276"],
-    "timestamp": 1456507900270,
-    "provider": ["The European Library"],
-    "year": ["1834"],
-    "language": ["de"],
-    "type": "TEXT",
-    "edmDatasetName": ["9200386_Ag_EU_TEL_a1194_BSB"],
-    "guid": "http://www.europeana.eu/portal/record/9200386/BibliographicResource_3000044747440.html?utm_source=api&utm_medium=api&utm_campaign=api2demo",
-    "link": "http://www.europeana.eu/api/v2/record/9200386/BibliographicResource_3000044747440.json?wskey=api2demo",
-    "timestamp_created_epoch": 1417900621520,
-    "timestamp_update_epoch": 1456269788044,
-    "timestamp_created": "2014-12-06T21:17:01.520Z",
-    "timestamp_update": "2016-02-23T23:23:08.044Z"
-  }, {
-    "id": "/9200143/BibliographicResource_2000069449610",
-    "ugc": [false],
-    "country": ["united kingdom"],
-    "europeanaCollectionName": ["9200143_Ag_EU_TEL_a1007_E.Libraries_Oxford"],
-    "dcLanguage": ["mul", "mul"],
-    "dcDescription": ["Abdr. aus v. Zahn's 'Jahrbüchern für Kunstwiss.'"],
-    "edmLandingPage": ["http://europeana.eu/portal/record/9200143/BibliographicResource_2000069449610.html"],
-    "dcDescriptionLangAware": {
-      "def": ["Abdr. aus v. Zahn's 'Jahrbüchern für Kunstwiss.'"]
-    },
-    "dcTypeLangAware": {
-      "en": ["Monograph"]
-    },
-    "edmIsShownBy": ["http://purl.ox.ac.uk/uuid/7172f2ca594945638083c6d2ed6e1d8c"],
-    "dctermsSpatial": ["Leipz.", "http://id.loc.gov/vocabulary/countries/gw"],
-    "edmTimespan": ["http://semium.org/time/1873", "http://semium.org/time/18xx_3_third", "http://semium.org/time/18xx", "http://semium.org/time/AD2xxx", "http://semium.org/time/ChronologicalPeriod", "http://semium.org/time/Time"],
-    "edmTimespanLabel": [{
-      "def": "1873"
-    }, {
-      "def": "19.."
-    }, {
-      "def": "19??"
-    }, {
-      "def": "19e"
-    }, {
-      "def": "Late 19th century"
-    }, {
-      "def": "19-th"
-    }, {
-      "def": "19th"
-    }, {
-      "def": "19th century"
-    }, {
-      "def": "Second millenium AD"
-    }, {
-      "def": "Second millenium AD, years 1001-2000"
-    }, {
-      "def": "Chronological period"
-    }, {
-      "def": "Time"
-    }, {
-      "def": "Конец 19-го века"
-    }, {
-      "def": "19й век"
-    }, {
-      "def": "19e siècle"
-    }, {
-      "def": "2e millénaire après J.-C."
-    }, {
-      "def": "19de eeuw"
-    }],
-    "rights": ["http://www.europeana.eu/rights/rr-f/"],
-    "edmIsShownAt": ["http://www.europeana.eu/api/api2demo/redirect?shownAt=http%3A%2F%2Fsolo.bodleian.ox.ac.uk%2Fprimo_library%2Flibweb%2Faction%2Fdisplay.do%3Ftabs%3DdetailsTab%26ct%3Ddisplay%26fn%3Dsearch%26doc%3Doxfaleph014509251%26indx%3D1%26recIds%3Doxfaleph014509251&provider=The+European+Library&id=http%3A%2F%2Fwww.europeana.eu%2Fresolve%2Frecord%2F9200143%2FBibliographicResource_2000069449610&profile=rich"],
-    "dcContributor": ["Leonardo da. Vinci", "Leonardo da. Vinci"],
-    "score": 12.813066,
-    "edmTimespanLabelLangAware": {
-      "ru": ["Конец 19-го века", "19й век"],
-      "def": ["1873", "19..", "19??", "19e"],
-      "en": ["Late 19th century", "19-th", "19th", "19th century", "Second millenium AD", "Second millenium AD, years 1001-2000", "Chronological period", "Time"],
-      "fr": ["19e siècle", "2e millénaire après J.-C."],
-      "nl": ["19de eeuw"]
-    },
-    "previewNoDistribute": false,
-    "dcTitleLangAware": {
-      "def": ["Das Malerbuch des Lionardo da Vinci, Untersuchung der Ausgaben und Handschriften"]
-    },
-    "dcCreatorLangAware": {
-      "def": ["Max. Jordan"]
-    },
-    "dcContributorLangAware": {
-      "def": ["Leonardo da. Vinci"]
-    },
-    "dcLanguageLangAware": {
-      "def": ["mul", "mul"]
-    },
-    "title": ["Das Malerbuch des Lionardo da Vinci, Untersuchung der Ausgaben und Handschriften"],
-    "dataProvider": ["Bodleian Libraries, University of Oxford"],
-    "dcCreator": ["Max. Jordan"],
-    "timestamp": 1436976199867,
-    "provider": ["The European Library"],
-    "year": ["1873"],
-    "language": ["en"],
-    "type": "TEXT",
-    "edmDatasetName": ["9200143_Ag_EU_TEL_a1007_E.Libraries_Oxford"],
-    "guid": "http://www.europeana.eu/portal/record/9200143/BibliographicResource_2000069449610.html?utm_source=api&utm_medium=api&utm_campaign=api2demo",
-    "link": "http://www.europeana.eu/api/v2/record/9200143/BibliographicResource_2000069449610.json?wskey=api2demo",
-    "timestamp_created_epoch": 1401856589545,
-    "timestamp_update_epoch": 1401993592396,
-    "timestamp_created": "2014-06-04T04:36:29.545Z",
-    "timestamp_update": "2014-06-05T18:39:52.396Z"
-  }, {
-    "id": "/9200143/BibliographicResource_2000069378307",
-    "ugc": [false],
-    "country": ["united kingdom"],
-    "europeanaCollectionName": ["9200143_Ag_EU_TEL_a1007_E.Libraries_Oxford"],
-    "dcLanguage": ["mul", "mul"],
-    "dcDescription": ["15-17"],
-    "edmLandingPage": ["http://europeana.eu/portal/record/9200143/BibliographicResource_2000069378307.html"],
-    "dcDescriptionLangAware": {
-      "def": ["15-17"]
-    },
-    "dcTypeLangAware": {
-      "en": ["Monograph"]
-    },
-    "edmIsShownBy": ["http://purl.ox.ac.uk/uuid/aec631c28b664d208cb586a337799090"],
-    "edmPlaceLatitude": ["48.20849"],
-    "dctermsSpatial": ["http://sws.geonames.org/2761369/", "http://id.loc.gov/vocabulary/countries/au"],
-    "edmTimespan": ["http://semium.org/time/1882", "http://semium.org/time/18xx_4_quarter", "http://semium.org/time/18xx_2_half", "http://semium.org/time/18xx", "http://semium.org/time/AD2xxx", "http://semium.org/time/ChronologicalPeriod", "http://semium.org/time/Time"],
-    "edmTimespanLabel": [{
-      "def": "1882"
-    }, {
-      "def": "19.."
-    }, {
-      "def": "19??"
-    }, {
-      "def": "19e"
-    }, {
-      "def": "4e quart 19e siècle"
-    }, {
-      "def": "19e (fin)"
-    }, {
-      "def": "19e siècle"
-    }, {
-      "def": "2e millénaire après J.-C."
-    }, {
-      "def": "4 quarter of the 19th century"
-    }, {
-      "def": "Second half of the 19th century"
-    }, {
-      "def": "19-th"
-    }, {
-      "def": "19th"
-    }, {
-      "def": "19th century"
-    }, {
-      "def": "Second millenium AD"
-    }, {
-      "def": "Second millenium AD, years 1001-2000"
-    }, {
-      "def": "Chronological period"
-    }, {
-      "def": "Time"
-    }, {
-      "def": "4-я четверть 19-го века"
-    }, {
-      "def": "Вторая половина 19-го века"
-    }, {
-      "def": "19й век"
-    }, {
-      "def": "19de eeuw"
-    }],
-    "rights": ["http://www.europeana.eu/rights/rr-f/"],
-    "edmPlaceLongitude": ["16.37208"],
-    "edmPlace": ["http://sws.geonames.org/2761369/"],
-    "edmPlaceLabel": [{
-      "def": "Beč"
-    }, {
-      "def": "Viena"
-    }, {
-      "def": "Viyana"
-    }, {
-      "def": "Wien"
-    }, {
-      "def": "Bécs"
-    }, {
-      "def": "เวียนนา"
-    }, {
-      "def": "Viena"
-    }, {
-      "def": "Vindobona"
-    }, {
-      "def": "Wien"
-    }, {
-      "def": "Vienna"
-    }, {
-      "def": "Wien"
-    }, {
-      "def": "Wien"
-    }, {
-      "def": "Vienne"
-    }, {
-      "def": "Виена"
-    }, {
-      "def": "Dunaj"
-    }, {
-      "def": "Vín"
-    }, {
-      "def": "Vínarborg"
-    }, {
-      "def": "Wien"
-    }, {
-      "def": "Vienna"
-    }, {
-      "def": "Беч"
-    }, {
-      "def": "빈"
-    }, {
-      "def": "Vídeň"
-    }, {
-      "def": "Βιέννη"
-    }, {
-      "def": "ቪየና"
-    }, {
-      "def": "Viena"
-    }, {
-      "def": "Vindobona"
-    }, {
-      "def": "Wiedeń"
-    }, {
-      "def": "Vieno"
-    }, {
-      "def": "Vienna"
-    }, {
-      "def": "Вена"
-    }, {
-      "def": "Viena"
-    }, {
-      "def": "Wenen"
-    }],
-    "edmIsShownAt": ["http://www.europeana.eu/api/api2demo/redirect?shownAt=http%3A%2F%2Fsolo.bodleian.ox.ac.uk%2Fprimo_library%2Flibweb%2Faction%2Fdisplay.do%3Ftabs%3DdetailsTab%26ct%3Ddisplay%26fn%3Dsearch%26doc%3Doxfaleph014033998%26indx%3D1%26recIds%3Doxfaleph014033998&provider=The+European+Library&id=http%3A%2F%2Fwww.europeana.eu%2Fresolve%2Frecord%2F9200143%2FBibliographicResource_2000069378307&profile=rich"],
-    "dcContributor": ["Heinrich Ludwig", "Heinrich Ludwig"],
-    "score": 12.819973,
-    "edmPlaceLabelLangAware": {
-      "no": ["Wien"],
-      "de": ["Viena", "Vindobona", "Wien"],
-      "fi": ["Wien"],
-      "ru": ["Вена"],
-      "def": ["Vienna"],
-      "pt": ["Viena"],
-      "bg": ["Виена"],
-      "hr": ["Beč"],
-      "fr": ["Vienne"],
-      "hu": ["Bécs"],
-      "sl": ["Dunaj"],
-      "ca": ["Viena"],
-      "sr": ["Беч"],
-      "sv": ["Wien"],
-      "ko": ["빈"],
-      "el": ["Βιέννη"],
-      "en": ["Vienna"],
-      "is": ["Vín", "Vínarborg"],
-      "eo": ["Vieno"],
-      "it": ["Vienna"],
-      "am": ["ቪየና"],
-      "es": ["Viena"],
-      "cs": ["Vídeň"],
-      "th": ["เวียนนา"],
-      "la": ["Vindobona"],
-      "pl": ["Wiedeń"],
-      "da": ["Wien"],
-      "tr": ["Viyana"],
-      "nl": ["Wenen"]
-    },
-    "edmTimespanLabelLangAware": {
-      "ru": ["4-я четверть 19-го века", "Вторая половина 19-го века", "19й век"],
-      "def": ["1882", "19..", "19??", "19e"],
-      "en": ["4 quarter of the 19th century", "Second half of the 19th century", "19-th", "19th", "19th century", "Second millenium AD", "Second millenium AD, years 1001-2000", "Chronological period", "Time"],
-      "fr": ["4e quart 19e siècle", "19e (fin)", "19e siècle", "2e millénaire après J.-C."],
-      "nl": ["19de eeuw"]
-    },
-    "previewNoDistribute": false,
-    "dcTitleLangAware": {
-      "def": ["Das Buch von der Malerei, nach dem Codex Vaticanus 1270 herausg., übers. und erläutert von H. Ludwig"]
-    },
-    "dcCreatorLangAware": {
-      "def": ["Leonardo da. Vinci"]
-    },
-    "dcContributorLangAware": {
-      "def": ["Heinrich Ludwig"]
-    },
-    "dcLanguageLangAware": {
-      "def": ["mul", "mul"]
-    },
-    "title": ["Das Buch von der Malerei, nach dem Codex Vaticanus 1270 herausg., übers. und erläutert von H. Ludwig"],
-    "dataProvider": ["Bodleian Libraries, University of Oxford"],
-    "dcCreator": ["Leonardo da. Vinci"],
-    "timestamp": 1436975659643,
-    "provider": ["The European Library"],
-    "year": ["1882"],
-    "language": ["en"],
-    "type": "TEXT",
-    "edmDatasetName": ["9200143_Ag_EU_TEL_a1007_E.Libraries_Oxford"],
-    "guid": "http://www.europeana.eu/portal/record/9200143/BibliographicResource_2000069378307.html?utm_source=api&utm_medium=api&utm_campaign=api2demo",
-    "link": "http://www.europeana.eu/api/v2/record/9200143/BibliographicResource_2000069378307.json?wskey=api2demo",
-    "timestamp_created_epoch": 1401837738149,
-    "timestamp_update_epoch": 1401990305253,
-    "timestamp_created": "2014-06-03T23:22:18.149Z",
-    "timestamp_update": "2014-06-05T17:45:05.253Z"
-  }, {
-    "id": "/9200143/BibliographicResource_2000069378267",
-    "ugc": [false],
-    "country": ["united kingdom"],
-    "europeanaCollectionName": ["9200143_Ag_EU_TEL_a1007_E.Libraries_Oxford"],
-    "dcLanguage": ["mul", "mul"],
-    "dcDescription": ["Tr. and digested under proper heads, by J.F. Rigaud."],
-    "edmLandingPage": ["http://europeana.eu/portal/record/9200143/BibliographicResource_2000069378267.html"],
-    "dcDescriptionLangAware": {
-      "def": ["Tr. and digested under proper heads, by J.F. Rigaud."]
-    },
-    "dcSubjectLangAware": {
-      "def": ["Association copies (Provenance), Johnson"]
-    },
-    "dcTypeLangAware": {
-      "en": ["Monograph"]
-    },
-    "edmIsShownBy": ["http://purl.ox.ac.uk/uuid/2314894525f142128345043909904e16"],
-    "edmPlaceLatitude": ["34.85213"],
-    "dctermsSpatial": ["http://sws.geonames.org/1370290/", "http://id.loc.gov/vocabulary/countries/uk"],
-    "edmTimespan": ["http://semium.org/time/1802", "http://semium.org/time/18xx_1_third", "http://semium.org/time/18xx", "http://semium.org/time/AD2xxx", "http://semium.org/time/ChronologicalPeriod", "http://semium.org/time/Time"],
-    "edmTimespanLabel": [{
-      "def": "1802"
-    }, {
-      "def": "19.."
-    }, {
-      "def": "19??"
-    }, {
-      "def": "19e"
-    }, {
-      "def": "Early 19th century"
-    }, {
-      "def": "19-th"
-    }, {
-      "def": "19th"
-    }, {
-      "def": "19th century"
-    }, {
-      "def": "Second millenium AD"
-    }, {
-      "def": "Second millenium AD, years 1001-2000"
-    }, {
-      "def": "Chronological period"
-    }, {
-      "def": "Time"
-    }, {
-      "def": "Начало 19-го века"
-    }, {
-      "def": "19й век"
-    }, {
-      "def": "19e siècle"
-    }, {
-      "def": "2e millénaire après J.-C."
-    }, {
-      "def": "19de eeuw"
-    }],
-    "rights": ["http://www.europeana.eu/rights/rr-f/"],
-    "edmPlaceLongitude": ["73.1634"],
-    "edmPlace": ["http://sws.geonames.org/1370290/"],
-    "edmPlaceLabel": [{
-      "def": "Lond"
-    }, {
-      "def": "Lond"
-    }],
-    "edmIsShownAt": ["http://www.europeana.eu/api/api2demo/redirect?shownAt=http%3A%2F%2Fsolo.bodleian.ox.ac.uk%2Fprimo_library%2Flibweb%2Faction%2Fdisplay.do%3Ftabs%3DdetailsTab%26ct%3Ddisplay%26fn%3Dsearch%26doc%3Doxfaleph014034073%26indx%3D1%26recIds%3Doxfaleph014034073&provider=The+European+Library&id=http%3A%2F%2Fwww.europeana.eu%2Fresolve%2Frecord%2F9200143%2FBibliographicResource_2000069378267&profile=rich"],
-    "edmAgent": ["http://dbpedia.org/resource/John_Francis_Rigaud"],
-    "edmAgentLabel": [{
-      "def": "Rigaud, John Francis"
-    }, {
-      "def": "John Francis Rigaud"
-    }],
-    "dcContributor": ["John Sidney. Hawkins", "John Sidney. Hawkins", "John Francis Rigaud", "John Francis Rigaud", "http://dbpedia.org/resource/John_Francis_Rigaud", "http://dbpedia.org/resource/John_Francis_Rigaud"],
-    "score": 5.5138044,
-    "edmPlaceLabelLangAware": {
-      "def": ["Lond", "Lond"]
-    },
-    "edmTimespanLabelLangAware": {
-      "ru": ["Начало 19-го века", "19й век"],
-      "def": ["1802", "19..", "19??", "19e"],
-      "en": ["Early 19th century", "19-th", "19th", "19th century", "Second millenium AD", "Second millenium AD, years 1001-2000", "Chronological period", "Time"],
-      "fr": ["19e siècle", "2e millénaire après J.-C."],
-      "nl": ["19de eeuw"]
-    },
-    "edmAgentLabelLangAware": {
-      "en": ["Rigaud, John Francis", "John Francis Rigaud"]
-    },
-    "previewNoDistribute": false,
-    "dcTitleLangAware": {
-      "def": ["A treatise on painting. To which is prefixed a new life of the author, by J.S. Hawkins"]
-    },
-    "dcCreatorLangAware": {
-      "def": ["Leonardo da. Vinci"]
-    },
-    "dcContributorLangAware": {
-      "def": ["John Sidney. Hawkins", "John Francis Rigaud", "http://dbpedia.org/resource/John_Francis_Rigaud"]
-    },
-    "dcLanguageLangAware": {
-      "def": ["mul", "mul"]
-    },
-    "title": ["A treatise on painting. To which is prefixed a new life of the author, by J.S. Hawkins"],
-    "dataProvider": ["Bodleian Libraries, University of Oxford"],
-    "dcCreator": ["Leonardo da. Vinci"],
-    "timestamp": 1436975659617,
-    "provider": ["The European Library"],
-    "year": ["1802"],
-    "language": ["en"],
-    "type": "TEXT",
-    "edmDatasetName": ["9200143_Ag_EU_TEL_a1007_E.Libraries_Oxford"],
-    "guid": "http://www.europeana.eu/portal/record/9200143/BibliographicResource_2000069378267.html?utm_source=api&utm_medium=api&utm_campaign=api2demo",
-    "link": "http://www.europeana.eu/api/v2/record/9200143/BibliographicResource_2000069378267.json?wskey=api2demo",
-    "timestamp_created_epoch": 1401837737400,
-    "timestamp_update_epoch": 1401990303161,
-    "timestamp_created": "2014-06-03T23:22:17.400Z",
-    "timestamp_update": "2014-06-05T17:45:03.161Z"
-  }]
+	"apikey": "api2demo",
+	"action": "--deprecated--",
+	"success": true,
+	"requestNumber": 999,
+	"itemsCount": 12,
+	"totalResults": 39,
+	"nextCursor": "AoE/DS85MjAwMTQzL0JpYmxpb2dyYXBoaWNSZXNvdXJjZV8yMDAwMDY5Mzc4MjY3",
+	"items": 
+	[
+		{
+			"id": "/92054/BibliographicResource_1000097998894",
+			"ugc": 
+			[
+				false
+			],
+
+			"completeness": 5,
+			"country": 
+			[
+				"slovenia"
+			],
+
+			"europeanaCollectionName": 
+			[
+				"92054_Ag_EU_TEL_a0309_Slovenia"
+			],
+
+			"dcLanguage": 
+			[
+				"sl"
+			],
+
+			"edmLandingPage": 
+			[
+				"http://europeana.eu/portal/record/92054/BibliographicResource_1000097998894.html"
+			],
+
+			"dcTypeLangAware": 
+			{
+				"def": 
+				[
+					"tekstovno gradivo, tiskano"
+				],
+
+				"en": 
+				[
+					"Still image"
+				]
+			},
+
+			"europeanaCompleteness": 5,
+			"edmTimespan": 
+			[
+				"http://semium.org/time/1898",
+				"http://semium.org/time/18xx_4_quarter",
+				"http://semium.org/time/18xx_2_half",
+				"http://semium.org/time/18xx",
+				"http://semium.org/time/AD2xxx",
+				"http://semium.org/time/ChronologicalPeriod",
+				"http://semium.org/time/Time"
+			],
+
+			"edmTimespanLabel": 
+			[
+				{
+					"def": "1898"
+				},
+
+				{
+					"def": "19.."
+				},
+
+				{
+					"def": "19??"
+				},
+
+				{
+					"def": "19e"
+				},
+
+				{
+					"def": "4e quart 19e siècle"
+				},
+
+				{
+					"def": "19e (fin)"
+				},
+
+				{
+					"def": "19e siècle"
+				},
+
+				{
+					"def": "2e millénaire après J.-C."
+				},
+
+				{
+					"def": "4 quarter of the 19th century"
+				},
+
+				{
+					"def": "Second half of the 19th century"
+				},
+
+				{
+					"def": "19-th"
+				},
+
+				{
+					"def": "19th"
+				},
+
+				{
+					"def": "19th century"
+				},
+
+				{
+					"def": "Second millenium AD"
+				},
+
+				{
+					"def": "Second millenium AD, years 1001-2000"
+				},
+
+				{
+					"def": "Chronological period"
+				},
+
+				{
+					"def": "Time"
+				},
+
+				{
+					"def": "4-я четверть 19-го века"
+				},
+
+				{
+					"def": "Вторая половина 19-го века"
+				},
+
+				{
+					"def": "19й век"
+				},
+
+				{
+					"def": "19de eeuw"
+				}
+			],
+
+			"rights": 
+			[
+				"http://creativecommons.org/publicdomain/zero/1.0/"
+			],
+
+			"edmIsShownAt": 
+			[
+				"http://www.europeana.eu/api/api2demo/redirect?shownAt=http%3A%2F%2Fwww.dlib.si%2F%3FURN%3DURN%3ANBN%3ASI%3Adoc-L0VESGJ5&provider=The+European+Library&id=http%3A%2F%2Fwww.europeana.eu%2Fresolve%2Frecord%2F92054%2FBibliographicResource_1000097998894&profile=rich"
+			],
+
+			"edmAgent": 
+			[
+				"http://dbpedia.org/resource/Leonardo_da_Vinci"
+			],
+
+			"edmAgentLabel": 
+			[
+				{
+					"def": "Leonardo da Vinci"
+				},
+
+				{
+					"def": "列奥纳多·达·芬奇"
+				},
+
+				{
+					"def": "Leonardo da Vinci"
+				},
+
+				{
+					"def": "Leonardo da Vinci"
+				},
+
+				{
+					"def": "Leonardo da Vinci"
+				},
+
+				{
+					"def": "Leonardo da Vinci"
+				},
+
+				{
+					"def": "Léonard de Vinci"
+				},
+
+				{
+					"def": "Leonardo da Vinci"
+				},
+
+				{
+					"def": "Леонардо да Винчи"
+				},
+
+				{
+					"def": "Leonardo da Vinci"
+				},
+
+				{
+					"def": "Leonardo da Vinci"
+				},
+
+				{
+					"def": "レオナルド・ダ・ヴィンチ"
+				}
+			],
+
+			"dcContributor": 
+			[
+				"Da Vinci, Leonardo",
+				"Da Vinci, Leonardo",
+				"http://dbpedia.org/resource/Leonardo_da_Vinci",
+				"http://dbpedia.org/resource/Leonardo_da_Vinci"
+			],
+
+			"edmPreview": 
+			[
+				"http://europeanastatic.eu/api/image?uri=http%3A%2F%2Fwww.dlib.si%2FStreamDB.aspx%3FURN%3DURN%3ANBN%3ASI%3Adoc-L0VESGJ5&size=LARGE&type=IMAGE"
+			],
+
+			"score": 10.965751,
+			"edmTimespanLabelLangAware": 
+			{
+				"ru": 
+				[
+					"4-я четверть 19-го века",
+					"Вторая половина 19-го века",
+					"19й век"
+				],
+
+				"def": 
+				[
+					"1898",
+					"19..",
+					"19??",
+					"19e"
+				],
+
+				"en": 
+				[
+					"4 quarter of the 19th century",
+					"Second half of the 19th century",
+					"19-th",
+					"19th",
+					"19th century",
+					"Second millenium AD",
+					"Second millenium AD, years 1001-2000",
+					"Chronological period",
+					"Time"
+				],
+
+				"fr": 
+				[
+					"4e quart 19e siècle",
+					"19e (fin)",
+					"19e siècle",
+					"2e millénaire après J.-C."
+				],
+
+				"nl": 
+				[
+					"19de eeuw"
+				]
+			},
+
+			"edmAgentLabelLangAware": 
+			{
+				"de": 
+				[
+					"Leonardo da Vinci"
+				],
+
+				"sv": 
+				[
+					"Leonardo da Vinci"
+				],
+
+				"ru": 
+				[
+					"Леонардо да Винчи"
+				],
+
+				"pt": 
+				[
+					"Leonardo da Vinci"
+				],
+
+				"ja": 
+				[
+					"レオナルド・ダ・ヴィンチ"
+				],
+
+				"en": 
+				[
+					"Leonardo da Vinci"
+				],
+
+				"it": 
+				[
+					"Leonardo da Vinci"
+				],
+
+				"pl": 
+				[
+					"Leonardo da Vinci"
+				],
+
+				"fr": 
+				[
+					"Léonard de Vinci"
+				],
+
+				"zh": 
+				[
+					"列奥纳多·达·芬奇"
+				],
+
+				"es": 
+				[
+					"Leonardo da Vinci"
+				],
+
+				"nl": 
+				[
+					"Leonardo da Vinci"
+				]
+			},
+
+			"previewNoDistribute": false,
+			"dcTitleLangAware": 
+			{
+				"def": 
+				[
+					"Sv. Družina"
+				]
+			},
+
+			"dcContributorLangAware": 
+			{
+				"def": 
+				[
+					"Da Vinci, Leonardo",
+					"http://dbpedia.org/resource/Leonardo_da_Vinci"
+				]
+			},
+
+			"dcLanguageLangAware": 
+			{
+				"def": 
+				[
+					"sl"
+				]
+			},
+
+			"title": 
+			[
+				"Sv. Družina"
+			],
+
+			"dataProvider": 
+			[
+				"National and University Library of Slovenia"
+			],
+
+			"timestamp": 1437294735505,
+			"provider": 
+			[
+				"The European Library"
+			],
+
+			"year": 
+			[
+				"1898"
+			],
+
+			"language": 
+			[
+				"sl"
+			],
+
+			"type": "IMAGE",
+			"edmDatasetName": 
+			[
+				"92054_Ag_EU_TEL_a0309_Slovenia"
+			],
+
+			"guid": "http://www.europeana.eu/portal/record/92054/BibliographicResource_1000097998894.html?utm_source=api&utm_medium=api&utm_campaign=api2demo",
+			"link": "http://www.europeana.eu/api/v2/record/92054/BibliographicResource_1000097998894.json?wskey=api2demo",
+			"timestamp_created_epoch": 1404121093336,
+			"timestamp_update_epoch": 1404121093336,
+			"timestamp_created": "2014-06-30T09:38:13.336Z",
+			"timestamp_update": "2014-06-30T09:38:13.336Z"
+		},
+
+		{
+			"id": "/92054/BibliographicResource_1000097997293",
+			"ugc": 
+			[
+				false
+			],
+
+			"completeness": 5,
+			"country": 
+			[
+				"slovenia"
+			],
+
+			"europeanaCollectionName": 
+			[
+				"92054_Ag_EU_TEL_a0309_Slovenia"
+			],
+
+			"dcLanguage": 
+			[
+				"sl"
+			],
+
+			"edmLandingPage": 
+			[
+				"http://europeana.eu/portal/record/92054/BibliographicResource_1000097997293.html"
+			],
+
+			"dcTypeLangAware": 
+			{
+				"def": 
+				[
+					"tekstovno gradivo, tiskano"
+				],
+
+				"en": 
+				[
+					"Still image"
+				]
+			},
+
+			"europeanaCompleteness": 5,
+			"edmTimespan": 
+			[
+				"http://semium.org/time/1897",
+				"http://semium.org/time/18xx_4_quarter",
+				"http://semium.org/time/18xx_2_half",
+				"http://semium.org/time/18xx",
+				"http://semium.org/time/AD2xxx",
+				"http://semium.org/time/ChronologicalPeriod",
+				"http://semium.org/time/Time"
+			],
+
+			"edmTimespanLabel": 
+			[
+				{
+					"def": "1897"
+				},
+
+				{
+					"def": "19.."
+				},
+
+				{
+					"def": "19??"
+				},
+
+				{
+					"def": "19e"
+				},
+
+				{
+					"def": "4e quart 19e siècle"
+				},
+
+				{
+					"def": "19e (fin)"
+				},
+
+				{
+					"def": "19e siècle"
+				},
+
+				{
+					"def": "2e millénaire après J.-C."
+				},
+
+				{
+					"def": "4 quarter of the 19th century"
+				},
+
+				{
+					"def": "Second half of the 19th century"
+				},
+
+				{
+					"def": "19-th"
+				},
+
+				{
+					"def": "19th"
+				},
+
+				{
+					"def": "19th century"
+				},
+
+				{
+					"def": "Second millenium AD"
+				},
+
+				{
+					"def": "Second millenium AD, years 1001-2000"
+				},
+
+				{
+					"def": "Chronological period"
+				},
+
+				{
+					"def": "Time"
+				},
+
+				{
+					"def": "4-я четверть 19-го века"
+				},
+
+				{
+					"def": "Вторая половина 19-го века"
+				},
+
+				{
+					"def": "19й век"
+				},
+
+				{
+					"def": "19de eeuw"
+				}
+			],
+
+			"rights": 
+			[
+				"http://creativecommons.org/publicdomain/zero/1.0/"
+			],
+
+			"edmIsShownAt": 
+			[
+				"http://www.europeana.eu/api/api2demo/redirect?shownAt=http%3A%2F%2Fwww.dlib.si%2F%3FURN%3DURN%3ANBN%3ASI%3Adoc-HJY9WDZ9&provider=The+European+Library&id=http%3A%2F%2Fwww.europeana.eu%2Fresolve%2Frecord%2F92054%2FBibliographicResource_1000097997293&profile=rich"
+			],
+
+			"edmAgent": 
+			[
+				"http://dbpedia.org/resource/Leonardo_da_Vinci"
+			],
+
+			"edmAgentLabel": 
+			[
+				{
+					"def": "Leonardo da Vinci"
+				},
+
+				{
+					"def": "列奥纳多·达·芬奇"
+				},
+
+				{
+					"def": "Leonardo da Vinci"
+				},
+
+				{
+					"def": "Leonardo da Vinci"
+				},
+
+				{
+					"def": "Leonardo da Vinci"
+				},
+
+				{
+					"def": "Leonardo da Vinci"
+				},
+
+				{
+					"def": "Léonard de Vinci"
+				},
+
+				{
+					"def": "Leonardo da Vinci"
+				},
+
+				{
+					"def": "Леонардо да Винчи"
+				},
+
+				{
+					"def": "Leonardo da Vinci"
+				},
+
+				{
+					"def": "Leonardo da Vinci"
+				},
+
+				{
+					"def": "レオナルド・ダ・ヴィンチ"
+				}
+			],
+
+			"dcContributor": 
+			[
+				"Da Vinci, Leonardo",
+				"Da Vinci, Leonardo",
+				"http://dbpedia.org/resource/Leonardo_da_Vinci",
+				"http://dbpedia.org/resource/Leonardo_da_Vinci"
+			],
+
+			"edmPreview": 
+			[
+				"http://europeanastatic.eu/api/image?uri=http%3A%2F%2Fwww.dlib.si%2FStreamDB.aspx%3FURN%3DURN%3ANBN%3ASI%3Adoc-HJY9WDZ9&size=LARGE&type=IMAGE"
+			],
+
+			"score": 10.993431,
+			"edmTimespanLabelLangAware": 
+			{
+				"ru": 
+				[
+					"4-я четверть 19-го века",
+					"Вторая половина 19-го века",
+					"19й век"
+				],
+
+				"def": 
+				[
+					"1897",
+					"19..",
+					"19??",
+					"19e"
+				],
+
+				"en": 
+				[
+					"4 quarter of the 19th century",
+					"Second half of the 19th century",
+					"19-th",
+					"19th",
+					"19th century",
+					"Second millenium AD",
+					"Second millenium AD, years 1001-2000",
+					"Chronological period",
+					"Time"
+				],
+
+				"fr": 
+				[
+					"4e quart 19e siècle",
+					"19e (fin)",
+					"19e siècle",
+					"2e millénaire après J.-C."
+				],
+
+				"nl": 
+				[
+					"19de eeuw"
+				]
+			},
+
+			"edmAgentLabelLangAware": 
+			{
+				"de": 
+				[
+					"Leonardo da Vinci"
+				],
+
+				"sv": 
+				[
+					"Leonardo da Vinci"
+				],
+
+				"ru": 
+				[
+					"Леонардо да Винчи"
+				],
+
+				"pt": 
+				[
+					"Leonardo da Vinci"
+				],
+
+				"ja": 
+				[
+					"レオナルド・ダ・ヴィンチ"
+				],
+
+				"en": 
+				[
+					"Leonardo da Vinci"
+				],
+
+				"it": 
+				[
+					"Leonardo da Vinci"
+				],
+
+				"pl": 
+				[
+					"Leonardo da Vinci"
+				],
+
+				"fr": 
+				[
+					"Léonard de Vinci"
+				],
+
+				"zh": 
+				[
+					"列奥纳多·达·芬奇"
+				],
+
+				"es": 
+				[
+					"Leonardo da Vinci"
+				],
+
+				"nl": 
+				[
+					"Leonardo da Vinci"
+				]
+			},
+
+			"previewNoDistribute": false,
+			"dcTitleLangAware": 
+			{
+				"def": 
+				[
+					"Kristus v »Zadnji večerji«"
+				]
+			},
+
+			"dcContributorLangAware": 
+			{
+				"def": 
+				[
+					"Da Vinci, Leonardo",
+					"http://dbpedia.org/resource/Leonardo_da_Vinci"
+				]
+			},
+
+			"dcLanguageLangAware": 
+			{
+				"def": 
+				[
+					"sl"
+				]
+			},
+
+			"title": 
+			[
+				"Kristus v »Zadnji večerji«"
+			],
+
+			"dataProvider": 
+			[
+				"National and University Library of Slovenia"
+			],
+
+			"timestamp": 1437294734573,
+			"provider": 
+			[
+				"The European Library"
+			],
+
+			"year": 
+			[
+				"1897"
+			],
+
+			"language": 
+			[
+				"sl"
+			],
+
+			"type": "IMAGE",
+			"edmDatasetName": 
+			[
+				"92054_Ag_EU_TEL_a0309_Slovenia"
+			],
+
+			"guid": "http://www.europeana.eu/portal/record/92054/BibliographicResource_1000097997293.html?utm_source=api&utm_medium=api&utm_campaign=api2demo",
+			"link": "http://www.europeana.eu/api/v2/record/92054/BibliographicResource_1000097997293.json?wskey=api2demo",
+			"timestamp_created_epoch": 1404121012966,
+			"timestamp_update_epoch": 1404121012966,
+			"timestamp_created": "2014-06-30T09:36:52.966Z",
+			"timestamp_update": "2014-06-30T09:36:52.966Z"
+		},
+
+		{
+			"id": "/92054/BibliographicResource_1000097992009",
+			"ugc": 
+			[
+				false
+			],
+
+			"completeness": 5,
+			"country": 
+			[
+				"slovenia"
+			],
+
+			"europeanaCollectionName": 
+			[
+				"92054_Ag_EU_TEL_a0309_Slovenia"
+			],
+
+			"dcLanguage": 
+			[
+				"sl"
+			],
+
+			"edmLandingPage": 
+			[
+				"http://europeana.eu/portal/record/92054/BibliographicResource_1000097992009.html"
+			],
+
+			"dcTypeLangAware": 
+			{
+				"def": 
+				[
+					"tekstovno gradivo, tiskano"
+				],
+
+				"en": 
+				[
+					"Still image"
+				]
+			},
+
+			"europeanaCompleteness": 5,
+			"edmTimespan": 
+			[
+				"http://semium.org/time/1893",
+				"http://semium.org/time/18xx_4_quarter",
+				"http://semium.org/time/18xx_2_half",
+				"http://semium.org/time/18xx",
+				"http://semium.org/time/AD2xxx",
+				"http://semium.org/time/ChronologicalPeriod",
+				"http://semium.org/time/Time"
+			],
+
+			"edmTimespanLabel": 
+			[
+				{
+					"def": "1893"
+				},
+
+				{
+					"def": "19.."
+				},
+
+				{
+					"def": "19??"
+				},
+
+				{
+					"def": "19e"
+				},
+
+				{
+					"def": "4e quart 19e siècle"
+				},
+
+				{
+					"def": "19e (fin)"
+				},
+
+				{
+					"def": "19e siècle"
+				},
+
+				{
+					"def": "2e millénaire après J.-C."
+				},
+
+				{
+					"def": "4 quarter of the 19th century"
+				},
+
+				{
+					"def": "Second half of the 19th century"
+				},
+
+				{
+					"def": "19-th"
+				},
+
+				{
+					"def": "19th"
+				},
+
+				{
+					"def": "19th century"
+				},
+
+				{
+					"def": "Second millenium AD"
+				},
+
+				{
+					"def": "Second millenium AD, years 1001-2000"
+				},
+
+				{
+					"def": "Chronological period"
+				},
+
+				{
+					"def": "Time"
+				},
+
+				{
+					"def": "4-я четверть 19-го века"
+				},
+
+				{
+					"def": "Вторая половина 19-го века"
+				},
+
+				{
+					"def": "19й век"
+				},
+
+				{
+					"def": "19de eeuw"
+				}
+			],
+
+			"rights": 
+			[
+				"http://creativecommons.org/publicdomain/zero/1.0/"
+			],
+
+			"edmIsShownAt": 
+			[
+				"http://www.europeana.eu/api/api2demo/redirect?shownAt=http%3A%2F%2Fwww.dlib.si%2F%3FURN%3DURN%3ANBN%3ASI%3Adoc-6D60ZV9K&provider=The+European+Library&id=http%3A%2F%2Fwww.europeana.eu%2Fresolve%2Frecord%2F92054%2FBibliographicResource_1000097992009&profile=rich"
+			],
+
+			"edmAgent": 
+			[
+				"http://dbpedia.org/resource/Leonardo_da_Vinci"
+			],
+
+			"edmAgentLabel": 
+			[
+				{
+					"def": "Leonardo da Vinci"
+				},
+
+				{
+					"def": "列奥纳多·达·芬奇"
+				},
+
+				{
+					"def": "Leonardo da Vinci"
+				},
+
+				{
+					"def": "Leonardo da Vinci"
+				},
+
+				{
+					"def": "Leonardo da Vinci"
+				},
+
+				{
+					"def": "Leonardo da Vinci"
+				},
+
+				{
+					"def": "Léonard de Vinci"
+				},
+
+				{
+					"def": "Leonardo da Vinci"
+				},
+
+				{
+					"def": "Леонардо да Винчи"
+				},
+
+				{
+					"def": "Leonardo da Vinci"
+				},
+
+				{
+					"def": "Leonardo da Vinci"
+				},
+
+				{
+					"def": "レオナルド・ダ・ヴィンチ"
+				}
+			],
+
+			"dcContributor": 
+			[
+				"Da Vinci, Leonardo",
+				"Da Vinci, Leonardo",
+				"http://dbpedia.org/resource/Leonardo_da_Vinci",
+				"http://dbpedia.org/resource/Leonardo_da_Vinci"
+			],
+
+			"edmPreview": 
+			[
+				"http://europeanastatic.eu/api/image?uri=http%3A%2F%2Fwww.dlib.si%2FStreamDB.aspx%3FURN%3DURN%3ANBN%3ASI%3Adoc-6D60ZV9K&size=LARGE&type=IMAGE"
+			],
+
+			"score": 10.965751,
+			"edmTimespanLabelLangAware": 
+			{
+				"ru": 
+				[
+					"4-я четверть 19-го века",
+					"Вторая половина 19-го века",
+					"19й век"
+				],
+
+				"def": 
+				[
+					"1893",
+					"19..",
+					"19??",
+					"19e"
+				],
+
+				"en": 
+				[
+					"4 quarter of the 19th century",
+					"Second half of the 19th century",
+					"19-th",
+					"19th",
+					"19th century",
+					"Second millenium AD",
+					"Second millenium AD, years 1001-2000",
+					"Chronological period",
+					"Time"
+				],
+
+				"fr": 
+				[
+					"4e quart 19e siècle",
+					"19e (fin)",
+					"19e siècle",
+					"2e millénaire après J.-C."
+				],
+
+				"nl": 
+				[
+					"19de eeuw"
+				]
+			},
+
+			"edmAgentLabelLangAware": 
+			{
+				"de": 
+				[
+					"Leonardo da Vinci"
+				],
+
+				"sv": 
+				[
+					"Leonardo da Vinci"
+				],
+
+				"ru": 
+				[
+					"Леонардо да Винчи"
+				],
+
+				"pt": 
+				[
+					"Leonardo da Vinci"
+				],
+
+				"ja": 
+				[
+					"レオナルド・ダ・ヴィンチ"
+				],
+
+				"en": 
+				[
+					"Leonardo da Vinci"
+				],
+
+				"it": 
+				[
+					"Leonardo da Vinci"
+				],
+
+				"pl": 
+				[
+					"Leonardo da Vinci"
+				],
+
+				"fr": 
+				[
+					"Léonard de Vinci"
+				],
+
+				"zh": 
+				[
+					"列奥纳多·达·芬奇"
+				],
+
+				"es": 
+				[
+					"Leonardo da Vinci"
+				],
+
+				"nl": 
+				[
+					"Leonardo da Vinci"
+				]
+			},
+
+			"previewNoDistribute": false,
+			"dcTitleLangAware": 
+			{
+				"def": 
+				[
+					"Jezus uči farizeje"
+				]
+			},
+
+			"dcContributorLangAware": 
+			{
+				"def": 
+				[
+					"Da Vinci, Leonardo",
+					"http://dbpedia.org/resource/Leonardo_da_Vinci"
+				]
+			},
+
+			"dcLanguageLangAware": 
+			{
+				"def": 
+				[
+					"sl"
+				]
+			},
+
+			"title": 
+			[
+				"Jezus uči farizeje"
+			],
+
+			"dataProvider": 
+			[
+				"National and University Library of Slovenia"
+			],
+
+			"timestamp": 1437294662821,
+			"provider": 
+			[
+				"The European Library"
+			],
+
+			"year": 
+			[
+				"1893"
+			],
+
+			"language": 
+			[
+				"sl"
+			],
+
+			"type": "IMAGE",
+			"edmDatasetName": 
+			[
+				"92054_Ag_EU_TEL_a0309_Slovenia"
+			],
+
+			"guid": "http://www.europeana.eu/portal/record/92054/BibliographicResource_1000097992009.html?utm_source=api&utm_medium=api&utm_campaign=api2demo",
+			"link": "http://www.europeana.eu/api/v2/record/92054/BibliographicResource_1000097992009.json?wskey=api2demo",
+			"timestamp_created_epoch": 1404120526434,
+			"timestamp_update_epoch": 1404120526434,
+			"timestamp_created": "2014-06-30T09:28:46.434Z",
+			"timestamp_update": "2014-06-30T09:28:46.434Z"
+		},
+
+		{
+			"id": "/9200386/BibliographicResource_3000045159597",
+			"ugc": 
+			[
+				false
+			],
+
+			"completeness": 8,
+			"country": 
+			[
+				"germany"
+			],
+
+			"europeanaCollectionName": 
+			[
+				"9200386_Ag_EU_TEL_a1194_BSB"
+			],
+
+			"dcLanguage": 
+			[
+				"it"
+			],
+
+			"dcDescription": 
+			[
+				"con nuove note e comm. di Gaetano Milanesi",
+				"Besitzer: München, Bayerische Staatsbibliothek -- 4 Art. 25 b"
+			],
+
+			"edmLandingPage": 
+			[
+				"http://europeana.eu/portal/record/9200386/BibliographicResource_3000045159597.html"
+			],
+
+			"dcDescriptionLangAware": 
+			{
+				"def": 
+				[
+					"con nuove note e comm. di Gaetano Milanesi",
+					"Besitzer: München, Bayerische Staatsbibliothek -- 4 Art. 25 b"
+				]
+			},
+
+			"dcTypeLangAware": 
+			{
+				"en": 
+				[
+					"Monograph"
+				]
+			},
+
+			"europeanaCompleteness": 8,
+			"edmPlaceLatitude": 
+			[
+				"41.89474"
+			],
+
+			"dctermsSpatial": 
+			[
+				"http://sws.geonames.org/3169070/"
+			],
+
+			"edmTimespan": 
+			[
+				"http://semium.org/time/1890",
+				"http://semium.org/time/18xx_4_quarter",
+				"http://semium.org/time/18xx_2_half",
+				"http://semium.org/time/18xx",
+				"http://semium.org/time/AD2xxx",
+				"http://semium.org/time/ChronologicalPeriod",
+				"http://semium.org/time/Time"
+			],
+
+			"edmTimespanLabel": 
+			[
+				{
+					"def": "1890"
+				},
+
+				{
+					"def": "19.."
+				},
+
+				{
+					"def": "19??"
+				},
+
+				{
+					"def": "19e"
+				},
+
+				{
+					"def": "4e quart 19e siècle"
+				},
+
+				{
+					"def": "19e (fin)"
+				},
+
+				{
+					"def": "19e siècle"
+				},
+
+				{
+					"def": "2e millénaire après J.-C."
+				},
+
+				{
+					"def": "4 quarter of the 19th century"
+				},
+
+				{
+					"def": "Second half of the 19th century"
+				},
+
+				{
+					"def": "19-th"
+				},
+
+				{
+					"def": "19th"
+				},
+
+				{
+					"def": "19th century"
+				},
+
+				{
+					"def": "Second millenium AD"
+				},
+
+				{
+					"def": "Second millenium AD, years 1001-2000"
+				},
+
+				{
+					"def": "Chronological period"
+				},
+
+				{
+					"def": "Time"
+				},
+
+				{
+					"def": "4-я четверть 19-го века"
+				},
+
+				{
+					"def": "Вторая половина 19-го века"
+				},
+
+				{
+					"def": "19й век"
+				},
+
+				{
+					"def": "19de eeuw"
+				}
+			],
+
+			"rights": 
+			[
+				"http://creativecommons.org/licenses/by-nc-sa/4.0/"
+			],
+
+			"edmPlaceLongitude": 
+			[
+				"12.4839"
+			],
+
+			"edmPlace": 
+			[
+				"http://sws.geonames.org/3169070/",
+				"http://lod.b3kat.de/bib/DE-12"
+			],
+
+			"edmPlaceLabel": 
+			[
+				{
+					"def": "Roma"
+				}
+			],
+
+			"edmIsShownAt": 
+			[
+				"http://www.europeana.eu/api/api2demo/redirect?shownAt=http%3A%2F%2Fnbn-resolving.de%2Furn%2Fresolver.pl%3Furn%3Durn%3Anbn%3Ade%3Abvb%3A12-bsb00079539-6&provider=The+European+Library&id=http%3A%2F%2Fwww.europeana.eu%2Fresolve%2Frecord%2F9200386%2FBibliographicResource_3000045159597&profile=rich"
+			],
+
+			"edmAgent": 
+			[
+				"http://d-nb.info/gnd/118640445",
+				"http://d-nb.info/gnd/101948956",
+				"http://d-nb.info/gnd/118626213"
+			],
+
+			"edmAgentLabel": 
+			[
+				{
+					"def": "Leonardo <da Vinci>"
+				}
+			],
+
+			"dcContributor": 
+			[
+				"http://d-nb.info/gnd/101948956",
+				"http://d-nb.info/gnd/101948956",
+				"http://d-nb.info/gnd/118626213",
+				"http://d-nb.info/gnd/118626213"
+			],
+
+			"edmPreview": 
+			[
+				"http://europeanastatic.eu/api/image?uri=http%3A%2F%2Fbsb0mdz-upload.bsb.lrz.de%2F%7Eeuropeana%2Fbsb00079539%2Fdownload%2Fthumbs%2Fbsb00079539_00001.jpg&size=LARGE&type=TEXT"
+			],
+
+			"score": 3.8991282,
+			"edmPlaceLabelLangAware": 
+			{
+				"def": 
+				[
+					"Roma"
+				]
+			},
+
+			"edmTimespanLabelLangAware": 
+			{
+				"ru": 
+				[
+					"4-я четверть 19-го века",
+					"Вторая половина 19-го века",
+					"19й век"
+				],
+
+				"def": 
+				[
+					"1890",
+					"19..",
+					"19??",
+					"19e"
+				],
+
+				"en": 
+				[
+					"4 quarter of the 19th century",
+					"Second half of the 19th century",
+					"19-th",
+					"19th",
+					"19th century",
+					"Second millenium AD",
+					"Second millenium AD, years 1001-2000",
+					"Chronological period",
+					"Time"
+				],
+
+				"fr": 
+				[
+					"4e quart 19e siècle",
+					"19e (fin)",
+					"19e siècle",
+					"2e millénaire après J.-C."
+				],
+
+				"nl": 
+				[
+					"19de eeuw"
+				]
+			},
+
+			"edmAgentLabelLangAware": 
+			{
+				"def": 
+				[
+					"Leonardo <da Vinci>"
+				]
+			},
+
+			"previewNoDistribute": false,
+			"dcTitleLangAware": 
+			{
+				"def": 
+				[
+					"Trattato della pittura di Leonardo da Vinci condotto sul Cod. Vaticano Urbinate 1270"
+				]
+			},
+
+			"dcCreatorLangAware": 
+			{
+				"def": 
+				[
+					"http://d-nb.info/gnd/118640445"
+				]
+			},
+
+			"dcContributorLangAware": 
+			{
+				"def": 
+				[
+					"http://d-nb.info/gnd/101948956",
+					"http://d-nb.info/gnd/118626213"
+				]
+			},
+
+			"dcLanguageLangAware": 
+			{
+				"def": 
+				[
+					"it"
+				]
+			},
+
+			"title": 
+			[
+				"Trattato della pittura di Leonardo da Vinci condotto sul Cod. Vaticano Urbinate 1270",
+				"Trattato della pittura"
+			],
+
+			"dataProvider": 
+			[
+				"Bavarian State Library"
+			],
+
+			"dcCreator": 
+			[
+				"http://d-nb.info/gnd/118640445"
+			],
+
+			"timestamp": 1456517070018,
+			"provider": 
+			[
+				"The European Library"
+			],
+
+			"year": 
+			[
+				"1890"
+			],
+
+			"language": 
+			[
+				"de"
+			],
+
+			"type": "TEXT",
+			"edmDatasetName": 
+			[
+				"9200386_Ag_EU_TEL_a1194_BSB"
+			],
+
+			"guid": "http://www.europeana.eu/portal/record/9200386/BibliographicResource_3000045159597.html?utm_source=api&utm_medium=api&utm_campaign=api2demo",
+			"link": "http://www.europeana.eu/api/v2/record/9200386/BibliographicResource_3000045159597.json?wskey=api2demo",
+			"timestamp_created_epoch": 1417912802522,
+			"timestamp_update_epoch": 1456279453329,
+			"timestamp_created": "2014-12-07T00:40:02.522Z",
+			"timestamp_update": "2016-02-24T02:04:13.329Z"
+		},
+
+		{
+			"id": "/9200386/BibliographicResource_3000044989583",
+			"ugc": 
+			[
+				false
+			],
+
+			"completeness": 8,
+			"country": 
+			[
+				"germany"
+			],
+
+			"europeanaCollectionName": 
+			[
+				"9200386_Ag_EU_TEL_a1194_BSB"
+			],
+
+			"dcLanguage": 
+			[
+				"de"
+			],
+
+			"dcDescription": 
+			[
+				"Neue Ausg.",
+				"gehalten von Anton Joseph Binterim. [[Illustr.:] L[eonardo da Vinci ; E[duard] Schuler]",
+				"Besitzer: München, Bayerische Staatsbibliothek -- H.eccl. 3203 c#Beibd.1"
+			],
+
+			"edmLandingPage": 
+			[
+				"http://europeana.eu/portal/record/9200386/BibliographicResource_3000044989583.html"
+			],
+
+			"dcDescriptionLangAware": 
+			{
+				"def": 
+				[
+					"Neue Ausg.",
+					"gehalten von Anton Joseph Binterim. [[Illustr.:] L[eonardo da Vinci ; E[duard] Schuler]",
+					"Besitzer: München, Bayerische Staatsbibliothek -- H.eccl. 3203 c#Beibd.1"
+				]
+			},
+
+			"dcTypeLangAware": 
+			{
+				"en": 
+				[
+					"Monograph"
+				]
+			},
+
+			"europeanaCompleteness": 8,
+			"edmPlaceLatitude": 
+			[
+				"50.93333"
+			],
+
+			"dctermsSpatial": 
+			[
+				"http://sws.geonames.org/2886242/"
+			],
+
+			"edmTimespan": 
+			[
+				"http://semium.org/time/1837",
+				"http://semium.org/time/18xx_2_third",
+				"http://semium.org/time/18xx",
+				"http://semium.org/time/AD2xxx",
+				"http://semium.org/time/ChronologicalPeriod",
+				"http://semium.org/time/Time"
+			],
+
+			"edmTimespanLabel": 
+			[
+				{
+					"def": "1837"
+				},
+
+				{
+					"def": "19.."
+				},
+
+				{
+					"def": "19??"
+				},
+
+				{
+					"def": "19e"
+				},
+
+				{
+					"def": "Mid 19th century"
+				},
+
+				{
+					"def": "19-th"
+				},
+
+				{
+					"def": "19th"
+				},
+
+				{
+					"def": "19th century"
+				},
+
+				{
+					"def": "Second millenium AD"
+				},
+
+				{
+					"def": "Second millenium AD, years 1001-2000"
+				},
+
+				{
+					"def": "Chronological period"
+				},
+
+				{
+					"def": "Time"
+				},
+
+				{
+					"def": "Середина 19-го века"
+				},
+
+				{
+					"def": "19й век"
+				},
+
+				{
+					"def": "19e siècle"
+				},
+
+				{
+					"def": "2e millénaire après J.-C."
+				},
+
+				{
+					"def": "19de eeuw"
+				}
+			],
+
+			"rights": 
+			[
+				"http://www.europeana.eu/rights/out-of-copyright-non-commercial/"
+			],
+
+			"edmPlaceLongitude": 
+			[
+				"6.95"
+			],
+
+			"edmPlace": 
+			[
+				"http://sws.geonames.org/2886242/",
+				"http://lod.b3kat.de/bib/DE-12"
+			],
+
+			"edmPlaceLabel": 
+			[
+				{
+					"def": "Cologne"
+				},
+
+				{
+					"def": "Lungsod ng Cologne"
+				},
+
+				{
+					"def": "Colònia"
+				},
+
+				{
+					"def": "Köln"
+				},
+
+				{
+					"def": "Köln"
+				},
+
+				{
+					"def": "Köln"
+				},
+
+				{
+					"def": "Köln"
+				},
+
+				{
+					"def": "โคโลญ"
+				},
+
+				{
+					"def": "Köln"
+				},
+
+				{
+					"def": "Cologne"
+				},
+
+				{
+					"def": "Köln"
+				},
+
+				{
+					"def": "Кьолн"
+				},
+
+				{
+					"def": "Köln"
+				},
+
+				{
+					"def": "Kolín nad Rýnom"
+				},
+
+				{
+					"def": "Köln"
+				},
+
+				{
+					"def": "Келн"
+				},
+
+				{
+					"def": "Köln"
+				},
+
+				{
+					"def": "Köln"
+				},
+
+				{
+					"def": "쾰른"
+				},
+
+				{
+					"def": "קלן"
+				},
+
+				{
+					"def": "Kolín nad Rýnem"
+				},
+
+				{
+					"def": "Kölle"
+				},
+
+				{
+					"def": "Colonia Agrippina"
+				},
+
+				{
+					"def": "Colonia Claudia Agrippina"
+				},
+
+				{
+					"def": "Kolonia"
+				},
+
+				{
+					"def": "Köln"
+				},
+
+				{
+					"def": "Кёльн"
+				},
+
+				{
+					"def": "Köln"
+				},
+
+				{
+					"def": "科隆"
+				},
+
+				{
+					"def": "Köln"
+				},
+
+				{
+					"def": "Köln"
+				},
+
+				{
+					"def": "Köln"
+				},
+
+				{
+					"def": "Ķelne"
+				},
+
+				{
+					"def": "Kelnas"
+				},
+
+				{
+					"def": "Köln"
+				},
+
+				{
+					"def": "Köln"
+				},
+
+				{
+					"def": "Köln"
+				},
+
+				{
+					"def": "Augusta Ubiorum"
+				},
+
+				{
+					"def": "Colonia Agrippinensis"
+				},
+
+				{
+					"def": "Koeln"
+				},
+
+				{
+					"def": "Köln"
+				},
+
+				{
+					"def": "Келн"
+				},
+
+				{
+					"def": "Köln"
+				},
+
+				{
+					"def": "Colonia"
+				},
+
+				{
+					"def": "Cologne"
+				},
+
+				{
+					"def": "کلن"
+				},
+
+				{
+					"def": "كولونيا"
+				},
+
+				{
+					"def": "Κολωνία"
+				},
+
+				{
+					"def": "Colônia"
+				},
+
+				{
+					"def": "Kolonjo"
+				},
+
+				{
+					"def": "Cologne"
+				},
+
+				{
+					"def": "Köln"
+				},
+
+				{
+					"def": "Colonia"
+				},
+
+				{
+					"def": "Keulen"
+				},
+
+				{
+					"def": "ケルン"
+				},
+
+				{
+					"def": "Keulen"
+				}
+			],
+
+			"edmIsShownAt": 
+			[
+				"http://www.europeana.eu/api/api2demo/redirect?shownAt=http%3A%2F%2Fwww.mdz-nbn-resolving.de%2Furn%2Fresolver.pl%3Furn%3Durn%3Anbn%3Ade%3Abvb%3A12-bsb11006357-3&provider=The+European+Library&id=http%3A%2F%2Fwww.europeana.eu%2Fresolve%2Frecord%2F9200386%2FBibliographicResource_3000044989583&profile=rich"
+			],
+
+			"edmAgent": 
+			[
+				"http://d-nb.info/gnd/116184221",
+				"http://d-nb.info/gnd/118640445",
+				"http://d-nb.info/gnd/104117044"
+			],
+
+			"edmAgentLabel": 
+			[
+				{
+					"def": "Leonardo <da Vinci>"
+				}
+			],
+
+			"dcContributor": 
+			[
+				"http://d-nb.info/gnd/118640445",
+				"http://d-nb.info/gnd/118640445",
+				"http://d-nb.info/gnd/104117044",
+				"http://d-nb.info/gnd/104117044"
+			],
+
+			"edmPreview": 
+			[
+				"http://europeanastatic.eu/api/image?uri=http%3A%2F%2Fbsb0mdz-upload.bsb.lrz.de%2F%7Eeuropeana%2Fbsb11006357%2Fdownload%2Fthumbs%2Fbsb11006357_00012.jpg&size=LARGE&type=TEXT"
+			],
+
+			"score": 3.8991282,
+			"edmPlaceLabelLangAware": 
+			{
+				"de": 
+				[
+					"Köln"
+				],
+
+				"def": 
+				[
+					"Augusta Ubiorum",
+					"Colonia Agrippinensis",
+					"Koeln",
+					"Köln"
+				],
+
+				"pt": 
+				[
+					"Colônia"
+				],
+
+				"lt": 
+				[
+					"Kelnas"
+				],
+
+				"hr": 
+				[
+					"Köln"
+				],
+
+				"lv": 
+				[
+					"Ķelne"
+				],
+
+				"hu": 
+				[
+					"Köln"
+				],
+
+				"id": 
+				[
+					"Köln"
+				],
+
+				"mk": 
+				[
+					"Келн"
+				],
+
+				"af": 
+				[
+					"Keulen"
+				],
+
+				"ms": 
+				[
+					"Cologne"
+				],
+
+				"el": 
+				[
+					"Κολωνία"
+				],
+
+				"en": 
+				[
+					"Cologne"
+				],
+
+				"is": 
+				[
+					"Köln"
+				],
+
+				"eo": 
+				[
+					"Kolonjo"
+				],
+
+				"it": 
+				[
+					"Colonia"
+				],
+
+				"zh": 
+				[
+					"科隆"
+				],
+
+				"es": 
+				[
+					"Colonia"
+				],
+
+				"et": 
+				[
+					"Köln"
+				],
+
+				"ar": 
+				[
+					"كولونيا"
+				],
+
+				"vi": 
+				[
+					"Köln"
+				],
+
+				"ja": 
+				[
+					"ケルン"
+				],
+
+				"vo": 
+				[
+					"Köln"
+				],
+
+				"fa": 
+				[
+					"کلن"
+				],
+
+				"ro": 
+				[
+					"Köln"
+				],
+
+				"nl": 
+				[
+					"Keulen"
+				],
+
+				"nn": 
+				[
+					"Köln"
+				],
+
+				"no": 
+				[
+					"Köln"
+				],
+
+				"fi": 
+				[
+					"Köln"
+				],
+
+				"ru": 
+				[
+					"Кёльн"
+				],
+
+				"bg": 
+				[
+					"Кьолн"
+				],
+
+				"fr": 
+				[
+					"Cologne"
+				],
+
+				"bs": 
+				[
+					"Köln"
+				],
+
+				"sk": 
+				[
+					"Kolín nad Rýnom"
+				],
+
+				"sl": 
+				[
+					"Köln"
+				],
+
+				"ca": 
+				[
+					"Colònia"
+				],
+
+				"sq": 
+				[
+					"Köln"
+				],
+
+				"sr": 
+				[
+					"Келн"
+				],
+
+				"sv": 
+				[
+					"Köln"
+				],
+
+				"ko": 
+				[
+					"쾰른"
+				],
+
+				"ku": 
+				[
+					"Köln"
+				],
+
+				"cs": 
+				[
+					"Kolín nad Rýnem"
+				],
+
+				"th": 
+				[
+					"โคโลญ"
+				],
+
+				"la": 
+				[
+					"Colonia Agrippina",
+					"Colonia Claudia Agrippina"
+				],
+
+				"lb": 
+				[
+					"Köln"
+				],
+
+				"tl": 
+				[
+					"Cologne",
+					"Lungsod ng Cologne"
+				],
+
+				"pl": 
+				[
+					"Kolonia"
+				],
+
+				"da": 
+				[
+					"Köln"
+				],
+
+				"he": 
+				[
+					"קלן"
+				],
+
+				"li": 
+				[
+					"Kölle"
+				],
+
+				"tr": 
+				[
+					"Köln"
+				]
+			},
+
+			"edmTimespanLabelLangAware": 
+			{
+				"ru": 
+				[
+					"Середина 19-го века",
+					"19й век"
+				],
+
+				"def": 
+				[
+					"1837",
+					"19..",
+					"19??",
+					"19e"
+				],
+
+				"en": 
+				[
+					"Mid 19th century",
+					"19-th",
+					"19th",
+					"19th century",
+					"Second millenium AD",
+					"Second millenium AD, years 1001-2000",
+					"Chronological period",
+					"Time"
+				],
+
+				"fr": 
+				[
+					"19e siècle",
+					"2e millénaire après J.-C."
+				],
+
+				"nl": 
+				[
+					"19de eeuw"
+				]
+			},
+
+			"edmAgentLabelLangAware": 
+			{
+				"def": 
+				[
+					"Leonardo <da Vinci>"
+				]
+			},
+
+			"previewNoDistribute": false,
+			"dcTitleLangAware": 
+			{
+				"def": 
+				[
+					"Zwölf Reden bei der Feierlichkeit der ersten heiligen Communion der Kinder"
+				]
+			},
+
+			"dcCreatorLangAware": 
+			{
+				"def": 
+				[
+					"http://d-nb.info/gnd/116184221"
+				]
+			},
+
+			"dcContributorLangAware": 
+			{
+				"def": 
+				[
+					"http://d-nb.info/gnd/118640445",
+					"http://d-nb.info/gnd/104117044"
+				]
+			},
+
+			"dcLanguageLangAware": 
+			{
+				"def": 
+				[
+					"de"
+				]
+			},
+
+			"title": 
+			[
+				"Zwölf Reden bei der Feierlichkeit der ersten heiligen Communion der Kinder",
+				"Reden bei der Feierlichkeit der ersten heiligen Communion der Kinder"
+			],
+
+			"dataProvider": 
+			[
+				"Bavarian State Library"
+			],
+
+			"dcCreator": 
+			[
+				"http://d-nb.info/gnd/116184221"
+			],
+
+			"timestamp": 1456512920158,
+			"provider": 
+			[
+				"The European Library"
+			],
+
+			"year": 
+			[
+				"1837"
+			],
+
+			"language": 
+			[
+				"de"
+			],
+
+			"type": "TEXT",
+			"edmDatasetName": 
+			[
+				"9200386_Ag_EU_TEL_a1194_BSB"
+			],
+
+			"guid": "http://www.europeana.eu/portal/record/9200386/BibliographicResource_3000044989583.html?utm_source=api&utm_medium=api&utm_campaign=api2demo",
+			"link": "http://www.europeana.eu/api/v2/record/9200386/BibliographicResource_3000044989583.json?wskey=api2demo",
+			"timestamp_created_epoch": 1417907189569,
+			"timestamp_update_epoch": 1456275567722,
+			"timestamp_created": "2014-12-06T23:06:29.569Z",
+			"timestamp_update": "2016-02-24T00:59:27.722Z"
+		},
+
+		{
+			"id": "/9200386/BibliographicResource_3000044907765",
+			"ugc": 
+			[
+				false
+			],
+
+			"completeness": 9,
+			"country": 
+			[
+				"germany"
+			],
+
+			"europeanaCollectionName": 
+			[
+				"9200386_Ag_EU_TEL_a1194_BSB"
+			],
+
+			"dcLanguage": 
+			[
+				"it"
+			],
+
+			"dcDescription": 
+			[
+				"di Lionardo da Vinci",
+				"Besitzer: München, Bayerische Staatsbibliothek -- 4 Art. 25-1/2"
+			],
+
+			"edmLandingPage": 
+			[
+				"http://europeana.eu/portal/record/9200386/BibliographicResource_3000044907765.html"
+			],
+
+			"dcDescriptionLangAware": 
+			{
+				"def": 
+				[
+					"di Lionardo da Vinci",
+					"Besitzer: München, Bayerische Staatsbibliothek -- 4 Art. 25-1/2"
+				]
+			},
+
+			"dcTypeLangAware": 
+			{
+				"en": 
+				[
+					"Monograph"
+				]
+			},
+
+			"europeanaCompleteness": 9,
+			"edmPlaceLatitude": 
+			[
+				"41.89474"
+			],
+
+			"dctermsSpatial": 
+			[
+				"http://sws.geonames.org/3169070/"
+			],
+
+			"edmTimespan": 
+			[
+				"http://semium.org/time/1817",
+				"http://semium.org/time/18xx_1_third",
+				"http://semium.org/time/18xx",
+				"http://semium.org/time/AD2xxx",
+				"http://semium.org/time/ChronologicalPeriod",
+				"http://semium.org/time/Time"
+			],
+
+			"edmTimespanLabel": 
+			[
+				{
+					"def": "1817"
+				},
+
+				{
+					"def": "19.."
+				},
+
+				{
+					"def": "19??"
+				},
+
+				{
+					"def": "19e"
+				},
+
+				{
+					"def": "Early 19th century"
+				},
+
+				{
+					"def": "19-th"
+				},
+
+				{
+					"def": "19th"
+				},
+
+				{
+					"def": "19th century"
+				},
+
+				{
+					"def": "Second millenium AD"
+				},
+
+				{
+					"def": "Second millenium AD, years 1001-2000"
+				},
+
+				{
+					"def": "Chronological period"
+				},
+
+				{
+					"def": "Time"
+				},
+
+				{
+					"def": "Начало 19-го века"
+				},
+
+				{
+					"def": "19й век"
+				},
+
+				{
+					"def": "19e siècle"
+				},
+
+				{
+					"def": "2e millénaire après J.-C."
+				},
+
+				{
+					"def": "19de eeuw"
+				}
+			],
+
+			"rights": 
+			[
+				"http://www.europeana.eu/rights/out-of-copyright-non-commercial/"
+			],
+
+			"edmPlaceLongitude": 
+			[
+				"12.4839"
+			],
+
+			"edmPlace": 
+			[
+				"http://sws.geonames.org/3169070/",
+				"http://lod.b3kat.de/bib/DE-12"
+			],
+
+			"edmPlaceLabel": 
+			[
+				{
+					"def": "Roma"
+				}
+			],
+
+			"edmIsShownAt": 
+			[
+				"http://www.europeana.eu/api/api2demo/redirect?shownAt=http%3A%2F%2Fwww.mdz-nbn-resolving.de%2Furn%2Fresolver.pl%3Furn%3Durn%3Anbn%3Ade%3Abvb%3A12-bsb10222300-4&provider=The+European+Library&id=http%3A%2F%2Fwww.europeana.eu%2Fresolve%2Frecord%2F9200386%2FBibliographicResource_3000044907765&profile=rich"
+			],
+
+			"edmAgent": 
+			[
+				"http://d-nb.info/gnd/118640445",
+				"http://d-nb.info/gnd/116737581"
+			],
+
+			"edmAgentLabel": 
+			[
+				{
+					"def": "Leonardo <da Vinci>"
+				}
+			],
+
+			"dcContributor": 
+			[
+				"http://d-nb.info/gnd/116737581",
+				"http://d-nb.info/gnd/116737581"
+			],
+
+			"edmPreview": 
+			[
+				"http://europeanastatic.eu/api/image?uri=http%3A%2F%2Fbsb0mdz-upload.bsb.lrz.de%2F%7Eeuropeana%2Fbsb10222300%2Fdownload%2Fthumbs%2Fbsb10222300_00003.jpg&size=LARGE&type=TEXT"
+			],
+
+			"score": 3.9067786,
+			"edmPlaceLabelLangAware": 
+			{
+				"def": 
+				[
+					"Roma"
+				]
+			},
+
+			"edmTimespanLabelLangAware": 
+			{
+				"ru": 
+				[
+					"Начало 19-го века",
+					"19й век"
+				],
+
+				"def": 
+				[
+					"1817",
+					"19..",
+					"19??",
+					"19e"
+				],
+
+				"en": 
+				[
+					"Early 19th century",
+					"19-th",
+					"19th",
+					"19th century",
+					"Second millenium AD",
+					"Second millenium AD, years 1001-2000",
+					"Chronological period",
+					"Time"
+				],
+
+				"fr": 
+				[
+					"19e siècle",
+					"2e millénaire après J.-C."
+				],
+
+				"nl": 
+				[
+					"19de eeuw"
+				]
+			},
+
+			"edmAgentLabelLangAware": 
+			{
+				"def": 
+				[
+					"Leonardo <da Vinci>"
+				]
+			},
+
+			"previewNoDistribute": false,
+			"dcTitleLangAware": 
+			{
+				"def": 
+				[
+					"Trattato della pittura tratto da un codice della Biblioteca Vaticana - [2]: Disegni che illustrano l'opera del trattato della pittura di Lionardo da Vinci, tratti fedelmente dagli originale del codice Vaticano"
+				]
+			},
+
+			"dcCreatorLangAware": 
+			{
+				"def": 
+				[
+					"http://d-nb.info/gnd/118640445"
+				]
+			},
+
+			"dcContributorLangAware": 
+			{
+				"def": 
+				[
+					"http://d-nb.info/gnd/116737581"
+				]
+			},
+
+			"dcLanguageLangAware": 
+			{
+				"def": 
+				[
+					"it"
+				]
+			},
+
+			"title": 
+			[
+				"Trattato della pittura tratto da un codice della Biblioteca Vaticana - [2]: Disegni che illustrano l'opera del trattato della pittura di Lionardo da Vinci, tratti fedelmente dagli originale del codice Vaticano"
+			],
+
+			"dataProvider": 
+			[
+				"Bavarian State Library"
+			],
+
+			"dcCreator": 
+			[
+				"http://d-nb.info/gnd/118640445"
+			],
+
+			"timestamp": 1456511093799,
+			"provider": 
+			[
+				"The European Library"
+			],
+
+			"year": 
+			[
+				"1817"
+			],
+
+			"language": 
+			[
+				"de"
+			],
+
+			"type": "TEXT",
+			"edmDatasetName": 
+			[
+				"9200386_Ag_EU_TEL_a1194_BSB"
+			],
+
+			"guid": "http://www.europeana.eu/portal/record/9200386/BibliographicResource_3000044907765.html?utm_source=api&utm_medium=api&utm_campaign=api2demo",
+			"link": "http://www.europeana.eu/api/v2/record/9200386/BibliographicResource_3000044907765.json?wskey=api2demo",
+			"timestamp_created_epoch": 1417904536623,
+			"timestamp_update_epoch": 1456273640405,
+			"timestamp_created": "2014-12-06T22:22:16.623Z",
+			"timestamp_update": "2016-02-24T00:27:20.405Z"
+		},
+
+		{
+			"id": "/9200386/BibliographicResource_3000044907447",
+			"ugc": 
+			[
+				false
+			],
+
+			"completeness": 6,
+			"country": 
+			[
+				"germany"
+			],
+
+			"europeanaCollectionName": 
+			[
+				"9200386_Ag_EU_TEL_a1194_BSB"
+			],
+
+			"dcLanguage": 
+			[
+				"it"
+			],
+
+			"edmConceptPrefLabelLangAware": 
+			{
+				"no": 
+				[
+					"hydraulikk"
+				],
+
+				"de": 
+				[
+					"Hydraulik"
+				],
+
+				"fi": 
+				[
+					"hydrauliikka, nestemekaniikka"
+				],
+
+				"ru": 
+				[
+					"гидравлика"
+				],
+
+				"def": 
+				[
+					"水利学",
+					"hydraulics"
+				],
+
+				"pt": 
+				[
+					"hidráulica"
+				],
+
+				"bg": 
+				[
+					"Хидравлика"
+				],
+
+				"lt": 
+				[
+					"hidraulika"
+				],
+
+				"lv": 
+				[
+					"hidraulika"
+				],
+
+				"fr": 
+				[
+					"hydraulique"
+				],
+
+				"hu": 
+				[
+					"hidraulika"
+				],
+
+				"sk": 
+				[
+					"hydraulika"
+				],
+
+				"sl": 
+				[
+					"hidravlika"
+				],
+
+				"sv": 
+				[
+					"hydraulik; vattenbyggnad"
+				],
+
+				"mt": 
+				[
+					"idrawlika"
+				],
+
+				"el": 
+				[
+					"υδραυλική"
+				],
+
+				"en": 
+				[
+					"hydraulics"
+				],
+
+				"it": 
+				[
+					"idraulica"
+				],
+
+				"es": 
+				[
+					"hidráulica"
+				],
+
+				"et": 
+				[
+					"hüdraulika"
+				],
+
+				"eu": 
+				[
+					"hidraulika"
+				],
+
+				"cs": 
+				[
+					"hydraulika"
+				],
+
+				"ar": 
+				[
+					"ميكانيكا الموائع"
+				],
+
+				"pl": 
+				[
+					"hydraulika"
+				],
+
+				"da": 
+				[
+					"hydraulik"
+				],
+
+				"ro": 
+				[
+					"hidraulică"
+				],
+
+				"tr": 
+				[
+					"hidrolik"
+				],
+
+				"nl": 
+				[
+					"hydraulica"
+				]
+			},
+
+			"dcDescription": 
+			[
+				"Raccolta d'autori Italiani che trattano del moto dell'acque ; 10",
+				"Besitzer: München, Bayerische Staatsbibliothek -- 4 A.hydr. 73 y-10"
+			],
+
+			"edmLandingPage": 
+			[
+				"http://europeana.eu/portal/record/9200386/BibliographicResource_3000044907447.html"
+			],
+
+			"dcDescriptionLangAware": 
+			{
+				"def": 
+				[
+					"Raccolta d'autori Italiani che trattano del moto dell'acque ; 10",
+					"Besitzer: München, Bayerische Staatsbibliothek -- 4 A.hydr. 73 y-10"
+				]
+			},
+
+			"dcSubjectLangAware": 
+			{
+				"def": 
+				[
+					"http://d-nb.info/gnd/118640445",
+					"Library of Congress Classification: TC160",
+					"Dewey Decimal Classification: 627.01",
+					"Hydrodynamics, 15th cent",
+					"Hydraulik",
+					"http://d-nb.info/gnd/4026288-1",
+					"sh85063354",
+					"http://dewey.info/class/627/about",
+					"http://www.eionet.europa.eu/gemet/concept/4085"
+				]
+			},
+
+			"dcTypeLangAware": 
+			{
+				"en": 
+				[
+					"Monograph"
+				]
+			},
+
+			"edmConcept": 
+			[
+				"http://www.eionet.europa.eu/gemet/concept/4085"
+			],
+
+			"edmConceptLabel": 
+			[
+				{
+					"def": "hidravlika"
+				},
+
+				{
+					"def": "hydraulika"
+				},
+
+				{
+					"def": "hydraulik"
+				},
+
+				{
+					"def": "hidraulika"
+				},
+
+				{
+					"def": "hidraulică"
+				},
+
+				{
+					"def": "idraulica"
+				},
+
+				{
+					"def": "hidrolik"
+				},
+
+				{
+					"def": "idrawlika"
+				},
+
+				{
+					"def": "hydraulikk"
+				},
+
+				{
+					"def": "hidraulika"
+				},
+
+				{
+					"def": "hidraulika"
+				},
+
+				{
+					"def": "ميكانيكا الموائع"
+				},
+
+				{
+					"def": "hidraulika"
+				},
+
+				{
+					"def": "hydraulika"
+				},
+
+				{
+					"def": "Hydraulik"
+				},
+
+				{
+					"def": "hydraulics"
+				},
+
+				{
+					"def": "水利学"
+				},
+
+				{
+					"def": "υδραυλική"
+				},
+
+				{
+					"def": "hydrauliikka, nestemekaniikka"
+				},
+
+				{
+					"def": "hidráulica"
+				},
+
+				{
+					"def": "hydraulika"
+				},
+
+				{
+					"def": "hydraulique"
+				},
+
+				{
+					"def": "hydraulik; vattenbyggnad"
+				},
+
+				{
+					"def": "Хидравлика"
+				},
+
+				{
+					"def": "hydraulics"
+				},
+
+				{
+					"def": "гидравлика"
+				},
+
+				{
+					"def": "hüdraulika"
+				},
+
+				{
+					"def": "hidráulica"
+				},
+
+				{
+					"def": "hydraulica"
+				}
+			],
+
+			"europeanaCompleteness": 6,
+			"edmPlaceLatitude": 
+			[
+				"44.49381"
+			],
+
+			"dctermsSpatial": 
+			[
+				"http://sws.geonames.org/3181928/"
+			],
+
+			"edmTimespan": 
+			[
+				"http://semium.org/time/1828",
+				"http://semium.org/time/18xx_2_quarter",
+				"http://semium.org/time/18xx_1_half",
+				"http://semium.org/time/18xx",
+				"http://semium.org/time/AD2xxx",
+				"http://semium.org/time/ChronologicalPeriod",
+				"http://semium.org/time/Time"
+			],
+
+			"edmTimespanLabel": 
+			[
+				{
+					"def": "1828"
+				},
+
+				{
+					"def": "19.."
+				},
+
+				{
+					"def": "19??"
+				},
+
+				{
+					"def": "19e"
+				},
+
+				{
+					"def": "2e quart 19e siècle"
+				},
+
+				{
+					"def": "19e (début)"
+				},
+
+				{
+					"def": "19e siècle"
+				},
+
+				{
+					"def": "2e millénaire après J.-C."
+				},
+
+				{
+					"def": "2 quarter of the 19th century"
+				},
+
+				{
+					"def": "First half of the 19th century"
+				},
+
+				{
+					"def": "19-th"
+				},
+
+				{
+					"def": "19th"
+				},
+
+				{
+					"def": "19th century"
+				},
+
+				{
+					"def": "Second millenium AD"
+				},
+
+				{
+					"def": "Second millenium AD, years 1001-2000"
+				},
+
+				{
+					"def": "Chronological period"
+				},
+
+				{
+					"def": "Time"
+				},
+
+				{
+					"def": "2-я четверть 19-го века"
+				},
+
+				{
+					"def": "Первая половниа 19-го века"
+				},
+
+				{
+					"def": "19й век"
+				},
+
+				{
+					"def": "19de eeuw"
+				}
+			],
+
+			"rights": 
+			[
+				"http://www.europeana.eu/rights/out-of-copyright-non-commercial/"
+			],
+
+			"edmPlaceLongitude": 
+			[
+				"11.33875"
+			],
+
+			"edmPlace": 
+			[
+				"http://sws.geonames.org/3181928/",
+				"http://lod.b3kat.de/bib/DE-12"
+			],
+
+			"edmPlaceLabel": 
+			[
+				{
+					"def": "Bologna"
+				}
+			],
+
+			"edmIsShownAt": 
+			[
+				"http://www.europeana.eu/api/api2demo/redirect?shownAt=http%3A%2F%2Fwww.mdz-nbn-resolving.de%2Furn%2Fresolver.pl%3Furn%3Durn%3Anbn%3Ade%3Abvb%3A12-bsb10048809-3&provider=The+European+Library&id=http%3A%2F%2Fwww.europeana.eu%2Fresolve%2Frecord%2F9200386%2FBibliographicResource_3000044907447&profile=rich"
+			],
+
+			"edmAgent": 
+			[
+				"http://d-nb.info/gnd/118640445"
+			],
+
+			"edmAgentLabel": 
+			[
+				{
+					"def": "Leonardo <da Vinci>"
+				}
+			],
+
+			"edmPreview": 
+			[
+				"http://europeanastatic.eu/api/image?uri=http%3A%2F%2Fbsb0mdz-upload.bsb.lrz.de%2F%7Eeuropeana%2Fbsb10048809%2Fdownload%2Fthumbs%2Fbsb10048809_00005.jpg&size=LARGE&type=TEXT"
+			],
+
+			"score": 4.554639,
+			"edmPlaceLabelLangAware": 
+			{
+				"def": 
+				[
+					"Bologna"
+				]
+			},
+
+			"edmTimespanLabelLangAware": 
+			{
+				"ru": 
+				[
+					"2-я четверть 19-го века",
+					"Первая половниа 19-го века",
+					"19й век"
+				],
+
+				"def": 
+				[
+					"1828",
+					"19..",
+					"19??",
+					"19e"
+				],
+
+				"en": 
+				[
+					"2 quarter of the 19th century",
+					"First half of the 19th century",
+					"19-th",
+					"19th",
+					"19th century",
+					"Second millenium AD",
+					"Second millenium AD, years 1001-2000",
+					"Chronological period",
+					"Time"
+				],
+
+				"fr": 
+				[
+					"2e quart 19e siècle",
+					"19e (début)",
+					"19e siècle",
+					"2e millénaire après J.-C."
+				],
+
+				"nl": 
+				[
+					"19de eeuw"
+				]
+			},
+
+			"edmAgentLabelLangAware": 
+			{
+				"def": 
+				[
+					"Leonardo <da Vinci>"
+				]
+			},
+
+			"previewNoDistribute": false,
+			"dcTitleLangAware": 
+			{
+				"def": 
+				[
+					"Del moto e misura dell'acqua"
+				]
+			},
+
+			"dcCreatorLangAware": 
+			{
+				"def": 
+				[
+					"http://d-nb.info/gnd/118640445"
+				]
+			},
+
+			"dcLanguageLangAware": 
+			{
+				"def": 
+				[
+					"it"
+				]
+			},
+
+			"title": 
+			[
+				"Del moto e misura dell'acqua"
+			],
+
+			"dataProvider": 
+			[
+				"Bavarian State Library"
+			],
+
+			"dcCreator": 
+			[
+				"http://d-nb.info/gnd/118640445"
+			],
+
+			"timestamp": 1456511087816,
+			"provider": 
+			[
+				"The European Library"
+			],
+
+			"year": 
+			[
+				"1828"
+			],
+
+			"language": 
+			[
+				"de"
+			],
+
+			"type": "TEXT",
+			"edmDatasetName": 
+			[
+				"9200386_Ag_EU_TEL_a1194_BSB"
+			],
+
+			"guid": "http://www.europeana.eu/portal/record/9200386/BibliographicResource_3000044907447.html?utm_source=api&utm_medium=api&utm_campaign=api2demo",
+			"link": "http://www.europeana.eu/api/v2/record/9200386/BibliographicResource_3000044907447.json?wskey=api2demo",
+			"timestamp_created_epoch": 1417904532701,
+			"timestamp_update_epoch": 1456273633805,
+			"timestamp_created": "2014-12-06T22:22:12.701Z",
+			"timestamp_update": "2016-02-24T00:27:13.805Z"
+		},
+
+		{
+			"id": "/9200386/BibliographicResource_3000044907435",
+			"ugc": 
+			[
+				false
+			],
+
+			"completeness": 7,
+			"country": 
+			[
+				"germany"
+			],
+
+			"europeanaCollectionName": 
+			[
+				"9200386_Ag_EU_TEL_a1194_BSB"
+			],
+
+			"dcLanguage": 
+			[
+				"it"
+			],
+
+			"dcDescription": 
+			[
+				"di Lionardo da Vinci",
+				"Besitzer: München, Bayerische Staatsbibliothek -- 4 Art. 25-1/2"
+			],
+
+			"edmLandingPage": 
+			[
+				"http://europeana.eu/portal/record/9200386/BibliographicResource_3000044907435.html"
+			],
+
+			"dcDescriptionLangAware": 
+			{
+				"def": 
+				[
+					"di Lionardo da Vinci",
+					"Besitzer: München, Bayerische Staatsbibliothek -- 4 Art. 25-1/2"
+				]
+			},
+
+			"dcTypeLangAware": 
+			{
+				"en": 
+				[
+					"Monograph"
+				]
+			},
+
+			"europeanaCompleteness": 7,
+			"edmPlaceLatitude": 
+			[
+				"41.89474"
+			],
+
+			"dctermsSpatial": 
+			[
+				"http://sws.geonames.org/3169070/"
+			],
+
+			"edmTimespan": 
+			[
+				"http://semium.org/time/1817",
+				"http://semium.org/time/18xx_1_third",
+				"http://semium.org/time/18xx",
+				"http://semium.org/time/AD2xxx",
+				"http://semium.org/time/ChronologicalPeriod",
+				"http://semium.org/time/Time"
+			],
+
+			"edmTimespanLabel": 
+			[
+				{
+					"def": "1817"
+				},
+
+				{
+					"def": "19.."
+				},
+
+				{
+					"def": "19??"
+				},
+
+				{
+					"def": "19e"
+				},
+
+				{
+					"def": "Early 19th century"
+				},
+
+				{
+					"def": "19-th"
+				},
+
+				{
+					"def": "19th"
+				},
+
+				{
+					"def": "19th century"
+				},
+
+				{
+					"def": "Second millenium AD"
+				},
+
+				{
+					"def": "Second millenium AD, years 1001-2000"
+				},
+
+				{
+					"def": "Chronological period"
+				},
+
+				{
+					"def": "Time"
+				},
+
+				{
+					"def": "Начало 19-го века"
+				},
+
+				{
+					"def": "19й век"
+				},
+
+				{
+					"def": "19e siècle"
+				},
+
+				{
+					"def": "2e millénaire après J.-C."
+				},
+
+				{
+					"def": "19de eeuw"
+				}
+			],
+
+			"rights": 
+			[
+				"http://www.europeana.eu/rights/out-of-copyright-non-commercial/"
+			],
+
+			"edmPlaceLongitude": 
+			[
+				"12.4839"
+			],
+
+			"edmPlace": 
+			[
+				"http://sws.geonames.org/3169070/",
+				"http://lod.b3kat.de/bib/DE-12"
+			],
+
+			"edmPlaceLabel": 
+			[
+				{
+					"def": "Roma"
+				}
+			],
+
+			"edmIsShownAt": 
+			[
+				"http://www.europeana.eu/api/api2demo/redirect?shownAt=http%3A%2F%2Fwww.mdz-nbn-resolving.de%2Furn%2Fresolver.pl%3Furn%3Durn%3Anbn%3Ade%3Abvb%3A12-bsb10222299-5&provider=The+European+Library&id=http%3A%2F%2Fwww.europeana.eu%2Fresolve%2Frecord%2F9200386%2FBibliographicResource_3000044907435&profile=rich"
+			],
+
+			"edmAgent": 
+			[
+				"http://d-nb.info/gnd/118640445",
+				"http://d-nb.info/gnd/116737581"
+			],
+
+			"edmAgentLabel": 
+			[
+				{
+					"def": "Leonardo <da Vinci>"
+				}
+			],
+
+			"dcContributor": 
+			[
+				"http://d-nb.info/gnd/116737581",
+				"http://d-nb.info/gnd/116737581"
+			],
+
+			"edmPreview": 
+			[
+				"http://europeanastatic.eu/api/image?uri=http%3A%2F%2Fbsb0mdz-upload.bsb.lrz.de%2F%7Eeuropeana%2Fbsb10222299%2Fdownload%2Fthumbs%2Fbsb10222299_00045.jpg&size=LARGE&type=TEXT"
+			],
+
+			"score": 3.9088588,
+			"edmPlaceLabelLangAware": 
+			{
+				"def": 
+				[
+					"Roma"
+				]
+			},
+
+			"edmTimespanLabelLangAware": 
+			{
+				"ru": 
+				[
+					"Начало 19-го века",
+					"19й век"
+				],
+
+				"def": 
+				[
+					"1817",
+					"19..",
+					"19??",
+					"19e"
+				],
+
+				"en": 
+				[
+					"Early 19th century",
+					"19-th",
+					"19th",
+					"19th century",
+					"Second millenium AD",
+					"Second millenium AD, years 1001-2000",
+					"Chronological period",
+					"Time"
+				],
+
+				"fr": 
+				[
+					"19e siècle",
+					"2e millénaire après J.-C."
+				],
+
+				"nl": 
+				[
+					"19de eeuw"
+				]
+			},
+
+			"edmAgentLabelLangAware": 
+			{
+				"def": 
+				[
+					"Leonardo <da Vinci>"
+				]
+			},
+
+			"previewNoDistribute": false,
+			"dcTitleLangAware": 
+			{
+				"def": 
+				[
+					"Trattato della pittura tratto da un codice della Biblioteca Vaticana - [1]"
+				]
+			},
+
+			"dcCreatorLangAware": 
+			{
+				"def": 
+				[
+					"http://d-nb.info/gnd/118640445"
+				]
+			},
+
+			"dcContributorLangAware": 
+			{
+				"def": 
+				[
+					"http://d-nb.info/gnd/116737581"
+				]
+			},
+
+			"dcLanguageLangAware": 
+			{
+				"def": 
+				[
+					"it"
+				]
+			},
+
+			"title": 
+			[
+				"Trattato della pittura tratto da un codice della Biblioteca Vaticana - [1]"
+			],
+
+			"dataProvider": 
+			[
+				"Bavarian State Library"
+			],
+
+			"dcCreator": 
+			[
+				"http://d-nb.info/gnd/118640445"
+			],
+
+			"timestamp": 1456511087441,
+			"provider": 
+			[
+				"The European Library"
+			],
+
+			"year": 
+			[
+				"1817"
+			],
+
+			"language": 
+			[
+				"de"
+			],
+
+			"type": "TEXT",
+			"edmDatasetName": 
+			[
+				"9200386_Ag_EU_TEL_a1194_BSB"
+			],
+
+			"guid": "http://www.europeana.eu/portal/record/9200386/BibliographicResource_3000044907435.html?utm_source=api&utm_medium=api&utm_campaign=api2demo",
+			"link": "http://www.europeana.eu/api/v2/record/9200386/BibliographicResource_3000044907435.json?wskey=api2demo",
+			"timestamp_created_epoch": 1417904527834,
+			"timestamp_update_epoch": 1456273633671,
+			"timestamp_created": "2014-12-06T22:22:07.834Z",
+			"timestamp_update": "2016-02-24T00:27:13.671Z"
+		},
+
+		{
+			"id": "/9200386/BibliographicResource_3000044747440",
+			"ugc": 
+			[
+				false
+			],
+
+			"completeness": 7,
+			"country": 
+			[
+				"germany"
+			],
+
+			"europeanaCollectionName": 
+			[
+				"9200386_Ag_EU_TEL_a1194_BSB"
+			],
+
+			"dcLanguage": 
+			[
+				"de"
+			],
+
+			"dcDescription": 
+			[
+				"von Hugo Grafen von Gallenberg",
+				"In Fraktur",
+				"Besitzer: München, Bayerische Staatsbibliothek -- Biogr. 296 po"
+			],
+
+			"edmLandingPage": 
+			[
+				"http://europeana.eu/portal/record/9200386/BibliographicResource_3000044747440.html"
+			],
+
+			"dcDescriptionLangAware": 
+			{
+				"def": 
+				[
+					"von Hugo Grafen von Gallenberg",
+					"In Fraktur",
+					"Besitzer: München, Bayerische Staatsbibliothek -- Biogr. 296 po"
+				]
+			},
+
+			"dcSubjectLangAware": 
+			{
+				"def": 
+				[
+					"http://d-nb.info/gnd/118640445",
+					"Library of Congress Classification: ND623.L5",
+					"Library of Congress Classification: ND623.L5",
+					"LI 53255"
+				]
+			},
+
+			"dcTypeLangAware": 
+			{
+				"en": 
+				[
+					"Monograph"
+				]
+			},
+
+			"europeanaCompleteness": 7,
+			"edmPlaceLatitude": 
+			[
+				"51.33962"
+			],
+
+			"dctermsSpatial": 
+			[
+				"http://sws.geonames.org/2879139/"
+			],
+
+			"edmTimespan": 
+			[
+				"http://semium.org/time/1834",
+				"http://semium.org/time/18xx_2_third",
+				"http://semium.org/time/18xx",
+				"http://semium.org/time/AD2xxx",
+				"http://semium.org/time/ChronologicalPeriod",
+				"http://semium.org/time/Time"
+			],
+
+			"edmTimespanLabel": 
+			[
+				{
+					"def": "1834"
+				},
+
+				{
+					"def": "19.."
+				},
+
+				{
+					"def": "19??"
+				},
+
+				{
+					"def": "19e"
+				},
+
+				{
+					"def": "Mid 19th century"
+				},
+
+				{
+					"def": "19-th"
+				},
+
+				{
+					"def": "19th"
+				},
+
+				{
+					"def": "19th century"
+				},
+
+				{
+					"def": "Second millenium AD"
+				},
+
+				{
+					"def": "Second millenium AD, years 1001-2000"
+				},
+
+				{
+					"def": "Chronological period"
+				},
+
+				{
+					"def": "Time"
+				},
+
+				{
+					"def": "Середина 19-го века"
+				},
+
+				{
+					"def": "19й век"
+				},
+
+				{
+					"def": "19e siècle"
+				},
+
+				{
+					"def": "2e millénaire après J.-C."
+				},
+
+				{
+					"def": "19de eeuw"
+				}
+			],
+
+			"rights": 
+			[
+				"http://www.europeana.eu/rights/out-of-copyright-non-commercial/"
+			],
+
+			"edmPlaceLongitude": 
+			[
+				"12.37129"
+			],
+
+			"edmPlace": 
+			[
+				"http://sws.geonames.org/2879139/",
+				"http://lod.b3kat.de/bib/DE-12"
+			],
+
+			"edmPlaceLabel": 
+			[
+				{
+					"def": "Leipzig"
+				}
+			],
+
+			"edmIsShownAt": 
+			[
+				"http://www.europeana.eu/api/api2demo/redirect?shownAt=http%3A%2F%2Fwww.mdz-nbn-resolving.de%2Furn%2Fresolver.pl%3Furn%3Durn%3Anbn%3Ade%3Abvb%3A12-bsb10062732-1&provider=The+European+Library&id=http%3A%2F%2Fwww.europeana.eu%2Fresolve%2Frecord%2F9200386%2FBibliographicResource_3000044747440&profile=rich"
+			],
+
+			"edmAgent": 
+			[
+				"http://d-nb.info/gnd/100138276",
+				"http://d-nb.info/gnd/118640445"
+			],
+
+			"edmAgentLabel": 
+			[
+				{
+					"def": "Leonardo <da Vinci>"
+				}
+			],
+
+			"edmPreview": 
+			[
+				"http://europeanastatic.eu/api/image?uri=http%3A%2F%2Fbsb0mdz-upload.bsb.lrz.de%2F%7Eeuropeana%2Fbsb10062732%2Fdownload%2Fthumbs%2Fbsb10062732_00019.jpg&size=LARGE&type=TEXT"
+			],
+
+			"score": 4.554639,
+			"edmPlaceLabelLangAware": 
+			{
+				"def": 
+				[
+					"Leipzig"
+				]
+			},
+
+			"edmTimespanLabelLangAware": 
+			{
+				"ru": 
+				[
+					"Середина 19-го века",
+					"19й век"
+				],
+
+				"def": 
+				[
+					"1834",
+					"19..",
+					"19??",
+					"19e"
+				],
+
+				"en": 
+				[
+					"Mid 19th century",
+					"19-th",
+					"19th",
+					"19th century",
+					"Second millenium AD",
+					"Second millenium AD, years 1001-2000",
+					"Chronological period",
+					"Time"
+				],
+
+				"fr": 
+				[
+					"19e siècle",
+					"2e millénaire après J.-C."
+				],
+
+				"nl": 
+				[
+					"19de eeuw"
+				]
+			},
+
+			"edmAgentLabelLangAware": 
+			{
+				"def": 
+				[
+					"Leonardo <da Vinci>"
+				]
+			},
+
+			"previewNoDistribute": false,
+			"dcTitleLangAware": 
+			{
+				"def": 
+				[
+					"Leonardo da Vinci"
+				]
+			},
+
+			"dcCreatorLangAware": 
+			{
+				"def": 
+				[
+					"http://d-nb.info/gnd/100138276"
+				]
+			},
+
+			"dcLanguageLangAware": 
+			{
+				"def": 
+				[
+					"de"
+				]
+			},
+
+			"title": 
+			[
+				"Leonardo da Vinci"
+			],
+
+			"dataProvider": 
+			[
+				"Bavarian State Library"
+			],
+
+			"dcCreator": 
+			[
+				"http://d-nb.info/gnd/100138276"
+			],
+
+			"timestamp": 1456507900270,
+			"provider": 
+			[
+				"The European Library"
+			],
+
+			"year": 
+			[
+				"1834"
+			],
+
+			"language": 
+			[
+				"de"
+			],
+
+			"type": "TEXT",
+			"edmDatasetName": 
+			[
+				"9200386_Ag_EU_TEL_a1194_BSB"
+			],
+
+			"guid": "http://www.europeana.eu/portal/record/9200386/BibliographicResource_3000044747440.html?utm_source=api&utm_medium=api&utm_campaign=api2demo",
+			"link": "http://www.europeana.eu/api/v2/record/9200386/BibliographicResource_3000044747440.json?wskey=api2demo",
+			"timestamp_created_epoch": 1417900621520,
+			"timestamp_update_epoch": 1456269788044,
+			"timestamp_created": "2014-12-06T21:17:01.520Z",
+			"timestamp_update": "2016-02-23T23:23:08.044Z"
+		},
+
+		{
+			"id": "/9200143/BibliographicResource_2000069449610",
+			"ugc": 
+			[
+				false
+			],
+
+			"country": 
+			[
+				"united kingdom"
+			],
+
+			"europeanaCollectionName": 
+			[
+				"9200143_Ag_EU_TEL_a1007_E.Libraries_Oxford"
+			],
+
+			"dcLanguage": 
+			[
+				"mul",
+				"mul"
+			],
+
+			"dcDescription": 
+			[
+				"Abdr. aus v. Zahn's 'Jahrbüchern für Kunstwiss.'"
+			],
+
+			"edmLandingPage": 
+			[
+				"http://europeana.eu/portal/record/9200143/BibliographicResource_2000069449610.html"
+			],
+
+			"dcDescriptionLangAware": 
+			{
+				"def": 
+				[
+					"Abdr. aus v. Zahn's 'Jahrbüchern für Kunstwiss.'"
+				]
+			},
+
+			"dcTypeLangAware": 
+			{
+				"en": 
+				[
+					"Monograph"
+				]
+			},
+
+			"edmIsShownBy": 
+			[
+				"http://purl.ox.ac.uk/uuid/7172f2ca594945638083c6d2ed6e1d8c"
+			],
+
+			"dctermsSpatial": 
+			[
+				"Leipz.",
+				"http://id.loc.gov/vocabulary/countries/gw"
+			],
+
+			"edmTimespan": 
+			[
+				"http://semium.org/time/1873",
+				"http://semium.org/time/18xx_3_third",
+				"http://semium.org/time/18xx",
+				"http://semium.org/time/AD2xxx",
+				"http://semium.org/time/ChronologicalPeriod",
+				"http://semium.org/time/Time"
+			],
+
+			"edmTimespanLabel": 
+			[
+				{
+					"def": "1873"
+				},
+
+				{
+					"def": "19.."
+				},
+
+				{
+					"def": "19??"
+				},
+
+				{
+					"def": "19e"
+				},
+
+				{
+					"def": "Late 19th century"
+				},
+
+				{
+					"def": "19-th"
+				},
+
+				{
+					"def": "19th"
+				},
+
+				{
+					"def": "19th century"
+				},
+
+				{
+					"def": "Second millenium AD"
+				},
+
+				{
+					"def": "Second millenium AD, years 1001-2000"
+				},
+
+				{
+					"def": "Chronological period"
+				},
+
+				{
+					"def": "Time"
+				},
+
+				{
+					"def": "Конец 19-го века"
+				},
+
+				{
+					"def": "19й век"
+				},
+
+				{
+					"def": "19e siècle"
+				},
+
+				{
+					"def": "2e millénaire après J.-C."
+				},
+
+				{
+					"def": "19de eeuw"
+				}
+			],
+
+			"rights": 
+			[
+				"http://www.europeana.eu/rights/rr-f/"
+			],
+
+			"edmIsShownAt": 
+			[
+				"http://www.europeana.eu/api/api2demo/redirect?shownAt=http%3A%2F%2Fsolo.bodleian.ox.ac.uk%2Fprimo_library%2Flibweb%2Faction%2Fdisplay.do%3Ftabs%3DdetailsTab%26ct%3Ddisplay%26fn%3Dsearch%26doc%3Doxfaleph014509251%26indx%3D1%26recIds%3Doxfaleph014509251&provider=The+European+Library&id=http%3A%2F%2Fwww.europeana.eu%2Fresolve%2Frecord%2F9200143%2FBibliographicResource_2000069449610&profile=rich"
+			],
+
+			"dcContributor": 
+			[
+				"Leonardo da. Vinci",
+				"Leonardo da. Vinci"
+			],
+
+			"score": 12.813066,
+			"edmTimespanLabelLangAware": 
+			{
+				"ru": 
+				[
+					"Конец 19-го века",
+					"19й век"
+				],
+
+				"def": 
+				[
+					"1873",
+					"19..",
+					"19??",
+					"19e"
+				],
+
+				"en": 
+				[
+					"Late 19th century",
+					"19-th",
+					"19th",
+					"19th century",
+					"Second millenium AD",
+					"Second millenium AD, years 1001-2000",
+					"Chronological period",
+					"Time"
+				],
+
+				"fr": 
+				[
+					"19e siècle",
+					"2e millénaire après J.-C."
+				],
+
+				"nl": 
+				[
+					"19de eeuw"
+				]
+			},
+
+			"previewNoDistribute": false,
+			"dcTitleLangAware": 
+			{
+				"def": 
+				[
+					"Das Malerbuch des Lionardo da Vinci, Untersuchung der Ausgaben und Handschriften"
+				]
+			},
+
+			"dcCreatorLangAware": 
+			{
+				"def": 
+				[
+					"Max. Jordan"
+				]
+			},
+
+			"dcContributorLangAware": 
+			{
+				"def": 
+				[
+					"Leonardo da. Vinci"
+				]
+			},
+
+			"dcLanguageLangAware": 
+			{
+				"def": 
+				[
+					"mul",
+					"mul"
+				]
+			},
+
+			"title": 
+			[
+				"Das Malerbuch des Lionardo da Vinci, Untersuchung der Ausgaben und Handschriften"
+			],
+
+			"dataProvider": 
+			[
+				"Bodleian Libraries, University of Oxford"
+			],
+
+			"dcCreator": 
+			[
+				"Max. Jordan"
+			],
+
+			"timestamp": 1436976199867,
+			"provider": 
+			[
+				"The European Library"
+			],
+
+			"year": 
+			[
+				"1873"
+			],
+
+			"language": 
+			[
+				"en"
+			],
+
+			"type": "TEXT",
+			"edmDatasetName": 
+			[
+				"9200143_Ag_EU_TEL_a1007_E.Libraries_Oxford"
+			],
+
+			"guid": "http://www.europeana.eu/portal/record/9200143/BibliographicResource_2000069449610.html?utm_source=api&utm_medium=api&utm_campaign=api2demo",
+			"link": "http://www.europeana.eu/api/v2/record/9200143/BibliographicResource_2000069449610.json?wskey=api2demo",
+			"timestamp_created_epoch": 1401856589545,
+			"timestamp_update_epoch": 1401993592396,
+			"timestamp_created": "2014-06-04T04:36:29.545Z",
+			"timestamp_update": "2014-06-05T18:39:52.396Z"
+		},
+
+		{
+			"id": "/9200143/BibliographicResource_2000069378307",
+			"ugc": 
+			[
+				false
+			],
+
+			"country": 
+			[
+				"united kingdom"
+			],
+
+			"europeanaCollectionName": 
+			[
+				"9200143_Ag_EU_TEL_a1007_E.Libraries_Oxford"
+			],
+
+			"dcLanguage": 
+			[
+				"mul",
+				"mul"
+			],
+
+			"dcDescription": 
+			[
+				"15-17"
+			],
+
+			"edmLandingPage": 
+			[
+				"http://europeana.eu/portal/record/9200143/BibliographicResource_2000069378307.html"
+			],
+
+			"dcDescriptionLangAware": 
+			{
+				"def": 
+				[
+					"15-17"
+				]
+			},
+
+			"dcTypeLangAware": 
+			{
+				"en": 
+				[
+					"Monograph"
+				]
+			},
+
+			"edmIsShownBy": 
+			[
+				"http://purl.ox.ac.uk/uuid/aec631c28b664d208cb586a337799090"
+			],
+
+			"edmPlaceLatitude": 
+			[
+				"48.20849"
+			],
+
+			"dctermsSpatial": 
+			[
+				"http://sws.geonames.org/2761369/",
+				"http://id.loc.gov/vocabulary/countries/au"
+			],
+
+			"edmTimespan": 
+			[
+				"http://semium.org/time/1882",
+				"http://semium.org/time/18xx_4_quarter",
+				"http://semium.org/time/18xx_2_half",
+				"http://semium.org/time/18xx",
+				"http://semium.org/time/AD2xxx",
+				"http://semium.org/time/ChronologicalPeriod",
+				"http://semium.org/time/Time"
+			],
+
+			"edmTimespanLabel": 
+			[
+				{
+					"def": "1882"
+				},
+
+				{
+					"def": "19.."
+				},
+
+				{
+					"def": "19??"
+				},
+
+				{
+					"def": "19e"
+				},
+
+				{
+					"def": "4e quart 19e siècle"
+				},
+
+				{
+					"def": "19e (fin)"
+				},
+
+				{
+					"def": "19e siècle"
+				},
+
+				{
+					"def": "2e millénaire après J.-C."
+				},
+
+				{
+					"def": "4 quarter of the 19th century"
+				},
+
+				{
+					"def": "Second half of the 19th century"
+				},
+
+				{
+					"def": "19-th"
+				},
+
+				{
+					"def": "19th"
+				},
+
+				{
+					"def": "19th century"
+				},
+
+				{
+					"def": "Second millenium AD"
+				},
+
+				{
+					"def": "Second millenium AD, years 1001-2000"
+				},
+
+				{
+					"def": "Chronological period"
+				},
+
+				{
+					"def": "Time"
+				},
+
+				{
+					"def": "4-я четверть 19-го века"
+				},
+
+				{
+					"def": "Вторая половина 19-го века"
+				},
+
+				{
+					"def": "19й век"
+				},
+
+				{
+					"def": "19de eeuw"
+				}
+			],
+
+			"rights": 
+			[
+				"http://www.europeana.eu/rights/rr-f/"
+			],
+
+			"edmPlaceLongitude": 
+			[
+				"16.37208"
+			],
+
+			"edmPlace": 
+			[
+				"http://sws.geonames.org/2761369/"
+			],
+
+			"edmPlaceLabel": 
+			[
+				{
+					"def": "Beč"
+				},
+
+				{
+					"def": "Viena"
+				},
+
+				{
+					"def": "Viyana"
+				},
+
+				{
+					"def": "Wien"
+				},
+
+				{
+					"def": "Bécs"
+				},
+
+				{
+					"def": "เวียนนา"
+				},
+
+				{
+					"def": "Viena"
+				},
+
+				{
+					"def": "Vindobona"
+				},
+
+				{
+					"def": "Wien"
+				},
+
+				{
+					"def": "Vienna"
+				},
+
+				{
+					"def": "Wien"
+				},
+
+				{
+					"def": "Wien"
+				},
+
+				{
+					"def": "Vienne"
+				},
+
+				{
+					"def": "Виена"
+				},
+
+				{
+					"def": "Dunaj"
+				},
+
+				{
+					"def": "Vín"
+				},
+
+				{
+					"def": "Vínarborg"
+				},
+
+				{
+					"def": "Wien"
+				},
+
+				{
+					"def": "Vienna"
+				},
+
+				{
+					"def": "Беч"
+				},
+
+				{
+					"def": "빈"
+				},
+
+				{
+					"def": "Vídeň"
+				},
+
+				{
+					"def": "Βιέννη"
+				},
+
+				{
+					"def": "ቪየና"
+				},
+
+				{
+					"def": "Viena"
+				},
+
+				{
+					"def": "Vindobona"
+				},
+
+				{
+					"def": "Wiedeń"
+				},
+
+				{
+					"def": "Vieno"
+				},
+
+				{
+					"def": "Vienna"
+				},
+
+				{
+					"def": "Вена"
+				},
+
+				{
+					"def": "Viena"
+				},
+
+				{
+					"def": "Wenen"
+				}
+			],
+
+			"edmIsShownAt": 
+			[
+				"http://www.europeana.eu/api/api2demo/redirect?shownAt=http%3A%2F%2Fsolo.bodleian.ox.ac.uk%2Fprimo_library%2Flibweb%2Faction%2Fdisplay.do%3Ftabs%3DdetailsTab%26ct%3Ddisplay%26fn%3Dsearch%26doc%3Doxfaleph014033998%26indx%3D1%26recIds%3Doxfaleph014033998&provider=The+European+Library&id=http%3A%2F%2Fwww.europeana.eu%2Fresolve%2Frecord%2F9200143%2FBibliographicResource_2000069378307&profile=rich"
+			],
+
+			"dcContributor": 
+			[
+				"Heinrich Ludwig",
+				"Heinrich Ludwig"
+			],
+
+			"score": 12.819973,
+			"edmPlaceLabelLangAware": 
+			{
+				"no": 
+				[
+					"Wien"
+				],
+
+				"de": 
+				[
+					"Viena",
+					"Vindobona",
+					"Wien"
+				],
+
+				"fi": 
+				[
+					"Wien"
+				],
+
+				"ru": 
+				[
+					"Вена"
+				],
+
+				"def": 
+				[
+					"Vienna"
+				],
+
+				"pt": 
+				[
+					"Viena"
+				],
+
+				"bg": 
+				[
+					"Виена"
+				],
+
+				"hr": 
+				[
+					"Beč"
+				],
+
+				"fr": 
+				[
+					"Vienne"
+				],
+
+				"hu": 
+				[
+					"Bécs"
+				],
+
+				"sl": 
+				[
+					"Dunaj"
+				],
+
+				"ca": 
+				[
+					"Viena"
+				],
+
+				"sr": 
+				[
+					"Беч"
+				],
+
+				"sv": 
+				[
+					"Wien"
+				],
+
+				"ko": 
+				[
+					"빈"
+				],
+
+				"el": 
+				[
+					"Βιέννη"
+				],
+
+				"en": 
+				[
+					"Vienna"
+				],
+
+				"is": 
+				[
+					"Vín",
+					"Vínarborg"
+				],
+
+				"eo": 
+				[
+					"Vieno"
+				],
+
+				"it": 
+				[
+					"Vienna"
+				],
+
+				"am": 
+				[
+					"ቪየና"
+				],
+
+				"es": 
+				[
+					"Viena"
+				],
+
+				"cs": 
+				[
+					"Vídeň"
+				],
+
+				"th": 
+				[
+					"เวียนนา"
+				],
+
+				"la": 
+				[
+					"Vindobona"
+				],
+
+				"pl": 
+				[
+					"Wiedeń"
+				],
+
+				"da": 
+				[
+					"Wien"
+				],
+
+				"tr": 
+				[
+					"Viyana"
+				],
+
+				"nl": 
+				[
+					"Wenen"
+				]
+			},
+
+			"edmTimespanLabelLangAware": 
+			{
+				"ru": 
+				[
+					"4-я четверть 19-го века",
+					"Вторая половина 19-го века",
+					"19й век"
+				],
+
+				"def": 
+				[
+					"1882",
+					"19..",
+					"19??",
+					"19e"
+				],
+
+				"en": 
+				[
+					"4 quarter of the 19th century",
+					"Second half of the 19th century",
+					"19-th",
+					"19th",
+					"19th century",
+					"Second millenium AD",
+					"Second millenium AD, years 1001-2000",
+					"Chronological period",
+					"Time"
+				],
+
+				"fr": 
+				[
+					"4e quart 19e siècle",
+					"19e (fin)",
+					"19e siècle",
+					"2e millénaire après J.-C."
+				],
+
+				"nl": 
+				[
+					"19de eeuw"
+				]
+			},
+
+			"previewNoDistribute": false,
+			"dcTitleLangAware": 
+			{
+				"def": 
+				[
+					"Das Buch von der Malerei, nach dem Codex Vaticanus 1270 herausg., übers. und erläutert von H. Ludwig"
+				]
+			},
+
+			"dcCreatorLangAware": 
+			{
+				"def": 
+				[
+					"Leonardo da. Vinci"
+				]
+			},
+
+			"dcContributorLangAware": 
+			{
+				"def": 
+				[
+					"Heinrich Ludwig"
+				]
+			},
+
+			"dcLanguageLangAware": 
+			{
+				"def": 
+				[
+					"mul",
+					"mul"
+				]
+			},
+
+			"title": 
+			[
+				"Das Buch von der Malerei, nach dem Codex Vaticanus 1270 herausg., übers. und erläutert von H. Ludwig"
+			],
+
+			"dataProvider": 
+			[
+				"Bodleian Libraries, University of Oxford"
+			],
+
+			"dcCreator": 
+			[
+				"Leonardo da. Vinci"
+			],
+
+			"timestamp": 1436975659643,
+			"provider": 
+			[
+				"The European Library"
+			],
+
+			"year": 
+			[
+				"1882"
+			],
+
+			"language": 
+			[
+				"en"
+			],
+
+			"type": "TEXT",
+			"edmDatasetName": 
+			[
+				"9200143_Ag_EU_TEL_a1007_E.Libraries_Oxford"
+			],
+
+			"guid": "http://www.europeana.eu/portal/record/9200143/BibliographicResource_2000069378307.html?utm_source=api&utm_medium=api&utm_campaign=api2demo",
+			"link": "http://www.europeana.eu/api/v2/record/9200143/BibliographicResource_2000069378307.json?wskey=api2demo",
+			"timestamp_created_epoch": 1401837738149,
+			"timestamp_update_epoch": 1401990305253,
+			"timestamp_created": "2014-06-03T23:22:18.149Z",
+			"timestamp_update": "2014-06-05T17:45:05.253Z"
+		},
+
+		{
+			"id": "/9200143/BibliographicResource_2000069378267",
+			"ugc": 
+			[
+				false
+			],
+
+			"country": 
+			[
+				"united kingdom"
+			],
+
+			"europeanaCollectionName": 
+			[
+				"9200143_Ag_EU_TEL_a1007_E.Libraries_Oxford"
+			],
+
+			"dcLanguage": 
+			[
+				"mul",
+				"mul"
+			],
+
+			"dcDescription": 
+			[
+				"Tr. and digested under proper heads, by J.F. Rigaud."
+			],
+
+			"edmLandingPage": 
+			[
+				"http://europeana.eu/portal/record/9200143/BibliographicResource_2000069378267.html"
+			],
+
+			"dcDescriptionLangAware": 
+			{
+				"def": 
+				[
+					"Tr. and digested under proper heads, by J.F. Rigaud."
+				]
+			},
+
+			"dcSubjectLangAware": 
+			{
+				"def": 
+				[
+					"Association copies (Provenance), Johnson"
+				]
+			},
+
+			"dcTypeLangAware": 
+			{
+				"en": 
+				[
+					"Monograph"
+				]
+			},
+
+			"edmIsShownBy": 
+			[
+				"http://purl.ox.ac.uk/uuid/2314894525f142128345043909904e16"
+			],
+
+			"edmPlaceLatitude": 
+			[
+				"34.85213"
+			],
+
+			"dctermsSpatial": 
+			[
+				"http://sws.geonames.org/1370290/",
+				"http://id.loc.gov/vocabulary/countries/uk"
+			],
+
+			"edmTimespan": 
+			[
+				"http://semium.org/time/1802",
+				"http://semium.org/time/18xx_1_third",
+				"http://semium.org/time/18xx",
+				"http://semium.org/time/AD2xxx",
+				"http://semium.org/time/ChronologicalPeriod",
+				"http://semium.org/time/Time"
+			],
+
+			"edmTimespanLabel": 
+			[
+				{
+					"def": "1802"
+				},
+
+				{
+					"def": "19.."
+				},
+
+				{
+					"def": "19??"
+				},
+
+				{
+					"def": "19e"
+				},
+
+				{
+					"def": "Early 19th century"
+				},
+
+				{
+					"def": "19-th"
+				},
+
+				{
+					"def": "19th"
+				},
+
+				{
+					"def": "19th century"
+				},
+
+				{
+					"def": "Second millenium AD"
+				},
+
+				{
+					"def": "Second millenium AD, years 1001-2000"
+				},
+
+				{
+					"def": "Chronological period"
+				},
+
+				{
+					"def": "Time"
+				},
+
+				{
+					"def": "Начало 19-го века"
+				},
+
+				{
+					"def": "19й век"
+				},
+
+				{
+					"def": "19e siècle"
+				},
+
+				{
+					"def": "2e millénaire après J.-C."
+				},
+
+				{
+					"def": "19de eeuw"
+				}
+			],
+
+			"rights": 
+			[
+				"http://www.europeana.eu/rights/rr-f/"
+			],
+
+			"edmPlaceLongitude": 
+			[
+				"73.1634"
+			],
+
+			"edmPlace": 
+			[
+				"http://sws.geonames.org/1370290/"
+			],
+
+			"edmPlaceLabel": 
+			[
+				{
+					"def": "Lond"
+				},
+
+				{
+					"def": "Lond"
+				}
+			],
+
+			"edmIsShownAt": 
+			[
+				"http://www.europeana.eu/api/api2demo/redirect?shownAt=http%3A%2F%2Fsolo.bodleian.ox.ac.uk%2Fprimo_library%2Flibweb%2Faction%2Fdisplay.do%3Ftabs%3DdetailsTab%26ct%3Ddisplay%26fn%3Dsearch%26doc%3Doxfaleph014034073%26indx%3D1%26recIds%3Doxfaleph014034073&provider=The+European+Library&id=http%3A%2F%2Fwww.europeana.eu%2Fresolve%2Frecord%2F9200143%2FBibliographicResource_2000069378267&profile=rich"
+			],
+
+			"edmAgent": 
+			[
+				"http://dbpedia.org/resource/John_Francis_Rigaud"
+			],
+
+			"edmAgentLabel": 
+			[
+				{
+					"def": "Rigaud, John Francis"
+				},
+
+				{
+					"def": "John Francis Rigaud"
+				}
+			],
+
+			"dcContributor": 
+			[
+				"John Sidney. Hawkins",
+				"John Sidney. Hawkins",
+				"John Francis Rigaud",
+				"John Francis Rigaud",
+				"http://dbpedia.org/resource/John_Francis_Rigaud",
+				"http://dbpedia.org/resource/John_Francis_Rigaud"
+			],
+
+			"score": 5.5138044,
+			"edmPlaceLabelLangAware": 
+			{
+				"def": 
+				[
+					"Lond",
+					"Lond"
+				]
+			},
+
+			"edmTimespanLabelLangAware": 
+			{
+				"ru": 
+				[
+					"Начало 19-го века",
+					"19й век"
+				],
+
+				"def": 
+				[
+					"1802",
+					"19..",
+					"19??",
+					"19e"
+				],
+
+				"en": 
+				[
+					"Early 19th century",
+					"19-th",
+					"19th",
+					"19th century",
+					"Second millenium AD",
+					"Second millenium AD, years 1001-2000",
+					"Chronological period",
+					"Time"
+				],
+
+				"fr": 
+				[
+					"19e siècle",
+					"2e millénaire après J.-C."
+				],
+
+				"nl": 
+				[
+					"19de eeuw"
+				]
+			},
+
+			"edmAgentLabelLangAware": 
+			{
+				"en": 
+				[
+					"Rigaud, John Francis",
+					"John Francis Rigaud"
+				]
+			},
+
+			"previewNoDistribute": false,
+			"dcTitleLangAware": 
+			{
+				"def": 
+				[
+					"A treatise on painting. To which is prefixed a new life of the author, by J.S. Hawkins"
+				]
+			},
+
+			"dcCreatorLangAware": 
+			{
+				"def": 
+				[
+					"Leonardo da. Vinci"
+				]
+			},
+
+			"dcContributorLangAware": 
+			{
+				"def": 
+				[
+					"John Sidney. Hawkins",
+					"John Francis Rigaud",
+					"http://dbpedia.org/resource/John_Francis_Rigaud"
+				]
+			},
+
+			"dcLanguageLangAware": 
+			{
+				"def": 
+				[
+					"mul",
+					"mul"
+				]
+			},
+
+			"title": 
+			[
+				"A treatise on painting. To which is prefixed a new life of the author, by J.S. Hawkins"
+			],
+
+			"dataProvider": 
+			[
+				"Bodleian Libraries, University of Oxford"
+			],
+
+			"dcCreator": 
+			[
+				"Leonardo da. Vinci"
+			],
+
+			"timestamp": 1436975659617,
+			"provider": 
+			[
+				"The European Library"
+			],
+
+			"year": 
+			[
+				"1802"
+			],
+
+			"language": 
+			[
+				"en"
+			],
+
+			"type": "TEXT",
+			"edmDatasetName": 
+			[
+				"9200143_Ag_EU_TEL_a1007_E.Libraries_Oxford"
+			],
+
+			"guid": "http://www.europeana.eu/portal/record/9200143/BibliographicResource_2000069378267.html?utm_source=api&utm_medium=api&utm_campaign=api2demo",
+			"link": "http://www.europeana.eu/api/v2/record/9200143/BibliographicResource_2000069378267.json?wskey=api2demo",
+			"timestamp_created_epoch": 1401837737400,
+			"timestamp_update_epoch": 1401990303161,
+			"timestamp_created": "2014-06-03T23:22:17.400Z",
+			"timestamp_update": "2014-06-05T17:45:03.161Z"
+		}
+	]
 }

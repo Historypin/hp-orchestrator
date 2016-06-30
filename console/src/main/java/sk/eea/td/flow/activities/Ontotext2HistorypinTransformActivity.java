@@ -27,6 +27,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import sk.eea.td.console.model.JobRun;
 import sk.eea.td.onto_client.dto.EnrichResponseDTO;
 import sk.eea.td.onto_client.dto.EnrichResponseDTO.IdObject;
+import sk.eea.td.rest.model.Connector;
 import sk.eea.td.rest.service.OntotextHarvestService;
 import sk.eea.td.util.PathUtils;
 
@@ -70,7 +71,7 @@ public class Ontotext2HistorypinTransformActivity extends AbstractTransformActiv
     }
 
     @Override
-    protected Path transform(String source, Path file, Path transformPath, JobRun context) throws IOException {
+    protected Path transform(Connector source, Path file, Path transformPath, JobRun context) throws IOException {
 
         LOG.debug("transforming, source: {}, file: {}, transformPath: {}", source, file, transformPath);
 

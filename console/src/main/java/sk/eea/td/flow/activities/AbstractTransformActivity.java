@@ -19,6 +19,7 @@ import sk.eea.td.console.model.JobRun;
 import sk.eea.td.console.model.ParamKey;
 import sk.eea.td.console.model.ReadOnlyParam;
 import sk.eea.td.flow.FlowException;
+import sk.eea.td.rest.model.Connector;
 import sk.eea.td.util.PathUtils;
 
 public abstract class AbstractTransformActivity implements Activity {
@@ -86,7 +87,7 @@ public abstract class AbstractTransformActivity implements Activity {
                 }
                 String source = parts[1];
 
-                Path transformedFile = transform(source, file, transformPath, context);
+                Path transformedFile = transform(Connector.valueOf(source), file, transformPath, context);
 
                 if (transformedFile != null) {
                     getLogger().debug("File '{}' has been transformed into file: '{}'", file.toString(), transformedFile.toString());
@@ -96,7 +97,17 @@ public abstract class AbstractTransformActivity implements Activity {
         });
     }
 
-    abstract protected Path transform(String source, Path file, Path transformPath, JobRun context) throws IOException;
+    /**
+     * 
+     * @param source Connector string
+     * @param inputFile file to transform
+     * @param outputDir path where to put files
+     * @param context JobRun context
+     * @return
+     * @throws IOException
+     * @throws Exception 
+     */
+    abstract protected Path transform(Connector source, Path inputFile, Path outputDir, JobRun context) throws IOException;
     
     public boolean isSleepAfter(){
     	return false;

@@ -29,6 +29,7 @@ import sk.eea.td.rest.model.OaipmhConfigWrapper;
 import sk.eea.td.rest.service.EuropeanaHarvestService;
 import sk.eea.td.rest.service.HistorypinHarvestService;
 import sk.eea.td.rest.service.OaipmhHarvestService;
+import sk.eea.td.rest.service.TagappHarvestService;
 import sk.eea.td.util.DateUtils;
 
 public class HarvestActivity implements Activity {
@@ -45,6 +46,9 @@ public class HarvestActivity implements Activity {
 
     @Autowired
     private HistorypinHarvestService historypinHarvestService;
+
+    @Autowired
+    private TagappHarvestService tagappHarvestService;
     
     @Override
     public ActivityAction execute(JobRun context) throws FlowException {
@@ -79,6 +83,18 @@ public class HarvestActivity implements Activity {
                 	until = DateUtils.SYSTEM_TIME_FORMAT.format(untilDate.toInstant());
                 	harvestPath = historypinHarvestService.harvestAnnotation(String.valueOf(context.getId()),String.valueOf(context.getJob().getId()), from, until);
                 	break;
+                case TAGAPP:
+                    Date fromDateTA = calculateFromDate(from, lastSuccess);
+                    Date untilDateTA = calculateUntilDate(until);
+
+                    if(fromDateTA.after(untilDateTA)){
+                        LOG.info(MessageFormat.format("Not harvesting job:{0} because date 'from' is from future or today", context.getJob().getName()));
+                        return ActivityAction.NEXT_CYCLE;
+                    }
+                    from = DateUtils.SYSTEM_TIME_FORMAT.format(fromDateTA.toInstant());
+                    until = DateUtils.SYSTEM_TIME_FORMAT.format(untilDateTA.toInstant());
+                    harvestPath = tagappHarvestService.harvest(String.valueOf(context.getId()),String.valueOf(context.getJob().getId()), from, until);
+                    break;
                 default:
                     throw new IllegalArgumentException("There is no harvester implemented for source: " + context.getJob().getSource());
             }

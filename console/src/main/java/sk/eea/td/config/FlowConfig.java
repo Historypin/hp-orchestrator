@@ -65,6 +65,11 @@ public class FlowConfig {
     }
     
     @Bean
+    public Activity eu2tagAppTransformActivity() {
+        return new EU2TagAppTransformActivity();
+    }
+
+    @Bean
     public FlowManager europeanaToHistorypinFlowManager() {
         FlowManager flowManager = new FlowManagerImpl(Connector.EUROPEANA, Connector.HISTORYPIN, singleRunJobSelector());
         flowManager.addActivity(harvestActivity());
@@ -93,7 +98,7 @@ public class FlowConfig {
     }
     
     @Bean
-    public FlowManagerImpl dataflow4(){
+    public FlowManager dataflow4(){
     	FlowManagerImpl flowManager = new FlowManagerImpl(Connector.HISTORYPIN_ANNOTATION, Connector.EUROPEANA_ANNOTATION, dataflow4JobSelector());
     	flowManager.addActivity(harvestActivity());
     	flowManager.addActivity(hp_a2eu_ATransformActivity());
@@ -102,6 +107,30 @@ public class FlowConfig {
     	flowManager.addActivity(reportActivity());
     	flowManager.addActivity(dataflow4isFinalActivity());
     	return flowManager;
+    }
+    
+    @Bean
+    public FlowManager dataflow6(){
+        FlowManager flowManager = new FlowManagerImpl(Connector.EUROPEANA, Connector.TAGAPP, singleRunJobSelector());
+        flowManager.addActivity(harvestActivity());
+        flowManager.addActivity(eu2tagAppTransformActivity());
+        flowManager.addActivity(tagappStoreActivity());
+        flowManager.addActivity(cleanupActivity());
+        flowManager.addActivity(reportActivity());
+        return flowManager;
+    }
+    
+    @Bean
+    public FlowManager dataflow6Subflow(){
+        FlowManager flowManager = new FlowManagerImpl(Connector.TAGAPP, Connector.EUROPEANA, dataflow6SubflowSelector());
+        flowManager.addActivity(harvestActivity());
+        flowManager.addActivity(tagapp2hpTransformActivity());
+        flowManager.addActivity(reportActivity());
+        flowManager.addActivity(hp2eu_ATransformActivity());
+        flowManager.addActivity(cleanupActivity());
+        flowManager.addActivity(reportActivity());
+        flowManager.addActivity(dataflow6SubflowIsFinalActivity());
+        return flowManager;
     }
 
 }

@@ -179,7 +179,7 @@ public class TransformActivity extends AbstractTransformActivity implements Acti
     }
 
     @Override
-    protected Path transform(String source, Path harvestedFile, Path transformPath, JobRun context) throws IOException {
+    protected Path transform(Connector source, Path harvestedFile, Path transformPath, JobRun context) throws IOException {
 
         final Map<ParamKey, String> paramMap = new HashMap<>();
         context.getReadOnlyParams().stream().forEach(p -> paramMap.put(p.getKey(), p.getValue()));

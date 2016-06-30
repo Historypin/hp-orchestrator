@@ -57,6 +57,12 @@
         	<artifactId>mint-client</artifactId>
         	<version>0.0.1-SNAPSHOT</version>
         </dependency>
+        
+        <dependency>
+        	<groupId>sk.eea.td</groupId>
+        	<artifactId>tagapp-client</artifactId>
+        	<version>0.0.1-SNAPSHOT</version>
+        </dependency>
 
         <!-- External dependencies -->
         <dependency>
