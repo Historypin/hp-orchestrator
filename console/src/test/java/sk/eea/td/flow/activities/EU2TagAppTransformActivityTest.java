@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.nio.file.Paths;
+import java.util.HashMap;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -40,4 +41,22 @@ public class EU2TagAppTransformActivityTest {
         }
     }
 
+    @Test
+    public void testFindValueComplete() {
+        EU2TagAppTransformActivity test = new EU2TagAppTransformActivity();
+        try {
+            JsonNode json = objectMapper.readTree(Paths.get(ClassLoader.getSystemResource("europeana/sng_full.eu.json").toURI()).toFile());
+        
+            assertEquals("sk",test.findValue(json, "object.europeanaAggregation.edmLanguage.def"));
+            assertEquals("IMAGE",test.findValue(json, "object.type"));
+            assertEquals("Slovenský rezbár z polovice 18. storočia",test.findValue(json,"object.proxies[0].dcCreator.def[0]"));
+            assertEquals("Zázračný rybolov",test.findValue(json,"object.title[0]"));
+            assertEquals("/07101/P_1456",test.findValue(json,"object.about"));
+            assertEquals("http://www.webumenia.sk/cedvuweb/image/SVK_SNG.P_1456.jpeg?id=SVK:SNG.P_1456",test.findValue(json,"object.aggregations[0].edmObject"));
+            assertEquals("http://www.europeana.eu/api/api2demo/redirect?shownAt=http%3A%2F%2Fwww.webumenia.sk%2Fweb%2Fguest%2Fdetail%2F-%2Fdetail%2Fid%2FSVK%3ASNG.P_1456&provider=Slovak+national+gallery&id=http%3A%2F%2Fwww.europeana.eu%2Fresolve%2Frecord%2F07101%2FP_1456&profile=full",test.findValue(json,"object.aggregations[0].edmIsShownAt"));
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail("Exception thrown.");
+        }
+    }
 }

@@ -18,10 +18,11 @@ public interface TagappClient {
 
     Response startEnrichment(String batchId);
 
-    Response removeBatch(String batchId);
+    Response stopEnrichment(String batchId);
 
     Response addTag(TagDTO tagDto) throws Exception;
 
-    Response addCulturalObject(CulturalObjectDTO culturalObject) throws Exception;
+    Response addCulturalObject(String batchId, CulturalObjectDTO culturalObject) throws Exception;
 
+    String createBatch() throws Exception;
 }

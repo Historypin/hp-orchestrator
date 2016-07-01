@@ -87,7 +87,7 @@ public abstract class AbstractTransformActivity implements Activity {
                 }
                 String source = parts[1];
 
-                Path transformedFile = transform(Connector.valueOf(source), file, transformPath, context);
+                Path transformedFile = transform(Connector.getConnectorByFormatCode(source), file, transformPath, context);
 
                 if (transformedFile != null) {
                     getLogger().debug("File '{}' has been transformed into file: '{}'", file.toString(), transformedFile.toString());

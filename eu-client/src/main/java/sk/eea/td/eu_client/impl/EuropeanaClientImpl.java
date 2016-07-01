@@ -98,7 +98,8 @@ public class EuropeanaClientImpl implements EuropeanaClient {
         return this.search(luceneQuery, null);
     }
 
-    @Override public List<String> search(String luceneQuery, String facet) throws IOException, InterruptedException {
+    @Override 
+    public List<String> search(String luceneQuery, String facet) throws IOException, InterruptedException {
         String cursor = "*"; // initial cursor value
         List<String> harvestedJsons = new ArrayList<>();
         while (!"".equals(cursor)) {

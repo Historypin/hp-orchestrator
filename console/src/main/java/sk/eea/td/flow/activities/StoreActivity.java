@@ -1,27 +1,15 @@
 package sk.eea.td.flow.activities;
 
-import org.apache.commons.lang3.NotImplementedException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import sk.eea.td.console.model.JobRun;
-import sk.eea.td.console.model.Log;
-import sk.eea.td.console.model.ParamKey;
-import sk.eea.td.console.repository.LogRepository;
-import sk.eea.td.flow.FlowException;
-import sk.eea.td.flow.activities.Activity.ActivityAction;
-import sk.eea.td.hp_client.api.Location;
-import sk.eea.td.hp_client.impl.HPClientImpl;
-import sk.eea.td.rest.model.Connector;
-import sk.eea.td.rest.service.EuropeanaStoreService;
-import sk.eea.td.rest.service.HistorypinStoreService;
-import sk.eea.td.rest.service.MintStoreService;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.*;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.text.MessageFormat;
 import java.util.Date;
@@ -31,7 +19,23 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
-import static org.apache.commons.lang3.StringUtils.isEmpty;
+import org.apache.commons.lang3.NotImplementedException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+
+import sk.eea.td.console.model.JobRun;
+import sk.eea.td.console.model.Log;
+import sk.eea.td.console.model.ParamKey;
+import sk.eea.td.console.repository.LogRepository;
+import sk.eea.td.flow.FlowException;
+import sk.eea.td.hp_client.api.Location;
+import sk.eea.td.hp_client.impl.HPClientImpl;
+import sk.eea.td.rest.model.Connector;
+import sk.eea.td.rest.service.EuropeanaStoreService;
+import sk.eea.td.rest.service.HistorypinStoreService;
+import sk.eea.td.rest.service.MintStoreService;
 
 public class StoreActivity implements Activity {
 
@@ -45,11 +49,11 @@ public class StoreActivity implements Activity {
 
     @Autowired
     private LogRepository logRepository;
+    
+    @Autowired
+    private EuropeanaStoreService europeanaStoreService;
 
-	private HistorypinStoreService historypinStoreService = null;
-	
-	@Autowired
-	private EuropeanaStoreService europeanaStoreService;
+    private HistorypinStoreService historypinStoreService = null;
     
     @Override
     public ActivityAction execute(JobRun context) throws FlowException {
@@ -109,7 +113,6 @@ public class StoreActivity implements Activity {
                                 logRepository.save(log);
                             }
                             break;
-                        case TAGAPP:
                         case MINT:
                         	LOG.debug(MessageFormat.format("Adding {0} to {1}", file.getFileName(), mintFile.getName()));
                         	zipOutputStream.putNextEntry(new ZipEntry(file.getFileName().toString()));
@@ -118,9 +121,15 @@ public class StoreActivity implements Activity {
                         	zipOutputStream.flush();                        	
                         	break;
                         case EUROPEANA_ANNOTATION:
-                        	boolean success = europeanaStoreService.storeAnnotation(this.hpProjectId, file);
-                        	LOG.debug("Storing annotation: " + success);
-                        	break;
+                            if (!europeanaStoreService.storeAnnotation(this.hpProjectId, file)) {
+                                Log log = new Log();
+                                log.setJobRun(context);
+                                log.setLevel(Log.LogLevel.ERROR);
+                                log.setMessage(String.format("Annotations from file '%s' weren't saved successfully. See server logs for details.", file));
+                                logRepository.save(log);
+                            }
+                            break;
+                        case TAGAPP:
                         case EUROPEANA:
                         case SD:
                             throw new NotImplementedException("Store procedure for destination: " + target + " is not implemented yet!");                        	
@@ -130,6 +139,7 @@ public class StoreActivity implements Activity {
                     LOG.debug("Storing of file '{}' has ended.", file.toString());
                     return FileVisitResult.CONTINUE;
                 }
+                
             });
             zipOutputStream.close();
             mintOutputStream.close();
@@ -154,7 +164,6 @@ public class StoreActivity implements Activity {
             if(mintFile.exists()){
             	mintFile.delete();
             }
-            	
         } catch (Exception e) {
             throw new FlowException("Exception raised during store action", e);
         } finally {

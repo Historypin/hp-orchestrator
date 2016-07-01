@@ -64,9 +64,9 @@ public class TagappClientImpl implements TagappClient {
     }
 
     @Override
-    public Response addCulturalObject(CulturalObjectDTO culturalObject) throws Exception {
+    public Response addCulturalObject(String batchId, CulturalObjectDTO culturalObject) throws Exception {
         try {
-            WebTarget target = client.target("http://localhost:8080").path("/api/cultural/add");
+            WebTarget target = client.target(baseURL).path("/api/cultural/add").path("/").path(batchId);
             Invocation invocation = target.request(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).buildPost(
                     Entity.entity(objectMapper.writeValueAsString(culturalObject), MediaType.APPLICATION_JSON));
             return Recurrent.with(retryPolicy).get(() -> invocation.invoke());
@@ -76,15 +76,15 @@ public class TagappClientImpl implements TagappClient {
     }
 
     @Override
-    public Response removeBatch(String batchId) {
-        WebTarget target = client.target("http://localhost:8080").path("/api/batch/remove/").path(batchId);
+    public Response stopEnrichment(String batchId) {
+        WebTarget target = client.target(baseURL).path("/api/batch/remove/").path(batchId);
         Invocation invocation = target.request(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).buildDelete();
         return Recurrent.with(retryPolicy).get(() -> invocation.invoke());
     }
 
     @Override
     public Response harvestTags(String fromDate, String untilDate, String batchId) {
-        WebTarget target = client.target("http://localhost:8080").path("/api/tag/list").queryParam("batchId", batchId)
+        WebTarget target = client.target(baseURL).path("/api/tag/list").queryParam("batchId", batchId)
                 .queryParam("from", fromDate).queryParam("untilDate", untilDate);
         Invocation invocation = target.request(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).buildGet();
         return Recurrent.with(retryPolicy).get(() -> invocation.invoke());
@@ -99,8 +99,26 @@ public class TagappClientImpl implements TagappClient {
 
     @Override
     public Response startEnrichment(String batchId){
-        WebTarget target = client.target("http://localhost:8080").path("/api/batch/publish").queryParam("batchId",batchId);
+        WebTarget target = client.target(baseURL).path("/api/batch/publish/").path(batchId);
         Invocation invocation = target.request(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).buildGet();
         return Recurrent.with(retryPolicy).get(() -> invocation.invoke());
+    }
+
+    @Override
+    public String createBatch() throws Exception {
+        WebTarget target = client.target(baseURL).path("/api/batch/create");
+        Invocation invocation = target.request(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).buildPost(Entity.text(""));
+        Response response = Recurrent.with(retryPolicy).get(() -> invocation.invoke());
+        if(response == null || response.getStatus() != 201 || !response.hasEntity()){
+            LOG.error("Error creating batch: {}", response.hasEntity() ? response.readEntity(String.class) : "no message");
+            throw new Exception("Error creating a batch");
+        }
+        ResultMessageDTO result = objectMapper.readValue(response.readEntity(String.class), ResultMessageDTO.class);
+        String batchId = result != null && result.getMessage() != null ? result.getMessage().replaceAll("id: (\\d+)$", "$1") : null;
+        if(batchId == null){
+            LOG.error("Error creating batch. Batch ID not found in response");
+            throw new Exception("Error creating a batch");            
+        }
+        return batchId;
     }    
 }

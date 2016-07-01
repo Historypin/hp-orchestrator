@@ -1,6 +1,15 @@
 package sk.eea.td.rest.controller;
 
-import io.swagger.annotations.ApiOperation;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
+import javax.annotation.PreDestroy;
+import javax.validation.Valid;
+
 import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,20 +18,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import io.swagger.annotations.ApiOperation;
 import sk.eea.td.rest.model.HarvestRequest;
 import sk.eea.td.rest.model.HarvestResponse;
 import sk.eea.td.rest.service.EuropeanaHarvestService;
 import sk.eea.td.rest.service.HistorypinHarvestService;
 import sk.eea.td.rest.service.OaipmhHarvestService;
-
-import javax.annotation.PreDestroy;
-import javax.validation.Valid;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 @RestController
 public class HarvestController {
@@ -52,7 +54,7 @@ public class HarvestController {
             case EUROPEANA:
                 europeanaExecutorService.submit(() -> {
                     try {
-                        europeanaHarvestService.harvest(String.valueOf(System.currentTimeMillis()), request.getLuceneQuery(), request.getSearchFacet());
+                        europeanaHarvestService.harvest(String.valueOf(System.currentTimeMillis()), request.getLuceneQuery(), request.getSearchFacet(),Boolean.FALSE);
                     } catch (IOException | InterruptedException e) {
                         LOG.error("Exception at Europeana harvest job.", e);
                     }

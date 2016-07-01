@@ -40,6 +40,11 @@ public class FlowConfig {
     }
 
     @Bean
+    public Activity tagappStoreActivity() {
+        return new TagappStoreActivity();
+    }
+
+    @Bean
     public Activity reportActivity() {
         return new ReportActivity();
     }
@@ -120,17 +125,17 @@ public class FlowConfig {
         return flowManager;
     }
     
-    @Bean
-    public FlowManager dataflow6Subflow(){
-        FlowManager flowManager = new FlowManagerImpl(Connector.TAGAPP, Connector.EUROPEANA, dataflow6SubflowSelector());
-        flowManager.addActivity(harvestActivity());
-        flowManager.addActivity(tagapp2hpTransformActivity());
-        flowManager.addActivity(reportActivity());
-        flowManager.addActivity(hp2eu_ATransformActivity());
-        flowManager.addActivity(cleanupActivity());
-        flowManager.addActivity(reportActivity());
-        flowManager.addActivity(dataflow6SubflowIsFinalActivity());
-        return flowManager;
-    }
+//    @Bean
+//    public FlowManager dataflow6Subflow(){
+//        FlowManager flowManager = new FlowManagerImpl(Connector.TAGAPP, Connector.EUROPEANA, dataflow6SubflowSelector());
+//        flowManager.addActivity(harvestActivity());
+//        flowManager.addActivity(tagapp2hpTransformActivity());
+//        flowManager.addActivity(reportActivity());
+//        flowManager.addActivity(hp2eu_ATransformActivity());
+//        flowManager.addActivity(cleanupActivity());
+//        flowManager.addActivity(reportActivity());
+//        flowManager.addActivity(dataflow6SubflowIsFinalActivity());
+//        return flowManager;
+//    }
 
 }

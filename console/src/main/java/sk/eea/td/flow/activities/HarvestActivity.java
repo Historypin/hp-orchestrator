@@ -1,14 +1,9 @@
 package sk.eea.td.flow.activities;
 
 import java.nio.file.Path;
-import java.text.DateFormatSymbols;
 import java.text.MessageFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
-import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -25,6 +20,7 @@ import sk.eea.td.console.model.JobRun;
 import sk.eea.td.console.model.ParamKey;
 import sk.eea.td.console.model.ReadOnlyParam;
 import sk.eea.td.flow.FlowException;
+import sk.eea.td.rest.model.Connector;
 import sk.eea.td.rest.model.OaipmhConfigWrapper;
 import sk.eea.td.rest.service.EuropeanaHarvestService;
 import sk.eea.td.rest.service.HistorypinHarvestService;
@@ -62,7 +58,11 @@ public class HarvestActivity implements Activity {
 			String lastSuccess = paramMap.get(ParamKey.LAST_SUCCESS);
 			switch (context.getJob().getSource()) {
                 case EUROPEANA:
-                    harvestPath = europeanaHarvestService.harvest(String.valueOf(context.getId()), paramMap.get(ParamKey.EU_REST_QUERY), paramMap.get(ParamKey.EU_REST_FACET));
+                    harvestPath = europeanaHarvestService.harvest(
+                            String.valueOf(context.getId()), 
+                            paramMap.get(ParamKey.EU_REST_QUERY), 
+                            paramMap.get(ParamKey.EU_REST_FACET),
+                            Connector.TAGAPP.equals(context.getJob().getTarget()));
                     break;
                 case HISTORYPIN:
                     harvestPath = historypinHarvestService.harvest(String.valueOf(context.getId()), paramMap.get(ParamKey.HP_PROJECT_SLUG));

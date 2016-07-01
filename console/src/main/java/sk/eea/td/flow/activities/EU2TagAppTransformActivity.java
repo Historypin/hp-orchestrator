@@ -56,14 +56,13 @@ public class EU2TagAppTransformActivity extends AbstractTransformActivity {
         HashMap<ParamKey, String> params = new HashMap<ParamKey, String>();
         context.getReadOnlyParams().forEach(param -> params.put(param.getKey(), param.getValue()));
         Path targetFile = PathUtils.createUniqueFilename(outputDir, context.getJob().getTarget().getFormatCode());
-        transformListItem(file, targetFile, params);
+//        transformListItem(file, targetFile, params);
         transformRecordItem(file, targetFile, params);
         return outputDir;
     }
 
     private void transformListItem(Path sourceFile, Path targetFile, HashMap<ParamKey, String> params)
             throws IOException, JsonProcessingException, JsonGenerationException, JsonMappingException {
-        String batchId = params.get(ParamKey.TAGAPP_BATCH);
         JsonNode rootNode = objectMapper.readTree(sourceFile.toFile());
         JsonNode items = rootNode.get("items");
         if(!items.isArray())
@@ -76,7 +75,6 @@ public class EU2TagAppTransformActivity extends AbstractTransformActivity {
             if(!objectType.equalsIgnoreCase("IMAGE"))
                 continue;
             dto.setAuthor(findValue(element,"edmAgentLabel[0].def"));
-            dto.setBatchId(batchId);
             HashMap<String, String> descriptions = new HashMap<String, String>();
             descriptions.put(lang, findValue(element,"dcDescriptionLangAware.def"));
             dto.setDescription(descriptions);
@@ -90,21 +88,19 @@ public class EU2TagAppTransformActivity extends AbstractTransformActivity {
 
     private void transformRecordItem(Path sourceFile, Path targetFile, HashMap<ParamKey, String> params)
             throws IOException, JsonProcessingException, JsonGenerationException, JsonMappingException {
-        String batchId = params.get(ParamKey.TAGAPP_BATCH);
         JsonNode element = objectMapper.readTree(sourceFile.toFile());
         CulturalObjectDTO dto = new CulturalObjectDTO();
         String lang = findValue(element, "object.europeanaAggregation.edmLanguage.def");
         String objectType = findValue(element, "object.type");
-        if(!objectType.equalsIgnoreCase("IMAGE"))
+        if(objectType == null || !objectType.equalsIgnoreCase("IMAGE"))
             return;
-//        dto.setAuthor(findValue(element,"edmAgentLabel[0].def"));
-        dto.setBatchId(batchId);
+        dto.setAuthor(findValue(element,"object.proxies[0].dcCreator.def[0]"));
         HashMap<String, String> descriptions = new HashMap<String, String>();
-//        descriptions.put(lang, findValue(element,"dcDescriptionLangAware.def"));
+        descriptions.put(lang, findValue(element,"object.title[0]"));
         dto.setDescription(descriptions);
         dto.setExternalId(findValue(element,"object.about"));
         dto.setExternalUrl(findValue(element,"object.aggregations[0].edmIsShownAt"));
-        dto.setExternalSource(findValue(element,"edmIsShownBy[0]"));
+        dto.setExternalSource(findValue(element,"object.aggregations[0].edmIsShownBy"));
         targetFile.toFile().createNewFile();
         objectMapper.writeValue(targetFile.toFile(), dto);
     }
@@ -137,6 +133,8 @@ public class EU2TagAppTransformActivity extends AbstractTransformActivity {
     
     protected String findValue(JsonNode object, String path) throws IOException {
         JsonNode node = findNode(object, path);
+        if(node == null)
+            return null;
         if(node.isArray()){
             StringBuilder result = new StringBuilder();
             node.elements().forEachRemaining(child -> result.append(child.textValue()).append(" "));

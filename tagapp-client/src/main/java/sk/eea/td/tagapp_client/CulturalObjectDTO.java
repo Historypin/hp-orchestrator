@@ -9,7 +9,6 @@ public class CulturalObjectDTO {
 	private String externalId;
 	private String externalUrl;
 	private String externalSource;
-	private String batchId;
 	private Map<String, String> description;
 
 	public Long getId() {
@@ -41,12 +40,6 @@ public class CulturalObjectDTO {
 	}
 	public void setExternalSource(String externalSource) {
 		this.externalSource = externalSource;
-	}
-	public String getBatchId() {
-		return batchId;
-	}
-	public void setBatchId(String batchId) {
-		this.batchId = batchId;
 	}
 	public Map<String, String> getDescription() {
 		return this.description;
