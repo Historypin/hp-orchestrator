@@ -9,6 +9,8 @@ import sk.eea.td.eu_client.impl.EuropeanaClientImpl;
 import sk.eea.td.hp_client.api.HPClient;
 import sk.eea.td.hp_client.impl.HPClientImpl;
 import sk.eea.td.rest.service.HistorypinHarvestService;
+import sk.eea.td.tagapp_client.TagappClient;
+import sk.eea.td.tagapp_client.TagappClientImpl;
 
 @Configuration
 public class RESTClientsConfig {
@@ -32,5 +34,13 @@ public class RESTClientsConfig {
             @Value("${europeana.base.url}") String baseURL,
             @Value("${europeana.ws.key}") String wsKey) {
         return new EuropeanaClientImpl(baseURL, wsKey);
-    }    
+    }
+    
+    @Bean
+    public TagappClient tagappClient(
+            @Value("${tagapp.base.url}") String baseURL,
+            @Value("${tagapp.username}") String username,
+            @Value("${tagapp.password}") String password){
+        return new TagappClientImpl(baseURL, username, password);
+    }
 }

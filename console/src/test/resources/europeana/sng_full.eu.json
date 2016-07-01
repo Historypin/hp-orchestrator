@@ -1,0 +1,254 @@
+{
+	"apikey": "api2demo",
+	"action": "--deprecated--",
+	"success": true,
+	"statsDuration": 948,
+	"requestNumber": 999,
+	"object": 
+	{
+		"edmDatasetName": 
+		[
+			"07101_Ag_SK_EuropeanASNG"
+		],
+
+		"europeanaAggregation": 
+		{
+			"about": "/aggregation/europeana/07101/P_1456",
+			"aggregatedCHO": "/item/07101/P_1456",
+			"edmLandingPage": "http://europeana.eu/portal/record/07101/P_1456.html",
+			"edmCountry": 
+			{
+				"def": 
+				[
+					"slovakia"
+				]
+			},
+
+			"edmLanguage": 
+			{
+				"def": 
+				[
+					"sk"
+				]
+			},
+
+			"edmRights": 
+			{
+				"def": 
+				[
+					"http://creativecommons.org/licenses/by/3.0/"
+				]
+			},
+
+			"edmPreview": "http://europeanastatic.eu/api/image?uri=http%3A%2F%2Fwww.webumenia.sk%2Fcedvuweb%2Fimage%2FSVK_SNG.P_1456.jpeg%3Fid%3DSVK%3ASNG.P_1456&size=LARGE&type=IMAGE"
+		},
+
+		"europeanaCompleteness": 5,
+		"europeanaCollectionName": 
+		[
+			"07101_Ag_SK_EuropeanASNG"
+		],
+
+		"aggregations": 
+		[
+			{
+				"about": "/aggregation/provider/07101/P_1456",
+				"edmDataProvider": 
+				{
+					"def": 
+					[
+						"Slovak national gallery"
+					]
+				},
+
+				"edmIsShownBy": "http://www.webumenia.sk/cedvuweb/image/SVK_SNG.P_1456.jpeg?id=SVK:SNG.P_1456",
+				"edmIsShownAt": "http://www.europeana.eu/api/api2demo/redirect?shownAt=http%3A%2F%2Fwww.webumenia.sk%2Fweb%2Fguest%2Fdetail%2F-%2Fdetail%2Fid%2FSVK%3ASNG.P_1456&provider=Slovak+national+gallery&id=http%3A%2F%2Fwww.europeana.eu%2Fresolve%2Frecord%2F07101%2FP_1456&profile=full",
+				"edmObject": "http://www.webumenia.sk/cedvuweb/image/SVK_SNG.P_1456.jpeg?id=SVK:SNG.P_1456",
+				"edmProvider": 
+				{
+					"def": 
+					[
+						"Slovak national gallery"
+					]
+				},
+
+				"edmRights": 
+				{
+					"def": 
+					[
+						"http://creativecommons.org/licenses/by/3.0/"
+					]
+				},
+
+				"edmUgc": "false",
+				"dcRights": 
+				{
+					"def": 
+					[
+						"Slovenská národná galéria, SNG"
+					]
+				},
+
+				"aggregatedCHO": "/item/07101/P_1456",
+				"webResources": 
+				[
+					{
+						"about": "http://www.webumenia.sk/web/guest/detail/-/detail/id/SVK:SNG.P_1456",
+						"textAttributionSnippet": "Zázračný rybolov - http://europeana.eu/portal/record/07101/P_1456.html. Slovenský rezbár z polovice 18. storočia; Neznámy rezbár. Slovak national gallery - http://www.webumenia.sk/web/guest/detail/-/detail/id/SVK:SNG.P_1456. CC BY - http://creativecommons.org/licenses/by/3.0/",
+						"htmlAttributionSnippet": "<span about='http://data.europeana.eu/item/07101/P_1456'><a href='http://europeana.eu/portal/record/07101/P_1456.html'><span property='dc:title'>Zázračný rybolov</span></a>. <span property='dc:creator'>Slovenský rezbár z polovice 18. storočia; Neznámy rezbár. </span><a href='http://www.webumenia.sk/web/guest/detail/-/detail/id/SVK:SNG.P_1456'>Slovak national gallery</a>. <a href='http://creativecommons.org/licenses/by/3.0/' rel='xhv:license http://www.europeana.eu/schemas/edm/rights'>CC BY</a><span rel='cc:useGuidelines' resource='http://www.europeana.eu/rights/pd-usage-guide/'>.</span></span>"
+					},
+
+					{
+						"about": "http://www.webumenia.sk/cedvuweb/image/SVK_SNG.P_1456.jpeg?id=SVK:SNG.P_1456",
+						"textAttributionSnippet": "Zázračný rybolov - http://europeana.eu/portal/record/07101/P_1456.html. Slovenský rezbár z polovice 18. storočia; Neznámy rezbár. Slovak national gallery - http://www.webumenia.sk/web/guest/detail/-/detail/id/SVK:SNG.P_1456. CC BY - http://creativecommons.org/licenses/by/3.0/",
+						"htmlAttributionSnippet": "<span about='http://data.europeana.eu/item/07101/P_1456'><a href='http://europeana.eu/portal/record/07101/P_1456.html'><span property='dc:title'>Zázračný rybolov</span></a>. <span property='dc:creator'>Slovenský rezbár z polovice 18. storočia; Neznámy rezbár. </span><a href='http://www.webumenia.sk/web/guest/detail/-/detail/id/SVK:SNG.P_1456'>Slovak national gallery</a>. <a href='http://creativecommons.org/licenses/by/3.0/' rel='xhv:license http://www.europeana.eu/schemas/edm/rights'>CC BY</a><span rel='cc:useGuidelines' resource='http://www.europeana.eu/rights/pd-usage-guide/'>.</span></span>",
+						"ebucoreFileByteSize": 223643,
+						"ebucoreWidth": 672,
+						"ebucoreHeight": 800,
+						"edmHasColorSpace": "sRGB",
+						"edmComponentColor": 
+						[
+							"#FFFFFF",
+							"#696969",
+							"#2F4F4F",
+							"#556B2F",
+							"#BDB76B",
+							"#A0522D"
+						],
+
+						"ebucoreOrientation": "portrait",
+						"ebucoreHasMimeType": "image/jpeg"
+					}
+				],
+
+				"edmPreviewNoDistribute": false
+			}
+		],
+
+		"proxies": 
+		[
+			{
+				"about": "/proxy/provider/07101/P_1456",
+				"dcCreator": 
+				{
+					"def": 
+					[
+						"Slovenský rezbár z polovice 18. storočia",
+						"Neznámy rezbár"
+					]
+				},
+
+				"dcDate": 
+				{
+					"def": 
+					[
+						"1740/1760",
+						"1740/1760"
+					]
+				},
+
+				"dcFormat": 
+				{
+					"def": 
+					[
+						"rezba",
+						"zlátenie"
+					]
+				},
+
+				"dcIdentifier": 
+				{
+					"def": 
+					[
+						"P 1456"
+					]
+				},
+
+				"dcTitle": 
+				{
+					"def": 
+					[
+						"Zázračný rybolov"
+					]
+				},
+
+				"dcType": 
+				{
+					"def": 
+					[
+						"sochárstvo, reliéf",
+						"DEF",
+						"originál",
+						"Image"
+					]
+				},
+
+				"dctermsExtent": 
+				{
+					"def": 
+					[
+						"výška 52.5 cm;šírka 28.0 cm"
+					]
+				},
+
+				"dctermsMedium": 
+				{
+					"def": 
+					[
+						"drevo"
+					]
+				},
+
+				"proxyIn": 
+				[
+					"/aggregation/provider/07101/P_1456"
+				],
+
+				"proxyFor": "/item/07101/P_1456",
+				"edmType": "IMAGE",
+				"europeanaProxy": false
+			},
+
+			{
+				"about": "/proxy/europeana/07101/P_1456",
+				"proxyIn": 
+				[
+					"/aggregation/europeana/07101/P_1456"
+				],
+
+				"proxyFor": "/item/07101/P_1456",
+				"edmType": "IMAGE",
+				"year": 
+				{
+					"def": null
+				},
+
+				"europeanaProxy": true
+			}
+		],
+
+		"language": 
+		[
+			"sk"
+		],
+
+		"providedCHOs": 
+		[
+			{
+				"about": "/item/07101/P_1456"
+			}
+		],
+
+		"title": 
+		[
+			"Zázračný rybolov"
+		],
+
+		"about": "/07101/P_1456",
+		"type": "IMAGE",
+		"timestamp_created_epoch": 1418638512547,
+		"timestamp_update_epoch": 1422452806554,
+		"timestamp_created": "2014-12-15T10:15:12.547Z",
+		"timestamp_update": "2015-01-28T13:46:46.554Z"
+	}
+}

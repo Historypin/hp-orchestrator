@@ -24,5 +24,6 @@ public enum ParamKey {
     HARVEST_PATH,
     TRANSFORM_PATH,
     HP_UNTIL_CURRENT, 
-    LAST_SUCCESS
+    LAST_SUCCESS, 
+    TAGAPP_BATCH
 }

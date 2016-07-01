@@ -1,21 +1,30 @@
 package sk.eea.td.flow.activities;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import sk.eea.td.console.model.JobRun;
-import sk.eea.td.console.model.ParamKey;
-import sk.eea.td.console.model.ReadOnlyParam;
-import sk.eea.td.flow.FlowException;
-import sk.eea.td.rest.service.EuropeanaHarvestService;
-import sk.eea.td.rest.service.HistorypinHarvestService;
-import sk.eea.td.util.DateUtils;
-
 import java.nio.file.Path;
 import java.text.MessageFormat;
 import java.text.ParseException;
 import java.time.Instant;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TimeZone;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import sk.eea.td.console.model.JobRun;
+import sk.eea.td.console.model.ParamKey;
+import sk.eea.td.console.model.ReadOnlyParam;
+import sk.eea.td.flow.FlowException;
+import sk.eea.td.console.model.Connector;
+import sk.eea.td.rest.service.EuropeanaHarvestService;
+import sk.eea.td.rest.service.HistorypinHarvestService;
+import sk.eea.td.rest.service.TagappHarvestService;
+import sk.eea.td.util.DateUtils;
 
 public class HarvestActivity implements Activity {
 
@@ -28,6 +37,9 @@ public class HarvestActivity implements Activity {
 
     @Autowired
     private HistorypinHarvestService historypinHarvestService;
+
+    @Autowired
+    private TagappHarvestService tagappHarvestService;
     
     @Override
     public ActivityAction execute(JobRun context) throws FlowException {
@@ -41,7 +53,11 @@ public class HarvestActivity implements Activity {
 			String lastSuccess = paramMap.get(ParamKey.LAST_SUCCESS);
 			switch (context.getJob().getSource()) {
                 case EUROPEANA:
-                    harvestPath = europeanaHarvestService.harvest(String.valueOf(context.getId()), paramMap.get(ParamKey.EU_REST_QUERY), paramMap.get(ParamKey.EU_REST_FACET));
+                    harvestPath = europeanaHarvestService.harvest(
+                            String.valueOf(context.getId()), 
+                            paramMap.get(ParamKey.EU_REST_QUERY), 
+                            paramMap.get(ParamKey.EU_REST_FACET),
+                            Connector.TAGAPP.equals(context.getJob().getTarget()));
                     break;
                 case HISTORYPIN:
                     harvestPath = historypinHarvestService.harvest(String.valueOf(context.getId()), paramMap.get(ParamKey.HP_PROJECT_SLUG));
@@ -58,6 +74,18 @@ public class HarvestActivity implements Activity {
                 	until = DateUtils.SYSTEM_TIME_FORMAT.format(untilDate.toInstant());
                 	harvestPath = historypinHarvestService.harvestAnnotation(String.valueOf(context.getId()),String.valueOf(context.getJob().getId()), from, until);
                 	break;
+                case TAGAPP:
+                    Date fromDateTA = calculateFromDate(from, lastSuccess);
+                    Date untilDateTA = calculateUntilDate(until);
+
+                    if(fromDateTA.after(untilDateTA)){
+                        LOG.info(MessageFormat.format("Not harvesting job:{0} because date 'from' is from future or today", context.getJob().getName()));
+                        return ActivityAction.NEXT_CYCLE;
+                    }
+                    from = DateUtils.SYSTEM_TIME_FORMAT.format(fromDateTA.toInstant());
+                    until = DateUtils.SYSTEM_TIME_FORMAT.format(untilDateTA.toInstant());
+                    harvestPath = tagappHarvestService.harvest(String.valueOf(context.getId()),String.valueOf(context.getJob().getId()), from, until);
+                    break;
                 default:
                     throw new IllegalArgumentException("There is no harvester implemented for source: " + context.getJob().getSource());
             }

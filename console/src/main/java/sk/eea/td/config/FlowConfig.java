@@ -3,13 +3,24 @@ package sk.eea.td.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import sk.eea.td.console.model.Connector;
 import sk.eea.td.flow.Dataflow4JobSelector;
 import sk.eea.td.flow.FlowManager;
 import sk.eea.td.flow.FlowManagerImpl;
 import sk.eea.td.flow.JobSelector;
 import sk.eea.td.flow.SingleRunJobSelector;
-import sk.eea.td.flow.activities.*;
-import sk.eea.td.console.model.Connector;
+import sk.eea.td.flow.activities.Activity;
+import sk.eea.td.flow.activities.ApprovalSendMailActivity;
+import sk.eea.td.flow.activities.CleanupActivity;
+import sk.eea.td.flow.activities.Dataflow4isFinalActivity;
+import sk.eea.td.flow.activities.EU2TagAppTransformActivity;
+import sk.eea.td.flow.activities.HP_A2EU_ATransformActivity;
+import sk.eea.td.flow.activities.HarvestActivity;
+import sk.eea.td.flow.activities.Ontotext2HistorypinTransformAndStoreActivity;
+import sk.eea.td.flow.activities.ReportActivity;
+import sk.eea.td.flow.activities.StoreActivity;
+import sk.eea.td.flow.activities.TagappStoreActivity;
+import sk.eea.td.flow.activities.TransformActivity;
 
 @Configuration
 public class FlowConfig {
@@ -37,6 +48,11 @@ public class FlowConfig {
     @Bean
     public Activity storeActivity() {
         return new StoreActivity();
+    }
+
+    @Bean
+    public Activity tagappStoreActivity() {
+        return new TagappStoreActivity();
     }
 
     @Bean
@@ -70,6 +86,11 @@ public class FlowConfig {
     }
     
     @Bean
+    public Activity eu2tagAppTransformActivity() {
+        return new EU2TagAppTransformActivity();
+    }
+
+    @Bean
     public FlowManager europeanaToHistorypinFlowManager() {
         FlowManager flowManager = new FlowManagerImpl(Connector.EUROPEANA, Connector.HISTORYPIN, singleRunJobSelector());
         flowManager.addActivity(harvestActivity());
@@ -101,7 +122,7 @@ public class FlowConfig {
     }
     
     @Bean
-    public FlowManagerImpl dataflow4(){
+    public FlowManager dataflow4(){
     	FlowManagerImpl flowManager = new FlowManagerImpl(Connector.HISTORYPIN_ANNOTATION, Connector.EUROPEANA_ANNOTATION, dataflow4JobSelector());
     	flowManager.addActivity(harvestActivity());
     	flowManager.addActivity(hp_a2eu_ATransformActivity());
@@ -111,5 +132,29 @@ public class FlowConfig {
     	flowManager.addActivity(dataflow4isFinalActivity());
     	return flowManager;
     }
+    
+    @Bean
+    public FlowManager dataflow6(){
+        FlowManager flowManager = new FlowManagerImpl(Connector.EUROPEANA, Connector.TAGAPP, singleRunJobSelector());
+        flowManager.addActivity(harvestActivity());
+        flowManager.addActivity(eu2tagAppTransformActivity());
+        flowManager.addActivity(tagappStoreActivity());
+        flowManager.addActivity(cleanupActivity());
+        flowManager.addActivity(reportActivity());
+        return flowManager;
+    }
+    
+//    @Bean
+//    public FlowManager dataflow6Subflow(){
+//        FlowManager flowManager = new FlowManagerImpl(Connector.TAGAPP, Connector.EUROPEANA, dataflow6SubflowSelector());
+//        flowManager.addActivity(harvestActivity());
+//        flowManager.addActivity(tagapp2hpTransformActivity());
+//        flowManager.addActivity(reportActivity());
+//        flowManager.addActivity(hp2eu_ATransformActivity());
+//        flowManager.addActivity(cleanupActivity());
+//        flowManager.addActivity(reportActivity());
+//        flowManager.addActivity(dataflow6SubflowIsFinalActivity());
+//        return flowManager;
+//    }
 
 }

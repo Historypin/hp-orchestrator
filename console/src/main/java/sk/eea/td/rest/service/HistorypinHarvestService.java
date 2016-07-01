@@ -13,7 +13,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.annotation.PostConstruct;
 import javax.ws.rs.core.Response;
@@ -34,7 +33,6 @@ import sk.eea.td.console.model.Connector;
 import sk.eea.td.console.model.JobRun;
 import sk.eea.td.console.model.ParamKey;
 import sk.eea.td.console.model.ReadOnlyParam;
-import sk.eea.td.console.repository.JobRepository;
 import sk.eea.td.console.repository.JobRunRepository;
 import sk.eea.td.hp_client.api.HPClient;
 import sk.eea.td.hp_client.impl.HPClientImpl;
@@ -47,7 +45,7 @@ public class HistorypinHarvestService {
 
 	private static Logger LOG = LoggerFactory.getLogger(HistorypinHarvestService.class);
 
-    private static final AtomicBoolean CANCELLED = new AtomicBoolean();
+//    private static final AtomicBoolean CANCELLED = new AtomicBoolean();
 
     @Value("${historypin.base.url}")
     private String baseURL;
@@ -67,9 +65,6 @@ public class HistorypinHarvestService {
     	DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX");
     	DATE_FORMAT.setTimeZone(TimeZone.getTimeZone("UTC"));
     }
-
-    @Autowired
-	private JobRepository jobRepository;
 
     @Autowired
 	private JobRunRepository jobRunRepository;
@@ -125,7 +120,7 @@ public class HistorypinHarvestService {
 
 	public Path harvestAnnotation(String harvestId, String jobId, String from, String until) throws IOException, java.text.ParseException, ParseException {
     	final Path harvestPath = PathUtils.createHarvestRunSubdir(Paths.get(outputDirectory), harvestId);
-		JobRun jobRun = jobRunRepository.findNextJobRun(Connector.HISTORYPIN_ANNOTATION.name(), Connector.EUROPEANA_ANNOTATION.name());
+		JobRun jobRun = jobRunRepository.findOne(Long.valueOf(harvestId));
 		String fromLocal = from;
 		String untilLocal;
 		if(jobRun != null){
@@ -158,7 +153,7 @@ public class HistorypinHarvestService {
 		}
 		Response response = hpClient.getAnnotations(fromLocal, untilLocal);
         Path filename = PathUtils.createUniqueFilename(harvestPath, Connector.HISTORYPIN_ANNOTATION.getFormatCode());
-        JSONObject object = storeJson(response, filename);
+        storeJson(response, filename);
 		return harvestPath;
 	}
 
