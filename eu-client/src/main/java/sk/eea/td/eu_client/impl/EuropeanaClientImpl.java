@@ -1,28 +1,32 @@
 package sk.eea.td.eu_client.impl;
 
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonToken;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import net.jodah.recurrent.Recurrent;
-import net.jodah.recurrent.RetryPolicy;
-import org.glassfish.jersey.client.ClientConfig;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import sk.eea.td.eu_client.api.EuropeanaClient;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+import org.glassfish.jersey.client.ClientConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import net.jodah.recurrent.Recurrent;
+import net.jodah.recurrent.RetryPolicy;
+import sk.eea.td.eu_client.api.EuropeanaClient;
 
 public class EuropeanaClientImpl implements EuropeanaClient {
 
@@ -113,10 +117,19 @@ public class EuropeanaClientImpl implements EuropeanaClient {
                 target.queryParam("qf", facet);
             }
 
-            Response response = Recurrent.with(retryPolicy).get(() ->
-                    target.request().get()
-            );
-            String json = response.readEntity(String.class);
+            String json = Recurrent.with(retryPolicy).get(new Callable<String>() {
+                @Override
+                public String call() throws Exception {
+                    Response response = target.request().get();
+                    if(!response.hasEntity()){
+                        LOG.error("No entity returned.");
+                        throw new IOException("Missing entity in the response");
+                    }
+                    return response.readEntity(String.class);
+                }
+//                response.close();
+            });
+            
 
             JsonNode rootNode = objectMapper.readTree(json);
 

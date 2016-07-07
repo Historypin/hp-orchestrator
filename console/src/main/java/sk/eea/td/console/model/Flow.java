@@ -4,9 +4,9 @@ public enum Flow {
 
     FLOW_1(Connector.EUROPEANA, Connector.HISTORYPIN),
     FLOW_2(Connector.HISTORYPIN, Connector.SD),
-    FLOW_4(Connector.EUROPEANA_ANNOTATION, Connector.HISTORYPIN_ANNOTATION),
+    FLOW_4(Connector.HISTORYPIN_ANNOTATION, Connector.EUROPEANA_ANNOTATION),
     FLOW_5(Connector.HISTORYPIN, Connector.MINT),
-    FLOW_6(Connector.HISTORYPIN, Connector.TAGAPP);
+    FLOW_6(Connector.EUROPEANA, Connector.TAGAPP);
 
     private Connector source;
 
