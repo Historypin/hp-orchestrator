@@ -15,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.context.WebApplicationContext;
 import sk.eea.td.IntegrationTest;
+import sk.eea.td.config.FlowManagerTestConfig;
+import sk.eea.td.config.TestConfig;
 import sk.eea.td.console.model.Job;
 import sk.eea.td.console.model.JobRun;
 import sk.eea.td.console.repository.JobRepository;
@@ -62,6 +64,7 @@ public class ReviewControllerTest {
 
         JobRun jobRun = new JobRun();
         jobRun.setJob(job);
+        jobRun.setStatus(JobRun.JobRunStatus.WAITING);
         jobRun = jobRunRepository.save(jobRun);
 
         this.malformedButValidToken = keyBasedPersistenceTokenService.allocateToken("not jobRunId").getKey();
