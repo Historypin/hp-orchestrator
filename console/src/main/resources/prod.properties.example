@@ -1,3 +1,4 @@
 # DEVELOPMENT properties - prod profile
 sk.eea.td.appender.level = WARN
 root.appender.level = WARN
+templateResolver.cacheable=true

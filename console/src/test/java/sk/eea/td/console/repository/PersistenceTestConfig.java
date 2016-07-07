@@ -8,7 +8,7 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 
 @Configuration
 @ComponentScan(basePackages = {"sk.eea.td.console.repository"})
-@PropertySource({ "classpath:default.properties", "classpath:${spring.profiles.active:dev}.properties"})
+@PropertySource({ "classpath:default.properties", "classpath:integration.properties"})
 public class PersistenceTestConfig {
 
     @Bean

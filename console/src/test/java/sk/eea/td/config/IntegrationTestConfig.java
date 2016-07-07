@@ -7,7 +7,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 
 @Configuration
-@PropertySource({ "classpath:default.properties", "classpath:${spring.profiles.active:prod}.properties"})
+@PropertySource({ "classpath:default.properties", "classpath:integration.properties"})
 @ComponentScan(basePackages = {"sk.eea.td.eu_client", "sk.eea.td.hp_client", "sk.eea.td.mint_client"})
 public class IntegrationTestConfig {
 

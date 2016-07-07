@@ -7,8 +7,8 @@ import sk.eea.td.config.SecurityConfig;
 import sk.eea.td.config.WebConfig;
 
 @Configuration
-@PropertySource({"classpath:default.properties", "classpath:${spring.profiles.active:prod}.properties"})
-@ComponentScan(basePackages = "sk.eea.td.console")
+@PropertySource({"classpath:default.properties", "classpath:integration.properties"})
+@ComponentScan(basePackages = {"sk.eea.td.console", "sk.eea.td.flow", "sk.eea.td.mapper", "sk.eea.td.service"})
 @Import({WebConfig.class, SecurityConfig.class, PersistenceConfig.class})
 public class ReviewTestConfig {
 

@@ -17,7 +17,7 @@ import sk.eea.td.rest.service.MailService;
 import sk.eea.td.rest.service.MintStoreService;
 
 @Configuration
-@PropertySource({ "classpath:default.properties", "classpath:${spring.profiles.active:prod}.properties"})
+@PropertySource({ "classpath:default.properties", "classpath:integration.properties"})
 @ComponentScan(basePackages = {"sk.eea.td.flow.activities"})
 public class TestConfig {
 	

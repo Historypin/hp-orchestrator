@@ -9,7 +9,7 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 @Configuration
 //@ComponentScan(basePackages = {"sk.eea.td.flow", "sk.eea.td.console.repository", "sk.eea.td.rest.service"})
 @ComponentScan(basePackages = {"sk.eea.td"})
-@PropertySource({ "classpath:default.properties", "classpath:${spring.profiles.active:dev}.properties"})
+@PropertySource({ "classpath:default.properties", "classpath:integration.properties"})
 public class FlowManagerTestConfig {
 
     @Bean

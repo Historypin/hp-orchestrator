@@ -53,7 +53,7 @@ import sk.eea.td.hp_client.impl.HPClientImpl;
 @Category(IntegrationTest.class)
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = IntegrationTestConfig.class)
-@PropertySource({ "classpath:default.properties", "classpath:${spring.profiles.active:prod}.properties"})
+@PropertySource({ "classpath:default.properties", "classpath:integration.properties"})
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class HPClientImplIT {
 

@@ -19,7 +19,7 @@ import sk.eea.td.flow.FlowManager;
 
 @Configuration
 @EnableScheduling
-@PropertySource({"classpath:default.properties", "classpath:${spring.profiles.active:prod}.properties"})
+@PropertySource({"classpath:default.properties", "file:${ORCHESTRATOR_HOME}/conf/orchestrator.properties"})
 @ComponentScan(basePackages = "sk.eea.td")
 public class AppConfig implements SchedulingConfigurer {
 

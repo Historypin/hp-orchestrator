@@ -1,5 +1,6 @@
 package sk.eea.td.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,6 +26,9 @@ import java.util.Properties;
 @Configuration
 @EnableWebMvc
 public class WebConfig extends WebMvcConfigurerAdapter {
+    
+    @Value("${templateResolver.cacheable}")
+    Boolean cacheable;
 
     @Bean
     public ClassLoaderTemplateResolver webTemplateResolver() {
@@ -32,11 +36,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         templateResolver.setTemplateMode("HTML5");
         templateResolver.setPrefix("templates/");
         templateResolver.setSuffix(".html");
-
-        if ("dev".equalsIgnoreCase(System.getProperty("spring.profiles.active"))) {
-            templateResolver.setCacheable(false);
-        }
-
+        templateResolver.setCacheable(cacheable);
         return templateResolver;
     }
 
@@ -46,10 +46,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         templateResolver.setTemplateMode("HTML5");
         templateResolver.setPrefix("mail/");
         templateResolver.setSuffix(".html");
-
-        if ("dev".equalsIgnoreCase(System.getProperty("spring.profiles.active"))) {
-            templateResolver.setCacheable(false);
-        }
+        templateResolver.setCacheable(cacheable);
 
         return templateResolver;
     }

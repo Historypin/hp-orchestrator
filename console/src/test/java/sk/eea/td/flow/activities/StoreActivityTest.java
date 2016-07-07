@@ -26,7 +26,7 @@ import sk.eea.td.console.model.Connector;
 import sk.eea.td.rest.service.MintStoreService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes={TestConfig.class, DaoMockConfig.class}, initializers=SpringTestIntializer.class)
+@ContextConfiguration(classes={TestConfig.class, DaoMockConfig.class})
 public class StoreActivityTest {
 	
 	@Autowired
