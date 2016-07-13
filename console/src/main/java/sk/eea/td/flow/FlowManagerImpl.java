@@ -216,15 +216,15 @@ public class FlowManagerImpl implements FlowManager {
         activities.add(activity);
     }
 
-    private void logActivityStart(Activity activity, JobRun context) {
+    protected void logActivityStart(Activity activity, JobRun context) {
         logActivity(activity, "started", context);
     }
 
-    private void logActivityEnd(Activity activity, JobRun context) {
+    protected void logActivityEnd(Activity activity, JobRun context) {
         logActivity(activity, "ended", context);
     }
 
-    private void logActivity(Activity activity, String message, JobRun context) {
+    protected void logActivity(Activity activity, String message, JobRun context) {
         logRepository.save(new Log(new Date(), Log.LogLevel.INFO, String.format("%s has %s", activity.getName(), message), context));
     }
 

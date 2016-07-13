@@ -1,10 +1,15 @@
 package sk.eea.td.config;
 
+import java.time.Duration;
+import java.time.Period;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import sk.eea.td.console.model.Connector;
 import sk.eea.td.flow.Dataflow4JobSelector;
+import sk.eea.td.flow.Dataflow6SubflowSelector;
 import sk.eea.td.flow.FlowManager;
 import sk.eea.td.flow.FlowManagerImpl;
 import sk.eea.td.flow.JobSelector;
@@ -18,12 +23,16 @@ import sk.eea.td.flow.activities.HP_A2EU_ATransformActivity;
 import sk.eea.td.flow.activities.HarvestActivity;
 import sk.eea.td.flow.activities.Ontotext2HistorypinTransformAndStoreActivity;
 import sk.eea.td.flow.activities.ReportActivity;
+import sk.eea.td.flow.activities.SleepActivity;
 import sk.eea.td.flow.activities.StoreActivity;
 import sk.eea.td.flow.activities.TagappStoreActivity;
 import sk.eea.td.flow.activities.TransformActivity;
 
 @Configuration
 public class FlowConfig {
+    
+    @Value("${arttag.harvest.period}")
+    private String arttagHarvestPeriod;
 	
 	@Bean
 	public Activity cleanupActivity(){
@@ -80,6 +89,10 @@ public class FlowConfig {
     	return new Dataflow4JobSelector();
     }
     
+    @Bean
+    public JobSelector dataflow6SubflowSelector(){
+        return new Dataflow6SubflowSelector(Duration.parse(arttagHarvestPeriod));
+    }
     @Bean
     public Activity dataflow4isFinalActivity(){
     	return new Dataflow4isFinalActivity();
@@ -140,21 +153,20 @@ public class FlowConfig {
         flowManager.addActivity(eu2tagAppTransformActivity());
         flowManager.addActivity(tagappStoreActivity());
         flowManager.addActivity(cleanupActivity());
+        flowManager.addActivity(new SleepActivity());
         flowManager.addActivity(reportActivity());
         return flowManager;
     }
     
-//    @Bean
-//    public FlowManager dataflow6Subflow(){
-//        FlowManager flowManager = new FlowManagerImpl(Connector.TAGAPP, Connector.EUROPEANA, dataflow6SubflowSelector());
-//        flowManager.addActivity(harvestActivity());
+    @Bean
+    public FlowManager dataflow6Subflow(){
+        FlowManager flowManager = new FlowManagerImpl(Connector.TAGAPP, Connector.EUROPEANA, dataflow6SubflowSelector());
+        flowManager.addActivity(harvestActivity());
 //        flowManager.addActivity(tagapp2hpTransformActivity());
 //        flowManager.addActivity(reportActivity());
 //        flowManager.addActivity(hp2eu_ATransformActivity());
-//        flowManager.addActivity(cleanupActivity());
-//        flowManager.addActivity(reportActivity());
-//        flowManager.addActivity(dataflow6SubflowIsFinalActivity());
-//        return flowManager;
-//    }
+//        flowManager.addActivity(approvalSendMailActivity());
+        return flowManager;
+    }
 
 }
