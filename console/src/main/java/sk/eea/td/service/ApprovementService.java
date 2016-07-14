@@ -163,6 +163,7 @@ public class ApprovementService {
             try {
                 ReviewDTO reviewDTO = objectMapper.readValue(FilesystemStorageService.load(file.toPath()), ReviewDTO.class);
                 reviewDTO.setChecksum(FilesystemStorageService.checkSum(file.toPath()));
+                reviewDTO.setLocalFilename(file.getName());
                 reviews.add(reviewDTO);
             } catch (Exception e) {
                 LOG.error(ServiceException.Error.ErrorCode.FAILED_TO_LOAD_JSON_FROM_FILE.name(), e);

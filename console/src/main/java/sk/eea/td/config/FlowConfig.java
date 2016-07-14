@@ -166,8 +166,8 @@ public class FlowConfig {
     @Bean
     public FlowManager dataflow6Subflow(){
         FlowManager flowManager = new FlowManagerImpl(Connector.TAGAPP, Connector.EUROPEANA, dataflow6SubflowSelector());
-//        flowManager.addActivity(harvestActivity());
-//        flowManager.addActivity(tagapp2hpTransformActivity());
+        flowManager.addActivity(harvestActivity());
+        flowManager.addActivity(tagapp2hpTransformActivity());
 //        flowManager.addActivity(reportActivity());
 //        flowManager.addActivity(hp2eu_ATransformActivity());
 //        flowManager.addActivity(approvalSendMailActivity());
