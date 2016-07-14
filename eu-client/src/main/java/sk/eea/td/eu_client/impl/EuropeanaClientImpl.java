@@ -94,6 +94,11 @@ public class EuropeanaClientImpl implements EuropeanaClient {
     }
 
     @Override
+    public String harvest(String luceneQuery, String facet, String cursor) throws IOException, InterruptedException {
+        return callSearchEndpoint(luceneQuery, facet, cursor);
+    }
+
+    @Override
     public List<String> search(String luceneQuery) throws IOException, InterruptedException {
         return this.search(luceneQuery, null);
     }
@@ -103,20 +108,7 @@ public class EuropeanaClientImpl implements EuropeanaClient {
         String cursor = "*"; // initial cursor value
         List<String> harvestedJsons = new ArrayList<>();
         while (!"".equals(cursor)) {
-            final WebTarget target = client.target(baseURL).path("api").path("v2").path("search.json")
-                    .queryParam("wskey", wskey)
-                    .queryParam("profile", "rich")
-                    .queryParam("query", luceneQuery)
-                    .queryParam("cursor", cursor);
-
-            if (isNotEmpty(facet)) {
-                target.queryParam("qf", facet);
-            }
-
-            Response response = Recurrent.with(retryPolicy).get(() ->
-                    target.request().get()
-            );
-            String json = response.readEntity(String.class);
+            String json = callSearchEndpoint(luceneQuery, facet, cursor);
 
             JsonNode rootNode = objectMapper.readTree(json);
 
@@ -131,5 +123,23 @@ public class EuropeanaClientImpl implements EuropeanaClient {
             harvestedJsons.add(json);
         }
         return harvestedJsons;
+    }
+
+    private String callSearchEndpoint(String luceneQuery, String facet, String cursor) {
+        WebTarget searchEndpoint = client.target(baseURL).path("api").path("v2").path("search.json")
+                .queryParam("wskey", wskey)
+                .queryParam("profile", "rich")
+                .queryParam("query", luceneQuery)
+                .queryParam("cursor", cursor);
+
+        if (isNotEmpty(facet)) {
+            searchEndpoint.queryParam("qf", facet);
+        }
+
+        Response response = Recurrent.with(retryPolicy).get(() ->
+                searchEndpoint.request().get()
+        );
+
+        return response.readEntity(String.class);
     }
 }

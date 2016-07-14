@@ -30,40 +30,49 @@ public class EuropeanaHarvestService {
 
     @Autowired
     private EuropeanaClient europeanaClient;
-    
+
     @Autowired
     private ObjectMapper objectMapper;
-    
+
     public Path harvest(String harvestId, String luceneQuery, String facet, Boolean fullSet) throws IOException, InterruptedException {
-        List<String> results = this.europeanaClient.search(luceneQuery, facet);
         final Path harvestPath = PathUtils.createHarvestRunSubdir(Paths.get(outputDirectory), harvestId);
-        for(String result : results) {
-            if(fullSet){
-                JsonNode rootNode = objectMapper.readTree(result);
+        String cursor = "*";
+        while (!"".equals(cursor)) {
+            String json = this.europeanaClient.harvest(luceneQuery, facet, cursor);
+            JsonNode rootNode = objectMapper.readTree(json);
+
+            // usage of cursor erases it
+            cursor = "";
+
+            JsonNode cursorNode = rootNode.get("nextCursor");
+            if (cursorNode != null) {
+                cursor = cursorNode.textValue();
+            }
+
+            if (fullSet) {
                 JsonNode items = rootNode.get("items");
-                if(items.isArray()){
-                    for(Iterator<JsonNode> iterator = items.elements(); iterator.hasNext();){
+                if (items.isArray()) {
+                    for (Iterator<JsonNode> iterator = items.elements(); iterator.hasNext(); ) {
                         JsonNode idNode = iterator.next().get("id");
-                        if(idNode != null && idNode.textValue() != null){
+                        if (idNode != null && idNode.textValue() != null) {
                             String id = idNode.textValue();
-                            String json = this.europeanaClient.getRecord(id);
-                            if(json == null){
+                            json = this.europeanaClient.getRecord(id);
+                            if (json == null) {
                                 throw new IOException(MessageFormat.format("Europeana record with ID: {0}", id));
                             }
-                            Path outputFile = PathUtils.createUniqueFilename(harvestPath, "eu.json");
-                            Files.write(outputFile, json.getBytes());                            
-                        }else{
+                        } else {
                             throw new IOException("No \"id\" property found in europeana response");
                         }
                     }
-                }else{
+                } else {
                     throw new IOException("No \"items\" element found in europeana response");
                 }
-            }else{
-                Path outputFile = PathUtils.createUniqueFilename(harvestPath, "eu.json");
-                Files.write(outputFile, result.getBytes());
             }
+
+            Path outputFile = PathUtils.createUniqueFilename(harvestPath, "eu.json");
+            Files.write(outputFile, json.getBytes());
         }
+
         LOG.info("Harvesting of Lucene query: " + luceneQuery + " is completed.");
         return harvestPath;
     }
