@@ -16,8 +16,8 @@ import sk.eea.td.console.model.Connector;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static sk.eea.td.console.model.JobRun.JobRunStatus.NEW;
-import static sk.eea.td.console.model.JobRun.JobRunStatus.RUNNING;
+import static sk.eea.td.console.model.AbstractJobRun.JobRunStatus.NEW;
+import static sk.eea.td.console.model.AbstractJobRun.JobRunStatus.RUNNING;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { PersistenceTestConfig.class, PersistenceConfig.class})

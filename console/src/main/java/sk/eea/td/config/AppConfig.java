@@ -86,13 +86,13 @@ public class AppConfig implements SchedulingConfigurer {
         dataflow6.trigger();
     }
 
-    @Schedules(
-            //@Scheduled(cron="${historypinAnnotation.flm.cron.expression}
-            @Scheduled(fixedRate=60000)
-    )
-    public void dataflow6SubflowTrigger(){
-        dataflow6Subflow.trigger();
-    }
+//    @Schedules(
+//            //@Scheduled(cron="${historypinAnnotation.flm.cron.expression}
+//            @Scheduled(fixedRate=60000)
+//    )
+//    public void dataflow6SubflowTrigger(){
+//        dataflow6Subflow.trigger();
+//    }
 
     @Override
     public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {

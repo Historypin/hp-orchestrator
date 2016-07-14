@@ -23,7 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import sk.eea.td.console.model.JobRun;
 import sk.eea.td.console.model.ParamKey;
-import sk.eea.td.console.model.JobRun.JobRunStatus;
+import sk.eea.td.console.model.AbstractJobRun.JobRunStatus;
 import sk.eea.td.console.model.dto.ReviewDTO;
 import sk.eea.td.console.repository.JobRunRepository;
 import sk.eea.td.hp_client.api.HPClient;

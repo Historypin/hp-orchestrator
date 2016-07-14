@@ -20,7 +20,7 @@ public class ReadOnlyParam {
 
     @ManyToOne
     @JoinColumn(name = "job_run_id", nullable = false)
-    private JobRun jobRun;
+    private AbstractJobRun jobRun;
 
     public ReadOnlyParam() {
     }
@@ -59,11 +59,11 @@ public class ReadOnlyParam {
         this.value = value;
     }
 
-    public JobRun getJobRun() {
+    public AbstractJobRun getJobRun() {
         return jobRun;
     }
 
-    public void setJobRun(JobRun jobRun) {
+    public void setJobRun(AbstractJobRun jobRun) {
         this.jobRun = jobRun;
     }
 

@@ -1,6 +1,5 @@
 package sk.eea.td.config;
 
-import java.time.Duration;
 import java.time.Period;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -25,6 +24,7 @@ import sk.eea.td.flow.activities.Ontotext2HistorypinTransformAndStoreActivity;
 import sk.eea.td.flow.activities.ReportActivity;
 import sk.eea.td.flow.activities.SleepActivity;
 import sk.eea.td.flow.activities.StoreActivity;
+import sk.eea.td.flow.activities.Tagapp2HPTransformActivity;
 import sk.eea.td.flow.activities.TagappStoreActivity;
 import sk.eea.td.flow.activities.TransformActivity;
 
@@ -53,6 +53,10 @@ public class FlowConfig {
 	public HP_A2EU_ATransformActivity hp_a2eu_ATransformActivity() {
 		return new HP_A2EU_ATransformActivity();
 	}
+
+    public Activity tagapp2hpTransformActivity() {
+        return new Tagapp2HPTransformActivity();
+    }
 
     @Bean
     public Activity storeActivity() {
@@ -91,8 +95,9 @@ public class FlowConfig {
     
     @Bean
     public JobSelector dataflow6SubflowSelector(){
-        return new Dataflow6SubflowSelector(Duration.parse(arttagHarvestPeriod));
+        return new Dataflow6SubflowSelector(Period.parse(arttagHarvestPeriod));
     }
+
     @Bean
     public Activity dataflow4isFinalActivity(){
     	return new Dataflow4isFinalActivity();
@@ -161,7 +166,7 @@ public class FlowConfig {
     @Bean
     public FlowManager dataflow6Subflow(){
         FlowManager flowManager = new FlowManagerImpl(Connector.TAGAPP, Connector.EUROPEANA, dataflow6SubflowSelector());
-        flowManager.addActivity(harvestActivity());
+//        flowManager.addActivity(harvestActivity());
 //        flowManager.addActivity(tagapp2hpTransformActivity());
 //        flowManager.addActivity(reportActivity());
 //        flowManager.addActivity(hp2eu_ATransformActivity());
