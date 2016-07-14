@@ -31,10 +31,6 @@
                                 Invalid username or password.
                             </div>
 
-                            <div class="alert alert-danger" role="warning" th:if="${param.timeout}" th:text="#{login.timeout}">
-                                You have been logged out.
-                            </div>
-
                             <div class="alert alert-success" role="warning" th:if="${param.logout}" th:text="#{login.logout}">
                                 You have been successfully logged out.
                             </div>

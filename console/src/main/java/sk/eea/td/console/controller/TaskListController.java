@@ -35,7 +35,7 @@ import static sk.eea.td.util.PageUtils.getPageable;
 @PreAuthorize("hasRole('ADMIN')")
 public class TaskListController {
 
-    private static final Logger LOG = LoggerFactory.getLogger(HomeController.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TaskListController.class);
 
     @Autowired
     private JobRepository jobRepository;
@@ -153,6 +153,7 @@ public class TaskListController {
         Job job = jobRepository.findOne(request.getJobId());
         if (job != null) {
             LOG.info("Deleting job id= {}.", job.getId());
+            jobRepository.delete(job);
         }
         return "{}";
     }

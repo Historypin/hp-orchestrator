@@ -90,7 +90,7 @@ public class HomeController {
                 job = taskFormtoJobMapper.map(job, taskForm);
                 job = jobRepository.save(job);
                 LOG.info("Edited job id= {}.", job.getId());
-                return "task_list";
+                return "redirect:/tasks";
             }
         } else { // we are creating item
             final Job job = taskFormtoJobMapper.map(taskForm);
@@ -106,7 +106,7 @@ public class HomeController {
                 jobRun.addReadOnlyParam(new ReadOnlyParam(param));
             }
             jobRunRepository.save(jobRun);
-            return "task_list";
+            return "redirect:/tasks";
         }
 
         return "index";

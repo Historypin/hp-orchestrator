@@ -102,7 +102,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .invalidateHttpSession(true)
                 .and()
         .sessionManagement()
-                .invalidSessionUrl("/login?timeout")
+                .invalidSessionUrl("/login")
                 .maximumSessions(1);
     }
 }
