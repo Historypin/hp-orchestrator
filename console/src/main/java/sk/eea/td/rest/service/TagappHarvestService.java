@@ -100,6 +100,7 @@ public class TagappHarvestService {
                     throw new FlowException("Invalid entity");
                 filename = PathUtils.createUniqueFilename(harvestPath, Connector.TAGAPP.getFormatCode());
                 writer = new FileWriter(filename.toFile());
+                writer.write(mapper.writeValueAsString(tags));
                 writer.close();
             }
             return harvestPath;

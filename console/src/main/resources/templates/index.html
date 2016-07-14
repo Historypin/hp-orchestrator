@@ -168,7 +168,26 @@
                                     </div>
                                 </div>
 							</div>
-
+							
+							<!--  Flow 6 conf group -->
+							<div id="flow-6-conf-group">
+                                <!-- lucene query -->
+                                <div class="form-group required" th:classappend="${#fields.hasErrors('luceneQuery')}? 'has-error'">
+                                    <label class="col-md-4 control-label" for="luceneQuery" th:text="#{create.task.lucene}">Lucene query</label>
+                                    <div class="col-md-4">
+                                        <input id="luceneQuery" name="luceneQuery" th:field="*{luceneQuery}" th:placeholder="#{create.task.lucene.placeholder}" placeholder="query to search for" class="form-control input-md" type="text"/>
+                                        <span class="help-block" th:if="${#fields.hasErrors('luceneQuery')}" th:errors="*{luceneQuery}">Lucene query error</span>
+                                    </div>
+                                </div>
+                                <!-- search facet -->
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label" for="searchFacet" th:text="#{create.task.search.facet }">Search facet</label>
+                                    <div class="col-md-4">
+                                        <input id="searchFacet" name="searchFacet" th:field="*{searchFacet}" th:placeholder="#{create.task.search.facet.placeholder}" placeholder="name of individual facet" class="form-control input-md" type="text"/>
+                                    </div>
+                                </div>
+							</div>
+							
                             <!-- Button -->
                             <div class="form-group">
                                 <label class="col-md-4 control-label" for="createTaskButton"  th:if="*{jobId} == null"></label>
@@ -201,12 +220,13 @@
 
 <script th:inline="javascript">
     /* <![CDATA[ */
-    var configurationGroups = ["#flow-1-conf-group", "#flow-2-and-5-conf-group", "#flow-4-conf-group"];
+    var configurationGroups = ["#flow-1-conf-group", "#flow-2-and-5-conf-group", "#flow-4-conf-group", "#flow-6-conf-group"];
     var configurationMap = {};
     configurationMap["FLOW_1"] = configurationGroups[0];
     configurationMap["FLOW_2"] = configurationGroups[1];
     configurationMap["FLOW_4"] = configurationGroups[2];
     configurationMap["FLOW_5"] = configurationGroups[1];
+    configurationMap["FLOW_6"] = configurationGroups[3];
 
     function initMap() {
         var map = new google.maps.Map(document.getElementById('map'), {

@@ -52,7 +52,7 @@ public class ApprovalSendMailActivity implements Activity {
                 emailParams
         );
 
-        return ActivityAction.CONTINUE;
+        return ActivityAction.SLEEP;
     }
 
     @Override
