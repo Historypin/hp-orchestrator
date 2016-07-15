@@ -35,6 +35,12 @@ public class CleanupService {
     @Value("${storage.directory}")
     private String outputDirectory;
 
+    @Autowired
+    private JobRepository jobRepository;
+    
+    @Autowired
+    private JobRunRepository jobRunRepository;
+
 	private final class CleanFilesTask implements Runnable {
 		
 		private final List<JobRun> jobRuns;
@@ -65,13 +71,6 @@ public class CleanupService {
 			thread.start();
 		}
 	}
-
-	
-	@Autowired
-	JobRepository jobRepository;
-	
-	@Autowired
-	JobRunRepository jobRunRepository;
 	
 	/**
 	 * Cleanup JobRun working paths.

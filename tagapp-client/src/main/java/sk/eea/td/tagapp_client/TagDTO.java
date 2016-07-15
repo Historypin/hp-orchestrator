@@ -7,6 +7,8 @@ public class TagDTO {
 	private Long culturalObjectId;
 	
 	private String culturalObjectExternalId;
+    private String culturalObjectDescription;
+    private String culturalObjectExternalUrl;
 	
 	public Long getId() {
 		return id;
@@ -37,5 +39,17 @@ public class TagDTO {
     }
     public void setCulturalObjectExternalId(String culturalObjectExternalId) {
         this.culturalObjectExternalId = culturalObjectExternalId;
+    }
+    public String getCulturalObjectDescription() {
+        return culturalObjectDescription;
+    }
+    public void setCulturalObjectDescription(String culturalObjectDescription) {
+        this.culturalObjectDescription = culturalObjectDescription;
+    }
+    public String getCulturalObjectExternalUrl() {
+        return culturalObjectExternalUrl;
+    }
+    public void setCulturalObjectExternalUrl(String culturalObjectExternalUrl) {
+        this.culturalObjectExternalUrl = culturalObjectExternalUrl;
     }
 }

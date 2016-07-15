@@ -2,7 +2,15 @@ package sk.eea.td.console.model;
 
 public enum Connector {
 
-    EUROPEANA("eu.json"), HISTORYPIN("hp.json"), HISTORYPIN_ANNOTATION("hpan.json"), OAIPMH("oai.xml"), SD("sd.json"), EUROPEANA_ANNOTATION("euoa.json"), TAGAPP("tag.json"), MINT("mint.json");
+    EUROPEANA("eu.json"), 
+    HISTORYPIN("hp.json"), 
+    HISTORYPIN_ANNOTATION("hpan.json"), 
+    OAIPMH("oai.xml"), 
+    SD("sd.json"), 
+    EUROPEANA_ANNOTATION("euoa.json"), 
+    TAGAPP("tag.json"), 
+    MINT("mint.json"), 
+    APPROVAL_APP("approve.json");
 
     private String formatCode;
 

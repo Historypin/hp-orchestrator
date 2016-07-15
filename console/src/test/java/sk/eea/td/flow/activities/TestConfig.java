@@ -5,7 +5,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.token.KeyBasedPersistenceTokenService;
+import org.thymeleaf.spring4.SpringTemplateEngine;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -45,6 +47,11 @@ public class TestConfig {
     }
     
     @Bean
+    public Tagapp2HPTransformActivity getTagapp2HPTransformActivity(){
+        return new Tagapp2HPTransformActivity();
+    }
+    
+    @Bean
     public LogRepository getLogRepository(){
     	return EasyMock.createStrictMock(LogRepository.class);
     }
@@ -73,4 +80,15 @@ public class TestConfig {
     public MailService getMailService(){
         return EasyMock.createMock(MailService.class);
     }
+    @Bean
+    public SpringTemplateEngine getSpringTemplateEngine(){
+        return EasyMock.createMock(SpringTemplateEngine.class);
+    }
+    
+    @Bean
+    public JavaMailSender getJavaMailSender(){
+        return EasyMock.createMock(JavaMailSender.class);
+    }
+    
+
 }
