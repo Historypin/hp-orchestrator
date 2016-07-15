@@ -1,6 +1,3 @@
-# DEVELOPMENT properties - dev profile
-logging.file=/opt/td/logs/console.log
-
 # DATABASE
 jdbc.driver = org.postgresql.Driver
 jdbc.url = jdbc:postgresql://localhost:5432/console
@@ -78,3 +75,7 @@ tagapp.username=api
 tagapp.password=admin
 
 templateResolver.cacheable=false
+
+root.logging.level = INFO
+orchestrator.logging.level = DEBUG
+LOG_FILE=/opt/td/logs/console.log

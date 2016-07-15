@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
+    <property file="${working.directory}/conf/arttag.properties" />
+
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
 
-    <logger name="sk.eea.td" level="DEBUG"/>
+    <logger name="root" level="${root.logging.level}"/>
+    <logger name="sk.eea.td" level="${orchestrator.logging.level}"/>
 
     <!-- Uncomment to see queries and values in logs. Dont forget to change default.properties -->
     <!--<logger name="org.hibernate.SQL" level="DEBUG" additivity="false" >-->
