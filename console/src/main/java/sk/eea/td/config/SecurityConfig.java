@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -27,7 +28,7 @@ import javax.sql.DataSource;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    private  DataSource dataSource;
+    private DataSource dataSource;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -40,7 +41,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public KeyBasedPersistenceTokenService keyBasedPersistenceTokenService(@Value("${token.server.secret}") String serverSecret, @Value("${token.server.integer}") Integer serverInteger) throws Exception {
+    public KeyBasedPersistenceTokenService keyBasedPersistenceTokenService(@Value("${token.server.secret}") String serverSecret,
+            @Value("${token.server.integer}") Integer serverInteger) throws Exception {
         KeyBasedPersistenceTokenService tokenService = new KeyBasedPersistenceTokenService();
         tokenService.setSecureRandom(secureRandomFactoryBean().getObject());
         tokenService.setServerSecret(serverSecret);
@@ -69,40 +71,52 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
-    @Override
-    public void configure(WebSecurity web) throws Exception {
-        web
-                .ignoring()
-                .antMatchers("/static/**")
-                .antMatchers("/webjars/**")
-                .antMatchers("/review/**")
-                .antMatchers("/api/**"); // TODO: secure api as well
+    @Configuration
+    @Order(1)
+    public static class ApiWebSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
+
+        @Override
+        protected void configure(HttpSecurity http) throws Exception {
+            http
+                    .antMatcher("/api/**")
+                    .authorizeRequests()
+                    .anyRequest().hasRole("API")
+                    .and()
+                    .httpBasic()
+                    .and()
+                    .csrf().disable();
+        }
     }
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.
-                authorizeRequests()
-                .antMatchers("/login**").permitAll()
-                .antMatchers("/**").hasRole("ADMIN")
-                .anyRequest().authenticated()
-                .and()
-        .formLogin()
-                .loginPage("/login")
-                .loginProcessingUrl("/login.do")
-                .defaultSuccessUrl("/")
-                .failureUrl("/login?error")
-                .usernameParameter("username")
-                .passwordParameter("password")
-                .and()
-        .logout()
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .logoutSuccessUrl("/login?logout")
-                .deleteCookies("JSESSIONID")
-                .invalidateHttpSession(true)
-                .and()
-        .sessionManagement()
-                .invalidSessionUrl("/login")
-                .maximumSessions(1);
+    @Configuration
+    @Order(2)
+    public static class FormLoginWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
+
+        @Override
+        protected void configure(HttpSecurity http) throws Exception {
+            http
+                    .authorizeRequests()
+                    .antMatchers("/login**").permitAll()
+                    .antMatchers("/js/**", "/css/**", "/webjars/**", "/fonts/**", "/review/**").permitAll()
+                    .anyRequest().hasRole("ADMIN")
+                    .and()
+                    .formLogin()
+                    .loginPage("/login")
+                    .loginProcessingUrl("/login.do")
+                    .defaultSuccessUrl("/")
+                    .failureUrl("/login?error")
+                    .usernameParameter("username")
+                    .passwordParameter("password")
+                    .and()
+                    .logout()
+                    .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                    .logoutSuccessUrl("/login?logout")
+                    .deleteCookies("JSESSIONID")
+                    .invalidateHttpSession(true)
+                    .and()
+                    .sessionManagement()
+                    .invalidSessionUrl("/login")
+                    .maximumSessions(1);
+        }
     }
 }

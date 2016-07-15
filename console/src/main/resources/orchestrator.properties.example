@@ -1,6 +1,5 @@
 # DEVELOPMENT properties - dev profile
-sk.eea.td.appender.level = DEBUG
-root.appender.level = DEBUG
+logging.file=/opt/td/logs/console.log
 
 # DATABASE
 jdbc.driver = org.postgresql.Driver

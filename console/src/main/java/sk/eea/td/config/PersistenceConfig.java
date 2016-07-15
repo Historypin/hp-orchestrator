@@ -16,19 +16,19 @@ import java.util.Properties;
 
 @Configuration
 @EnableTransactionManagement
-@EnableJpaRepositories(basePackages = "sk.eea.td")
+@EnableJpaRepositories(basePackages = "sk.eea.td.console.repository")
 public class PersistenceConfig {
 
-    @Value("${jdbc.driver}")
+    @Value("${spring.datasource.driver-class-name}")
     private String jdbcDriver;
 
-    @Value("${jdbc.url}")
+    @Value("${spring.datasource.url}")
     private String jdbcUrl;
 
-    @Value("${jdbc.username}")
+    @Value("${spring.datasource.username}")
     private String jdbcUsername;
 
-    @Value("${jdbc.password}")
+    @Value("${spring.datasource.password}")
     private String jdbcPassword;
 
     @Value("${hibernate.dialect}")
@@ -45,9 +45,6 @@ public class PersistenceConfig {
 
     @Value("${hibernate.format_sql}")
     private String hibernateFormatSql;
-
-    @Value("${hibernate.use_sql_comments}")
-    private String hibernateUseSqlComments;
 
     @Bean
     public DataSource dataSource() {
@@ -72,7 +69,6 @@ public class PersistenceConfig {
         jpaProperties.put("hibernate.ejb.naming_strategy", hibernateNamingStrategy);
         jpaProperties.put("hibernate.show_sql", hibernateShowSql);
         jpaProperties.put("hibernate.format_sql", hibernateFormatSql);
-        jpaProperties.put("hibernate.use_sql_comments", hibernateUseSqlComments);
 
         entityManagerFactoryBean.setJpaProperties(jpaProperties);
         return entityManagerFactoryBean;
