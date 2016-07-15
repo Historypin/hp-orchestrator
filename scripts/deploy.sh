@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-TIMEOUT_LIMIT=100
+TIMEOUT_LIMIT=300
 TOMCAT_WEBAPPS_DIR="/var/lib/tomcat8/webapps"
 CONSOLE_STATUS_CHECK="localhost:8080/console/api/status"
 
