@@ -44,6 +44,16 @@ public class EuropeanaHarvestService {
             // usage of cursor erases it
             cursor = "";
 
+            JsonNode successNode = rootNode.get("success");
+            if (successNode == null) {
+                throw new IOException("Missing field 'success' in Europeana response!");
+            } else {
+                boolean success = successNode.asBoolean();
+                if(!success) {
+                    throw new IOException(String.format("Harvesting error. Europeana message: %s", rootNode.findPath("error").asText()));
+                }
+            }
+
             JsonNode cursorNode = rootNode.get("nextCursor");
             if (cursorNode != null) {
                 cursor = cursorNode.textValue();
@@ -51,7 +61,7 @@ public class EuropeanaHarvestService {
 
             if (fullSet) {
                 JsonNode items = rootNode.get("items");
-                if (items.isArray()) {
+                if (items != null && items.isArray()) {
                     for (Iterator<JsonNode> iterator = items.elements(); iterator.hasNext(); ) {
                         JsonNode idNode = iterator.next().get("id");
                         if (idNode != null && idNode.textValue() != null) {
