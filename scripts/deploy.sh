@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 
+INITIAL_PAUSE=150
 TIMEOUT_LIMIT=300
 TOMCAT_WEBAPPS_DIR="/var/lib/tomcat8/webapps"
-CONSOLE_STATUS_CHECK="localhost:8080/console/api/status"
+CONSOLE_STATUS_CHECK="localhost:8080/console/login"
 
 function stop_tomcat() {
     echo "Shutting down tomcat..."
@@ -20,12 +21,14 @@ function start_tomcat() {
     echo "Starting tomcat..."
     sudo systemctl start tomcat8
 
+    sleep ${INITIAL_PAUSE}
+
     export http_proxy=''; # disable proxy for session
     status="NOT OK"
-    count=0
+    count=${INITIAL_PAUSE}
     count_by=5
-    while [[ (${status} != OK)  && (${count} -lt ${TIMEOUT_LIMIT}) ]]; do
-        status=`curl --silent --max-time 1 --header "content-type: application/json" ${CONSOLE_STATUS_CHECK}`
+    while [[ !("${status}" =~ "Orchestrator")   && (${count} -lt ${TIMEOUT_LIMIT}) ]]; do
+        status=`curl --silent --max-time 1 ${CONSOLE_STATUS_CHECK}`
         echo "Will wait for tomcat to start in " `expr ${TIMEOUT_LIMIT} - ${count}` " s..."
         sleep ${count_by}
         let count=${count}+${count_by};
