@@ -98,8 +98,8 @@ public class EuropeanaClientImpl implements EuropeanaClient {
     }
 
     @Override
-    public String harvest(String luceneQuery, String facet, String cursor) throws IOException, InterruptedException {
-        return callSearchEndpoint(luceneQuery, facet, cursor);
+    public String harvest(String luceneQuery, String facet, String cursor, String profile) throws IOException, InterruptedException {
+        return callSearchEndpoint(luceneQuery, facet, cursor, profile);
     }
 
     @Override
@@ -112,7 +112,7 @@ public class EuropeanaClientImpl implements EuropeanaClient {
         String cursor = "*"; // initial cursor value
         List<String> harvestedJsons = new ArrayList<>();
         while (!"".equals(cursor)) {
-            String json = callSearchEndpoint(luceneQuery, facet, cursor);
+            String json = callSearchEndpoint(luceneQuery, facet, cursor, "rich");
             JsonNode rootNode = objectMapper.readTree(json);
 
             // usage of cursor should erase it
@@ -128,10 +128,10 @@ public class EuropeanaClientImpl implements EuropeanaClient {
         return harvestedJsons;
     }
 
-    private String callSearchEndpoint(String luceneQuery, String facet, String cursor) {
+    private String callSearchEndpoint(String luceneQuery, String facet, String cursor, String profile) {
         WebTarget searchEndpoint = client.target(baseURL).path("api").path("v2").path("search.json")
                 .queryParam("wskey", wskey)
-                .queryParam("profile", "rich")
+                .queryParam("profile", profile)
                 .queryParam("query", luceneQuery)
                 .queryParam("cursor", cursor);
 

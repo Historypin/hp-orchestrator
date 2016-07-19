@@ -9,7 +9,7 @@ public interface EuropeanaClient {
 
     String getRecordsEdmIsShownBy(String id) throws IOException, InterruptedException;
 
-    String harvest(String luceneQuery, String facet, String cursor) throws IOException, InterruptedException;
+    String harvest(String luceneQuery, String facet, String cursor, String profile) throws IOException, InterruptedException;
 
     List<String> search(String luceneQuery) throws IOException, InterruptedException;
 

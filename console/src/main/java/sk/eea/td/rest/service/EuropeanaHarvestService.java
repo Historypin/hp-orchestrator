@@ -38,7 +38,8 @@ public class EuropeanaHarvestService {
         final Path harvestPath = PathUtils.createHarvestRunSubdir(Paths.get(outputDirectory), harvestId);
         String cursor = "*";
         while (!"".equals(cursor)) {
-            String json = this.europeanaClient.harvest(luceneQuery, facet, cursor);
+            String json = this.europeanaClient.harvest(luceneQuery, facet, cursor, (fullSet) ? "minimal" : "rich");
+
             JsonNode rootNode = objectMapper.readTree(json);
 
             // usage of cursor erases it
@@ -70,6 +71,8 @@ public class EuropeanaHarvestService {
                             if (json == null) {
                                 throw new IOException(MessageFormat.format("Europeana record with ID: {0}", id));
                             }
+                            Path outputFile = PathUtils.createUniqueFilename(harvestPath, "eu.json");
+                            Files.write(outputFile, json.getBytes());
                         } else {
                             throw new IOException("No \"id\" property found in europeana response");
                         }
@@ -77,10 +80,10 @@ public class EuropeanaHarvestService {
                 } else {
                     throw new IOException("No \"items\" element found in europeana response");
                 }
+            } else {
+                Path outputFile = PathUtils.createUniqueFilename(harvestPath, "eu.json");
+                Files.write(outputFile, json.getBytes());
             }
-
-            Path outputFile = PathUtils.createUniqueFilename(harvestPath, "eu.json");
-            Files.write(outputFile, json.getBytes());
         }
 
         LOG.info("Harvesting of Lucene query: " + luceneQuery + " is completed.");

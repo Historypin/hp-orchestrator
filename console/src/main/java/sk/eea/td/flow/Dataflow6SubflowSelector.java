@@ -52,7 +52,7 @@ public class Dataflow6SubflowSelector implements JobSelector {
             if(subRuns.hasContent()){
                 subRun.addReadOnlyParam(new ReadOnlyParam(ParamKey.LAST_SUCCESS, DateTimeFormatter.ISO_INSTANT.format(subRuns.getContent().get(0).getLastStarted().toInstant())));
             }
-            jobRunRepository.save(subRun);
+            subRun = jobRunRepository.save(subRun);
 
             return subRun;
         }else {

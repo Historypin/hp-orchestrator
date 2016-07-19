@@ -75,4 +75,34 @@ public class ReadOnlyParam {
                 ", jobRunId=" + ((jobRun != null) ? jobRun.getId() : null) +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+
+        ReadOnlyParam that = (ReadOnlyParam) o;
+
+        if (id != null ? !id.equals(that.id) : that.id != null)
+            return false;
+        if (key != that.key)
+            return false;
+        if (!value.equals(that.value))
+            return false;
+        if (jobRun.getId() != null ? jobRun.getId().equals(that.jobRun.getId()) : that.jobRun.getId() != null) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + key.hashCode();
+        result = 31 * result + value.hashCode();
+        result = 31 * result + (jobRun.getId() != null ? jobRun.getId().hashCode() : 0);
+        return result;
+    }
 }

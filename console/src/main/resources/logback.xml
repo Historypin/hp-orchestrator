@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <property file="${working.directory}/conf/arttag.properties" />
+    <property file="${working.directory}/conf/orchestrator.properties" />
 
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
 

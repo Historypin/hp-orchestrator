@@ -8,10 +8,10 @@ public interface FlowManager {
 
 	/** 
 	 * Initialize and start flow
-	 * @param context Flow context 
+	 * @param context Flow context
 	 * @throws FlowException
 	 */
-	void startFlow(JobRun context);
+	JobRun startFlow(JobRun context);
 
 	/**
 	 * Persist state of flow.

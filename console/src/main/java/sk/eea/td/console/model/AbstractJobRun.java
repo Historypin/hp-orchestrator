@@ -132,4 +132,26 @@ public abstract class AbstractJobRun {
     public void setLastStarted(Date lastStarted) {
         this.lastStarted = lastStarted;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+
+        AbstractJobRun that = (AbstractJobRun) o;
+
+        if (id != null ? !id.equals(that.id) : that.id != null)
+            return false;
+        return readOnlyParams != null ? readOnlyParams.equals(that.readOnlyParams) : that.readOnlyParams == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (readOnlyParams != null ? readOnlyParams.hashCode() : 0);
+        return result;
+    }
 }
