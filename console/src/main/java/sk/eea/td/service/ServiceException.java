@@ -49,7 +49,8 @@ public class ServiceException extends Exception {
             INVALID_JSON,
             FAILED_TO_LOAD_FILE_FOR_CHECKSUM,
             CLIENT_REQUEST_FAILED,
-            JOB_ALREADY_CLOSED
+            JOB_ALREADY_CLOSED,
+            FAILED_TO_CREATE_DIR
         }
 
     }

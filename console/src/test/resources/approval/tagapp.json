@@ -1,0 +1,12 @@
+{
+	"id": "34",
+	"externalId": "/SNG_SET/P_1234",
+	"caption": "Test object",
+	"description": "Description of test object",
+	"url": "http://localhost/test_object",
+	"approved": true,
+	"originalTags": [],
+	"approvedTags": [ "tag1", "tag2" ],
+	"originalPlaces": [],
+	"approvedPlaces" : []
+}

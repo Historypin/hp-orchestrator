@@ -90,5 +90,9 @@ public class TestConfig {
         return EasyMock.createMock(JavaMailSender.class);
     }
     
+    @Bean
+    public Approval2EU_ATransformActivity approval2EU_ATransformActivity(){
+        return new Approval2EU_ATransformActivity();
+    }
 
 }

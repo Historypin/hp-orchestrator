@@ -5,6 +5,8 @@ import java.util.List;
 public class ReviewDTO {
 
     private Long id;
+    
+    private String externalId;
 
     private String caption;
 
@@ -113,7 +115,7 @@ public class ReviewDTO {
     public void setApprovedPlaces(List<String> approvedPlaces) {
         this.approvedPlaces = approvedPlaces;
     }
-
+    
     @Override
     public String toString() {
         return "ReviewDTO{" +
@@ -129,5 +131,13 @@ public class ReviewDTO {
                 ", originalPlaces=" + originalPlaces +
                 ", approvedPlaces=" + approvedPlaces +
                 '}';
+    }
+
+    public String getExternalId() {
+        return externalId;
+    }
+
+    public void setExternalId(String externalId) {
+        this.externalId = externalId;
     }
 }

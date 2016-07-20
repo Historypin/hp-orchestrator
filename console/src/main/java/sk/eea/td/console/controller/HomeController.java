@@ -79,7 +79,7 @@ public class HomeController {
                 return "index";
             }
         }
-
+        
         if (taskForm.getJobId() != null) { // we are editing item
             Job job = jobRepository.findOne(taskForm.getJobId());
             if (job != null) {

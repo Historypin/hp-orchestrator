@@ -11,7 +11,6 @@ import java.util.Map.Entry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -51,11 +50,12 @@ public class Tagapp2HPTransformActivity extends AbstractTransformActivity {
             ReviewDTO reviewDTO;
             if(!pins.containsKey(tag.getCulturalObjectExternalId())){
                 reviewDTO = new ReviewDTO();
-                reviewDTO.setId(Long.valueOf(tag.getCulturalObjectExternalId()));
+                reviewDTO.setId(Long.valueOf(tag.getCulturalObjectId()));
+                reviewDTO.setExternalId(tag.getCulturalObjectExternalId());
                 reviewDTO.setDescription(tag.getCulturalObjectDescription());
                 reviewDTO.setOriginalTags(new ArrayList<String>());
                 reviewDTO.setUrl(tag.getCulturalObjectExternalUrl());
-                pins.put(tag.getCulturalObjectExternalId(), reviewDTO);
+                pins.put(tag.getCulturalObjectId().toString(), reviewDTO);
             }
             reviewDTO = pins.get(tag.getCulturalObjectExternalId());
             if(reviewDTO.getOriginalTags() == null){

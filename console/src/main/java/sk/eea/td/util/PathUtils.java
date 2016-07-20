@@ -6,6 +6,8 @@ import java.nio.file.Path;
 
 public class PathUtils {
 
+    public static String APPROVAL_STORE_FOLDER = "approvedStore";
+    
     public static Path createHarvestRunSubdir(Path parentDir, String flowId) throws IOException {
         return createActivityStorageSubdir(parentDir, flowId, "harvest");
     }
