@@ -33,16 +33,5 @@ public class DaoMockConfig {
 	@Bean
 	public ParamRepository getParamRepository(){
 		return EasyMock.createMock(ParamRepository.class);
-	}
-	
-	@Bean
-	public SpringTemplateEngine getSpringTemplateEngine(){
-		return EasyMock.createMock(SpringTemplateEngine.class);
-	}
-	
-	@Bean
-	public JavaMailSender getJavaMailSender(){
-		return EasyMock.createMock(JavaMailSender.class);
-	}
-	
+	}	
 }

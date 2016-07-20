@@ -21,31 +21,35 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import sk.eea.td.console.model.AbstractJobRun.JobRunStatus;
+import sk.eea.td.console.model.Connector;
 import sk.eea.td.console.model.JobRun;
 import sk.eea.td.console.model.ParamKey;
-import sk.eea.td.console.model.AbstractJobRun.JobRunStatus;
+import sk.eea.td.console.model.ReadOnlyParam;
 import sk.eea.td.console.model.dto.ReviewDTO;
 import sk.eea.td.console.repository.JobRunRepository;
-import sk.eea.td.hp_client.api.HPClient;
-import sk.eea.td.hp_client.impl.HPClientImpl;
+import sk.eea.td.util.PathUtils;
 
 @Component
 public class ApprovementService {
 
-    private HPClient hpClient;
+//    private HPClient hpClient;
 
-    @Value("${historypin.user}")
-    private Long userId;
+//    @Value("${historypin.user}")
+//    private Long userId;
 
-    @Value("${historypin.base.url}")
-    private String hpUrl;
+//    @Value("${historypin.base.url}")
+//    private String hpUrl;
 
-    @Value("${historypin.api.key}")
-    private String hpApiKey;
+//    @Value("${historypin.api.key}")
+//    private String hpApiKey;
 
-    @Value("${historypin.api.secret}")
-    private String hpApiSecret;
+//    @Value("${historypin.api.secret}")
+//    private String hpApiSecret;
 
+    @Value("${storage.directory}")
+    private String outputDirectory;    
+    
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -57,8 +61,8 @@ public class ApprovementService {
 
     @PostConstruct
     public void init() {
-        LOG.debug("ApprovementService hpUrl: {}, hpApiKey: {}, hpApiSecret: {}", hpUrl, hpApiKey, hpApiSecret);
-        hpClient = new HPClientImpl(hpUrl, hpApiKey, hpApiSecret);
+//        LOG.debug("ApprovementService hpUrl: {}, hpApiKey: {}, hpApiSecret: {}", hpUrl, hpApiKey, hpApiSecret);
+//        hpClient = new HPClientImpl(hpUrl, hpApiKey, hpApiSecret);
     }
 
     public List<ReviewDTO> load(JobRun jobRun) throws ServiceException {
@@ -108,17 +112,28 @@ public class ApprovementService {
 
     public void sendApproved(JobRun jobRun) throws ServiceException {
 
-        Path path = getPath(jobRun);
-
         List<ServiceException.Error> errors = new ArrayList<>();
-        List<ReviewDTO> reviews = load(jobRun);// TODO pathType?
+        Path path = getPath(jobRun);
+        Path approvalPath;
+        try {
+            approvalPath = PathUtils.createActivityStorageSubdir(Paths.get(outputDirectory), String.valueOf(jobRun.getId()),PathUtils.APPROVAL_STORE_FOLDER);
+        } catch (IOException e1) {
+            LOG.error("Could not create target dir: {}", e1.toString());
+            errors.add(new ServiceException.Error(Paths.get(outputDirectory).resolve(jobRun.getId().toString()).resolve(PathUtils.APPROVAL_STORE_FOLDER), ServiceException.Error.ErrorCode.FAILED_TO_CREATE_DIR));
+            throw new ServiceException(errors);
+        }
+        LOG.debug("harvestPath: {}, transformPath: {}", approvalPath, approvalPath);
+
+        jobRun.addReadOnlyParam(new ReadOnlyParam(ParamKey.APPROVED_PATH, approvalPath.toString()));
+        jobRunRepository.save(jobRun);
+        List<ReviewDTO> reviews = load(jobRun);
         for (ReviewDTO reviewDTO : reviews) {
             if (reviewDTO.getApproved()) {
-                // prepare HP update reques and call update() on HP client
                 try {
-                    //TODO process response
-//                    hpClient.updatePin(reviewDTO.getId(), reviewDTO.getApprovedTags(), reviewDTO.getApprovedPlaces());
-                    System.out.println();
+                    Path outputFilePath = PathUtils.createUniqueFilename(approvalPath, Connector.HISTORYPIN.getFormatCode());
+                    File outputFile = outputFilePath.toFile();
+                    outputFile.createNewFile(); 
+                    objectMapper.writeValue(outputFile, reviewDTO);
                 } catch (Exception e) {
                     LOG.error(ServiceException.Error.ErrorCode.CLIENT_REQUEST_FAILED.name(), e);
                     errors.add(new ServiceException.Error(path,
@@ -131,7 +146,6 @@ public class ApprovementService {
                 try {
                     FilesystemStorageService.delete(targetPath);
                 } catch (IOException e) {
-                    // TODO: log exception
                     LOG.error(ServiceException.Error.ErrorCode.FAILED_TO_DELETE_FILE.name(), e);
                     errors.add(new ServiceException.Error(targetPath,
                             ServiceException.Error.ErrorCode.FAILED_TO_DELETE_FILE));
@@ -153,6 +167,7 @@ public class ApprovementService {
     public void finish(JobRun jobRun) {
 
         jobRun.setStatus(JobRunStatus.RESUMED);
+        jobRun.addReadOnlyParam(new ReadOnlyParam(ParamKey.FINISH_FLOW, Boolean.TRUE.toString()));
         jobRunRepository.save(jobRun);
     }
 
@@ -163,6 +178,7 @@ public class ApprovementService {
             try {
                 ReviewDTO reviewDTO = objectMapper.readValue(FilesystemStorageService.load(file.toPath()), ReviewDTO.class);
                 reviewDTO.setChecksum(FilesystemStorageService.checkSum(file.toPath()));
+                reviewDTO.setLocalFilename(file.getName());
                 reviews.add(reviewDTO);
             } catch (Exception e) {
                 LOG.error(ServiceException.Error.ErrorCode.FAILED_TO_LOAD_JSON_FROM_FILE.name(), e);

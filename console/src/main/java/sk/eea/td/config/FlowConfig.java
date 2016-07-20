@@ -14,6 +14,7 @@ import sk.eea.td.flow.FlowManagerImpl;
 import sk.eea.td.flow.JobSelector;
 import sk.eea.td.flow.SingleRunJobSelector;
 import sk.eea.td.flow.activities.Activity;
+import sk.eea.td.flow.activities.Approval2EU_ATransformActivity;
 import sk.eea.td.flow.activities.ApprovalSendMailActivity;
 import sk.eea.td.flow.activities.CleanupActivity;
 import sk.eea.td.flow.activities.Dataflow4isFinalActivity;
@@ -165,13 +166,17 @@ public class FlowConfig {
     
     @Bean
     public FlowManager dataflow6Subflow(){
-        FlowManager flowManager = new FlowManagerImpl(Connector.TAGAPP, Connector.EUROPEANA, dataflow6SubflowSelector());
-//        flowManager.addActivity(harvestActivity());
-//        flowManager.addActivity(tagapp2hpTransformActivity());
-//        flowManager.addActivity(reportActivity());
-//        flowManager.addActivity(hp2eu_ATransformActivity());
-//        flowManager.addActivity(approvalSendMailActivity());
+        FlowManager flowManager = new FlowManagerImpl(Connector.TAGAPP, Connector.EUROPEANA_ANNOTATION, dataflow6SubflowSelector());
+        flowManager.addActivity(harvestActivity());
+        flowManager.addActivity(tagapp2hpTransformActivity());
+        flowManager.addActivity(approvalSendMailActivity());        
+        flowManager.addActivity(approval2eu_ATransformActivity());
+        flowManager.addActivity(storeActivity());
         return flowManager;
+    }
+
+    private Activity approval2eu_ATransformActivity() {
+        return new Approval2EU_ATransformActivity();
     }
 
 }

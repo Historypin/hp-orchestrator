@@ -1,15 +1,24 @@
 package sk.eea.td.mapper;
 
+import static sk.eea.td.console.model.ParamKey.EU_REST_FACET;
+import static sk.eea.td.console.model.ParamKey.EU_REST_QUERY;
+import static sk.eea.td.console.model.ParamKey.HP_API_KEY;
+import static sk.eea.td.console.model.ParamKey.HP_API_SECRET;
+import static sk.eea.td.console.model.ParamKey.HP_DATE;
+import static sk.eea.td.console.model.ParamKey.HP_LAT;
+import static sk.eea.td.console.model.ParamKey.HP_LNG;
+import static sk.eea.td.console.model.ParamKey.HP_NAME;
+import static sk.eea.td.console.model.ParamKey.HP_PROJECT_SLUG;
+import static sk.eea.td.console.model.ParamKey.HP_RADIUS;
+import static sk.eea.td.console.model.ParamKey.HP_TAGS;
+import static sk.eea.td.console.model.ParamKey.HP_USER_ID;
+
 import org.springframework.stereotype.Component;
+
 import sk.eea.td.console.form.TaskForm;
 import sk.eea.td.console.model.Connector;
 import sk.eea.td.console.model.Job;
 import sk.eea.td.console.model.Param;
-import sk.eea.td.util.DateUtils;
-
-import static sk.eea.td.console.model.ParamKey.*;
-import static sk.eea.td.console.model.ParamKey.EU_REST_FACET;
-import static sk.eea.td.console.model.ParamKey.HP_PROJECT_SLUG;
 
 @Component
 public class TaskFormtoJobMapper {
@@ -44,7 +53,7 @@ public class TaskFormtoJobMapper {
         if (Connector.HISTORYPIN.equals(job.getSource())) {
             job.addParam(new Param(HP_PROJECT_SLUG, form.getProjectSlug()));
         }
-
+        
         return job;
     }
 }

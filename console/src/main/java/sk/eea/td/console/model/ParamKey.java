@@ -25,5 +25,9 @@ public enum ParamKey {
     TRANSFORM_PATH,
     HP_UNTIL_CURRENT, 
     LAST_SUCCESS, 
-    TAGAPP_BATCH
+    TAGAPP_BATCH, 
+    /** Used from approval page, instructs flow to cleanup data and finish. */
+    FINISH_FLOW, 
+    /** Folder where approved data are stored */
+    APPROVED_PATH
 }

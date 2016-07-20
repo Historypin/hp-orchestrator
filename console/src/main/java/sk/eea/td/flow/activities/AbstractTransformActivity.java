@@ -42,7 +42,7 @@ public abstract class AbstractTransformActivity implements Activity {
             context.getReadOnlyParams().stream().forEach(p -> paramMap.put(p.getKey(), p.getValue()));
 
 //            Destination destination = Destination.valueOf(context.getJob().getTarget().name());
-            final Path harvestPath = Paths.get(paramMap.get(ParamKey.HARVEST_PATH));
+            final Path harvestPath = getSourcePath(context);
 /*            final Path transformPath = PathUtils.createTransformRunSubdir(Paths.get(outputDirectory),
                     String.valueOf(context.getId()));*/
             final Path transformPath = getTransformPath(Paths.get(outputDirectory), String.valueOf(context.getId()));
@@ -63,6 +63,10 @@ public abstract class AbstractTransformActivity implements Activity {
         }else{
         	return ActivityAction.CONTINUE;
         }
+    }
+
+    protected Path getSourcePath(JobRun context) {
+        return Paths.get(context.getReadOnlyParams().stream().filter(param -> param.getKey().equals(ParamKey.HARVEST_PATH)).findFirst().get().getValue());
     }
 
     protected Path getTransformPath(Path parentDir, String jobRunId) throws IOException {
