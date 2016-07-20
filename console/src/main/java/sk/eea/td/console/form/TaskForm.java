@@ -5,10 +5,7 @@ import org.hibernate.validator.group.GroupSequenceProvider;
 import sk.eea.td.console.model.Flow;
 import sk.eea.td.console.validation.TaskFormValidationSequenceProvider;
 import sk.eea.td.console.model.Connector;
-import sk.eea.td.rest.validation.Flow1Validation;
-import sk.eea.td.rest.validation.Flow2Validation;
-import sk.eea.td.rest.validation.Flow4Validation;
-import sk.eea.td.rest.validation.Flow5Validation;
+import sk.eea.td.rest.validation.*;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -52,8 +49,8 @@ public class TaskForm {
     // this field is optional
     private String collectionTags;
 
-    @NotNull(message = "Lucene query is missing.", groups = { Flow1Validation.class })
-    @Size(min = 1, max = 300, groups = { Flow1Validation.class })
+    @NotNull(message = "Lucene query is missing.", groups = { Flow1Validation.class, Flow6Validation.class})
+    @Size(min = 1, max = 300, groups = { Flow1Validation.class, Flow6Validation.class })
     private String luceneQuery;
 
     // this field is optional

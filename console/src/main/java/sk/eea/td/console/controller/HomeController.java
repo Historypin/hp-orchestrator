@@ -56,11 +56,11 @@ public class HomeController {
             final Job job = jobRepository.findOne(jobId);
             if (job != null) {
                 final Set<Param> paramList = paramRepository.findByJob(job);
-                model.addAttribute(jobToTaskFormMapper.map(job, paramList));
+                model.addAttribute("taskForm", jobToTaskFormMapper.map(job, paramList));
                 return "index";
             }
         }
-        model.addAttribute(new TaskForm());
+        model.addAttribute("taskForm", new TaskForm());
         return "index";
     }
 
@@ -84,7 +84,7 @@ public class HomeController {
             Job job = jobRepository.findOne(taskForm.getJobId());
             if (job != null) {
                 // delete old params
-                job.setParams(new ArrayList<>());
+                job.getParams().clear();
                 job = jobRepository.save(job);
 
                 job = taskFormtoJobMapper.map(job, taskForm);

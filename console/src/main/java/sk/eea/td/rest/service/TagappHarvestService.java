@@ -44,8 +44,8 @@ public class TagappHarvestService {
     @Autowired
     private JobRunRepository jobRunRepository;
 
-    @Autowired 
-    private ObjectMapper mapper;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     public Path harvest(String harvestId, String jobId, String from, String until) throws FlowException{
         JobRun jobRun = jobRunRepository.findOne(Long.valueOf(harvestId));
@@ -84,23 +84,23 @@ public class TagappHarvestService {
             if(response == null || !response.hasEntity())
                 throw new FlowException("Empty response.");
             PageableTagsDTO tags;
-            tags = mapper.readValue(response.readEntity(String.class), PageableTagsDTO.class);
+            tags = objectMapper.readValue(response.readEntity(String.class), PageableTagsDTO.class);
             if(tags == null)
                 throw new FlowException("Invalid entity");
             Path filename = PathUtils.createUniqueFilename(harvestPath, Connector.TAGAPP.getFormatCode());
             FileWriter writer = new FileWriter(filename.toFile());
-            writer.write(mapper.writeValueAsString(tags));
+            writer.write(objectMapper.writeValueAsString(tags));
             writer.close();
             while(tags.getResumptionToken() !=""){
                 response = tagappClient.harvestTags(tags.getResumptionToken());
                 if(response == null || !response.hasEntity())
                     throw new FlowException("Empty response.");
-                tags = mapper.readValue(response.readEntity(String.class), PageableTagsDTO.class);
+                tags = objectMapper.readValue(response.readEntity(String.class), PageableTagsDTO.class);
                 if(tags == null)
                     throw new FlowException("Invalid entity");
                 filename = PathUtils.createUniqueFilename(harvestPath, Connector.TAGAPP.getFormatCode());
                 writer = new FileWriter(filename.toFile());
-                writer.write(mapper.writeValueAsString(tags));
+                writer.write(objectMapper.writeValueAsString(tags));
                 writer.close();
             }
             return harvestPath;

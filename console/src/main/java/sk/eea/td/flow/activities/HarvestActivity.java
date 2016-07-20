@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sk.eea.td.console.model.JobRun;
 import sk.eea.td.console.model.ParamKey;
 import sk.eea.td.console.model.ReadOnlyParam;
+import sk.eea.td.console.repository.JobRunRepository;
 import sk.eea.td.flow.FlowException;
 import sk.eea.td.console.model.Connector;
 import sk.eea.td.rest.service.EuropeanaHarvestService;
@@ -40,6 +41,9 @@ public class HarvestActivity implements Activity {
 
     @Autowired
     private TagappHarvestService tagappHarvestService;
+
+    @Autowired
+    private JobRunRepository jobRunRepository;
     
     @Override
     public ActivityAction execute(JobRun context) throws FlowException {

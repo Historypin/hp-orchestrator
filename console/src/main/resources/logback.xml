@@ -1,78 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
+    <property file="${working.directory}/conf/orchestrator.properties" />
 
-    <!-- Choose appropriate properties file based on profile -->
-    <property resource="default.properties"/>
-    <property resource="orchestrator.properties"/>
-    <property resource="${ORCHESTRATOR_HOME}/conf/orchestrator.properties"/>
+    <include resource="org/springframework/boot/logging/logback/base.xml"/>
 
-    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{5} - %msg%n</pattern>
-        </encoder>
-    </appender>
-
-    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-        <file>${log.file}</file>
-        <encoder>
-            <pattern>%d %-5level %logger{35} - %msg %n</pattern>
-        </encoder>
-    </appender>
-
-    <logger name="sk.eea.td" level="${sk.eea.td.appender.level}" additivity="false" >
-        <appender-ref ref="STDOUT"/>
-        <appender-ref ref="FILE"/>
-    </logger>
-
-    <logger name="com.zaxxer.hikari" level="WARN" additivity="false" >
-        <appender-ref ref="STDOUT"/>
-        <appender-ref ref="FILE"/>
-    </logger>
-
-    <logger name="org.springframework.orm" level="WARN" additivity="false" >
-        <appender-ref ref="STDOUT"/>
-        <appender-ref ref="FILE"/>
-    </logger>
-
-    <logger name="org.springframework" level="WARN" additivity="false" >
-        <appender-ref ref="STDOUT"/>
-        <appender-ref ref="FILE"/>
-    </logger>
-
-    <logger name="org.hibernate" level="WARN" additivity="false" >
-        <appender-ref ref="STDOUT"/>
-        <appender-ref ref="FILE"/>
-    </logger>
+    <logger name="root" level="${root.logging.level}"/>
+    <logger name="sk.eea.td" level="${orchestrator.logging.level}"/>
 
     <!-- Uncomment to see queries and values in logs. Dont forget to change default.properties -->
     <!--<logger name="org.hibernate.SQL" level="DEBUG" additivity="false" >-->
-        <!--<appender-ref ref="STDOUT"/>-->
-        <!--<appender-ref ref="FILE"/>-->
+    <!--<appender-ref ref="STDOUT"/>-->
+    <!--<appender-ref ref="FILE"/>-->
     <!--</logger>-->
 
 
     <!--<logger name="org.hibernate.type" level="TRACE" additivity="false" >-->
-        <!--<appender-ref ref="STDOUT"/>-->
-        <!--<appender-ref ref="FILE"/>-->
+    <!--<appender-ref ref="STDOUT"/>-->
+    <!--<appender-ref ref="FILE"/>-->
     <!--</logger>-->
-
-    <logger name="org.thymeleaf" level="WARN" additivity="false" >
-        <appender-ref ref="STDOUT"/>
-        <appender-ref ref="FILE"/>
-    </logger>
-
-    <logger name="springfox" level="WARN" additivity="false" >
-        <appender-ref ref="STDOUT"/>
-        <appender-ref ref="FILE"/>
-    </logger>
-
-    <logger name="org.springframework.beans" level="WARN" additivity="false" >
-        <appender-ref ref="STDOUT"/>
-        <appender-ref ref="FILE"/>
-    </logger>
-
-    <root level="${root.appender.level}">
-        <appender-ref ref="STDOUT"/>
-        <appender-ref ref="FILE"/>
-    </root>
 </configuration>

@@ -4,19 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "job_run")
@@ -36,6 +24,7 @@ public abstract class AbstractJobRun {
     private Long id;
 
     @ManyToOne
+    @JoinColumn(name = "job_id")
     private Job job;
 
     @Column
@@ -142,5 +131,27 @@ public abstract class AbstractJobRun {
 
     public void setLastStarted(Date lastStarted) {
         this.lastStarted = lastStarted;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+
+        AbstractJobRun that = (AbstractJobRun) o;
+
+        if (id != null ? !id.equals(that.id) : that.id != null)
+            return false;
+        return readOnlyParams != null ? readOnlyParams.equals(that.readOnlyParams) : that.readOnlyParams == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (readOnlyParams != null ? readOnlyParams.hashCode() : 0);
+        return result;
     }
 }

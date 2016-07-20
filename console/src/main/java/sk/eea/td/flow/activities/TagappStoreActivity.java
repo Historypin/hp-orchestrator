@@ -45,11 +45,6 @@ public class TagappStoreActivity implements Activity {
             String tagappBatchId;
             if(paramMap.get(ParamKey.TAGAPP_BATCH) == null){
                 tagappBatchId = tagappStoreService.createBatch();
-                try{
-                    Long.parseLong(tagappBatchId);
-                }catch(NumberFormatException e){
-                    throw new FlowException("Could not obtain batch id.");
-                }
                 context.addReadOnlyParam(new ReadOnlyParam(ParamKey.TAGAPP_BATCH, tagappBatchId));
             }else{
                 tagappBatchId = paramMap.get(ParamKey.TAGAPP_BATCH);
@@ -82,9 +77,9 @@ public class TagappStoreActivity implements Activity {
                 Log log = new Log();
                 log.setJobRun(context);
                 log.setLevel(Log.LogLevel.ERROR);
-                log.setMessage(String.format("Failed sending cultural object to TagApp. See server logs for details."));
+                log.setMessage("Failed sending cultural object to TagApp. See server logs for details.");
                 logRepository.save(log);
-                throw new FlowException(MessageFormat.format("Enrichment for batch: {} failed", tagappBatchId));
+                throw new FlowException(MessageFormat.format("Enrichment for batch: {0} failed", tagappBatchId));
             }
         }catch(Exception e){
             Log log = new Log();

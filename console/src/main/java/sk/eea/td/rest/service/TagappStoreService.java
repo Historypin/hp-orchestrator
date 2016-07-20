@@ -44,7 +44,7 @@ public class TagappStoreService {
         try {
             CulturalObjectDTO coDto = objectMapper.readValue(file.toFile(), CulturalObjectDTO.class);
             Response response = tagappClient.addCulturalObject(tagappBatchId, coDto);
-            if(response == null || !HttpStatus.CREATED.equals(response.getStatus())){
+            if(response == null || !HttpStatus.CREATED.equals(HttpStatus.valueOf(response.getStatus()))){
                 LOG.error("Problem storing CulturalObjectDTO from file: {} into TagApp. Message: {}", file, response.hasEntity() ? response.readEntity(String.class) : "no message");
                 return false;
             }
@@ -60,12 +60,11 @@ public class TagappStoreService {
 
     public boolean publishBatch(String tagappBatchId) {
         Response response = tagappClient.startEnrichment(tagappBatchId);
-        if(response == null || !HttpStatus.ACCEPTED.equals(response.getStatus())){
+        if(response == null || !HttpStatus.ACCEPTED.equals(HttpStatus.valueOf(response.getStatus()))){
             LOG.error("Problem starting enrichment of batch: {}", tagappBatchId);
             return false;
         }
-        
-        return false;
+        return true;
     }
 
 }

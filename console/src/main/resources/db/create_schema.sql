@@ -22,8 +22,8 @@ CREATE TABLE "job" (
   "name"            VARCHAR(255),
   "source"          VARCHAR(255),
   "target"          VARCHAR(255),
-  "last_job_run_id" INT8 REFERENCES job_run(id),
-  "user"            VARCHAR(255) REFERENCES users(username) NOT NULL,
+  "last_job_run_id" INT8,
+  "user"            VARCHAR(255) NOT NULL,
   "created"         TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 );
 -- JOB TABLE END --
@@ -43,9 +43,6 @@ CREATE INDEX "ix_param_job_id" ON "param" ("job_id");
 CREATE UNIQUE INDEX ix_param_job_id_key on param (job_id, key);
 -- PARAM TABLE END --
 
- ALTER TABLE ONLY job_run
-     ADD CONSTRAINT fkds874o50ch763h968aedawv77 FOREIGN KEY (parentrun_id) REFERENCES job_run(id);
-
 -- JOB_RUN TABLE BEGIN --
 CREATE SEQUENCE "seq_job_run" START 1 INCREMENT BY 50;
 
@@ -57,7 +54,7 @@ CREATE TABLE "job_run" (
   "job_id"    INT8 REFERENCES job(id) ON UPDATE CASCADE ON DELETE CASCADE,
   "created"   TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
   "dtype"     VARCHAR(31),
-  "parentrun_id" INT8 REFERENCES job_run(id) ON UPDATE CASCADE ON DELETE CASCADE,
+  "parentrun_id" INT8,
   "last_started"  TIMESTAMP WITH TIME ZONE
 );
 CREATE INDEX "ix_job_run_job_id" ON "job_run" ("job_id");
@@ -120,3 +117,4 @@ CREATE UNIQUE INDEX ix_authority_username on "authorities"(username, authority);
 
 ALTER TABLE job ADD CONSTRAINT last_job_run_fk FOREIGN KEY ("last_job_run_id") REFERENCES job_run(id) ON DELETE SET NULL;
 ALTER TABLE job ADD CONSTRAINT user_fk FOREIGN KEY ("user") REFERENCES "users"(username) ON UPDATE CASCADE ON DELETE CASCADE;
+ALTER TABLE job_run ADD CONSTRAINT parent_run_fk FOREIGN KEY ("parentrun_id") REFERENCES job_run(id) ON UPDATE CASCADE ON DELETE CASCADE;

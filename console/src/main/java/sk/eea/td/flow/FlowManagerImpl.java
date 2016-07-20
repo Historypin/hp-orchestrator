@@ -61,7 +61,7 @@ public class FlowManagerImpl implements FlowManager {
      * (non-Javadoc)
      * @see sk.eea.td.flow.FlowManager#startFlow(sk.eea.td.flow.model.FlowConfig)
      */
-    public void startFlow(JobRun context) {
+    public JobRun startFlow(JobRun context) {
         context.setStatus(JobRunStatus.RUNNING);
         List<Activity> activities = getActivities();
         try {
@@ -84,27 +84,34 @@ public class FlowManagerImpl implements FlowManager {
             log.setMessage(ExceptionUtils.getStackTrace(e));
             logRepository.save(log);
 
-            failFlow(context);
+            context = failFlow(context);
         } finally {
             persistState(context);
             LOG.debug("Finished a JobRun with id: {}.", context.getId());
         }
+        return context;
     }
 
-    protected void finishFlow(JobRun context) {
+    protected JobRun finishFlow(JobRun context) {
         context.setStatus(JobRunStatus.FINISHED);
         context.setResult(JobRunResult.OK);
+
+        context = persistState(context);
+
+        return context;
     }
 
-    protected void failFlow(JobRun context) {
+    protected JobRun failFlow(JobRun context) {
         context.setStatus(JobRunStatus.STOPPED);
         context.setResult(JobRunResult.FAILED);
         context = persistState(context);
 
-        reportFailure(context);
+        context = reportFailure(context);
+
+        return context;
     }
 
-    protected void reportFailure(JobRun context) {
+    protected JobRun reportFailure(JobRun context) {
         try {
             final Map<String, String> emailParams = new HashMap<>();
             // prepare required params for sending emails
@@ -120,6 +127,8 @@ public class FlowManagerImpl implements FlowManager {
         } catch (Exception e) {
             LOG.error("Exception occurred during reporting failure to user: ", e);
         }
+
+        return context;
     }
 
     public void trigger() {
@@ -140,14 +149,14 @@ public class FlowManagerImpl implements FlowManager {
         }
     }
 
-    public void resumeFlow(JobRun context) {
+    public JobRun resumeFlow(JobRun context) {
 
         try {
         	context.setLastStarted(new Date());
             while (true) {
                 Activity activity = getNextActivity(context.getActivity(), context.getStatus());
                 if (activity == null) {
-                    finishFlow(context);
+                    context = finishFlow(context);
                     break;
                 }
                 context.setActivity(activity.getId());
@@ -186,10 +195,12 @@ public class FlowManagerImpl implements FlowManager {
             log.setMessage(ExceptionUtils.getStackTrace(e));
             logRepository.save(log);
 
-            failFlow(context);
+            context = failFlow(context);
         } finally {
-            persistState(context);
+            context = persistState(context);
         }
+
+        return context;
     }
 
     private Activity getNextActivity(String id, JobRunStatus status) {

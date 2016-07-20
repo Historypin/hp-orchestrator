@@ -27,7 +27,7 @@ public class Log {
     private String message;
 
     @ManyToOne
-    @JoinColumn(name = "job_run_id")
+    @JoinColumn(name = "job_run_id", nullable = false)
     private JobRun jobRun;
 
     public Log() {

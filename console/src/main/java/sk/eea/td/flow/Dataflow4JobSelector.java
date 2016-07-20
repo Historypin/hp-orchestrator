@@ -67,14 +67,16 @@ public class Dataflow4JobSelector implements JobSelector {
             }
 
             jobRun.clearReadonlyParams();
-            jobRunRepository.save(jobRun);
+            jobRun = jobRunRepository.save(jobRun);
             
             Set<Param> params = paramRepository.findByJob(job);
             if(lastSuccess != null){
             	jobRun.addReadOnlyParam(new ReadOnlyParam(lastSuccess.getKey(),lastSuccess.getValue()));
             }
-            params.stream().forEach(param -> jobRun.addReadOnlyParam(new ReadOnlyParam(param)));
-            
+            for(Param param : params) {
+				jobRun.addReadOnlyParam(new ReadOnlyParam(param));
+			}
+
 		    return jobRunRepository.save(jobRun);
 		}
 		return null;
