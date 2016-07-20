@@ -343,7 +343,7 @@
 		                <artifactId>spring-boot-maven-plugin</artifactId>
 		                <configuration>
 		                    <fork>true</fork>
-		                    <jvmArguments>-Djava.security.egd=file:/dev/./urandom</jvmArguments>
+		                    <jvmArguments>-Dworking.directory=${working.directory} -Djava.security.egd=file:/dev/./urandom</jvmArguments>
 		                </configuration>
 						<executions>
 							<execution>
