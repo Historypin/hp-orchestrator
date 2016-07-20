@@ -55,7 +55,7 @@ public class Tagapp2HPTransformActivity extends AbstractTransformActivity {
                 reviewDTO.setDescription(tag.getCulturalObjectDescription());
                 reviewDTO.setOriginalTags(new ArrayList<String>());
                 reviewDTO.setUrl(tag.getCulturalObjectExternalUrl());
-                pins.put(tag.getCulturalObjectId().toString(), reviewDTO);
+                pins.put(tag.getCulturalObjectExternalId().toString(), reviewDTO);
             }
             reviewDTO = pins.get(tag.getCulturalObjectExternalId());
             if(reviewDTO.getOriginalTags() == null){

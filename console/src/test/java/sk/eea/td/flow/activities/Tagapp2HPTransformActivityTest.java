@@ -76,14 +76,14 @@ public class Tagapp2HPTransformActivityTest {
                         ReviewDTO dto = mapper.readValue(file.toFile(), ReviewDTO.class);
                         objects.add(dto.getId());
                         List<String> shouldContain = new ArrayList<String>();
-                        Arrays.asList(new Integer[]{0,1,2}).forEach(value -> shouldContain.add("tag"+dto.getId().toString()+value.intValue()));
+                        Arrays.asList(new Integer[]{0,1,2}).forEach(value -> shouldContain.add("tag"+(dto.getId()+value.intValue())));
                         assertEquals(shouldContain, dto.getOriginalTags());
                     }
                     return FileVisitResult.CONTINUE;
                 }
             });
             objects.sort(null);
-            List<Long> coIds = Arrays.asList(new Long[]{1l,2l,3l});
+            List<Long> coIds = Arrays.asList(new Long[]{10l,20l,30l});
             assertEquals(coIds, objects);
         } catch (URISyntaxException e) {
             throw new Error("Missing input file");
