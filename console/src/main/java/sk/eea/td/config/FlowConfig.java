@@ -22,6 +22,7 @@ import sk.eea.td.flow.activities.EU2TagAppTransformActivity;
 import sk.eea.td.flow.activities.HP_A2EU_ATransformActivity;
 import sk.eea.td.flow.activities.HarvestActivity;
 import sk.eea.td.flow.activities.Ontotext2HistorypinTransformAndStoreActivity;
+import sk.eea.td.flow.activities.PrepareCSVActivity;
 import sk.eea.td.flow.activities.ReportActivity;
 import sk.eea.td.flow.activities.SleepActivity;
 import sk.eea.td.flow.activities.StoreActivity;
@@ -108,6 +109,11 @@ public class FlowConfig {
     public Activity eu2tagAppTransformActivity() {
         return new EU2TagAppTransformActivity();
     }
+    
+    @Bean
+    private Activity prepareCSVActivity() {
+        return new PrepareCSVActivity();
+    }
 
     @Bean
     public FlowManager europeanaToHistorypinFlowManager() {
@@ -170,11 +176,14 @@ public class FlowConfig {
         flowManager.addActivity(harvestActivity());
         flowManager.addActivity(tagapp2hpTransformActivity());
         flowManager.addActivity(approvalSendMailActivity());        
+        flowManager.addActivity(prepareCSVActivity());
         flowManager.addActivity(approval2eu_ATransformActivity());
         flowManager.addActivity(storeActivity());
+        flowManager.addActivity(reportActivity());
         return flowManager;
     }
 
+    @Bean
     private Activity approval2eu_ATransformActivity() {
         return new Approval2EU_ATransformActivity();
     }

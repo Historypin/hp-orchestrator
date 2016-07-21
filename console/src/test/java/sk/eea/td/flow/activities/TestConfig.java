@@ -95,4 +95,9 @@ public class TestConfig {
         return new Approval2EU_ATransformActivity();
     }
 
+    @Bean
+    public PrepareCSVActivity prepareCSVActivity(){
+        return new PrepareCSVActivity();
+    }
+
 }
