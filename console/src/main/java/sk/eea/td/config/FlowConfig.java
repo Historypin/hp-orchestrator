@@ -111,7 +111,7 @@ public class FlowConfig {
     }
     
     @Bean
-    private Activity prepareCSVActivity() {
+    public Activity prepareCSVActivity() {
         return new PrepareCSVActivity();
     }
 
@@ -184,7 +184,7 @@ public class FlowConfig {
     }
 
     @Bean
-    private Activity approval2eu_ATransformActivity() {
+    public Activity approval2eu_ATransformActivity() {
         return new Approval2EU_ATransformActivity();
     }
 
