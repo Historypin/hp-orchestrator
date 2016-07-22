@@ -29,5 +29,6 @@ public enum ParamKey {
     /** Used from approval page, instructs flow to cleanup data and finish. */
     FINISH_FLOW, 
     /** Folder where approved data are stored */
-    APPROVED_PATH
+    APPROVED_PATH,
+    EMAIL_ATTACHMENT
 }
