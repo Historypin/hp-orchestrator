@@ -21,6 +21,7 @@ import sk.eea.td.console.model.ParamKey;
 import sk.eea.td.console.repository.LogRepository;
 import sk.eea.td.mapper.EuropeanaToHistorypinMapper;
 import sk.eea.td.console.model.Connector;
+import sk.eea.td.util.ParamUtils;
 import sk.eea.td.util.PathUtils;
 
 public class TransformActivity extends AbstractTransformActivity implements Activity {
@@ -181,8 +182,7 @@ public class TransformActivity extends AbstractTransformActivity implements Acti
     @Override
     protected Path transform(Connector source, Path harvestedFile, Path transformPath, JobRun context) throws IOException {
 
-        final Map<ParamKey, String> paramMap = new HashMap<>();
-        context.getReadOnlyParams().stream().forEach(p -> paramMap.put(p.getKey(), p.getValue()));
+        final Map<ParamKey, String> paramMap = ParamUtils.copyStringReadOnLyParamsIntoStringParamMap(context.getReadOnlyParams());
 
 //        Path transformPath = getTransformPath(Paths.get(outputDirectory), String.valueOf(context.getId()));
 

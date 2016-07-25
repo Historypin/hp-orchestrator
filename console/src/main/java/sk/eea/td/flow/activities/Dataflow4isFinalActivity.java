@@ -17,6 +17,7 @@ import sk.eea.td.console.model.JobRun;
 import sk.eea.td.console.model.ParamKey;
 import sk.eea.td.flow.FlowException;
 import sk.eea.td.util.DateUtils;
+import sk.eea.td.util.ParamUtils;
 
 public class Dataflow4isFinalActivity implements Activity {
 
@@ -24,8 +25,7 @@ public class Dataflow4isFinalActivity implements Activity {
 	
 	@Override
 	public ActivityAction execute(JobRun context) throws FlowException {
-		Map<ParamKey,String> params = new HashMap<ParamKey, String>();
-		context.getReadOnlyParams().stream().forEach(param -> params.put(param.getKey(), param.getValue()));
+		Map<ParamKey,String> params = ParamUtils.copyStringReadOnLyParamsIntoStringParamMap(context.getReadOnlyParams());
 		String dateUntil = params.get(ParamKey.OAI_UNTIL);
 		Calendar endOfYesterday = new GregorianCalendar(TimeZone.getTimeZone("UTC"));
 		for(int field : Arrays.asList(new Integer[] {Calendar.HOUR_OF_DAY, Calendar.MINUTE, Calendar.SECOND, Calendar.MILLISECOND})){

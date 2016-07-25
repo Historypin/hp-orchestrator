@@ -72,7 +72,7 @@ public class HistorypinHarvestServiceIT {
 		job.setId(1l);
 		JobRun jobRun = new JobRun();
 		jobRun.setId(2l);
-		jobRun.addReadOnlyParam(new ReadOnlyParam(ParamKey.HP_UNTIL_CURRENT, "2010-01-01T20:21:59Z"));
+		jobRun.addReadOnlyParam(new StringReadOnlyParam(ParamKey.HP_UNTIL_CURRENT, "2010-01-01T20:21:59Z"));
 		
 		EasyMock.expect(jobRepository.findOne(EasyMock.eq(1l))).andReturn(job).once();
 		EasyMock.expect(jobRunRepository.findNextJobRun(EasyMock.same(Connector.HISTORYPIN_ANNOTATION.name()), EasyMock.same(

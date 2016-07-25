@@ -16,16 +16,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import sk.eea.td.console.model.JobRun;
-import sk.eea.td.console.model.ParamKey;
-import sk.eea.td.console.model.ReadOnlyParam;
+import sk.eea.td.console.model.*;
 import sk.eea.td.console.repository.JobRunRepository;
+import sk.eea.td.console.repository.LogRepository;
 import sk.eea.td.flow.FlowException;
-import sk.eea.td.console.model.Connector;
+import sk.eea.td.flow.HarvestResponse;
 import sk.eea.td.rest.service.EuropeanaHarvestService;
 import sk.eea.td.rest.service.HistorypinHarvestService;
 import sk.eea.td.rest.service.TagappHarvestService;
 import sk.eea.td.util.DateUtils;
+import sk.eea.td.util.ParamUtils;
 
 public class HarvestActivity implements Activity {
 
@@ -44,27 +44,29 @@ public class HarvestActivity implements Activity {
 
     @Autowired
     private JobRunRepository jobRunRepository;
-    
+
+    @Autowired
+    private LogRepository logRepository;
+
     @Override
     public ActivityAction execute(JobRun context) throws FlowException {
         LOG.debug("Starting harvest activity for job ID: {}", context.getId());
         try {
-            final Map<ParamKey, String> paramMap = new HashMap<>();
-            context.getReadOnlyParams().stream().forEach(p -> paramMap.put(p.getKey(), p.getValue()));
-            final Path harvestPath;
-            String from = paramMap.get(ParamKey.OAI_FROM);
-			String until = paramMap.get(ParamKey.OAI_UNTIL);
-			String lastSuccess = paramMap.get(ParamKey.LAST_SUCCESS);
+            final Map<ParamKey, String> stringParamMap = ParamUtils.copyStringReadOnLyParamsIntoStringParamMap(context.getReadOnlyParams());
+            final Map<ParamKey, BlobReadOnlyParam> blobParamMap = ParamUtils.copyBlobReadOnlyParamsBlobParamMap(context.getReadOnlyParams());
+            final HarvestResponse harvestResponse;
+            String from = stringParamMap.get(ParamKey.OAI_FROM);
+			String until = stringParamMap.get(ParamKey.OAI_UNTIL);
+			String lastSuccess = stringParamMap.get(ParamKey.LAST_SUCCESS);
 			switch (context.getJob().getSource()) {
                 case EUROPEANA:
-                    harvestPath = europeanaHarvestService.harvest(
-                            String.valueOf(context.getId()), 
-                            paramMap.get(ParamKey.EU_REST_QUERY), 
-                            paramMap.get(ParamKey.EU_REST_FACET),
+                    harvestResponse = europeanaHarvestService.harvest(context,
+                            stringParamMap,
+                            blobParamMap,
                             Connector.TAGAPP.equals(context.getJob().getTarget()));
                     break;
                 case HISTORYPIN:
-                    harvestPath = historypinHarvestService.harvest(String.valueOf(context.getId()), paramMap.get(ParamKey.HP_PROJECT_SLUG));
+                    harvestResponse = historypinHarvestService.harvest(String.valueOf(context.getId()), stringParamMap.get(ParamKey.HP_PROJECT_SLUG));
                     break;
                 case HISTORYPIN_ANNOTATION:
                 	Date fromDate = calculateFromDate(from, lastSuccess);
@@ -76,7 +78,7 @@ public class HarvestActivity implements Activity {
             		}
                 	from = DateUtils.SYSTEM_TIME_FORMAT.format(fromDate.toInstant());
                 	until = DateUtils.SYSTEM_TIME_FORMAT.format(untilDate.toInstant());
-                	harvestPath = historypinHarvestService.harvestAnnotation(String.valueOf(context.getId()),String.valueOf(context.getJob().getId()), from, until);
+                    harvestResponse = historypinHarvestService.harvestAnnotation(String.valueOf(context.getId()),String.valueOf(context.getJob().getId()), from, until);
                 	break;
                 case TAGAPP:
                     Date fromDateTA = calculateFromDate(from, lastSuccess);
@@ -88,12 +90,19 @@ public class HarvestActivity implements Activity {
                     }
                     from = DateUtils.SYSTEM_TIME_FORMAT.format(fromDateTA.toInstant());
                     until = DateUtils.SYSTEM_TIME_FORMAT.format(untilDateTA.toInstant());
-                    harvestPath = tagappHarvestService.harvest(String.valueOf(context.getId()),String.valueOf(context.getJob().getId()), from, until);
+                    harvestResponse = tagappHarvestService.harvest(String.valueOf(context.getId()),String.valueOf(context.getJob().getId()), from, until);
                     break;
                 default:
                     throw new IllegalArgumentException("There is no harvester implemented for source: " + context.getJob().getSource());
             }
-            context.addReadOnlyParam(new ReadOnlyParam(ParamKey.HARVEST_PATH, harvestPath.toAbsolutePath().toString()));
+            context.addReadOnlyParam(new StringReadOnlyParam(ParamKey.HARVEST_PATH, harvestResponse.getHarvestPath().toAbsolutePath().toString()));
+            if(!harvestResponse.isAllItemHarvested()) {
+                Log log = new Log();
+                log.setJobRun(context);
+                log.setLevel(Log.LogLevel.ERROR);
+                log.setMessage("Not all items were harvested successfully. See server logs for details.");
+                logRepository.save(log);
+            }
         } catch (Exception e) {
             LOG.error("Harvest activity exception", e);
             throw new FlowException("Exception raised during harvest action", e);

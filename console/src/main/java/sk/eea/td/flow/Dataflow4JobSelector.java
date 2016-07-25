@@ -18,6 +18,7 @@ import sk.eea.td.console.model.*;
 import sk.eea.td.console.repository.JobRepository;
 import sk.eea.td.console.repository.JobRunRepository;
 import sk.eea.td.console.repository.ParamRepository;
+import sk.eea.td.util.ParamUtils;
 
 /**
  * @author Maros Strmensky
@@ -58,10 +59,10 @@ public class Dataflow4JobSelector implements JobSelector {
             Job job = jobRun.getJob();
             job.setLastJobRun(jobRun);
             jobRepository.save(job);
-            ReadOnlyParam lastSuccess = null;
-            for(ReadOnlyParam param:jobRun.getReadOnlyParams()){
+            StringReadOnlyParam lastSuccess = null;
+            for(ReadOnlyParam param : jobRun.getReadOnlyParams()){
             	if(param.getKey().equals(ParamKey.LAST_SUCCESS)){
-            		lastSuccess = param;
+            		lastSuccess = (StringReadOnlyParam) param;
             		break;
             	}
             }
@@ -71,11 +72,9 @@ public class Dataflow4JobSelector implements JobSelector {
             
             Set<Param> params = paramRepository.findByJob(job);
             if(lastSuccess != null){
-            	jobRun.addReadOnlyParam(new ReadOnlyParam(lastSuccess.getKey(),lastSuccess.getValue()));
+            	jobRun.addReadOnlyParam(new StringReadOnlyParam(lastSuccess.getKey(),lastSuccess.getStringValue()));
             }
-            for(Param param : params) {
-				jobRun.addReadOnlyParam(new ReadOnlyParam(param));
-			}
+			ParamUtils.copyParamsIntoJobRun(params, jobRun);
 
 		    return jobRunRepository.save(jobRun);
 		}

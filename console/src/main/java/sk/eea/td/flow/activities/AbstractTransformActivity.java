@@ -9,17 +9,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 
-import sk.eea.td.console.model.JobRun;
-import sk.eea.td.console.model.ParamKey;
-import sk.eea.td.console.model.ReadOnlyParam;
+import sk.eea.td.console.model.*;
 import sk.eea.td.flow.FlowException;
-import sk.eea.td.console.model.Connector;
+import sk.eea.td.util.ParamUtils;
 import sk.eea.td.util.PathUtils;
 
 public abstract class AbstractTransformActivity implements Activity {
@@ -38,19 +35,16 @@ public abstract class AbstractTransformActivity implements Activity {
         getLogger().debug("Starting transform activity for job ID: {}", context.getId());
 
         try {
-            final Map<ParamKey, String> paramMap = new HashMap<>();
-            context.getReadOnlyParams().stream().forEach(p -> paramMap.put(p.getKey(), p.getValue()));
+            final Map<ParamKey, String> paramMap = ParamUtils.copyStringReadOnLyParamsIntoStringParamMap(context.getReadOnlyParams());
 
-//            Destination destination = Destination.valueOf(context.getJob().getTarget().name());
-            final Path harvestPath = getSourcePath(context);
-/*            final Path transformPath = PathUtils.createTransformRunSubdir(Paths.get(outputDirectory),
-                    String.valueOf(context.getId()));*/
+            final Path harvestPath = Paths.get(paramMap.get(ParamKey.HARVEST_PATH));
+
             final Path transformPath = getTransformPath(Paths.get(outputDirectory), String.valueOf(context.getId()));
             getLogger().debug("harvestPath: {}, transformPath: {}", harvestPath, transformPath);
 
             walkFileTree(harvestPath, transformPath);
 
-            context.addReadOnlyParam(new ReadOnlyParam(ParamKey.TRANSFORM_PATH, transformPath.toAbsolutePath().toString()));
+            context.addReadOnlyParam(new StringReadOnlyParam(ParamKey.TRANSFORM_PATH, transformPath.toAbsolutePath().toString()));
 
         } catch (Exception e) {
             throw new FlowException("Exception raised during transform action", e);
@@ -63,10 +57,6 @@ public abstract class AbstractTransformActivity implements Activity {
         }else{
         	return ActivityAction.CONTINUE;
         }
-    }
-
-    protected Path getSourcePath(JobRun context) {
-        return Paths.get(context.getReadOnlyParams().stream().filter(param -> param.getKey().equals(ParamKey.HARVEST_PATH)).findFirst().get().getValue());
     }
 
     protected Path getTransformPath(Path parentDir, String jobRunId) throws IOException {

@@ -6,7 +6,14 @@ import sk.eea.td.console.model.Connector;
 import sk.eea.td.rest.validation.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
+
+import static sk.eea.td.console.model.Flow.FLOW_1;
+import static sk.eea.td.console.model.Flow.FLOW_5;
+import static sk.eea.td.console.model.Flow.FLOW_6;
 
 public class TaskFormValidationSequenceProvider implements DefaultGroupSequenceProvider<TaskForm> {
 
@@ -30,6 +37,14 @@ public class TaskFormValidationSequenceProvider implements DefaultGroupSequenceP
                 case FLOW_6:
                     sequence.add(Flow6Validation.class);
                     break;
+            }
+
+            if (Stream.of(FLOW_1, FLOW_6).anyMatch(e -> e.equals(taskForm.getFlow()))) {
+                if(TaskForm.HarvestType.LUCENE_QUERY.equals(taskForm.getHarvestType())) {
+                    sequence.add(LuceneQueryValidation.class);
+                } else { // TaskForm.HarvestType.CSV_File
+                    sequence.add(CsvFileValidation.class);
+                }
             }
         }
         return sequence;

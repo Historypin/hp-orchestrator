@@ -62,11 +62,6 @@ public class Approval2EU_ATransformActivity extends AbstractTransformActivity {
         }
         return outputDir;
     }
-
-    @Override
-    protected Path getSourcePath(JobRun context) {
-        return Paths.get(context.getReadOnlyParams().stream().filter(param -> param.getKey().equals(ParamKey.APPROVED_PATH)).findFirst().get().getValue());
-    }
     
     @Override
     public String getName() {

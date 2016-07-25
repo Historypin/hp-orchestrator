@@ -1,11 +1,14 @@
 package sk.eea.td.eu_client.api;
 
+import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.util.List;
 
 public interface EuropeanaClient {
 
     String getRecord(String id) throws IOException, InterruptedException;
+
+    Response getRecordWithFullResponse(String id) throws IOException, InterruptedException;
 
     String getRecordsEdmIsShownBy(String id) throws IOException, InterruptedException;
 

@@ -1,5 +1,7 @@
 package sk.eea.td.eu_client;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -12,7 +14,9 @@ import sk.eea.td.config.IntegrationTestConfig;
 import sk.eea.td.eu_client.api.EuropeanaClient;
 import sk.eea.td.eu_client.impl.EuropeanaClientImpl;
 
+import javax.ws.rs.ProcessingException;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -71,4 +75,48 @@ public class EuropeanaClientImplIT {
         String json = europeanaClient.getRecordsEdmIsShownBy(ITEM_ID);
         assertThat(json, is(not(isEmptyString())));
     }
+
+//    @Test
+//    public void test() throws IOException, InterruptedException {
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        String cursor = "*";
+//        while (!"".equals(cursor)) {
+//            try {
+//                final String json = this.europeanaClient.harvest("edm_datasetName:07101_Ag_SK_EuropeanASNG", "", cursor, "minimal");
+//            } catch (ProcessingException) {
+//
+//            }
+//
+//            final JsonNode rootNode = objectMapper.readTree(json);
+//
+//            // usage of cursor erases it
+//            cursor = "";
+//
+//            final JsonNode successNode = rootNode.get("success");
+//            if (successNode == null) {
+//                throw new IOException("Missing field 'success' in Europeana response!");
+//            } else {
+//                boolean success = successNode.asBoolean();
+//                if (!success) {
+//                    throw new IOException(String.format("Harvesting error. Europeana message: %s", rootNode.findPath("error").asText()));
+//                }
+//            }
+//
+//            final JsonNode cursorNode = rootNode.get("nextCursor");
+//            if (cursorNode != null) {
+//                cursor = cursorNode.textValue();
+//            }
+//
+//            JsonNode items = tree.get("items");
+//            if (items != null && items.isArray()) {
+//                for (Iterator<JsonNode> iterator = items.elements(); iterator.hasNext(); ) {
+//                    JsonNode idNode = iterator.next().get("id");
+//                    if (idNode != null && idNode.textValue() != null) {
+//                        String id = idNode.textValue();
+//                        System.out.println(id);
+//                    }
+//                }
+//            }
+//        }
+//    }
 }

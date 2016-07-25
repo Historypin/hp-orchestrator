@@ -79,3 +79,5 @@ templateResolver.cacheable=false
 root.logging.level = INFO
 orchestrator.logging.level = DEBUG
 LOG_FILE=/opt/td/logs/console.log
+
+multipart.maxFileSize = 10MB

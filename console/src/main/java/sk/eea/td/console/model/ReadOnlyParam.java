@@ -4,7 +4,9 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "read_only_param")
-public class ReadOnlyParam {
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name="type",discriminatorType=DiscriminatorType.STRING)
+public abstract class ReadOnlyParam {
 
     @Id
     @SequenceGenerator(name = "seq_read_only_param", sequenceName = "seq_read_only_param", initialValue = 1)
@@ -15,9 +17,6 @@ public class ReadOnlyParam {
     @Enumerated(EnumType.STRING)
     private ParamKey key;
 
-    @Column
-    private String value;
-
     @ManyToOne
     @JoinColumn(name = "job_run_id", nullable = false)
     private AbstractJobRun jobRun;
@@ -25,14 +24,13 @@ public class ReadOnlyParam {
     public ReadOnlyParam() {
     }
 
-    public ReadOnlyParam(ParamKey key, String value) {
+    public ReadOnlyParam(ParamKey key) {
         this.key = key;
-        this.value = value;
     }
 
-    public ReadOnlyParam(Param param) {
-        this.key = param.getKey();
-        this.value = param.getValue();
+    public ReadOnlyParam(ParamKey key, AbstractJobRun jobRun) {
+        this.key = key;
+        this.jobRun = jobRun;
     }
 
     public Long getId() {
@@ -51,29 +49,12 @@ public class ReadOnlyParam {
         this.key = key;
     }
 
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
-
     public AbstractJobRun getJobRun() {
         return jobRun;
     }
 
     public void setJobRun(AbstractJobRun jobRun) {
         this.jobRun = jobRun;
-    }
-
-    @Override public String toString() {
-        return "ReadOnlyParam{" +
-                "id=" + id +
-                ", key=" + key +
-                ", value='" + value + '\'' +
-                ", jobRunId=" + ((jobRun != null) ? jobRun.getId() : null) +
-                '}';
     }
 
     @Override
@@ -85,24 +66,12 @@ public class ReadOnlyParam {
 
         ReadOnlyParam that = (ReadOnlyParam) o;
 
-        if (id != null ? !id.equals(that.id) : that.id != null)
-            return false;
-        if (key != that.key)
-            return false;
-        if (!value.equals(that.value))
-            return false;
-        if (jobRun.getId() != null ? jobRun.getId().equals(that.jobRun.getId()) : that.jobRun.getId() != null) {
-            return false;
-        }
-        return true;
+        return id != null ? id.equals(that.id) : that.id == null;
+
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + key.hashCode();
-        result = 31 * result + value.hashCode();
-        result = 31 * result + (jobRun.getId() != null ? jobRun.getId().hashCode() : 0);
-        return result;
+        return id != null ? id.hashCode() : 0;
     }
 }

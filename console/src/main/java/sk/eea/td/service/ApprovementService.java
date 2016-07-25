@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,13 +20,11 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import sk.eea.td.console.model.*;
 import sk.eea.td.console.model.AbstractJobRun.JobRunStatus;
-import sk.eea.td.console.model.Connector;
-import sk.eea.td.console.model.JobRun;
-import sk.eea.td.console.model.ParamKey;
-import sk.eea.td.console.model.ReadOnlyParam;
 import sk.eea.td.console.model.dto.ReviewDTO;
 import sk.eea.td.console.repository.JobRunRepository;
+import sk.eea.td.util.ParamUtils;
 import sk.eea.td.util.PathUtils;
 
 @Component
@@ -124,7 +121,7 @@ public class ApprovementService {
         }
         LOG.debug("harvestPath: {}, transformPath: {}", approvalPath, approvalPath);
 
-        jobRun.addReadOnlyParam(new ReadOnlyParam(ParamKey.APPROVED_PATH, approvalPath.toString()));
+        jobRun.addReadOnlyParam(new StringReadOnlyParam(ParamKey.APPROVED_PATH, approvalPath.toString()));
         jobRunRepository.save(jobRun);
         List<ReviewDTO> reviews = load(jobRun);
         for (ReviewDTO reviewDTO : reviews) {
@@ -167,7 +164,7 @@ public class ApprovementService {
     public void finish(JobRun jobRun) {
 
         jobRun.setStatus(JobRunStatus.RESUMED);
-        jobRun.addReadOnlyParam(new ReadOnlyParam(ParamKey.FINISH_FLOW, Boolean.TRUE.toString()));
+        jobRun.addReadOnlyParam(new StringReadOnlyParam(ParamKey.FINISH_FLOW, Boolean.TRUE.toString()));
         jobRunRepository.save(jobRun);
     }
 
@@ -210,9 +207,7 @@ public class ApprovementService {
     }
 
     private Path getPath(JobRun jobRun) {
-
-        final Map<ParamKey, String> paramMap = new HashMap<>();
-        jobRun.getReadOnlyParams().stream().forEach(p -> paramMap.put(p.getKey(), p.getValue()));
+        final Map<ParamKey, String> paramMap = ParamUtils.copyStringReadOnLyParamsIntoStringParamMap(jobRun.getReadOnlyParams());
         return Paths.get(paramMap.get(PATH_TYPE));
     }
 }

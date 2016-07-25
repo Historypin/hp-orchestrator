@@ -1,8 +1,6 @@
 package sk.eea.td.console.model;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import javax.persistence.*;
 
@@ -36,7 +34,7 @@ public abstract class AbstractJobRun {
     private JobRunResult result;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "jobRun", fetch = FetchType.EAGER, orphanRemoval = true)
-    private List<ReadOnlyParam> readOnlyParams = new ArrayList<>();
+    private Set<ReadOnlyParam> readOnlyParams = new HashSet<>();
 
     @Column
     private String activity;
@@ -79,7 +77,7 @@ public abstract class AbstractJobRun {
         this.result = result;
     }
 
-    public List<ReadOnlyParam> getReadOnlyParams() {
+    public Set<ReadOnlyParam> getReadOnlyParams() {
         return readOnlyParams;
     }
 
@@ -110,7 +108,7 @@ public abstract class AbstractJobRun {
     }
     
     public void clearReadonlyParams(){
-    	this.readOnlyParams = new ArrayList<ReadOnlyParam>();
+    	this.readOnlyParams = new HashSet<>();
     }
 
     @Override public String toString() {

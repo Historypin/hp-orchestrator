@@ -20,6 +20,7 @@ import sk.eea.td.console.model.datatables.RestartTaskRequest;
 import sk.eea.td.console.repository.JobRepository;
 import sk.eea.td.console.repository.JobRunRepository;
 import sk.eea.td.console.repository.ParamRepository;
+import sk.eea.td.util.ParamUtils;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
@@ -135,10 +136,8 @@ public class TaskListController {
             jobRun = new JobRun();
             jobRun.setJob(job);
             jobRun.setStatus(JobRun.JobRunStatus.NEW);
-            Set<Param> paramList = paramRepository.findByJob(job);
-            for (Param param : paramList) {
-                jobRun.addReadOnlyParam(new ReadOnlyParam(param));
-            }
+            Set<Param> params = paramRepository.findByJob(job);
+            ParamUtils.copyParamsIntoJobRun(params, jobRun);
             jobRunRepository.save(jobRun);
 
             job.setLastJobRun(null);

@@ -19,12 +19,10 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import sk.eea.td.console.model.JobRun;
-import sk.eea.td.console.model.ParamKey;
-import sk.eea.td.console.model.ReadOnlyParam;
+import sk.eea.td.console.model.*;
 import sk.eea.td.console.repository.JobRunRepository;
 import sk.eea.td.flow.FlowException;
-import sk.eea.td.console.model.Connector;
+import sk.eea.td.flow.HarvestResponse;
 import sk.eea.td.tagapp_client.PageableTagsDTO;
 import sk.eea.td.tagapp_client.TagappClient;
 import sk.eea.td.util.DateUtils;
@@ -47,7 +45,7 @@ public class TagappHarvestService {
     @Autowired
     private ObjectMapper objectMapper;
 
-    public Path harvest(String harvestId, String jobId, String from, String until) throws FlowException{
+    public HarvestResponse harvest(String harvestId, String jobId, String from, String until) throws FlowException{
         JobRun jobRun = jobRunRepository.findOne(Long.valueOf(harvestId));
         Instant fromLocalInstant = Instant.from(DateUtils.SYSTEM_TIME_FORMAT.parse(from));
         Instant untilLocalInstant = Instant.now().truncatedTo(ChronoUnit.SECONDS);
@@ -56,7 +54,7 @@ public class TagappHarvestService {
             String lastUntilParam = null;
             for(ReadOnlyParam param : jobRun.getReadOnlyParams()){
                 if(param.getKey().equals(ParamKey.HP_UNTIL_CURRENT)){
-                    lastUntilParam = param.getValue();
+                    lastUntilParam = ((StringReadOnlyParam) param).getStringValue();
                     break;
                 }
             }
@@ -75,7 +73,7 @@ public class TagappHarvestService {
             if(fromLocalInstant.isAfter(untilLocalInstant)){
                 //finish flow
                 LOG.info("We have reached 'until' date. We are not harvesting.");
-                return harvestPath;
+                return new HarvestResponse(harvestPath, true);
             }
             Response response = tagappClient.harvestTags(
                     DateUtils.SYSTEM_TIME_FORMAT.format(fromLocalInstant), 
@@ -103,7 +101,7 @@ public class TagappHarvestService {
                 writer.write(objectMapper.writeValueAsString(tags));
                 writer.close();
             }
-            return harvestPath;
+            return new HarvestResponse(harvestPath, true);
         } catch (JsonParseException | JsonMappingException e) {
             throw new FlowException("Error parsing JSON");
         } catch (IOException e) {

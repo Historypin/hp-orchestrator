@@ -36,6 +36,7 @@ import sk.eea.td.hp_client.impl.HPClientImpl;
 import sk.eea.td.rest.service.EuropeanaStoreService;
 import sk.eea.td.rest.service.HistorypinStoreService;
 import sk.eea.td.rest.service.MintStoreService;
+import sk.eea.td.util.ParamUtils;
 
 public class StoreActivity implements Activity {
 
@@ -59,8 +60,7 @@ public class StoreActivity implements Activity {
     public ActivityAction execute(JobRun context) throws FlowException {
         LOG.debug("Starting store activity for job ID: {}", context.getId());
         try {
-            final Map<ParamKey, String> paramMap = new HashMap<>();
-            context.getReadOnlyParams().stream().forEach(p -> paramMap.put(p.getKey(), p.getValue()));
+            final Map<ParamKey, String> paramMap = ParamUtils.copyStringReadOnLyParamsIntoStringParamMap(context.getReadOnlyParams());
             
             final Path transformPath = Paths.get(paramMap.get(ParamKey.TRANSFORM_PATH));
             LOG.debug("Transform path: " + transformPath);

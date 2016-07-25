@@ -30,5 +30,7 @@ public enum ParamKey {
     FINISH_FLOW, 
     /** Folder where approved data are stored */
     APPROVED_PATH,
-    EMAIL_ATTACHMENT
+    EMAIL_ATTACHMENT,
+    /** File in CSV format, containing Europeana IDs to harvest **/
+    EU_CSV_FILE
 }

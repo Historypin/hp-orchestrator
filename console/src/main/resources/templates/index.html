@@ -33,7 +33,8 @@
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    <form class="form-horizontal" action="#" th:action="@{/}" th:object="${taskForm}" method="post" accept-charset="UTF-8">
+                    <form class="form-horizontal" action="#" th:action="@{/}" th:object="${taskForm}" method="post" accept-charset="UTF-8"
+                          enctype="multipart/form-data">
                         <fieldset>
                             <div th:if="*{jobId}">
                                 <div class="alert alert-warning" role="alert">
@@ -145,8 +146,43 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div id="flow-6-conf-group">
+                                    <!-- harvest type -->
+                                    <div class="form-group required" th:classappend="${#fields.hasErrors('harvestType')}? 'has-error'">
+                                        <label class="col-md-4 control-label" th:text="#{create.task.harvest.type}">Harvest by</label>
+                                        <div class="col-md-4">
+                                            <label class="radio-inline" th:each="harvestType : ${allHarvestTypes}">
+                                                <input name="radios" th:field="*{harvestType}" th:value="${harvestType}" type="radio"/>
+                                                <span th:text="#{${'create.task.' + harvestType}}">Harvest type</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- uploaded file-->
+                                <div class="form-group csv-group harvest-type" th:if="${taskForm.csvFileName != null}">
+                                    <label class="col-md-4 control-label" for="csvFile" th:text="#{create.task.uploaded.csv}">Uploaded CSV file</label>
+                                    <div class="col-md-4">
+                                        <p class="form-control-static" th:text="${taskForm.csvFileName}">some_file.csv</p>
+                                        <p class="help-block" th:text="#{create.task.uploaded.csv.help}">If you want to replace it, with another version of
+                                            file, upload it via next field.</p>
+                                    </div>
+                                    <input type="hidden" th:field="*{csvFileName}"/>
+                                </div>
+                                <!-- csv upload -->
+                                <div class="form-group required csv-group harvest-type" th:classappend="${#fields.hasErrors('csvFile')}? 'has-error'">
+                                    <label class="col-md-4 control-label" for="csvFile" th:text="#{create.task.csv}">CSV file</label>
+                                    <div class="col-md-4">
+                                        <input id="csvFile" name="csvFile" th:field="*{csvFile}" th:placeholder="#{create.task.csv.placeholder}"
+                                               placeholder="CSV file to upload" type="file" accept=".csv"/>
+                                        <p class="help-block" th:text="#{create.task.csv.help}">File must contain Europeana ID's of objects to harvest, each
+                                            one in separate line.</p>
+                                        <span class="help-block" th:if="${#fields.hasErrors('csvFile')}"
+                                              th:errors="*{csvFile}">csvFile query error</span>
+                                    </div>
+                                </div>
+
                                 <!-- lucene query -->
-                                <div class="form-group required" th:classappend="${#fields.hasErrors('luceneQuery')}? 'has-error'">
+                                <div class="form-group required lucene-group harvest-type" th:classappend="${#fields.hasErrors('luceneQuery')}? 'has-error'">
                                     <label class="col-md-4 control-label" for="luceneQuery" th:text="#{create.task.lucene}">Lucene query</label>
                                     <div class="col-md-4">
                                         <input id="luceneQuery" name="luceneQuery" th:field="*{luceneQuery}" th:placeholder="#{create.task.lucene.placeholder}"
@@ -156,7 +192,7 @@
                                     </div>
                                 </div>
                                 <!-- search facet -->
-                                <div class="form-group">
+                                <div class="form-group lucene-group harvest-type">
                                     <label class="col-md-4 control-label" for="searchFacet" th:text="#{create.task.search.facet }">Search facet</label>
                                     <div class="col-md-4">
                                         <input id="searchFacet" name="searchFacet" th:field="*{searchFacet}"
@@ -235,13 +271,14 @@
 
 <script th:inline="javascript">
     /* <![CDATA[ */
-    var configurationGroups = ["#flow-1-conf-group", "#flow-2-and-5-conf-group", "#flow-4-conf-group", "#flow-1-and-6-conf-group"];
+    var defaultHarvestType = /*[[${taskForm.harvestType}]]*/;
+    var configurationGroups = ["#flow-1-conf-group", "#flow-2-and-5-conf-group", "#flow-4-conf-group", "#flow-6-conf-group", "#flow-1-and-6-conf-group"];
     var configurationMap = {};
-    configurationMap["FLOW_1"] = [configurationGroups[0], configurationGroups[3]];
+    configurationMap["FLOW_1"] = [configurationGroups[0], configurationGroups[4]];
     configurationMap["FLOW_2"] = configurationGroups[1];
     configurationMap["FLOW_4"] = configurationGroups[2];
     configurationMap["FLOW_5"] = configurationGroups[1];
-    configurationMap["FLOW_6"] = configurationGroups[3];
+    configurationMap["FLOW_6"] = [configurationGroups[3], configurationGroups[4]];
 
     function initMap() {
         var map = new google.maps.Map(document.getElementById('map'), {
@@ -284,6 +321,17 @@
         document.getElementById('circleRadius').value = Math.floor(circle.getRadius());
     }
 
+    function resolveHarvestType(harvestType) {
+        if (harvestType == "LUCENE_QUERY") {
+            $(".harvest-type").not(".lucene-group").hide();
+            $(".lucene-group").show();
+        }
+        if (harvestType == "CSV_FILE") {
+            $(".harvest-type").not(".csv-group").hide();
+            $(".csv-group").show();
+        }
+    }
+
 
     $(document).ready(function () {
         $("select").change(function () {
@@ -291,7 +339,7 @@
                 $(entry).hide();
             });
             var selectedFlow = $("select option:selected").val();
-            if($.isArray(configurationMap[selectedFlow])) {
+            if ($.isArray(configurationMap[selectedFlow])) {
                 configurationMap[selectedFlow].forEach(function (entry) {
                     $(entry).show();
                 })
@@ -299,6 +347,11 @@
                 $(configurationMap[selectedFlow]).show();
             }
         }).change();
+
+        resolveHarvestType(defaultHarvestType.$name);
+        $("form input:radio").change(function () {
+            resolveHarvestType($(this).val());
+        });
     });
     /* ]]> */
 </script>

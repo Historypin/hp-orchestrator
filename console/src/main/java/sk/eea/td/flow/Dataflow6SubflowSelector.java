@@ -12,12 +12,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
+import sk.eea.td.console.model.*;
 import sk.eea.td.console.model.AbstractJobRun.JobRunResult;
-import sk.eea.td.console.model.Connector;
-import sk.eea.td.console.model.JobRun;
-import sk.eea.td.console.model.JobSubRun;
-import sk.eea.td.console.model.ParamKey;
-import sk.eea.td.console.model.ReadOnlyParam;
 import sk.eea.td.console.repository.JobRunRepository;
 
 @Component
@@ -50,7 +46,7 @@ public class Dataflow6SubflowSelector implements JobSelector {
             subRun.getReadOnlyParams().addAll(jobRun.getReadOnlyParams());
             
             if(subRuns.hasContent()){
-                subRun.addReadOnlyParam(new ReadOnlyParam(ParamKey.LAST_SUCCESS, DateTimeFormatter.ISO_INSTANT.format(subRuns.getContent().get(0).getLastStarted().toInstant())));
+                subRun.addReadOnlyParam(new StringReadOnlyParam(ParamKey.LAST_SUCCESS, DateTimeFormatter.ISO_INSTANT.format(subRuns.getContent().get(0).getLastStarted().toInstant())));
             }
             subRun = jobRunRepository.save(subRun);
 

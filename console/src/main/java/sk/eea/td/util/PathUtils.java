@@ -34,7 +34,6 @@ public class PathUtils {
     }    
 
 	public static Path getJobRunPath(Path parentDir, String flowId) {
-		Path jobRunPath = parentDir.resolve("job_run_".concat(flowId));
-		return jobRunPath;
+        return parentDir.resolve("job_run_".concat(flowId));
 	}
 }
