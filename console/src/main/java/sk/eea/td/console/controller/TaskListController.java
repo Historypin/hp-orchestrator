@@ -1,5 +1,16 @@
 package sk.eea.td.console.controller;
 
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+import static sk.eea.td.util.PageUtils.getPageable;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +21,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import sk.eea.td.console.form.TaskForm;
 import sk.eea.td.console.form.TaskRow;
-import sk.eea.td.console.model.*;
+import sk.eea.td.console.model.AbstractJobRun;
+import sk.eea.td.console.model.Job;
+import sk.eea.td.console.model.JobRun;
+import sk.eea.td.console.model.Param;
+import sk.eea.td.console.model.ReadOnlyParam;
 import sk.eea.td.console.model.datatables.DataTablesInput;
 import sk.eea.td.console.model.datatables.DataTablesOutput;
 import sk.eea.td.console.model.datatables.RemoveTaskRequest;
@@ -20,16 +36,6 @@ import sk.eea.td.console.model.datatables.RestartTaskRequest;
 import sk.eea.td.console.repository.JobRepository;
 import sk.eea.td.console.repository.JobRunRepository;
 import sk.eea.td.console.repository.ParamRepository;
-
-import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import static org.apache.commons.lang3.StringUtils.isEmpty;
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
-import static sk.eea.td.util.PageUtils.getPageable;
 
 @Controller
 @PreAuthorize("hasRole('ADMIN')")
@@ -128,7 +134,7 @@ public class TaskListController {
     @ResponseBody
     @RequestMapping(value = "/tasks/restart.task", method = RequestMethod.POST)
     public String restartTask(@RequestBody RestartTaskRequest request) {
-        JobRun jobRun = jobRunRepository.findOne(request.getLastRunId());
+        AbstractJobRun jobRun = jobRunRepository.findOne(request.getLastRunId());
         if (jobRun != null) {
             Job job = jobRun.getJob();
             LOG.info("Restarting job id= {}.", job.getId());

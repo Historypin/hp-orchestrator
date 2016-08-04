@@ -2,6 +2,9 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta name="_csrf" th:content="${_csrf.token}"/>
+	<meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+
     <title th:text="#{review.title}">Review - Orchestrator</title>
 
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
@@ -201,6 +204,8 @@
             dataTable.processing(false);
         });
 
+		var token = $("meta[name='_csrf']").attr("content");
+		var header = $("meta[name='_csrf_header']").attr("content");
         // SAVE action
         $('#save').click(function () {
             var unmappedModel = ko.mapping.toJS(viewModel.reviews());
@@ -210,6 +215,9 @@
                 url: /*[[@{/review/save.items}]]*/,
                 data: JSON.stringify(unmappedModel),
                 contentType: 'application/json',
+                beforeSend: function (xhr){ 
+			        xhr.setRequestHeader(header, token); 
+			    },                
                 success: function (data) {
                     if (data.status == 'OK') {
                         location.reload();
@@ -242,6 +250,9 @@
                 url: /*[[@{/review/send.items}]]*/,
                 data: JSON.stringify(unmappedModel),
                 contentType: 'application/json',
+                beforeSend: function (xhr){ 
+			        xhr.setRequestHeader(header, token); 
+			    },                                
                 success: function (data) {
                     if (data.status == 'OK') {
                         location.reload();
@@ -260,7 +271,10 @@
             $.ajax({
                 type: "POST",
                 url: /*[[@{/review/finish.items}]]*/,
-            data: JSON.stringify(unmappedModel),
+                beforeSend: function (xhr){ 
+			        xhr.setRequestHeader(header, token); 
+			    },                
+            	data: JSON.stringify(unmappedModel),
                     contentType: 'application/json',
                     success: function (data) {
                 if (data.status == 'OK') {

@@ -26,7 +26,8 @@ import sk.eea.td.flow.activities.PrepareCSVActivity;
 import sk.eea.td.flow.activities.ReportActivity;
 import sk.eea.td.flow.activities.SleepActivity;
 import sk.eea.td.flow.activities.StoreActivity;
-import sk.eea.td.flow.activities.Tagapp2HPTransformActivity;
+import sk.eea.td.flow.activities.Tagapp2ApproveTransformActivity;
+import sk.eea.td.flow.activities.TagappHarvestActivity;
 import sk.eea.td.flow.activities.TagappStoreActivity;
 import sk.eea.td.flow.activities.TransformActivity;
 
@@ -56,8 +57,9 @@ public class FlowConfig {
 		return new HP_A2EU_ATransformActivity();
 	}
 
+    @Bean
     public Activity tagapp2hpTransformActivity() {
-        return new Tagapp2HPTransformActivity();
+        return new Tagapp2ApproveTransformActivity();
     }
 
     @Bean
@@ -173,7 +175,7 @@ public class FlowConfig {
     @Bean
     public FlowManager dataflow6Subflow(){
         FlowManager flowManager = new FlowManagerImpl(Connector.TAGAPP, Connector.EUROPEANA_ANNOTATION, dataflow6SubflowSelector());
-        flowManager.addActivity(harvestActivity());
+        flowManager.addActivity(tagappHarvestActivity());
         flowManager.addActivity(tagapp2hpTransformActivity());
         flowManager.addActivity(approvalSendMailActivity());        
         flowManager.addActivity(prepareCSVActivity());
@@ -181,6 +183,11 @@ public class FlowConfig {
         flowManager.addActivity(storeActivity());
         flowManager.addActivity(reportActivity());
         return flowManager;
+    }
+
+    @Bean
+    public Activity tagappHarvestActivity() {
+        return new TagappHarvestActivity();
     }
 
     @Bean

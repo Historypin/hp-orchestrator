@@ -5,7 +5,7 @@ import java.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import sk.eea.td.console.model.JobRun;
+import sk.eea.td.console.model.AbstractJobRun;
 import sk.eea.td.flow.FlowException;
 import sk.eea.td.rest.service.CleanupService;
 
@@ -21,7 +21,7 @@ public class CleanupActivity implements Activity {
 	CleanupService cleanupService;
 	
 	@Override
-	public ActivityAction execute(JobRun context) throws FlowException {
+	public ActivityAction execute(AbstractJobRun context) throws FlowException {
 		cleanupService.cleanUp(Arrays.asList(context));
 		return ActivityAction.CONTINUE;
 	}

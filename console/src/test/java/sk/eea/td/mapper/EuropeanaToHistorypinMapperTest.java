@@ -1,19 +1,13 @@
 package sk.eea.td.mapper;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.test.util.ReflectionTestUtils;
-import sk.eea.td.console.model.ParamKey;
-import sk.eea.td.eu_client.api.EuropeanaClient;
-import sk.eea.td.hp_client.api.Location;
-import sk.eea.td.console.model.dto.HistorypinTransformDTO;
-import sk.eea.td.rest.service.PlacesCache;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -22,14 +16,22 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-import static org.mockito.Mockito.*;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.test.util.ReflectionTestUtils;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import sk.eea.td.console.model.ParamKey;
+import sk.eea.td.console.model.dto.HistorypinTransformDTO;
+import sk.eea.td.eu_client.api.EuropeanaClient;
+import sk.eea.td.hp_client.api.Location;
+import sk.eea.td.rest.service.PlacesCache;
 
 public class EuropeanaToHistorypinMapperTest {
-
-    private static final Logger LOG = LoggerFactory.getLogger(EuropeanaToHistorypinMapperTest.class);
 
     private ObjectMapper objectMapper;
 

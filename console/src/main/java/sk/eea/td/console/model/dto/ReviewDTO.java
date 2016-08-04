@@ -1,5 +1,6 @@
 package sk.eea.td.console.model.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ReviewDTO {
@@ -18,15 +19,15 @@ public class ReviewDTO {
 
     private String localFilename;
 
-    private Boolean approved;
+    private Boolean approved = Boolean.FALSE;
 
-    private List<String> originalTags;
+    private List<String> originalTags = new ArrayList<>();
 
-    private List<String> approvedTags;
+    private List<String> approvedTags = new ArrayList<>();
 
-    private List<String> originalPlaces;
+    private List<String> originalPlaces = new ArrayList<>();
 
-    private List<String> approvedPlaces;
+    private List<String> approvedPlaces = new ArrayList<>();
 
     public Long getId() {
         return id;

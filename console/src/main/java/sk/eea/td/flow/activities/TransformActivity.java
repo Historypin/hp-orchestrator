@@ -13,14 +13,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import sk.eea.td.console.model.JobRun;
+import sk.eea.td.console.model.AbstractJobRun;
+import sk.eea.td.console.model.Connector;
 import sk.eea.td.console.model.Log;
 import sk.eea.td.console.model.ParamKey;
 import sk.eea.td.console.repository.LogRepository;
 import sk.eea.td.mapper.EuropeanaToHistorypinMapper;
-import sk.eea.td.console.model.Connector;
 import sk.eea.td.util.PathUtils;
 
 public class TransformActivity extends AbstractTransformActivity implements Activity {
@@ -30,9 +28,6 @@ public class TransformActivity extends AbstractTransformActivity implements Acti
 
     @Value("${storage.directory}")
     private String outputDirectory;
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @Autowired
     private EuropeanaToHistorypinMapper europeanaToHistorypinMapper;
@@ -179,7 +174,7 @@ public class TransformActivity extends AbstractTransformActivity implements Acti
     }
 
     @Override
-    protected Path transform(Connector source, Path harvestedFile, Path transformPath, JobRun context) throws IOException {
+    protected Path transform(Connector source, Path harvestedFile, Path transformPath, AbstractJobRun context) throws IOException {
 
         final Map<ParamKey, String> paramMap = new HashMap<>();
         context.getReadOnlyParams().stream().forEach(p -> paramMap.put(p.getKey(), p.getValue()));

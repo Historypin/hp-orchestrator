@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.token.KeyBasedPersistenceTokenService;
 import org.springframework.stereotype.Component;
 
-import sk.eea.td.console.model.JobRun;
+import sk.eea.td.console.model.AbstractJobRun;
 import sk.eea.td.flow.FlowException;
 import sk.eea.td.rest.service.MailService;
 
@@ -33,7 +33,7 @@ public class ApprovalSendMailActivity implements Activity {
     private static final Logger LOG = LoggerFactory.getLogger(ApprovalSendMailActivity.class);
 
     @Override
-    public ActivityAction execute(JobRun context) throws FlowException {
+    public ActivityAction execute(AbstractJobRun context) throws FlowException {
 
         String token = keyBasedPersistenceTokenService.allocateToken(context.getId().toString()).getKey();
         String link = MessageFormat.format(reviewLinkTemplate, hostname, token);

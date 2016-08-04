@@ -1,26 +1,25 @@
 package sk.eea.td.console.controller;
 
+import java.security.Principal;
+
+import javax.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+
 import sk.eea.td.console.form.ChangeEmailForm;
 import sk.eea.td.console.form.ChangePasswordForm;
 import sk.eea.td.console.model.User;
 import sk.eea.td.console.repository.UsersRepository;
-
-import javax.validation.Valid;
-import java.security.Principal;
 
 @Controller
 @PreAuthorize("hasRole('ADMIN')")
@@ -33,9 +32,6 @@ public class UserProfileController {
 
     @Autowired
     private UserDetailsManager userDetailsManager;
-
-    @Autowired
-    private AuthenticationManager authenticationManager;
 
     @Autowired
     private UsersRepository usersRepository;

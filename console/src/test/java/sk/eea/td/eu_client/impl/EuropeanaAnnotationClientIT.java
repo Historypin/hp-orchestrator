@@ -1,9 +1,10 @@
 package sk.eea.td.eu_client.impl;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.InputStream;
-import java.nio.charset.Charset;
 
 import org.json.JSONObject;
 import org.junit.Before;
@@ -53,14 +54,14 @@ public class EuropeanaAnnotationClientIT {
 		String user = "";
 		EuropeanaAnnotationClient client = new EuropeanaAnnotationClientImpl(baseUrl, apiKey, user);
 		
-		String responseJson;
 		try {
 			InputStream is = ClassLoader.getSystemResourceAsStream("EU_annotation.json");
 			byte[] charBuffer = new byte[100];
 			while(is.read(charBuffer)> 0){
 				annotationJson.append(charBuffer);
 			}
-			responseJson = client.createAnnotation(annotationJson.toString());
+			@SuppressWarnings("unused")
+            String responseJson = client.createAnnotation(annotationJson.toString());
 			fail();
 		} catch (Exception e) {
 			assertTrue(e.getMessage().contains("User not logged in"));			
@@ -84,6 +85,7 @@ public class EuropeanaAnnotationClientIT {
 				annotationJson.append(charBuffer);
 			}
 			responseJson = client.createAnnotation(annotationJson.toString());
+            @SuppressWarnings("unused")
 			JSONObject object = new JSONObject(responseJson);
 			fail();
 		} catch (Exception e) {

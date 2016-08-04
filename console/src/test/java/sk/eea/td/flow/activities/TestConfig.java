@@ -47,8 +47,8 @@ public class TestConfig {
     }
     
     @Bean
-    public Tagapp2HPTransformActivity getTagapp2HPTransformActivity(){
-        return new Tagapp2HPTransformActivity();
+    public Tagapp2ApproveTransformActivity getTagapp2HPTransformActivity(){
+        return new Tagapp2ApproveTransformActivity();
     }
     
     @Bean

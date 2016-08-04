@@ -25,15 +25,13 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import sk.eea.td.console.model.AbstractJobRun;
 import sk.eea.td.console.model.Connector;
-import sk.eea.td.console.model.JobRun;
 import sk.eea.td.console.model.ParamKey;
 import sk.eea.td.console.model.ReadOnlyParam;
-import sk.eea.td.console.repository.JobRunRepository;
 import sk.eea.td.hp_client.api.HPClient;
 import sk.eea.td.hp_client.impl.HPClientImpl;
 import sk.eea.td.util.PathUtils;
@@ -66,18 +64,15 @@ public class HistorypinHarvestService {
     	DATE_FORMAT.setTimeZone(TimeZone.getTimeZone("UTC"));
     }
 
-    @Autowired
-	private JobRunRepository jobRunRepository;
-
     @PostConstruct
     public void init() {
         this.hpClient = new HPClientImpl(baseURL, apiKey, apiSecret);
     }
 
-    public Path harvest(String harvestId, String projectSlug) throws IOException, ParseException {
+    public Path harvest(AbstractJobRun context, String projectSlug) throws IOException, ParseException {
     	boolean nextPage = true;
     	long page = 1;
-    	final Path harvestPath = PathUtils.createHarvestRunSubdir(Paths.get(outputDirectory), harvestId);
+    	final Path harvestPath = PathUtils.createHarvestRunSubdir(Paths.get(outputDirectory), context);
     	while(nextPage){
 	        Response response = hpClient.getProjectSlug(projectSlug, page);	        
 	        Path filename = PathUtils.createUniqueFilename(harvestPath, "hp_slug.json");
@@ -118,9 +113,8 @@ public class HistorypinHarvestService {
 		return object;
 	}
 
-	public Path harvestAnnotation(String harvestId, String jobId, String from, String until) throws IOException, java.text.ParseException, ParseException {
-    	final Path harvestPath = PathUtils.createHarvestRunSubdir(Paths.get(outputDirectory), harvestId);
-		JobRun jobRun = jobRunRepository.findOne(Long.valueOf(harvestId));
+	public Path harvestAnnotation(AbstractJobRun jobRun, String jobId, String from, String until) throws IOException, java.text.ParseException, ParseException {
+    	final Path harvestPath = PathUtils.createHarvestRunSubdir(Paths.get(outputDirectory), jobRun);
 		String fromLocal = from;
 		String untilLocal;
 		if(jobRun != null){

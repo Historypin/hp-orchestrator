@@ -8,6 +8,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "job_run")
+@DiscriminatorColumn(name = "dtype")
 public abstract class AbstractJobRun {
 
     public enum JobRunStatus {
@@ -46,6 +47,9 @@ public abstract class AbstractJobRun {
     
     @Column(name = "last_started")
     private Date lastStarted;
+    
+    @Column(insertable = false, updatable = false)
+    private String dtype;
 
     public Long getId() {
         return id;

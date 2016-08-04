@@ -13,8 +13,9 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
-import sk.eea.td.console.model.JobRun;
+import sk.eea.td.console.model.AbstractJobRun;
 import sk.eea.td.console.model.Log;
 import sk.eea.td.console.model.ParamKey;
 import sk.eea.td.console.model.ReadOnlyParam;
@@ -22,10 +23,14 @@ import sk.eea.td.console.repository.JobRunRepository;
 import sk.eea.td.console.repository.LogRepository;
 import sk.eea.td.flow.FlowException;
 import sk.eea.td.rest.service.TagappStoreService;
+import sk.eea.td.util.PathUtils;
 
 public class TagappStoreActivity implements Activity {
 
     private static final Logger LOG = LoggerFactory.getLogger(TagappStoreActivity.class);
+
+    @Value("${storage.directory}")
+    private String outputDirectory;
 
     @Autowired
     private TagappStoreService tagappStoreService;
@@ -37,7 +42,7 @@ public class TagappStoreActivity implements Activity {
     JobRunRepository jobRunRepository;
     
     @Override
-    public ActivityAction execute(JobRun context) throws FlowException {
+    public ActivityAction execute(AbstractJobRun context) throws FlowException {
         final Map<ParamKey, String> paramMap = new HashMap<>();
         context.getReadOnlyParams().stream().forEach(p -> paramMap.put(p.getKey(), p.getValue()));
 
@@ -50,7 +55,8 @@ public class TagappStoreActivity implements Activity {
                 tagappBatchId = paramMap.get(ParamKey.TAGAPP_BATCH);
             }
             
-            final Path transformPath = Paths.get(paramMap.get(ParamKey.TRANSFORM_PATH));
+//            final Path transformPath = Paths.get(paramMap.get(ParamKey.TRANSFORM_PATH));
+            final Path transformPath = PathUtils.getStorePath(Paths.get(outputDirectory), context);
             LOG.debug("Transform path: " + transformPath);
             Files.walkFileTree(transformPath, new SimpleFileVisitor<Path>() {
                 @Override

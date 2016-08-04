@@ -1,12 +1,16 @@
 package sk.eea.td.console.validation;
 
-import org.hibernate.validator.spi.group.DefaultGroupSequenceProvider;
-import sk.eea.td.console.form.TaskForm;
-import sk.eea.td.console.model.Connector;
-import sk.eea.td.rest.validation.*;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.hibernate.validator.spi.group.DefaultGroupSequenceProvider;
+
+import sk.eea.td.console.form.TaskForm;
+import sk.eea.td.rest.validation.Flow1Validation;
+import sk.eea.td.rest.validation.Flow2Validation;
+import sk.eea.td.rest.validation.Flow4Validation;
+import sk.eea.td.rest.validation.Flow5Validation;
+import sk.eea.td.rest.validation.Flow6Validation;
 
 public class TaskFormValidationSequenceProvider implements DefaultGroupSequenceProvider<TaskForm> {
 

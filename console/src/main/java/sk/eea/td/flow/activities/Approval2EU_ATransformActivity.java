@@ -16,9 +16,8 @@ import org.springframework.beans.factory.annotation.Value;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import sk.eea.td.console.model.AbstractJobRun;
 import sk.eea.td.console.model.Connector;
-import sk.eea.td.console.model.JobRun;
-import sk.eea.td.console.model.ParamKey;
 import sk.eea.td.console.model.dto.ReviewDTO;
 import sk.eea.td.util.PathUtils;
 
@@ -31,9 +30,12 @@ public class Approval2EU_ATransformActivity extends AbstractTransformActivity {
     
     @Value("${europeana.generator.string}")
     private String generator;
+    
+    @Value("${storage.directory}")
+    private String outputDirectory;
 
     @Override
-    protected Path transform(Connector source, Path inputFile, Path outputDir, JobRun context) throws IOException {
+    protected Path transform(Connector source, Path inputFile, Path outputDir, AbstractJobRun context) throws IOException {
         if(!Connector.APPROVAL_APP.equals(source)){
             throw new IOException(MessageFormat.format("Invalid input file type: {0}. Expecting: {1}", source, Connector.APPROVAL_APP));
         }
@@ -64,8 +66,8 @@ public class Approval2EU_ATransformActivity extends AbstractTransformActivity {
     }
 
     @Override
-    protected Path getSourcePath(JobRun context) {
-        return Paths.get(context.getReadOnlyParams().stream().filter(param -> param.getKey().equals(ParamKey.APPROVED_PATH)).findFirst().get().getValue());
+    protected Path getSourcePath(AbstractJobRun context) {
+        return PathUtils.getApprovedStorePath(Paths.get(outputDirectory), context);
     }
     
     @Override

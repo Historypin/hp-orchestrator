@@ -58,7 +58,7 @@ public class EuropeanaToHistorypinMapper {
     public boolean map(Path harvestedFile, Path transformToFile, Map<ParamKey, String> paramMap) throws IOException {
         boolean allItemTransformed = true;
 
-        JsonNode rootNode = rootNode = objectMapper.readTree(harvestedFile.toFile());
+        JsonNode rootNode = objectMapper.readTree(harvestedFile.toFile());
         List<Pin> pins = new ArrayList<>();
         for (JsonNode record : rootNode.get("items")) {
             final Pin pin = new Pin();
@@ -214,6 +214,7 @@ public class EuropeanaToHistorypinMapper {
      * @param jsonNode node look for in
      * @return text value from Json field or null if no such field is found
      */
+    @SuppressWarnings("unused")
     private String getFieldValue(String fieldName, JsonNode jsonNode) {
         final JsonNode node = jsonNode.get(fieldName);
         if(node == null) {

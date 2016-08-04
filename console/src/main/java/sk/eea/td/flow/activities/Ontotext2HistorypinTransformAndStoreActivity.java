@@ -19,8 +19,8 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 
+import sk.eea.td.console.model.AbstractJobRun;
 import sk.eea.td.console.model.Connector;
-import sk.eea.td.console.model.JobRun;
 import sk.eea.td.hp_client.api.HPClient;
 import sk.eea.td.onto_client.dto.EnrichmentDTO;
 import sk.eea.td.rest.service.OntotextHarvestService;
@@ -65,7 +65,7 @@ public class Ontotext2HistorypinTransformAndStoreActivity extends AbstractTransf
     }
 
     @Override
-    protected Path transform(Connector source, Path file, Path transformPath, JobRun context) throws IOException {
+    protected Path transform(Connector source, Path file, Path transformPath, AbstractJobRun context) throws IOException {
         LOG.debug("transforming, source: {}, file: {}, transformPath: {}", source, file, transformPath);
 
         final Map<String, Object> pin = objectReader.with(DeserializationFeature.USE_LONG_FOR_INTS).readValue(file.toFile());

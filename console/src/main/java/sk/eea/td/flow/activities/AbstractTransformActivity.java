@@ -15,11 +15,10 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 
-import sk.eea.td.console.model.JobRun;
-import sk.eea.td.console.model.ParamKey;
-import sk.eea.td.console.model.ReadOnlyParam;
-import sk.eea.td.flow.FlowException;
+import sk.eea.td.console.model.AbstractJobRun;
 import sk.eea.td.console.model.Connector;
+import sk.eea.td.console.model.ParamKey;
+import sk.eea.td.flow.FlowException;
 import sk.eea.td.util.PathUtils;
 
 public abstract class AbstractTransformActivity implements Activity {
@@ -29,10 +28,10 @@ public abstract class AbstractTransformActivity implements Activity {
     @Value("${storage.directory}")
     private String outputDirectory;
 
-    protected JobRun context;
+    protected AbstractJobRun context;
 
     @Override
-    public ActivityAction execute(JobRun context) throws FlowException {
+    public ActivityAction execute(AbstractJobRun context) throws FlowException {
         this.context = context;
 
         getLogger().debug("Starting transform activity for job ID: {}", context.getId());
@@ -45,12 +44,13 @@ public abstract class AbstractTransformActivity implements Activity {
             final Path harvestPath = getSourcePath(context);
 /*            final Path transformPath = PathUtils.createTransformRunSubdir(Paths.get(outputDirectory),
                     String.valueOf(context.getId()));*/
-            final Path transformPath = getTransformPath(Paths.get(outputDirectory), String.valueOf(context.getId()));
+            final Path transformPath = createStorePath(Paths.get(outputDirectory), context);
+//            transformPath.toFile().mkdirs();
             getLogger().debug("harvestPath: {}, transformPath: {}", harvestPath, transformPath);
 
             walkFileTree(harvestPath, transformPath);
 
-            context.addReadOnlyParam(new ReadOnlyParam(ParamKey.TRANSFORM_PATH, transformPath.toAbsolutePath().toString()));
+//            context.addReadOnlyParam(new ReadOnlyParam(ParamKey.TRANSFORM_PATH, transformPath.toAbsolutePath().toString()));
 
         } catch (Exception e) {
             throw new FlowException("Exception raised during transform action", e);
@@ -65,12 +65,13 @@ public abstract class AbstractTransformActivity implements Activity {
         }
     }
 
-    protected Path getSourcePath(JobRun context) {
-        return Paths.get(context.getReadOnlyParams().stream().filter(param -> param.getKey().equals(ParamKey.HARVEST_PATH)).findFirst().get().getValue());
+    protected Path getSourcePath(AbstractJobRun context) {
+        return PathUtils.getHarvestPath(Paths.get(outputDirectory), context);
+//        return Paths.get(context.getReadOnlyParams().stream().filter(param -> param.getKey().equals(ParamKey.HARVEST_PATH)).findFirst().get().getValue());
     }
 
-    protected Path getTransformPath(Path parentDir, String jobRunId) throws IOException {
-        return PathUtils.createTransformRunSubdir(parentDir, jobRunId);
+    protected Path createStorePath(Path parentDir, AbstractJobRun jobRun) throws IOException {
+        return PathUtils.createStoreSubdir(parentDir, jobRun);
     }
 
     protected void walkFileTree(Path harvestPath, Path transformPath) throws IOException {
@@ -111,7 +112,7 @@ public abstract class AbstractTransformActivity implements Activity {
      * @throws IOException
      * @throws Exception 
      */
-    abstract protected Path transform(Connector source, Path inputFile, Path outputDir, JobRun context) throws IOException;
+    abstract protected Path transform(Connector source, Path inputFile, Path outputDir, AbstractJobRun context) throws IOException;
     
     public boolean isSleepAfter(){
     	return false;

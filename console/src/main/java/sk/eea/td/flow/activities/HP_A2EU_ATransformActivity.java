@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import sk.eea.td.console.model.JobRun;
+import sk.eea.td.console.model.AbstractJobRun;
 import sk.eea.td.console.model.Connector;
 import sk.eea.td.util.PathUtils;
 
@@ -37,7 +37,7 @@ public class HP_A2EU_ATransformActivity extends AbstractTransformActivity implem
 	}
 
 	@Override
-	protected Path transform(Connector source, Path file, Path transformPath, JobRun context) throws IOException {
+	protected Path transform(Connector source, Path file, Path transformPath, AbstractJobRun context) throws IOException {
 		JsonNode rootNode = objectMapper.readTree(file.toFile());
 		Pattern pattern= Pattern.compile("(?:^Tags: )?([^;]+);");
 		for(JsonNode record: rootNode.get("items")){

@@ -28,7 +28,6 @@ import sk.eea.td.config.DaoMockConfig;
 import sk.eea.td.console.model.Job;
 import sk.eea.td.console.model.JobRun;
 import sk.eea.td.console.model.ParamKey;
-import sk.eea.td.console.model.ReadOnlyParam;
 import sk.eea.td.console.model.User;
 import sk.eea.td.console.model.dto.ReviewDTO;
 import sk.eea.td.util.PathUtils;
@@ -50,8 +49,8 @@ public class PrepareCSVActivityTest {
 
     @Before
     public void setUp() throws Exception {
-        approvedDir = Paths.get(System.getProperty("java.io.tmpdir"), "testPrepareCsv_approved");
-        approvedDir.toFile().mkdirs();
+//        approvedDir = Paths.get(System.getProperty("java.io.tmpdir"), "testPrepareCsv_approved");
+//        approvedDir.toFile().mkdirs();
     }
 
     @After
@@ -61,16 +60,6 @@ public class PrepareCSVActivityTest {
 
     @Test
     public void test() throws Exception {
-        // prepare file for PrepareCSVActivity
-        Path approvedFile = null;
-        try {
-            approvedFile = approvedDir.resolve("input.json");
-            URI uri = ClassLoader.getSystemResource("approval/tagapp.json").toURI();
-            Files.copy(Paths.get(uri), approvedFile);
-        } catch (Exception e) {
-            fail(e.toString());
-        }
-
         // prepare jobRun
         User user = new User();
         user.setUsername("test user");
@@ -82,7 +71,20 @@ public class PrepareCSVActivityTest {
         JobRun jobRun = new JobRun();
         jobRun.setId(1000l);
         jobRun.setJob(job);
-        jobRun.addReadOnlyParam(new ReadOnlyParam(ParamKey.APPROVED_PATH, approvedDir.toAbsolutePath().toString()));
+//        jobRun.addReadOnlyParam(new ReadOnlyParam(ParamKey.APPROVED_PATH, approvedDir.toAbsolutePath().toString()));
+
+        // prepare file for PrepareCSVActivity
+        approvedDir = PathUtils.getApprovedStorePath(Paths.get(outputDirectory), jobRun);
+        approvedDir.toFile().mkdirs();
+        Path approvedFile = null;
+        try {
+            approvedFile = approvedDir.resolve("input.json");
+            URI uri = ClassLoader.getSystemResource("approval/tagapp.json").toURI();
+            Files.copy(Paths.get(uri), approvedFile);
+        } catch (Exception e) {
+            fail(e.toString());
+        }
+
 
         try {
             // run PrepareCSVActivity

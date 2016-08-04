@@ -13,15 +13,15 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import sk.eea.td.config.FlowConfig;
 import sk.eea.td.config.PersistenceConfig;
 import sk.eea.td.config.RESTClientsConfig;
 import sk.eea.td.config.TestConfig;
+import sk.eea.td.console.model.AbstractJobRun;
 import sk.eea.td.console.model.AbstractJobRun.JobRunStatus;
 import sk.eea.td.console.model.Connector;
 import sk.eea.td.console.model.Job;
@@ -39,6 +39,7 @@ import sk.eea.td.flow.FlowManager;
 import sk.eea.td.service.ApprovementService;
 import sk.eea.td.service.FilesystemStorageService;
 import sk.eea.td.service.ServiceException;
+import sk.eea.td.util.PathUtils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {TestConfig.class, FlowConfig.class, PersistenceConfig.class, RESTClientsConfig.class})
@@ -59,12 +60,15 @@ public class FlowManagerTest {
     @Autowired
     private ApprovementService approvementService;
 
+    @Value("${storage.directory}")
+    private String outputDirectory;
+
     @Ignore
     @Test
     public void testFlow() throws Exception {
 
         //1. create a new job/jobRun
-        JobRun jobRun = createJobRun();
+        AbstractJobRun jobRun = createJobRun();
         //2. run the flow (activities: harvest, transform), then pause the flow
         historypinOntotextFlowManager.trigger();
 
@@ -76,11 +80,10 @@ public class FlowManagerTest {
         }
 
         //4. save the jsons
-        approvementService.save(jobRun, reviews);
+        approvementService.saveAndSendApproved(jobRun, reviews,Boolean.TRUE);
 
         //resume the flow
         //updateJobRun(jobRun, JobRunStatus.RESUMED);
-        approvementService.finish(jobRun);
         historypinOntotextFlowManager.trigger();
     }
 
@@ -88,7 +91,7 @@ public class FlowManagerTest {
     public void testNewFlow2() throws Exception {
 
         //1. create a new job/jobRun
-        JobRun jobRun = createJobRun();
+        createJobRun();
         //2. run the flow (activities: harvest, transform), then pause the flow
         historypinOntotextFlowManager.trigger();
     }
@@ -98,7 +101,7 @@ public class FlowManagerTest {
     public void testFlowChecksumChanged() throws Exception {
 
         //1. create a new job/jobRun
-        JobRun jobRun = createJobRun();
+        AbstractJobRun jobRun = createJobRun();
         //2. run the flow (activities: harvest, transform), then pause the flow
         historypinOntotextFlowManager.trigger();
 
@@ -112,8 +115,9 @@ public class FlowManagerTest {
         //change the content of the first file
         final Map<ParamKey, String> paramMap = new HashMap<>();
         jobRun.getReadOnlyParams().stream().forEach(p -> paramMap.put(p.getKey(), p.getValue()));
-        final Path path = Paths.get(paramMap.get(ParamKey.TRANSFORM_PATH));
-        ObjectMapper objectMapper = new ObjectMapper();
+//        final Path path = Paths.get(paramMap.get(ParamKey.TRANSFORM_PATH));
+        final Path path = PathUtils.getStorePath(Paths.get(outputDirectory), jobRun);
+//        ObjectMapper objectMapper = new ObjectMapper();
         ReviewDTO reviewDTO = reviews.get(0);
         Path targetPath = path.resolve(reviewDTO.getLocalFilename());
         FilesystemStorageService.save(targetPath, reviewDTO.getLocalFilename()+ " ");
@@ -138,6 +142,7 @@ public class FlowManagerTest {
         job = jobRepository.save(job);
 
         JobRun jobRun = new JobRun();
+        jobRun.setId(1l);
         jobRun.setJob(job);
         jobRun.setStatus(JobRun.JobRunStatus.NEW);
         Set<Param> paramList = paramRepository.findByJob(job);
@@ -147,7 +152,7 @@ public class FlowManagerTest {
         return jobRunRepository.save(jobRun);
     }
 
-    private void updateJobRun(JobRun jobRun, JobRunStatus status) {
+    private void updateJobRun(AbstractJobRun jobRun, JobRunStatus status) {
 
         jobRun.setStatus(status);
         jobRunRepository.save(jobRun);

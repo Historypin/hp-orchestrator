@@ -2,6 +2,8 @@ package sk.eea.td.flow;
 
 public class FlowException extends Exception {
 
+    private static final long serialVersionUID = 1L;
+
     public FlowException() {
     }
 

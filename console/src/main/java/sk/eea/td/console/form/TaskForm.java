@@ -1,14 +1,18 @@
 package sk.eea.td.console.form;
 
-import org.hibernate.validator.constraints.NotEmpty;
-import org.hibernate.validator.group.GroupSequenceProvider;
-import sk.eea.td.console.model.Flow;
-import sk.eea.td.console.validation.TaskFormValidationSequenceProvider;
-import sk.eea.td.console.model.Connector;
-import sk.eea.td.rest.validation.*;
-
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.NotEmpty;
+import org.hibernate.validator.group.GroupSequenceProvider;
+
+import sk.eea.td.console.model.Flow;
+import sk.eea.td.console.validation.TaskFormValidationSequenceProvider;
+import sk.eea.td.rest.validation.Flow1Validation;
+import sk.eea.td.rest.validation.Flow2Validation;
+import sk.eea.td.rest.validation.Flow4Validation;
+import sk.eea.td.rest.validation.Flow5Validation;
+import sk.eea.td.rest.validation.Flow6Validation;
 
 @GroupSequenceProvider(value = TaskFormValidationSequenceProvider.class)
 public class TaskForm {

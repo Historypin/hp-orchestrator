@@ -12,9 +12,7 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
-import java.util.function.ToLongFunction;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
@@ -43,7 +41,7 @@ public class Tagapp2HPTransformActivityTest {
     ObjectMapper mapper;
 
     @Autowired
-    private Tagapp2HPTransformActivity tagapp2hpTransformActivity;
+    private Tagapp2ApproveTransformActivity tagapp2hpTransformActivity;
     
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {

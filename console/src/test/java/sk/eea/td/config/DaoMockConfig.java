@@ -3,9 +3,6 @@ package sk.eea.td.config;
 import org.easymock.EasyMock;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.jdbc.datasource.init.ScriptParseException;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.thymeleaf.spring4.SpringTemplateEngine;
 
 import sk.eea.td.console.repository.JobRepository;
 import sk.eea.td.console.repository.JobRunRepository;

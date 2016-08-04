@@ -1,18 +1,28 @@
 package sk.eea.td.console.controller;
 
+import java.security.Principal;
+import java.util.Set;
+
+import javax.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.ui.Model;
+
 import sk.eea.td.console.form.TaskForm;
-import sk.eea.td.console.model.*;
+import sk.eea.td.console.model.Flow;
+import sk.eea.td.console.model.Job;
+import sk.eea.td.console.model.JobRun;
+import sk.eea.td.console.model.Param;
+import sk.eea.td.console.model.ReadOnlyParam;
 import sk.eea.td.console.repository.JobRepository;
 import sk.eea.td.console.repository.JobRunRepository;
 import sk.eea.td.console.repository.ParamRepository;
@@ -20,11 +30,6 @@ import sk.eea.td.console.repository.UsersRepository;
 import sk.eea.td.mapper.JobToTaskFormMapper;
 import sk.eea.td.mapper.TaskFormtoJobMapper;
 import sk.eea.td.util.DateUtils;
-
-import javax.validation.Valid;
-import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Set;
 
 @Controller
 @PreAuthorize("hasRole('ADMIN')")

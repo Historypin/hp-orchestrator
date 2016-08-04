@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import sk.eea.td.console.model.AbstractJobRun;
 import sk.eea.td.onto_client.api.OntoClient;
 import sk.eea.td.onto_client.dto.EnrichmentDTO;
 import sk.eea.td.onto_client.impl.OntoClientImpl;
@@ -35,10 +36,10 @@ public class OntotextHarvestService {
         this.client = new OntoClientImpl(baseURL, null);
     }
 
-    public Path harvest(String harvestId, String text, String uri) throws IOException {
+    public Path harvest(AbstractJobRun context, String text, String uri) throws IOException {
         String respString = client.extract(text, uri);
-        LOG.info("Harvesting for harvestId: " + harvestId + " is completed.");
-        final Path harvestPath = PathUtils.createActivityStorageSubdir(Paths.get(outputDirectory), harvestId, "harvest_2");
+        LOG.info("Harvesting for harvestId: " + context.getId() + " is completed.");
+        final Path harvestPath = PathUtils.createHarvestRunSubdir(Paths.get(outputDirectory), context);
         Path outputFile = PathUtils.createUniqueFilename(harvestPath, "ot.jsonld");
         Files.write(outputFile, respString.getBytes());
 

@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -85,13 +84,13 @@ public class AppConfig implements SchedulingConfigurer {
         dataflow6.trigger();
     }
 
-//    @Schedules(
-//            //@Scheduled(cron="${historypinAnnotation.flm.cron.expression}
-//            @Scheduled(fixedRate=60000)
-//    )
-//    public void dataflow6SubflowTrigger(){
-//        dataflow6Subflow.trigger();
-//    }
+    @Schedules(
+            //@Scheduled(cron="${historypinAnnotation.flm.cron.expression}
+            @Scheduled(fixedRate=60000)
+    )
+    public void dataflow6SubflowTrigger(){
+        dataflow6Subflow.trigger();
+    }
 
     @Override
     public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {

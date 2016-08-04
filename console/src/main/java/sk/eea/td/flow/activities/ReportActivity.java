@@ -7,7 +7,7 @@ import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import sk.eea.td.console.model.JobRun;
+import sk.eea.td.console.model.AbstractJobRun;
 import sk.eea.td.console.model.Log;
 import sk.eea.td.console.model.ParamKey;
 import sk.eea.td.console.repository.LogRepository;
@@ -23,7 +23,7 @@ public class ReportActivity implements Activity {
     private LogRepository logRepository;
 
     @Override
-    public ActivityAction execute(JobRun context) throws FlowException {
+    public ActivityAction execute(AbstractJobRun context) throws FlowException {
         final Map<String, String> emailParams = new HashMap<>();
         // prepare required params for sending emails
         emailParams.put("userName", context.getJob().getUser().getUsername());

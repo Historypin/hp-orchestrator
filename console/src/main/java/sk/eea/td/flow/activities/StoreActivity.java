@@ -25,8 +25,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
+import sk.eea.td.console.model.AbstractJobRun;
 import sk.eea.td.console.model.Connector;
-import sk.eea.td.console.model.JobRun;
 import sk.eea.td.console.model.Log;
 import sk.eea.td.console.model.ParamKey;
 import sk.eea.td.console.repository.LogRepository;
@@ -36,6 +36,7 @@ import sk.eea.td.hp_client.impl.HPClientImpl;
 import sk.eea.td.rest.service.EuropeanaStoreService;
 import sk.eea.td.rest.service.HistorypinStoreService;
 import sk.eea.td.rest.service.MintStoreService;
+import sk.eea.td.util.PathUtils;
 
 public class StoreActivity implements Activity {
 
@@ -43,6 +44,9 @@ public class StoreActivity implements Activity {
 
     @Value("${historypin.base.url}")
     private String hpUrl;
+
+    @Value("${storage.directory}")
+    private String outputDirectory;
 
     @Autowired
     private MintStoreService mintStoreService;
@@ -56,13 +60,14 @@ public class StoreActivity implements Activity {
     private HistorypinStoreService historypinStoreService = null;
     
     @Override
-    public ActivityAction execute(JobRun context) throws FlowException {
+    public ActivityAction execute(AbstractJobRun context) throws FlowException {
         LOG.debug("Starting store activity for job ID: {}", context.getId());
         try {
             final Map<ParamKey, String> paramMap = new HashMap<>();
             context.getReadOnlyParams().stream().forEach(p -> paramMap.put(p.getKey(), p.getValue()));
             
-            final Path transformPath = Paths.get(paramMap.get(ParamKey.TRANSFORM_PATH));
+//            final Path transformPath = Paths.get(paramMap.get(ParamKey.TRANSFORM_PATH));
+            final Path transformPath = PathUtils.getStorePath(Paths.get(outputDirectory), context);
             LOG.debug("Transform path: " + transformPath);
 
             if(Connector.HISTORYPIN.equals(context.getJob().getTarget())){

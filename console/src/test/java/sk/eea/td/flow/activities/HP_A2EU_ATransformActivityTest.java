@@ -46,6 +46,7 @@ public class HP_A2EU_ATransformActivityTest {
 	}
 
 	@Test
+	@SuppressWarnings("unused")
 	public void test() throws URISyntaxException, JSONException, FileNotFoundException {
 		File historyPinFile = new File(ClassLoader.getSystemResource("hp/test_hpan.json").toURI());
 		File europeanaFile = new File(ClassLoader.getSystemResource("europeana/test_euan.json").toURI());

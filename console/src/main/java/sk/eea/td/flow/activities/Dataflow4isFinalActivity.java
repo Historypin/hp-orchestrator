@@ -13,7 +13,7 @@ import java.util.TimeZone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import sk.eea.td.console.model.JobRun;
+import sk.eea.td.console.model.AbstractJobRun;
 import sk.eea.td.console.model.ParamKey;
 import sk.eea.td.flow.FlowException;
 import sk.eea.td.util.DateUtils;
@@ -23,7 +23,7 @@ public class Dataflow4isFinalActivity implements Activity {
 	private static final Logger LOG = LoggerFactory.getLogger(Dataflow4isFinalActivity.class);
 	
 	@Override
-	public ActivityAction execute(JobRun context) throws FlowException {
+	public ActivityAction execute(AbstractJobRun context) throws FlowException {
 		Map<ParamKey,String> params = new HashMap<ParamKey, String>();
 		context.getReadOnlyParams().stream().forEach(param -> params.put(param.getKey(), param.getValue()));
 		String dateUntil = params.get(ParamKey.OAI_UNTIL);

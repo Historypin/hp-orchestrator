@@ -14,15 +14,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import sk.eea.td.console.model.AbstractJobRun;
 import sk.eea.td.console.model.Connector;
-import sk.eea.td.console.model.JobRun;
 import sk.eea.td.console.model.dto.ReviewDTO;
 import sk.eea.td.tagapp_client.PageableTagsDTO;
 import sk.eea.td.tagapp_client.TagDTO;
+import sk.eea.td.util.PathUtils;
 
-public class Tagapp2HPTransformActivity extends AbstractTransformActivity {
+public class Tagapp2ApproveTransformActivity extends AbstractTransformActivity {
 
-    private static final Logger LOG = LoggerFactory.getLogger(Tagapp2HPTransformActivity.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Tagapp2ApproveTransformActivity.class);
     
     @Autowired
     private ObjectMapper mapper;
@@ -30,7 +31,7 @@ public class Tagapp2HPTransformActivity extends AbstractTransformActivity {
 
     @Override
     public String getName() {
-        return Tagapp2HPTransformActivity.class.getSimpleName();
+        return Tagapp2ApproveTransformActivity.class.getSimpleName();
     }
 
     @Override
@@ -39,10 +40,10 @@ public class Tagapp2HPTransformActivity extends AbstractTransformActivity {
     }
 
     @Override
-    protected Path transform(Connector source, Path inputFile, Path outputDir, JobRun context) throws IOException {
+    protected Path transform(Connector source, Path inputFile, Path outputDir, AbstractJobRun context) throws IOException {
         Boolean error = Boolean.FALSE;
         if(!Connector.TAGAPP.equals(source)){
-            throw new IOException(MessageFormat.format("Invalid input format: {0} for transformer: {1}", source, Tagapp2HPTransformActivity.class.getSimpleName()));
+            throw new IOException(MessageFormat.format("Invalid input format: {0} for transformer: {1}", source, Tagapp2ApproveTransformActivity.class.getSimpleName()));
         }
         PageableTagsDTO tags = mapper.readValue(inputFile.toFile(), PageableTagsDTO.class);
         HashMap<String,ReviewDTO> pins = new HashMap<String,ReviewDTO>();
@@ -52,19 +53,19 @@ public class Tagapp2HPTransformActivity extends AbstractTransformActivity {
                 reviewDTO = new ReviewDTO();
                 reviewDTO.setId(Long.valueOf(tag.getCulturalObjectId()));
                 reviewDTO.setExternalId(tag.getCulturalObjectExternalId());
-                reviewDTO.setDescription(tag.getCulturalObjectDescription());
+                reviewDTO.setCaption(tag.getCulturalObjectDescription());
+                reviewDTO.setDescription("");
                 reviewDTO.setOriginalTags(new ArrayList<String>());
                 reviewDTO.setUrl(tag.getCulturalObjectExternalUrl());
                 pins.put(tag.getCulturalObjectExternalId().toString(), reviewDTO);
             }
             reviewDTO = pins.get(tag.getCulturalObjectExternalId());
-            if(reviewDTO.getOriginalTags() == null){
-                reviewDTO.setOriginalTags(new ArrayList<String>());
-            }
             reviewDTO.getOriginalTags().add(tag.getValue());
+            reviewDTO.getApprovedTags().add(tag.getValue());
+            reviewDTO.setApproved(Boolean.TRUE);
         }
         for(Entry<String, ReviewDTO> entry: pins.entrySet()){
-            Path outputFile = outputDir.resolve(String.valueOf(context.getId())).resolve(entry.getKey() + "."+ Connector.APPROVAL_APP.getFormatCode());
+            Path outputFile = outputDir.resolve(String.valueOf(context.getId())).resolve(entry.getValue().getId() + "."+ Connector.APPROVAL_APP.getFormatCode());
             outputFile.getParent().toFile().mkdirs();
             if(entry.getKey() == null || entry.getValue() == null || entry.getValue().getOriginalTags() == null){
                 LOG.error(MessageFormat.format("Key, value or tags is empty. Key {0}, value {1}, tags {2}.", entry.getKey(), entry.getValue(), entry.getValue() != null? entry.getValue().getOriginalTags():"null"));
@@ -97,4 +98,8 @@ public class Tagapp2HPTransformActivity extends AbstractTransformActivity {
         return outputDir;
     }
 
+    @Override
+    protected Path createStorePath(Path parentDir, AbstractJobRun jobRun) throws IOException {
+        return PathUtils.createApprovalSubdir(parentDir, jobRun);
+    }
 }

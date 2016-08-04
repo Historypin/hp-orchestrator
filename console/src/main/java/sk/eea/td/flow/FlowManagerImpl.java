@@ -14,10 +14,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import sk.eea.td.console.model.Connector;
-import sk.eea.td.console.model.JobRun;
+import sk.eea.td.console.model.AbstractJobRun;
 import sk.eea.td.console.model.AbstractJobRun.JobRunResult;
 import sk.eea.td.console.model.AbstractJobRun.JobRunStatus;
+import sk.eea.td.console.model.Connector;
 import sk.eea.td.console.model.Log;
 import sk.eea.td.console.model.ParamKey;
 import sk.eea.td.console.model.ReadOnlyParam;
@@ -61,7 +61,7 @@ public class FlowManagerImpl implements FlowManager {
      * (non-Javadoc)
      * @see sk.eea.td.flow.FlowManager#startFlow(sk.eea.td.flow.model.FlowConfig)
      */
-    public JobRun startFlow(JobRun context) {
+    public AbstractJobRun startFlow(AbstractJobRun context) {
         context.setStatus(JobRunStatus.RUNNING);
         List<Activity> activities = getActivities();
         try {
@@ -92,7 +92,7 @@ public class FlowManagerImpl implements FlowManager {
         return context;
     }
 
-    protected JobRun finishFlow(JobRun context) {
+    protected AbstractJobRun finishFlow(AbstractJobRun context) {
         context.setStatus(JobRunStatus.FINISHED);
         context.setResult(JobRunResult.OK);
 
@@ -101,7 +101,7 @@ public class FlowManagerImpl implements FlowManager {
         return context;
     }
 
-    protected JobRun failFlow(JobRun context) {
+    protected AbstractJobRun failFlow(AbstractJobRun context) {
         context.setStatus(JobRunStatus.STOPPED);
         context.setResult(JobRunResult.FAILED);
         context = persistState(context);
@@ -111,7 +111,7 @@ public class FlowManagerImpl implements FlowManager {
         return context;
     }
 
-    protected JobRun reportFailure(JobRun context) {
+    protected AbstractJobRun reportFailure(AbstractJobRun context) {
         try {
             final Map<String, String> emailParams = new HashMap<>();
             // prepare required params for sending emails
@@ -134,7 +134,7 @@ public class FlowManagerImpl implements FlowManager {
     public void trigger() {
         if (lock.tryLock()) {
             try {
-				JobRun jobRun = jobSelector.nextJobRun(source,target);
+				AbstractJobRun jobRun = jobSelector.nextJobRun(source,target);
                 if(jobRun != null){
                 	LOG.debug("Starting/resuming a JobRun with id: {}.", jobRun.getId());		
                 	resumeFlow(jobRun);
@@ -149,7 +149,7 @@ public class FlowManagerImpl implements FlowManager {
         }
     }
 
-    public JobRun resumeFlow(JobRun context) {
+    public AbstractJobRun resumeFlow(AbstractJobRun context) {
 
         try {
         	context.setLastStarted(new Date());
@@ -224,7 +224,7 @@ public class FlowManagerImpl implements FlowManager {
     }
     
     @Override
-    public JobRun persistState(JobRun config) {
+    public AbstractJobRun persistState(AbstractJobRun config) {
         return jobRunRepository.save(config);
     }
 
@@ -236,15 +236,15 @@ public class FlowManagerImpl implements FlowManager {
         activities.add(activity);
     }
 
-    protected void logActivityStart(Activity activity, JobRun context) {
+    protected void logActivityStart(Activity activity, AbstractJobRun context) {
         logActivity(activity, "started", context);
     }
 
-    protected void logActivityEnd(Activity activity, JobRun context) {
+    protected void logActivityEnd(Activity activity, AbstractJobRun context) {
         logActivity(activity, "ended", context);
     }
 
-    protected void logActivity(Activity activity, String message, JobRun context) {
+    protected void logActivity(Activity activity, String message, AbstractJobRun context) {
         logRepository.save(new Log(new Date(), Log.LogLevel.INFO, String.format("%s has %s", activity.getName(), message), context));
     }
 

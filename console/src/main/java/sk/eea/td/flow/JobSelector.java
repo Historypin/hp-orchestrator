@@ -1,7 +1,7 @@
 package sk.eea.td.flow;
 
+import sk.eea.td.console.model.AbstractJobRun;
 import sk.eea.td.console.model.Connector;
-import sk.eea.td.console.model.JobRun;
 
 /**
  * @author Maros Strmensky
@@ -16,5 +16,5 @@ public interface JobSelector {
 	 * @return
 	 * @throws FlowException 
 	 */
-	JobRun nextJobRun(Connector source, Connector target) throws FlowException;
+	AbstractJobRun nextJobRun(Connector source, Connector target) throws FlowException;
 }

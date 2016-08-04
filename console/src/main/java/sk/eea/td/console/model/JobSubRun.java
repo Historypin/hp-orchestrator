@@ -5,7 +5,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 @Entity
-public class JobSubRun extends JobRun {
+public class JobSubRun extends AbstractJobRun {
 
     @ManyToOne
     @JoinColumn(name = "parentrun_id")

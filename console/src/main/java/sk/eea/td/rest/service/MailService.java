@@ -149,6 +149,7 @@ public class MailService {
      */
     public void sendMail(String email, String templateName, String subject, Map<String, String> params, File attachment) {
         // Prepare the evaluation context
+        boolean hasAttachment = attachment != null;
         final Context ctx = new Context(Locale.US);
         for (String key : params.keySet()) {
             ctx.setVariable(key, params.get(key));
@@ -159,16 +160,17 @@ public class MailService {
 
         // Prepare message using a Spring helper
         final MimeMessage mimeMessage = this.mailSender.createMimeMessage();
-        final MimeMessageHelper message = new MimeMessageHelper(mimeMessage, "UTF-8");
         try {
+            final MimeMessageHelper message = new MimeMessageHelper(mimeMessage, hasAttachment, "UTF-8");
             message.setSubject(subject);
             message.setFrom(mailFrom);
             message.setTo(email);
 
             message.setText(htmlContent, true); // true = isHtml
 
-            if (attachment != null) {
+            if (hasAttachment) {
                 message.addAttachment(attachment.getName(), attachment);
+                
             }
         } catch (MessagingException ex) {
             throw new RuntimeException("Exception at sending email: ", ex);

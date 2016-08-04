@@ -4,19 +4,24 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import sk.eea.td.console.model.AbstractJobRun;
+
 public class PathUtils {
 
-    public static String APPROVAL_STORE_FOLDER = "approvedStore";
+    private static final String STORE_PREFIX = "store_";
+    private static final String HARVEST_PREFIX = "harvest_";
+    private static final String APPROVED_STORE = "approvedStore";
+    private static final String APPROVAL_STORE = "approvalStore";
     
-    public static Path createHarvestRunSubdir(Path parentDir, String flowId) throws IOException {
-        return createActivityStorageSubdir(parentDir, flowId, "harvest");
+    public static Path createHarvestRunSubdir(Path parentDir, AbstractJobRun jobRun) throws IOException {
+        return createActivityStorageSubdir(parentDir, String.valueOf(jobRun.getId()), HARVEST_PREFIX+jobRun.getJob().getSource());
     }
 
-    public static Path createTransformRunSubdir(Path parentDir, String flowId) throws IOException {
-        return createActivityStorageSubdir(parentDir, flowId, "transform");
+    public static Path createStoreSubdir(Path parentDir, AbstractJobRun jobRun) throws IOException {
+        return createActivityStorageSubdir(parentDir, String.valueOf(jobRun.getId()), STORE_PREFIX+jobRun.getJob().getTarget());
     }
 
-    public static Path createActivityStorageSubdir(Path parentDir, String flowId, String separationFolderName) throws IOException {
+    private static Path createActivityStorageSubdir(Path parentDir, String flowId, String separationFolderName) throws IOException {
         final Path dir = getJobRunPath(parentDir, flowId).resolve(separationFolderName);
         if(Files.exists(dir)) {
             throw new IllegalStateException(String.format("Directory %s already exists! Harvester output directory needs to be cleared or harvest ID is not unique.", dir.toString()));
@@ -37,4 +42,28 @@ public class PathUtils {
 		Path jobRunPath = parentDir.resolve("job_run_".concat(flowId));
 		return jobRunPath;
 	}
+
+    public static Path createApprovalSubdir(Path parentDir, AbstractJobRun jobRun) throws IOException {
+        return createActivityStorageSubdir(parentDir, String.valueOf(jobRun.getId()), APPROVAL_STORE);
+    }
+
+    public static Path createApprovedSubdir(Path parentDir, AbstractJobRun jobRun) throws IOException {
+        return createActivityStorageSubdir(parentDir, String.valueOf(jobRun.getId()), APPROVED_STORE);
+    }
+
+    public static Path getHarvestPath(Path parentDir, AbstractJobRun context) {
+        return getJobRunPath(parentDir, String.valueOf(context.getId())).resolve(HARVEST_PREFIX+context.getJob().getSource());
+    }
+
+    public static Path getStorePath(Path parentDir, AbstractJobRun context) {
+        return getJobRunPath(parentDir, String.valueOf(context.getId())).resolve(STORE_PREFIX+context.getJob().getTarget());
+    }
+    
+    public static Path getApprovalStorePath(Path parentDir, AbstractJobRun context) {
+        return getJobRunPath(parentDir, String.valueOf(context.getId())).resolve(APPROVAL_STORE);
+    }    
+
+    public static Path getApprovedStorePath(Path parentDir, AbstractJobRun context) {
+        return getJobRunPath(parentDir, String.valueOf(context.getId())).resolve(APPROVED_STORE);
+    }
 }

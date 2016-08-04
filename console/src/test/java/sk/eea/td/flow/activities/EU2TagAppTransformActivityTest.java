@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.nio.file.Paths;
-import java.util.HashMap;
 
 import org.junit.Before;
 import org.junit.BeforeClass;

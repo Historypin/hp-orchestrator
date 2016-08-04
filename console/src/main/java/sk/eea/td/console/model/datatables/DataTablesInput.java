@@ -1,13 +1,10 @@
 package sk.eea.td.console.model.datatables;
 
-import org.hibernate.validator.constraints.NotEmpty;
+import java.util.List;
+import java.util.Map;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class DataTablesInput {
 

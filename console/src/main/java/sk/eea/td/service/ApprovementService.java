@@ -5,9 +5,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
@@ -21,9 +19,9 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import sk.eea.td.console.model.AbstractJobRun;
 import sk.eea.td.console.model.AbstractJobRun.JobRunStatus;
 import sk.eea.td.console.model.Connector;
-import sk.eea.td.console.model.JobRun;
 import sk.eea.td.console.model.ParamKey;
 import sk.eea.td.console.model.ReadOnlyParam;
 import sk.eea.td.console.model.dto.ReviewDTO;
@@ -57,7 +55,6 @@ public class ApprovementService {
     private JobRunRepository jobRunRepository;
 
     private static final Logger LOG = LoggerFactory.getLogger(ApprovementService.class);
-    private static final ParamKey PATH_TYPE = ParamKey.TRANSFORM_PATH; 
 
     @PostConstruct
     public void init() {
@@ -65,15 +62,15 @@ public class ApprovementService {
 //        hpClient = new HPClientImpl(hpUrl, hpApiKey, hpApiSecret);
     }
 
-    public List<ReviewDTO> load(JobRun jobRun) throws ServiceException {
+    public List<ReviewDTO> load(AbstractJobRun jobRun) throws ServiceException {
 
-        Path path = getPath(jobRun);
+        Path path = getSourcePath(jobRun);
         return loadAll(path);
     }
 
-    public void save(JobRun jobRun, List<ReviewDTO> reviews) throws ServiceException {
+    public void save(AbstractJobRun jobRun, List<ReviewDTO> reviews) throws ServiceException {
 
-        Path path = getPath(jobRun);
+        Path path = getSourcePath(jobRun);
         checkJobNotClosed(jobRun, path);
 
         List<ServiceException.Error> errors = new ArrayList<>();
@@ -110,34 +107,34 @@ public class ApprovementService {
         }
     }
 
-    public void sendApproved(JobRun jobRun) throws ServiceException {
+    public void sendApproved(AbstractJobRun jobRun) throws ServiceException {
 
         List<ServiceException.Error> errors = new ArrayList<>();
-        Path path = getPath(jobRun);
+        Path path = getSourcePath(jobRun);
         Path approvalPath;
         try {
-            approvalPath = PathUtils.createActivityStorageSubdir(Paths.get(outputDirectory), String.valueOf(jobRun.getId()),PathUtils.APPROVAL_STORE_FOLDER);
+            approvalPath = PathUtils.createApprovedSubdir(Paths.get(outputDirectory), jobRun);
         } catch (IOException e1) {
             LOG.error("Could not create target dir: {}", e1.toString());
-            errors.add(new ServiceException.Error(Paths.get(outputDirectory).resolve(jobRun.getId().toString()).resolve(PathUtils.APPROVAL_STORE_FOLDER), ServiceException.Error.ErrorCode.FAILED_TO_CREATE_DIR));
+            errors.add(new ServiceException.Error(PathUtils.getApprovedStorePath(Paths.get(outputDirectory), jobRun), ServiceException.Error.ErrorCode.FAILED_TO_CREATE_DIR));
             throw new ServiceException(errors);
         }
         LOG.debug("harvestPath: {}, transformPath: {}", approvalPath, approvalPath);
 
-        jobRun.addReadOnlyParam(new ReadOnlyParam(ParamKey.APPROVED_PATH, approvalPath.toString()));
+//        jobRun.addReadOnlyParam(new ReadOnlyParam(ParamKey.APPROVED_PATH, approvalPath.toString()));
         jobRunRepository.save(jobRun);
         List<ReviewDTO> reviews = load(jobRun);
         for (ReviewDTO reviewDTO : reviews) {
             if (reviewDTO.getApproved()) {
                 try {
-                    Path outputFilePath = PathUtils.createUniqueFilename(approvalPath, Connector.HISTORYPIN.getFormatCode());
+                    Path outputFilePath = PathUtils.createUniqueFilename(approvalPath, Connector.APPROVAL_APP.getFormatCode());
                     File outputFile = outputFilePath.toFile();
                     outputFile.createNewFile(); 
                     objectMapper.writeValue(outputFile, reviewDTO);
                 } catch (Exception e) {
-                    LOG.error(ServiceException.Error.ErrorCode.CLIENT_REQUEST_FAILED.name(), e);
+                    LOG.error(ServiceException.Error.ErrorCode.FAILED_TO_SAVE_FILE.name(), e);
                     errors.add(new ServiceException.Error(path,
-                            ServiceException.Error.ErrorCode.CLIENT_REQUEST_FAILED));
+                            ServiceException.Error.ErrorCode.FAILED_TO_SAVE_FILE));
                     throw new ServiceException(errors);
                 }
 
@@ -155,20 +152,17 @@ public class ApprovementService {
         }
     }
 
-    public void saveAndSendApproved(JobRun jobRun, List<ReviewDTO> contents) throws ServiceException {
+    public void saveAndSendApproved(AbstractJobRun jobRun, List<ReviewDTO> contents, Boolean finish) throws ServiceException {
 
-        Path path = getPath(jobRun);
+        Path path = getSourcePath(jobRun);
         checkJobNotClosed(jobRun, path);
 
         save(jobRun, contents);
         sendApproved(jobRun);
-    }
-
-    public void finish(JobRun jobRun) {
-
         jobRun.setStatus(JobRunStatus.RESUMED);
-        jobRun.addReadOnlyParam(new ReadOnlyParam(ParamKey.FINISH_FLOW, Boolean.TRUE.toString()));
+        if(finish) jobRun.addReadOnlyParam(new ReadOnlyParam(ParamKey.FINISH_FLOW, Boolean.TRUE.toString()));
         jobRunRepository.save(jobRun);
+        
     }
 
     private List<ReviewDTO> loadAll(Path path) throws ServiceException {
@@ -178,7 +172,7 @@ public class ApprovementService {
             try {
                 ReviewDTO reviewDTO = objectMapper.readValue(FilesystemStorageService.load(file.toPath()), ReviewDTO.class);
                 reviewDTO.setChecksum(FilesystemStorageService.checkSum(file.toPath()));
-                reviewDTO.setLocalFilename(file.getName());
+                reviewDTO.setLocalFilename(path.relativize(file.toPath()).toString());
                 reviews.add(reviewDTO);
             } catch (Exception e) {
                 LOG.error(ServiceException.Error.ErrorCode.FAILED_TO_LOAD_JSON_FROM_FILE.name(), e);
@@ -198,7 +192,7 @@ public class ApprovementService {
         return checksum.equalsIgnoreCase(FilesystemStorageService.checkSum(targetPath));
     }
 
-    private void checkJobNotClosed(JobRun jobRun, Path path) throws ServiceException {
+    private void checkJobNotClosed(AbstractJobRun jobRun, Path path) throws ServiceException {
 
         JobRunStatus status = jobRunRepository.findOne(jobRun.getId()).getStatus();
         if (JobRunStatus.STOPPED == status || JobRunStatus.FINISHED == status || JobRunStatus.RESUMED == status) {
@@ -209,10 +203,10 @@ public class ApprovementService {
         }
     }
 
-    private Path getPath(JobRun jobRun) {
+    private Path getSourcePath(AbstractJobRun jobRun) {
 
-        final Map<ParamKey, String> paramMap = new HashMap<>();
-        jobRun.getReadOnlyParams().stream().forEach(p -> paramMap.put(p.getKey(), p.getValue()));
-        return Paths.get(paramMap.get(PATH_TYPE));
+//        final Map<ParamKey, String> paramMap = new HashMap<>();
+//        jobRun.getReadOnlyParams().stream().forEach(p -> paramMap.put(p.getKey(), p.getValue()));
+        return PathUtils.getApprovalStorePath(Paths.get(outputDirectory), jobRun);
     }
 }

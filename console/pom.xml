@@ -106,7 +106,6 @@
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
-            <version>2.4.7</version>
         </dependency>
 
         <dependency>
@@ -343,7 +342,7 @@
 		                <artifactId>spring-boot-maven-plugin</artifactId>
 		                <configuration>
 		                    <fork>true</fork>
-		                    <jvmArguments>-Dworking.directory=${working.directory} -Djava.security.egd=file:/dev/./urandom</jvmArguments>
+		                    <jvmArguments>-Dworking.directory=${working.directory} -Djava.security.egd=file:/dev/./urandom -Xdebug -Xrunjdwp:server=y,transport=dt_socket,suspend=n,address=8000</jvmArguments>
 		                </configuration>
 						<executions>
 							<execution>

@@ -6,7 +6,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.MessageFormat;
 import java.util.Iterator;
-import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +16,7 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import sk.eea.td.console.model.AbstractJobRun;
 import sk.eea.td.eu_client.api.EuropeanaClient;
 import sk.eea.td.util.PathUtils;
 
@@ -34,8 +34,8 @@ public class EuropeanaHarvestService {
     @Autowired
     private ObjectMapper objectMapper;
 
-    public Path harvest(String harvestId, String luceneQuery, String facet, Boolean fullSet) throws IOException, InterruptedException {
-        final Path harvestPath = PathUtils.createHarvestRunSubdir(Paths.get(outputDirectory), harvestId);
+    public Path harvest(AbstractJobRun context, String luceneQuery, String facet, Boolean fullSet) throws IOException, InterruptedException {
+        final Path harvestPath = PathUtils.createHarvestRunSubdir(Paths.get(outputDirectory), context);
         String cursor = "*";
         while (!"".equals(cursor)) {
             String json = this.europeanaClient.harvest(luceneQuery, facet, cursor, (fullSet) ? "minimal" : "rich");
