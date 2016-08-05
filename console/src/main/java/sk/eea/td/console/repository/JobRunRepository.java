@@ -18,10 +18,10 @@ import sk.eea.td.console.model.JobSubRun;
 
 public interface JobRunRepository extends PagingAndSortingRepository<AbstractJobRun, Long> {
 
-    @Query(value = "SELECT job_run.id, job_run.job_id, job_run.status, job_run.result, job_run.activity, job_run.created, job_run.last_started, job_run.dtype FROM job_run INNER JOIN job ON job.id = job_run.job_id WHERE (job_run.status = 'NEW' OR job_run.status = 'RESUMED') AND (source = :source) AND (target = :target) AND job_run.dtype='JobRun' ORDER BY job_id LIMIT 1", nativeQuery = true)
+    @Query(value = "SELECT job_run.id, job_run.job_id, job_run.status, job_run.result, job_run.activity, job_run.created, job_run.last_started, job_run.dtype, job_run.lastrun_id FROM job_run INNER JOIN job ON job.id = job_run.job_id WHERE (job_run.status = 'NEW' OR job_run.status = 'RESUMED') AND (source = :source) AND (target = :target) AND job_run.dtype='JobRun' ORDER BY job_id LIMIT 1", nativeQuery = true)
     JobRun findNextJobRun(@Param("source") String source, @Param("target") String target);
     
-    @Query(value = "SELECT job_run.id, job_run.job_id, job_run.status, job_run.result, job_run.activity, job_run.created, job_run.last_started, job_run.dtype FROM job_run INNER JOIN job ON job.id = job_run.job_id WHERE (job_run.status = 'NEW') AND job_run.dtype='JobRun' AND (source = 'HISTORYPIN_ANNOTATION') AND (target = 'EUROPEANA_ANNOTATION') AND (job_run.last_started < :last_start OR job_run.last_started is NULL) ORDER BY job_run.last_started asc LIMIT 1", nativeQuery = true)
+    @Query(value = "SELECT job_run.id, job_run.job_id, job_run.status, job_run.result, job_run.activity, job_run.created, job_run.last_started, job_run.dtype, job_run.lastrun_id FROM job_run INNER JOIN job ON job.id = job_run.job_id WHERE (job_run.status = 'NEW') AND job_run.dtype='JobRun' AND (source = 'HISTORYPIN_ANNOTATION') AND (target = 'EUROPEANA_ANNOTATION') AND (job_run.last_started < :last_start OR job_run.last_started is NULL) ORDER BY job_run.last_started asc LIMIT 1", nativeQuery = true)
     JobRun findDataflow4JobRun(@Param("last_start")Date last_start);
 
 	List<AbstractJobRun> findByJob(Job job);

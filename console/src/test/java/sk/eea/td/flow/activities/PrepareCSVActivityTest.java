@@ -2,12 +2,14 @@ package sk.eea.td.flow.activities;
 
 import static org.junit.Assert.fail;
 
+import java.io.LineNumberReader;
+import java.io.StringReader;
 import java.net.URI;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -25,11 +27,13 @@ import org.unbescape.csv.CsvEscape;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import sk.eea.td.config.DaoMockConfig;
+import sk.eea.td.console.model.BlobReadOnlyParam;
 import sk.eea.td.console.model.Job;
 import sk.eea.td.console.model.JobRun;
 import sk.eea.td.console.model.ParamKey;
 import sk.eea.td.console.model.User;
 import sk.eea.td.console.model.dto.ReviewDTO;
+import sk.eea.td.util.ParamUtils;
 import sk.eea.td.util.PathUtils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -49,8 +53,8 @@ public class PrepareCSVActivityTest {
 
     @Before
     public void setUp() throws Exception {
-//        approvedDir = Paths.get(System.getProperty("java.io.tmpdir"), "testPrepareCsv_approved");
-//        approvedDir.toFile().mkdirs();
+        approvedDir = Paths.get(System.getProperty("java.io.tmpdir"), "testPrepareCsv_approved");
+        approvedDir.toFile().mkdirs();
     }
 
     @After
@@ -71,9 +75,9 @@ public class PrepareCSVActivityTest {
         JobRun jobRun = new JobRun();
         jobRun.setId(1000l);
         jobRun.setJob(job);
-//        jobRun.addReadOnlyParam(new ReadOnlyParam(ParamKey.APPROVED_PATH, approvedDir.toAbsolutePath().toString()));
+        
 
-        // prepare file for PrepareCSVActivity
+//         prepare file for PrepareCSVActivity
         approvedDir = PathUtils.getApprovedStorePath(Paths.get(outputDirectory), jobRun);
         approvedDir.toFile().mkdirs();
         Path approvedFile = null;
@@ -91,8 +95,8 @@ public class PrepareCSVActivityTest {
             prepareCsvActivity.execute(jobRun);
 
             // check prepared csv file
-            Path csvFile = Paths.get(jobRun.getReadOnlyParams().stream().filter(param -> param.getKey().equals(ParamKey.EMAIL_ATTACHMENT)).findFirst().get().getValue());
-            List<String> preparedLines = Files.readAllLines(csvFile, Charset.forName("utf-8"));
+            BlobReadOnlyParam param = ParamUtils.copyBlobReadOnlyParamsBlobParamMap(jobRun.getReadOnlyParams()).get(ParamKey.EMAIL_ATTACHMENT);
+            List<String> preparedLines = new LineNumberReader(new StringReader(new String(param.getBlobData(), "UTF-8"))).lines().collect(Collectors.toList());
             Assert.assertTrue("preparedLines.size() > 0", preparedLines.size() > 0);
             
             ReviewDTO reviewDTO = objectMapper.readValue(approvedFile.toFile(), ReviewDTO.class);

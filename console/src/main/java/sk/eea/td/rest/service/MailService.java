@@ -1,5 +1,12 @@
 package sk.eea.td.rest.service;
 
+import java.util.Locale;
+import java.util.Map;
+
+import javax.activation.DataSource;
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -7,13 +14,6 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring4.SpringTemplateEngine;
-
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-
-import java.io.File;
-import java.util.Locale;
-import java.util.Map;
 
 @Component
 public class MailService {
@@ -65,7 +65,7 @@ public class MailService {
      * @param params  map of parameters used in template
      * @param attachment attachment of email message, it can be null
      */
-    public void sendReportMail(String email, String subject, Map<String, String> params, File attachment) {
+    public void sendReportMail(String email, String subject, Map<String, String> params, DataSource attachment) {
         this.sendMail(email, "report", subject, params, attachment);
     }
 
@@ -147,7 +147,7 @@ public class MailService {
      * @param params       map of parameters used in template
      * @param attachment   attachment if email message, it can be null
      */
-    public void sendMail(String email, String templateName, String subject, Map<String, String> params, File attachment) {
+    public void sendMail(String email, String templateName, String subject, Map<String, String> params, DataSource attachment) {
         // Prepare the evaluation context
         boolean hasAttachment = attachment != null;
         final Context ctx = new Context(Locale.US);

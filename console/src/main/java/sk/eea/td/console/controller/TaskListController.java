@@ -28,7 +28,6 @@ import sk.eea.td.console.model.AbstractJobRun;
 import sk.eea.td.console.model.Job;
 import sk.eea.td.console.model.JobRun;
 import sk.eea.td.console.model.Param;
-import sk.eea.td.console.model.ReadOnlyParam;
 import sk.eea.td.console.model.datatables.DataTablesInput;
 import sk.eea.td.console.model.datatables.DataTablesOutput;
 import sk.eea.td.console.model.datatables.RemoveTaskRequest;
@@ -36,6 +35,7 @@ import sk.eea.td.console.model.datatables.RestartTaskRequest;
 import sk.eea.td.console.repository.JobRepository;
 import sk.eea.td.console.repository.JobRunRepository;
 import sk.eea.td.console.repository.ParamRepository;
+import sk.eea.td.util.ParamUtils;
 
 @Controller
 @PreAuthorize("hasRole('ADMIN')")
@@ -141,10 +141,8 @@ public class TaskListController {
             jobRun = new JobRun();
             jobRun.setJob(job);
             jobRun.setStatus(JobRun.JobRunStatus.NEW);
-            Set<Param> paramList = paramRepository.findByJob(job);
-            for (Param param : paramList) {
-                jobRun.addReadOnlyParam(new ReadOnlyParam(param));
-            }
+            Set<Param> params = paramRepository.findByJob(job);
+            ParamUtils.copyParamsIntoJobRun(params, jobRun);
             jobRunRepository.save(jobRun);
 
             job.setLastJobRun(null);

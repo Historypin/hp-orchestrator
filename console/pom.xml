@@ -15,9 +15,7 @@
     <packaging>war</packaging>
 
     <properties>
-        <slf4j.version>1.7.16</slf4j.version>
-        <logback.version>1.1.5</logback.version>
-        <thymeleaf.version>2.1.4.RELEASE</thymeleaf.version>
+        <logback.version>1.1.7</logback.version>
         <swagger.springfox.version>2.3.1</swagger.springfox.version>
         <jquery.version>2.2.1</jquery.version>
         <jquery-ui.version>1.11.4</jquery-ui.version>
@@ -45,17 +43,17 @@
             <artifactId>onto-client</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
-        
+
         <dependency>
-        	<groupId>sk.eea.td</groupId>
-        	<artifactId>mint-client</artifactId>
-        	<version>0.0.1-SNAPSHOT</version>
+            <groupId>sk.eea.td</groupId>
+            <artifactId>mint-client</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
         </dependency>
-        
+
         <dependency>
-        	<groupId>sk.eea.td</groupId>
-        	<artifactId>tagapp-client</artifactId>
-        	<version>0.0.1-SNAPSHOT</version>
+            <groupId>sk.eea.td</groupId>
+            <artifactId>tagapp-client</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
         <!-- External dependencies -->
@@ -106,6 +104,7 @@
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
+            <version>2.4.7</version>
         </dependency>
 
         <dependency>
@@ -169,7 +168,7 @@
             <artifactId>json-simple</artifactId>
             <version>1.1.1</version>
         </dependency>
-        
+
         <!-- WEBJARS dependencies -->
         <dependency>
             <groupId>org.webjars</groupId>
@@ -219,9 +218,9 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-        	<groupId>org.easymock</groupId>
-        	<artifactId>easymock</artifactId>
-        	<version>3.3.1</version>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymock</artifactId>
+            <version>3.3.1</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -355,8 +354,8 @@
 							</execution>
 						</executions>
 		            </plugin>
-		        </plugins>		        
-		    </build>    		
+		        </plugins>
+		    </build>
     	</profile>
     </profiles>
 </project>

@@ -1,8 +1,7 @@
 package sk.eea.td.flow.activities;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -18,8 +17,8 @@ import org.unbescape.csv.CsvEscape;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import sk.eea.td.console.model.AbstractJobRun;
+import sk.eea.td.console.model.BlobReadOnlyParam;
 import sk.eea.td.console.model.ParamKey;
-import sk.eea.td.console.model.ReadOnlyParam;
 import sk.eea.td.console.model.dto.ReviewDTO;
 import sk.eea.td.flow.FlowException;
 import sk.eea.td.util.PathUtils;
@@ -41,7 +40,7 @@ public class PrepareCSVActivity implements Activity {
             Files.createDirectories(csvParentDir);
             Path csvFile = PathUtils.createUniqueFilename(csvParentDir, "csv");
 
-            try (Writer out = new OutputStreamWriter(new FileOutputStream(csvFile.toAbsolutePath().toFile()), "utf-8")) {
+            try (Writer out = new StringWriter()) {
                 
                 Path approvedDirPath = PathUtils.getApprovedStorePath(Paths.get(outputDirectory), context);
                 for (File approvedFile : approvedDirPath.toFile().listFiles()) {
@@ -53,10 +52,8 @@ public class PrepareCSVActivity implements Activity {
                     out.write("\n");
                 }
                 
-            }
-
-            context.addReadOnlyParam(new ReadOnlyParam(ParamKey.EMAIL_ATTACHMENT, csvFile.toAbsolutePath().toString()));
-            
+                context.addReadOnlyParam(new BlobReadOnlyParam(ParamKey.EMAIL_ATTACHMENT, csvFile.getFileName().toString(), out.toString().getBytes("UTF-8")));
+            }            
         } catch (Exception e) {
             LOG.error("", e);
             throw new FlowException("Exception raised during prepare CSV action", e);

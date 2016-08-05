@@ -20,7 +20,7 @@ import sk.eea.td.console.model.AbstractJobRun.JobRunStatus;
 import sk.eea.td.console.model.Connector;
 import sk.eea.td.console.model.Log;
 import sk.eea.td.console.model.ParamKey;
-import sk.eea.td.console.model.ReadOnlyParam;
+import sk.eea.td.console.model.StringReadOnlyParam;
 import sk.eea.td.console.repository.JobRunRepository;
 import sk.eea.td.console.repository.LogRepository;
 import sk.eea.td.flow.activities.Activity;
@@ -184,7 +184,7 @@ public class FlowManagerImpl implements FlowManager {
                     }
                 }
             }
-            context.addReadOnlyParam(new ReadOnlyParam(ParamKey.LAST_SUCCESS, DateUtils.SYSTEM_TIME_FORMAT.format(context.getLastStarted().toInstant())));
+            context.addReadOnlyParam(new StringReadOnlyParam(ParamKey.LAST_SUCCESS, DateUtils.SYSTEM_TIME_FORMAT.format(context.getLastStarted().toInstant())));
         } catch (Throwable e) {
             LOG.error("Exception at executing flow:", e);
 

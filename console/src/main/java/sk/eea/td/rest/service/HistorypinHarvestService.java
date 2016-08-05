@@ -32,6 +32,8 @@ import sk.eea.td.console.model.AbstractJobRun;
 import sk.eea.td.console.model.Connector;
 import sk.eea.td.console.model.ParamKey;
 import sk.eea.td.console.model.ReadOnlyParam;
+import sk.eea.td.console.model.StringReadOnlyParam;
+import sk.eea.td.flow.HarvestResponse;
 import sk.eea.td.hp_client.api.HPClient;
 import sk.eea.td.hp_client.impl.HPClientImpl;
 import sk.eea.td.util.PathUtils;
@@ -69,7 +71,7 @@ public class HistorypinHarvestService {
         this.hpClient = new HPClientImpl(baseURL, apiKey, apiSecret);
     }
 
-    public Path harvest(AbstractJobRun context, String projectSlug) throws IOException, ParseException {
+    public HarvestResponse harvest(AbstractJobRun context, String projectSlug) throws IOException, ParseException {
     	boolean nextPage = true;
     	long page = 1;
     	final Path harvestPath = PathUtils.createHarvestRunSubdir(Paths.get(outputDirectory), context);
@@ -100,7 +102,7 @@ public class HistorypinHarvestService {
 			file.delete();
     	}
         LOG.info("Harvesting of projectSlug: " + projectSlug + " is completed.");
-        return harvestPath;
+        return new HarvestResponse(harvestPath, true);
     }
 
 	private JSONObject storeJson(Response response, Path filename) throws IOException, ParseException {
@@ -113,15 +115,15 @@ public class HistorypinHarvestService {
 		return object;
 	}
 
-	public Path harvestAnnotation(AbstractJobRun jobRun, String jobId, String from, String until) throws IOException, java.text.ParseException, ParseException {
-    	final Path harvestPath = PathUtils.createHarvestRunSubdir(Paths.get(outputDirectory), jobRun);
+    public HarvestResponse harvestAnnotation(AbstractJobRun jobRun, String jobId, String from, String until) throws IOException, java.text.ParseException, ParseException {
+        final Path harvestPath = PathUtils.createHarvestRunSubdir(Paths.get(outputDirectory), jobRun);
 		String fromLocal = from;
 		String untilLocal;
 		if(jobRun != null){
 			String lastUntilParam = null;
-			for(ReadOnlyParam param : jobRun.getReadOnlyParams()){
+			for(ReadOnlyParam<?> param : jobRun.getReadOnlyParams()){
 				if(param.getKey().equals(ParamKey.HP_UNTIL_CURRENT)){
-					lastUntilParam = param.getValue();
+					lastUntilParam = ((StringReadOnlyParam) param).getStringValue();
 					break;
 				}
 			}
@@ -143,12 +145,12 @@ public class HistorypinHarvestService {
 		if(parseDate(fromLocal).after(parseDate(untilLocal))){
 			//finish flow
 			LOG.info("We have reached 'until' date. We are not harvesting.");
-			return harvestPath;
+			return new HarvestResponse(harvestPath, true);
 		}
 		Response response = hpClient.getAnnotations(fromLocal, untilLocal);
         Path filename = PathUtils.createUniqueFilename(harvestPath, Connector.HISTORYPIN_ANNOTATION.getFormatCode());
         storeJson(response, filename);
-		return harvestPath;
+		return new HarvestResponse(harvestPath, true);
 	}
 
 	private Calendar parseDate(String lastUntilParam) throws java.text.ParseException {

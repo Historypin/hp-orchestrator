@@ -32,10 +32,13 @@ CREATE TABLE "job" (
 CREATE SEQUENCE "seq_param" START 1 INCREMENT BY 50;
 
 CREATE TABLE "param" (
-  "id"        INT8 PRIMARY KEY DEFAULT nextval('seq_param') NOT NULL,
-  "key"       VARCHAR(255),
-  "value"     VARCHAR(1024),
-  "job_id"    INT8 REFERENCES job(id) ON UPDATE CASCADE ON DELETE CASCADE
+  "id"            INT8 PRIMARY KEY DEFAULT nextval('seq_param') NOT NULL,
+  "key"           VARCHAR(255) NOT NULL,
+  "type"          VARCHAR(255) NOT NULL,
+  "string_value"  VARCHAR(1024),
+  "blob_data"     BYTEA,
+  "blob_name"     VARCHAR(255),
+  "job_id"        INT8 REFERENCES job(id) ON UPDATE CASCADE ON DELETE CASCADE NOT NULL
 );
 
 CREATE INDEX "ix_param_job_id" ON "param" ("job_id");
@@ -54,7 +57,8 @@ CREATE TABLE "job_run" (
   "job_id"    INT8 REFERENCES job(id) ON UPDATE CASCADE ON DELETE CASCADE,
   "created"   TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
   "dtype"     VARCHAR(31),
-  "parentrun_id" INT8,
+  "parentrun_id" INT8 REFERENCES job_run(id) on UPDATE CASCADE ON DELETE CASCADE,
+  "lastrun_id" INT8 REFERENCES job_run(id) on UPDATE CASCADE ON DELETE CASCADE,
   "last_started"  TIMESTAMP WITH TIME ZONE
 );
 CREATE INDEX "ix_job_run_job_id" ON "job_run" ("job_id");
@@ -64,10 +68,13 @@ CREATE INDEX "ix_job_run_job_id" ON "job_run" ("job_id");
 CREATE SEQUENCE "seq_read_only_param" START 1 INCREMENT BY 50;
 
 CREATE TABLE "read_only_param" (
-  "id"          INT8 PRIMARY KEY DEFAULT nextval('seq_read_only_param') NOT NULL,
-  "key"         VARCHAR(255),
-  "value"       VARCHAR(1024),
-  "job_run_id"  INT8 REFERENCES job_run(id) ON UPDATE CASCADE ON DELETE CASCADE
+  "id"            INT8 PRIMARY KEY DEFAULT nextval('seq_read_only_param') NOT NULL,
+  "key"           VARCHAR(255) NOT NULL,
+  "type"          VARCHAR(255) NOT NULL,
+  "string_value"  VARCHAR(1024),
+  "blob_data"     BYTEA,
+  "blob_name"     VARCHAR(255),
+  "job_run_id"    INT8 REFERENCES job_run(id) ON UPDATE CASCADE ON DELETE CASCADE NOT NULL
 );
 
 CREATE INDEX "ix_read_only_param_job_run_id" ON "read_only_param" ("job_run_id");

@@ -13,14 +13,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
+import sk.eea.td.console.model.AbstractJobRun;
 import sk.eea.td.console.model.AbstractJobRun.JobRunResult;
 import sk.eea.td.console.model.AbstractJobRun.JobRunStatus;
-import sk.eea.td.console.model.AbstractJobRun;
 import sk.eea.td.console.model.Connector;
 import sk.eea.td.console.model.JobRun;
 import sk.eea.td.console.model.JobSubRun;
 import sk.eea.td.console.model.ParamKey;
-import sk.eea.td.console.model.ReadOnlyParam;
+import sk.eea.td.console.model.StringReadOnlyParam;
 import sk.eea.td.console.repository.JobRunRepository;
 
 @Component
@@ -53,6 +53,7 @@ public class Dataflow6SubflowSelector implements JobSelector {
                 return jobRun;
             }else{            
                 return createNewSubRun4Harvest((JobRun)jobRun);
+
             }
         }else {
             throw new FlowException(MessageFormat.format("{0} is for source: {1} only. You cannot use it with source {2}", Dataflow6SubflowSelector.class.getSimpleName(), Connector.TAGAPP, source));
@@ -67,10 +68,10 @@ public class Dataflow6SubflowSelector implements JobSelector {
         subRun.setJob(jobRun.getJob());
         subRun.setParentRun(jobRun);
         subRun.setStatus(JobRunStatus.NEW);
-        subRun.getReadOnlyParams().addAll(jobRun.getReadOnlyParams().stream().map((param) -> new ReadOnlyParam(param.getKey(), param.getValue())).collect(Collectors.toList()));
+        subRun.getReadOnlyParams().addAll(jobRun.getReadOnlyParams().stream().map((param) ->  param.newInstance()).collect(Collectors.toList()));
         
         if(subRuns.hasContent()){
-            subRun.addReadOnlyParam(new ReadOnlyParam(ParamKey.LAST_SUCCESS, DateTimeFormatter.ISO_INSTANT.format(subRuns.getContent().get(0).getLastStarted().toInstant())));
+            subRun.addReadOnlyParam(new StringReadOnlyParam(ParamKey.LAST_SUCCESS, DateTimeFormatter.ISO_INSTANT.format(subRuns.getContent().get(0).getLastStarted().toInstant())));
         }
         subRun = jobRunRepository.save(subRun);
         jobRun.setLastJobRun(subRun);

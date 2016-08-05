@@ -26,7 +26,7 @@ import sk.eea.td.console.model.Connector;
 import sk.eea.td.console.model.Job;
 import sk.eea.td.console.model.JobRun;
 import sk.eea.td.console.model.ParamKey;
-import sk.eea.td.console.model.ReadOnlyParam;
+import sk.eea.td.console.model.StringReadOnlyParam;
 import sk.eea.td.flow.FlowException;
 import sk.eea.td.rest.service.MintStoreService;
 import sk.eea.td.util.PathUtils;
@@ -53,10 +53,10 @@ public class StoreActivityTest {
 	public void testMintTarget() throws IOException {		 
 		JobRun context = new JobRun();
 		context.setId(1l);
-//		context.addReadOnlyParam(new ReadOnlyParam(ParamKey.TRANSFORM_PATH, "src/test/resources/mint"));
-		context.addReadOnlyParam(new ReadOnlyParam(ParamKey.HP_API_KEY,"ddddd"));
-		context.addReadOnlyParam(new ReadOnlyParam(ParamKey.HP_API_SECRET,"ddddd"));
-		context.addReadOnlyParam(new ReadOnlyParam(ParamKey.HP_USER_ID,"0"));
+//		context.addReadOnlyParam(new StringReadOnlyParam(ParamKey.TRANSFORM_PATH, "src/test/resources/mint"));
+		context.addReadOnlyParam(new StringReadOnlyParam(ParamKey.HP_API_KEY,"ddddd"));
+		context.addReadOnlyParam(new StringReadOnlyParam(ParamKey.HP_API_SECRET,"ddddd"));
+		context.addReadOnlyParam(new StringReadOnlyParam(ParamKey.HP_USER_ID,"0"));
 		context.setJob(new Job());
 		context.getJob().setTarget(Connector.MINT);
         FileUtils.copyDirectory(new File("src/test/resources/mint"), PathUtils.getStorePath(Paths.get(outputDirectory), context).toFile());

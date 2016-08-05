@@ -61,12 +61,17 @@ public class EuropeanaClientImpl implements EuropeanaClient {
 
     @Override
     public String getRecord(String id) throws IOException, InterruptedException {
+        return getRecordWithFullResponse(id).readEntity(String.class);
+    }
+
+    @Override
+    public Response getRecordWithFullResponse(String id) throws IOException, InterruptedException {
         final WebTarget target = client.target(baseURL).path("api").path("v2").path("record").path(id.concat(".json"))
                 .queryParam("wskey", wskey);
         final Response response = Recurrent.with(retryPolicy).get(() ->
                 target.request().get()
         );
-        return response.readEntity(String.class);
+        return response;
     }
 
     /**

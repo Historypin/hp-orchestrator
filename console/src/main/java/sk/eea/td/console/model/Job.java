@@ -1,9 +1,7 @@
 package sk.eea.td.console.model;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Table(name = "job")
@@ -26,7 +24,7 @@ public class Job {
     private Connector target;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "job", fetch = FetchType.EAGER, orphanRemoval = true)
-    private List<Param> params = new ArrayList<>();
+    private Set<Param> params = new HashSet<>();
 
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="last_job_run_id", nullable = true)
@@ -97,11 +95,11 @@ public class Job {
         params.remove(param);
     }
 
-    public List<Param> getParams() {
+    public Set<Param> getParams() {
         return params;
     }
 
-    public void setParams(List<Param> params) {
+    public void setParams(Set<Param> params) {
         this.params = params;
     }
 

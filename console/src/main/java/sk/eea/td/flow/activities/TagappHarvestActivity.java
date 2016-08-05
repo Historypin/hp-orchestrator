@@ -2,7 +2,6 @@ package sk.eea.td.flow.activities;
 
 import java.text.MessageFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -14,6 +13,7 @@ import sk.eea.td.console.model.ParamKey;
 import sk.eea.td.flow.FlowException;
 import sk.eea.td.rest.service.TagappHarvestService;
 import sk.eea.td.util.DateUtils;
+import sk.eea.td.util.ParamUtils;
 
 public class TagappHarvestActivity implements Activity {
     
@@ -26,8 +26,7 @@ public class TagappHarvestActivity implements Activity {
     public ActivityAction execute(AbstractJobRun context) throws FlowException {
         LOG.debug("Starting harvest activity for job ID: {}", context.getId());
         try {
-            final Map<ParamKey, String> paramMap = new HashMap<>();
-            context.getReadOnlyParams().stream().forEach(p -> paramMap.put(p.getKey(), p.getValue()));
+            final Map<ParamKey, String> paramMap = ParamUtils.copyStringReadOnLyParamsIntoStringParamMap(context.getReadOnlyParams());
             String from = paramMap.get(ParamKey.OAI_FROM);
             String until = paramMap.get(ParamKey.OAI_UNTIL);
             String lastSuccess = paramMap.get(ParamKey.LAST_SUCCESS);

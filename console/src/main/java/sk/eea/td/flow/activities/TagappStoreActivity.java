@@ -7,7 +7,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.text.MessageFormat;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -18,11 +17,12 @@ import org.springframework.beans.factory.annotation.Value;
 import sk.eea.td.console.model.AbstractJobRun;
 import sk.eea.td.console.model.Log;
 import sk.eea.td.console.model.ParamKey;
-import sk.eea.td.console.model.ReadOnlyParam;
+import sk.eea.td.console.model.StringReadOnlyParam;
 import sk.eea.td.console.repository.JobRunRepository;
 import sk.eea.td.console.repository.LogRepository;
 import sk.eea.td.flow.FlowException;
 import sk.eea.td.rest.service.TagappStoreService;
+import sk.eea.td.util.ParamUtils;
 import sk.eea.td.util.PathUtils;
 
 public class TagappStoreActivity implements Activity {
@@ -42,15 +42,14 @@ public class TagappStoreActivity implements Activity {
     JobRunRepository jobRunRepository;
     
     @Override
-    public ActivityAction execute(AbstractJobRun context) throws FlowException {
-        final Map<ParamKey, String> paramMap = new HashMap<>();
-        context.getReadOnlyParams().stream().forEach(p -> paramMap.put(p.getKey(), p.getValue()));
+public ActivityAction execute(AbstractJobRun context) throws FlowException {
+        final Map<ParamKey, String> paramMap = ParamUtils.copyStringReadOnLyParamsIntoStringParamMap(context.getReadOnlyParams());
 
         try{
             String tagappBatchId;
             if(paramMap.get(ParamKey.TAGAPP_BATCH) == null){
                 tagappBatchId = tagappStoreService.createBatch();
-                context.addReadOnlyParam(new ReadOnlyParam(ParamKey.TAGAPP_BATCH, tagappBatchId));
+                context.addReadOnlyParam(new StringReadOnlyParam(ParamKey.TAGAPP_BATCH, tagappBatchId));
             }else{
                 tagappBatchId = paramMap.get(ParamKey.TAGAPP_BATCH);
             }
@@ -102,6 +101,4 @@ public class TagappStoreActivity implements Activity {
     public String getName() {
         return TagappStoreService.class.getSimpleName();
     }
-
-
 }

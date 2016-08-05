@@ -23,7 +23,9 @@ import sk.eea.td.console.model.AbstractJobRun;
 import sk.eea.td.console.model.Connector;
 import sk.eea.td.console.model.ParamKey;
 import sk.eea.td.console.model.ReadOnlyParam;
+import sk.eea.td.console.model.StringReadOnlyParam;
 import sk.eea.td.flow.FlowException;
+import sk.eea.td.flow.HarvestResponse;
 import sk.eea.td.tagapp_client.PageableTagsDTO;
 import sk.eea.td.tagapp_client.TagappClient;
 import sk.eea.td.util.DateUtils;
@@ -43,14 +45,14 @@ public class TagappHarvestService {
     @Autowired
     private ObjectMapper objectMapper;
 
-    public Path harvest(AbstractJobRun context, String batchId, String from, String until) throws FlowException{
+    public HarvestResponse harvest(AbstractJobRun context, String batchId, String from, String until) throws FlowException{
         Instant fromLocalInstant = Instant.from(DateUtils.SYSTEM_TIME_FORMAT.parse(from));
         Instant untilLocalInstant = Instant.now().truncatedTo(ChronoUnit.SECONDS);
         if(context != null){
             String lastUntilParam = null;
-            for(ReadOnlyParam param : context.getReadOnlyParams()){
+            for(ReadOnlyParam<?> param : context.getReadOnlyParams()){
                 if(param.getKey().equals(ParamKey.HP_UNTIL_CURRENT)){
-                    lastUntilParam = param.getValue();
+                    lastUntilParam = ((StringReadOnlyParam) param).getStringValue();
                     break;
                 }
             }
@@ -69,7 +71,7 @@ public class TagappHarvestService {
             if(fromLocalInstant.isAfter(untilLocalInstant)){
                 //finish flow
                 LOG.info("We have reached 'until' date. We are not harvesting.");
-                return harvestPath;
+                return new HarvestResponse(harvestPath, true);
             }
             Response response = tagappClient.harvestTags(
                     DateUtils.SYSTEM_TIME_FORMAT.format(fromLocalInstant), 
@@ -97,7 +99,7 @@ public class TagappHarvestService {
                 writer.write(objectMapper.writeValueAsString(tags));
                 writer.close();
             }
-            return harvestPath;
+            return new HarvestResponse(harvestPath, true);
         } catch (JsonParseException | JsonMappingException e) {
             throw new FlowException("Error parsing JSON");
         } catch (IOException e) {

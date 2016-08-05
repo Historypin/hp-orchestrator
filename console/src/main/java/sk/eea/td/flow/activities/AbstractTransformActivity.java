@@ -9,15 +9,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 
 import sk.eea.td.console.model.AbstractJobRun;
 import sk.eea.td.console.model.Connector;
-import sk.eea.td.console.model.ParamKey;
 import sk.eea.td.flow.FlowException;
 import sk.eea.td.util.PathUtils;
 
@@ -37,15 +34,14 @@ public abstract class AbstractTransformActivity implements Activity {
         getLogger().debug("Starting transform activity for job ID: {}", context.getId());
 
         try {
-            final Map<ParamKey, String> paramMap = new HashMap<>();
-            context.getReadOnlyParams().stream().forEach(p -> paramMap.put(p.getKey(), p.getValue()));
-
+//            final Map<ParamKey, String> paramMap = ParamUtils.copyStringReadOnLyParamsIntoStringParamMap(context.getReadOnlyParams());
 //            Destination destination = Destination.valueOf(context.getJob().getTarget().name());
             final Path harvestPath = getSourcePath(context);
 /*            final Path transformPath = PathUtils.createTransformRunSubdir(Paths.get(outputDirectory),
                     String.valueOf(context.getId()));*/
             final Path transformPath = createStorePath(Paths.get(outputDirectory), context);
 //            transformPath.toFile().mkdirs();
+
             getLogger().debug("harvestPath: {}, transformPath: {}", harvestPath, transformPath);
 
             walkFileTree(harvestPath, transformPath);

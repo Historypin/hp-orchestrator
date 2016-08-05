@@ -23,7 +23,7 @@ import sk.eea.td.console.model.AbstractJobRun;
 import sk.eea.td.console.model.AbstractJobRun.JobRunStatus;
 import sk.eea.td.console.model.Connector;
 import sk.eea.td.console.model.ParamKey;
-import sk.eea.td.console.model.ReadOnlyParam;
+import sk.eea.td.console.model.StringReadOnlyParam;
 import sk.eea.td.console.model.dto.ReviewDTO;
 import sk.eea.td.console.repository.JobRunRepository;
 import sk.eea.td.util.PathUtils;
@@ -121,7 +121,7 @@ public class ApprovementService {
         }
         LOG.debug("harvestPath: {}, transformPath: {}", approvalPath, approvalPath);
 
-//        jobRun.addReadOnlyParam(new ReadOnlyParam(ParamKey.APPROVED_PATH, approvalPath.toString()));
+//        jobRun.addReadOnlyParam(new StringReadOnlyParam(ParamKey.APPROVED_PATH, approvalPath.toString()));
         jobRunRepository.save(jobRun);
         List<ReviewDTO> reviews = load(jobRun);
         for (ReviewDTO reviewDTO : reviews) {
@@ -160,7 +160,7 @@ public class ApprovementService {
         save(jobRun, contents);
         sendApproved(jobRun);
         jobRun.setStatus(JobRunStatus.RESUMED);
-        if(finish) jobRun.addReadOnlyParam(new ReadOnlyParam(ParamKey.FINISH_FLOW, Boolean.TRUE.toString()));
+        if(finish) jobRun.addReadOnlyParam(new StringReadOnlyParam(ParamKey.FINISH_FLOW, Boolean.TRUE.toString()));
         jobRunRepository.save(jobRun);
         
     }
@@ -205,8 +205,7 @@ public class ApprovementService {
 
     private Path getSourcePath(AbstractJobRun jobRun) {
 
-//        final Map<ParamKey, String> paramMap = new HashMap<>();
-//        jobRun.getReadOnlyParams().stream().forEach(p -> paramMap.put(p.getKey(), p.getValue()));
+//        final Map<ParamKey, String> paramMap = ParamUtils.copyStringReadOnLyParamsIntoStringParamMap(jobRun.getReadOnlyParams());
         return PathUtils.getApprovalStorePath(Paths.get(outputDirectory), jobRun);
     }
 }

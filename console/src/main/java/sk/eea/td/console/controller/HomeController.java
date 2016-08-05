@@ -1,10 +1,18 @@
 package sk.eea.td.console.controller;
 
+
+import static sk.eea.td.console.model.ParamKey.EU_CSV_FILE;
+
+import java.io.File;
+import java.io.IOException;
 import java.security.Principal;
+import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,18 +26,23 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import sk.eea.td.console.form.TaskForm;
+import sk.eea.td.console.model.BlobParam;
 import sk.eea.td.console.model.Flow;
 import sk.eea.td.console.model.Job;
 import sk.eea.td.console.model.JobRun;
 import sk.eea.td.console.model.Param;
-import sk.eea.td.console.model.ReadOnlyParam;
+import sk.eea.td.console.model.ParamKey;
 import sk.eea.td.console.repository.JobRepository;
 import sk.eea.td.console.repository.JobRunRepository;
 import sk.eea.td.console.repository.ParamRepository;
 import sk.eea.td.console.repository.UsersRepository;
 import sk.eea.td.mapper.JobToTaskFormMapper;
 import sk.eea.td.mapper.TaskFormtoJobMapper;
+import sk.eea.td.rest.service.EuropeanaCsvFileValidationService;
+import sk.eea.td.rest.validation.CsvFileValidationException;
 import sk.eea.td.util.DateUtils;
+import sk.eea.td.util.ParamUtils;
+
 
 @Controller
 @PreAuthorize("hasRole('ADMIN')")
@@ -55,6 +68,14 @@ public class HomeController {
     @Autowired
     private JobToTaskFormMapper jobToTaskFormMapper;
 
+    @Autowired
+    private EuropeanaCsvFileValidationService validationService;
+
+    @ModelAttribute("allHarvestTypes")
+    public TaskForm.HarvestType[] populateHarvestTypes() {
+        return TaskForm.HarvestType.values();
+    }
+
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String indexView(@RequestParam(name = "edit", required = false) Long jobId, Model model) {
         if (jobId != null) {
@@ -72,7 +93,7 @@ public class HomeController {
     @RequestMapping(value = "/", method = RequestMethod.POST)
     public String indexSubmit(@Valid @ModelAttribute TaskForm taskForm,
             BindingResult bindingResult,
-            Principal principal) {
+            Principal principal) throws IOException {
         if (bindingResult.hasErrors()) {
             return "index";
         }
@@ -84,36 +105,86 @@ public class HomeController {
                 return "index";
             }
         }
-        
+
         if (taskForm.getJobId() != null) { // we are editing item
             Job job = jobRepository.findOne(taskForm.getJobId());
             if (job != null) {
+                Param csvFile = null;
+                if (TaskForm.HarvestType.CSV_FILE.equals(taskForm.getHarvestType())) {
+                    if (taskForm.getCsvFile().isEmpty()) {
+                        Optional<Param> csvFileParamOptional = job.getParams().stream().filter(e -> e.getKey().equals(ParamKey.EU_CSV_FILE)).findFirst();
+                        if(csvFileParamOptional.isPresent()) {
+                            csvFile = csvFileParamOptional.get();
+                        } else {
+                            throw new IllegalStateException("Could not find CSV file when editing job!");
+                        }
+                    } else {
+                        if(!isCSVFileValid(taskForm, bindingResult)) {
+                            return "index";
+                        } else {
+                            csvFile = new BlobParam(EU_CSV_FILE, taskForm.getCsvFile().getOriginalFilename(), taskForm.getCsvFile().getBytes());
+                        }
+                    }
+                }
+
                 // delete old params
                 job.getParams().clear();
                 job = jobRepository.save(job);
 
                 job = taskFormtoJobMapper.map(job, taskForm);
+                if (TaskForm.HarvestType.CSV_FILE.equals(taskForm.getHarvestType())) {
+                    job.addParam(csvFile);
+                }
                 job = jobRepository.save(job);
+
                 LOG.info("Edited job id= {}.", job.getId());
                 return "redirect:/tasks";
             }
-        } else { // we are creating item
-            final Job job = taskFormtoJobMapper.map(taskForm);
+        } else { // we are creating new item
+            if (TaskForm.HarvestType.CSV_FILE.equals(taskForm.getHarvestType())) {
+                if (taskForm.getCsvFile().isEmpty()) {
+                    bindingResult.rejectValue("csvFile", "csvFile.empty");
+                    return "index";
+                }
+                if(!isCSVFileValid(taskForm, bindingResult)) {
+                    return "index";
+                }
+            }
+            Job job = taskFormtoJobMapper.map(taskForm);
             job.setUser(usersRepository.findByUsername(principal.getName()));
-            jobRepository.save(job);
+            job = jobRepository.save(job);
 
             LOG.info("Created job id= {}.", job.getId());
             JobRun jobRun = new JobRun();
             jobRun.setJob(job);
             jobRun.setStatus(JobRun.JobRunStatus.NEW);
-            Set<Param> paramList = paramRepository.findByJob(job);
-            for (Param param : paramList) {
-                jobRun.addReadOnlyParam(new ReadOnlyParam(param));
-            }
+            ParamUtils.copyParamsIntoJobRun(job.getParams(), jobRun);
             jobRunRepository.save(jobRun);
             return "redirect:/tasks";
         }
 
         return "index";
+    }
+
+    private boolean isCSVFileValid(TaskForm taskForm, BindingResult bindingResult) throws IOException {
+        File file = new File(taskForm.getCsvFile().getOriginalFilename());
+        FileUtils.touch(file);
+        FileUtils.writeByteArrayToFile(file, taskForm.getCsvFile().getBytes());
+        try {
+            validationService.validate(file);
+        } catch (CsvFileValidationException e) {
+            String faultLines = e.getFaultLines().stream().sorted().map(Object::toString).collect(Collectors.joining(", "));
+            if(e.isFaultLinesOverflow()) {
+                bindingResult.rejectValue("csvFile", "csvFile.not.valid.more", new Object[] {faultLines}, "");
+            } else {
+                bindingResult.rejectValue("csvFile", "csvFile.not.valid", new Object[] {faultLines}, "");
+            }
+            return false;
+        } catch (IOException e) {
+            LOG.error("Exception at CSV file validation.", e);
+            bindingResult.rejectValue("csvFile", "csvFile.read.error");
+            return false;
+        }
+        return true;
     }
 }

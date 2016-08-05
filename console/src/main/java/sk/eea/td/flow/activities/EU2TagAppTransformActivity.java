@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,10 +20,11 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import sk.eea.td.console.model.ParamKey;
 import sk.eea.td.console.model.AbstractJobRun;
 import sk.eea.td.console.model.Connector;
+import sk.eea.td.console.model.ParamKey;
 import sk.eea.td.tagapp_client.CulturalObjectDTO;
+import sk.eea.td.util.ParamUtils;
 import sk.eea.td.util.PathUtils;
 
 /**
@@ -53,10 +55,8 @@ public class EU2TagAppTransformActivity extends AbstractTransformActivity {
             LOG.info("Not procesing file {}. Input should be from {}",file.getFileName(), source);
             return outputDir;
         }
-        HashMap<ParamKey, String> params = new HashMap<ParamKey, String>();
-        context.getReadOnlyParams().forEach(param -> params.put(param.getKey(), param.getValue()));
+        Map<ParamKey, String> params = ParamUtils.copyStringReadOnLyParamsIntoStringParamMap(context.getReadOnlyParams());
         Path targetFile = PathUtils.createUniqueFilename(outputDir, context.getJob().getTarget().getFormatCode());
-//        transformListItem(file, targetFile, params);
         transformRecordItem(file, targetFile, params);
         return outputDir;
     }
@@ -87,7 +87,7 @@ public class EU2TagAppTransformActivity extends AbstractTransformActivity {
         }
     }
 
-    private void transformRecordItem(Path sourceFile, Path targetFile, HashMap<ParamKey, String> params)
+    private void transformRecordItem(Path sourceFile, Path targetFile, Map<ParamKey, String> params)
             throws IOException, JsonProcessingException, JsonGenerationException, JsonMappingException {
         JsonNode element = objectMapper.readTree(sourceFile.toFile());
         CulturalObjectDTO dto = new CulturalObjectDTO();

@@ -1,16 +1,22 @@
 package sk.eea.td.console.validation;
 
+import static sk.eea.td.console.model.Flow.FLOW_1;
+import static sk.eea.td.console.model.Flow.FLOW_6;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.hibernate.validator.spi.group.DefaultGroupSequenceProvider;
 
 import sk.eea.td.console.form.TaskForm;
+import sk.eea.td.rest.validation.CsvFileValidation;
 import sk.eea.td.rest.validation.Flow1Validation;
 import sk.eea.td.rest.validation.Flow2Validation;
 import sk.eea.td.rest.validation.Flow4Validation;
 import sk.eea.td.rest.validation.Flow5Validation;
 import sk.eea.td.rest.validation.Flow6Validation;
+import sk.eea.td.rest.validation.LuceneQueryValidation;
 
 public class TaskFormValidationSequenceProvider implements DefaultGroupSequenceProvider<TaskForm> {
 
@@ -34,6 +40,14 @@ public class TaskFormValidationSequenceProvider implements DefaultGroupSequenceP
                 case FLOW_6:
                     sequence.add(Flow6Validation.class);
                     break;
+            }
+
+            if (Stream.of(FLOW_1, FLOW_6).anyMatch(e -> e.equals(taskForm.getFlow()))) {
+                if(TaskForm.HarvestType.LUCENE_QUERY.equals(taskForm.getHarvestType())) {
+                    sequence.add(LuceneQueryValidation.class);
+                } else { // TaskForm.HarvestType.CSV_File
+                    sequence.add(CsvFileValidation.class);
+                }
             }
         }
         return sequence;
