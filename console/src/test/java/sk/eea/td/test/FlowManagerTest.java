@@ -93,6 +93,7 @@ public class FlowManagerTest {
         historypinOntotextFlowManager.trigger();
     }
 
+    @Ignore
     @Test
     public void testNewFlow2() throws Exception {
 
