@@ -23,8 +23,8 @@ public class EuropeanaCsvFileValidationService {
 
     public static final int FAULT_LINES_THRESHOLD = 10;
 
-    public void validate(File file) throws CsvFileValidationException, IOException {
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+    public void validate(InputStream stream) throws CsvFileValidationException, IOException {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(stream))) {
             long lineNumber = 1;
             Set<Long> faultLines = new HashSet<>();
             String line;

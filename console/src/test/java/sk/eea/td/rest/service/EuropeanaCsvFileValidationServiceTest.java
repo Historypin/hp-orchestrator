@@ -1,18 +1,21 @@
 package sk.eea.td.rest.service;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import sk.eea.td.rest.validation.CsvFileValidationException;
-
-import java.io.File;
-import java.nio.file.Paths;
-
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.nio.file.Paths;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import sk.eea.td.rest.validation.CsvFileValidationException;
 
 public class EuropeanaCsvFileValidationServiceTest {
 
@@ -34,7 +37,7 @@ public class EuropeanaCsvFileValidationServiceTest {
 
     @Test
     public void validFilePasses() throws Exception {
-        File file = Paths.get(ClassLoader.getSystemResource(VALID_FILE).toURI()).toFile();
+        InputStream file = new FileInputStream(Paths.get(ClassLoader.getSystemResource(VALID_FILE).toURI()).toFile());
         try {
             service.validate(file);
         } catch (Exception e) {
@@ -47,7 +50,7 @@ public class EuropeanaCsvFileValidationServiceTest {
     public void invalidFileFails() throws Exception {
         File file = Paths.get(ClassLoader.getSystemResource(INVALID_FILE).toURI()).toFile();
         try {
-            service.validate(file);
+            service.validate(new FileInputStream(file));
             fail("In/**/valid file should have thrown an exception, instead it appears as valid!");
         } catch (Exception e) {
             assertThat(e instanceof CsvFileValidationException, is(true));
@@ -61,7 +64,7 @@ public class EuropeanaCsvFileValidationServiceTest {
     public void wrongFileFails() throws Exception {
         File file = Paths.get(ClassLoader.getSystemResource(WRONG_FILE).toURI()).toFile();
         try {
-            service.validate(file);
+            service.validate(new FileInputStream(file));
             fail("Invalid file should have thrown an exception, instead it appears as valid!");
         } catch (Exception e) {
             assertThat(e instanceof CsvFileValidationException, is(true));

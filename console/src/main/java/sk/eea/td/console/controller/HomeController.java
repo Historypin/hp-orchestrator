@@ -3,7 +3,7 @@ package sk.eea.td.console.controller;
 
 import static sk.eea.td.console.model.ParamKey.EU_CSV_FILE;
 
-import java.io.File;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.Optional;
@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
-import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -167,11 +166,8 @@ public class HomeController {
     }
 
     private boolean isCSVFileValid(TaskForm taskForm, BindingResult bindingResult) throws IOException {
-        File file = new File(taskForm.getCsvFile().getOriginalFilename());
-        FileUtils.touch(file);
-        FileUtils.writeByteArrayToFile(file, taskForm.getCsvFile().getBytes());
         try {
-            validationService.validate(file);
+            validationService.validate(new ByteArrayInputStream(taskForm.getCsvFile().getBytes()));
         } catch (CsvFileValidationException e) {
             String faultLines = e.getFaultLines().stream().sorted().map(Object::toString).collect(Collectors.joining(", "));
             if(e.isFaultLinesOverflow()) {
