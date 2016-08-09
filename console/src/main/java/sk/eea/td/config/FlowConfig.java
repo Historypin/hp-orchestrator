@@ -19,6 +19,7 @@ import sk.eea.td.flow.activities.ApprovalSendMailActivity;
 import sk.eea.td.flow.activities.CleanupActivity;
 import sk.eea.td.flow.activities.Dataflow4isFinalActivity;
 import sk.eea.td.flow.activities.EU2TagAppTransformActivity;
+import sk.eea.td.flow.activities.FinishFlowActivity;
 import sk.eea.td.flow.activities.HP_A2EU_ATransformActivity;
 import sk.eea.td.flow.activities.HarvestActivity;
 import sk.eea.td.flow.activities.Ontotext2HistorypinTransformAndStoreActivity;
@@ -182,7 +183,14 @@ public class FlowConfig {
         flowManager.addActivity(approval2eu_ATransformActivity());
         flowManager.addActivity(storeActivity());
         flowManager.addActivity(reportActivity());
+        flowManager.addActivity(cleanupActivity());
+        flowManager.addActivity(finishFlowActivity());
         return flowManager;
+    }
+
+    @Bean
+    public Activity finishFlowActivity() {
+        return new FinishFlowActivity();
     }
 
     @Bean
