@@ -96,7 +96,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             http
                     .authorizeRequests()
                     .antMatchers("/login**").permitAll()
-                    .antMatchers("/js/**", "/css/**", "/webjars/**", "/fonts/**", "/review/**").permitAll()
+                    .antMatchers("/js/**", "/css/**", "/webjars/**", "/fonts/**", "/review", "/review/**").permitAll()
                     .anyRequest().hasRole("ADMIN")
                     .and()
                     .formLogin()
