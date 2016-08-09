@@ -59,7 +59,11 @@ public class HistorypinHarvestServiceIT {
 	@Test
 	public void testHarvest() {
 		try {
-			historypinHarvestService.harvest("12345", "new-orleans");
+		    JobRun jobRun = new JobRun();
+		    jobRun.setId(12345l);
+		    jobRun.setJob(new Job());
+		    jobRun.getJob().setSource(Connector.HISTORYPIN);
+			historypinHarvestService.harvest(jobRun, "new-orleans");
 		} catch (ParseException|IOException e) {
 			fail(e.toString());
 		}finally {
@@ -72,14 +76,14 @@ public class HistorypinHarvestServiceIT {
 		job.setId(1l);
 		JobRun jobRun = new JobRun();
 		jobRun.setId(2l);
-		jobRun.addReadOnlyParam(new ReadOnlyParam(ParamKey.HP_UNTIL_CURRENT, "2010-01-01T20:21:59Z"));
+		jobRun.addReadOnlyParam(new StringReadOnlyParam(ParamKey.HP_UNTIL_CURRENT, "2010-01-01T20:21:59Z"));
 		
 		EasyMock.expect(jobRepository.findOne(EasyMock.eq(1l))).andReturn(job).once();
 		EasyMock.expect(jobRunRepository.findNextJobRun(EasyMock.same(Connector.HISTORYPIN_ANNOTATION.name()), EasyMock.same(
 				Connector.EUROPEANA_ANNOTATION.name()))).andReturn(jobRun).once();
 		EasyMock.replay(jobRepository,jobRunRepository);
 		try {
-			historypinHarvestService.harvestAnnotation("12345", "1", null, null);
+			historypinHarvestService.harvestAnnotation(jobRun, "1", null, null);
 		} catch (Exception e) {
 			fail(e.toString());
 		}

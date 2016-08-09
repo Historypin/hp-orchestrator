@@ -24,5 +24,13 @@ public enum ParamKey {
     HARVEST_PATH,
     TRANSFORM_PATH,
     HP_UNTIL_CURRENT, 
-    LAST_SUCCESS
+    LAST_SUCCESS, 
+    TAGAPP_BATCH, 
+    /** Used from approval page, instructs flow to cleanup data and finish. */
+    FINISH_FLOW, 
+    /** Folder where approved data are stored */
+    APPROVED_PATH,
+    EMAIL_ATTACHMENT,
+    /** File in CSV format, containing Europeana IDs to harvest **/
+    EU_CSV_FILE
 }

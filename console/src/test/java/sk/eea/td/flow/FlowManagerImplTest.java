@@ -53,6 +53,7 @@ public class FlowManagerImplTest {
         doAnswer((Answer<JobRun>) invocation -> {
             Job job = new Job();
             JobRun jobRun = new JobRun();
+            jobRun.setId(1l);
             jobRun.setStatus(JobRun.JobRunStatus.RUNNING);
             jobRun.setJob(job);
             Thread.sleep(500); // simulate long running DB job

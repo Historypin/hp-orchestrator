@@ -1,20 +1,28 @@
 package sk.eea.td.console.form;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.validator.group.GroupSequenceProvider;
+import org.springframework.web.multipart.MultipartFile;
+
 import sk.eea.td.console.model.Flow;
 import sk.eea.td.console.validation.TaskFormValidationSequenceProvider;
-import sk.eea.td.console.model.Connector;
+import sk.eea.td.rest.validation.CsvFileValidation;
 import sk.eea.td.rest.validation.Flow1Validation;
 import sk.eea.td.rest.validation.Flow2Validation;
 import sk.eea.td.rest.validation.Flow4Validation;
 import sk.eea.td.rest.validation.Flow5Validation;
-
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import sk.eea.td.rest.validation.Flow6Validation;
+import sk.eea.td.rest.validation.LuceneQueryValidation;
 
 @GroupSequenceProvider(value = TaskFormValidationSequenceProvider.class)
 public class TaskForm {
+
+    public enum HarvestType {
+        LUCENE_QUERY, CSV_FILE
+    }
 
     private Long jobId;
 
@@ -52,8 +60,16 @@ public class TaskForm {
     // this field is optional
     private String collectionTags;
 
-    @NotNull(message = "Lucene query is missing.", groups = { Flow1Validation.class })
-    @Size(min = 1, max = 300, groups = { Flow1Validation.class })
+    @NotNull(message = "Harvest type needs to be chosen.", groups = {Flow1Validation.class, Flow6Validation.class})
+    private HarvestType harvestType = HarvestType.LUCENE_QUERY;
+
+    private String csvFileName;
+
+    @NotNull(message = "CSV file need to be provided.", groups = {CsvFileValidation.class})
+    private MultipartFile csvFile;
+
+    @NotNull(message = "Lucene query is missing.", groups = { LuceneQueryValidation.class })
+    @Size(min = 1, max = 300, groups = { LuceneQueryValidation.class })
     private String luceneQuery;
 
     // this field is optional
@@ -205,6 +221,30 @@ public class TaskForm {
         this.jobId = jobId;
     }
 
+    public HarvestType getHarvestType() {
+        return harvestType;
+    }
+
+    public void setHarvestType(HarvestType harvestType) {
+        this.harvestType = harvestType;
+    }
+
+    public MultipartFile getCsvFile() {
+        return csvFile;
+    }
+
+    public void setCsvFile(MultipartFile csvFile) {
+        this.csvFile = csvFile;
+    }
+
+    public String getCsvFileName() {
+        return csvFileName;
+    }
+
+    public void setCsvFileName(String csvFileName) {
+        this.csvFileName = csvFileName;
+    }
+
     @Override
     public String toString() {
         return "TaskForm{" +
@@ -220,6 +260,9 @@ public class TaskForm {
                 ", collectionRadius=" + collectionRadius +
                 ", collectionDate='" + collectionDate + '\'' +
                 ", collectionTags='" + collectionTags + '\'' +
+                ", harvestType=" + harvestType +
+                ", csvFileName='" + csvFileName + '\'' +
+                ", csvFile=" + csvFile +
                 ", luceneQuery='" + luceneQuery + '\'' +
                 ", searchFacet='" + searchFacet + '\'' +
                 ", projectSlug='" + projectSlug + '\'' +

@@ -1,7 +1,12 @@
 package sk.eea.td.console.controller;
 
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang3.time.DateUtils;
-import org.apache.http.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,13 +15,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.token.KeyBasedPersistenceTokenService;
 import org.springframework.security.core.token.Token;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import sk.eea.td.console.form.*;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+import sk.eea.td.console.form.GenericResponse;
+import sk.eea.td.console.model.AbstractJobRun;
 import sk.eea.td.console.model.JobRun;
-import sk.eea.td.console.model.ParamKey;
-import sk.eea.td.console.model.datatables.DataTablesInput;
-import sk.eea.td.console.model.datatables.DataTablesOutput;
 import sk.eea.td.console.model.dto.ReviewDTO;
 import sk.eea.td.console.model.dto.ReviewDTOWrapper;
 import sk.eea.td.console.repository.JobRunRepository;
@@ -24,13 +33,6 @@ import sk.eea.td.console.validation.BadTokenException;
 import sk.eea.td.console.validation.ExecutionNotFoundException;
 import sk.eea.td.service.ApprovementService;
 import sk.eea.td.service.ServiceException;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 @Controller
 public class ReviewController {
@@ -58,7 +60,7 @@ public class ReviewController {
         }
 
         final Long jobRunId = Long.parseLong(token.getExtendedInformation());
-        final JobRun jobRun = jobRunRepository.findOne(jobRunId);
+        final AbstractJobRun jobRun = jobRunRepository.findOne(jobRunId);
         if(jobRun == null || !JobRun.JobRunStatus.WAITING.equals(jobRun.getStatus())) {
             throw new ExecutionNotFoundException(jobRunId, "JobRun missing or not in WAITING state.");
         }
@@ -75,7 +77,7 @@ public class ReviewController {
     @ResponseBody
     @RequestMapping(value = "/review/get.items", method = RequestMethod.GET, produces = "application/json")
     public ReviewDTOWrapper getReviewItems(HttpServletRequest request) throws ServiceException {
-        final JobRun jobRun = retrieveJobRunFromSession(request);
+        final AbstractJobRun jobRun = retrieveJobRunFromSession(request);
 
         LOG.debug("Retrieving reviews for jobRunId: {}", jobRun.getId());
 
@@ -90,7 +92,7 @@ public class ReviewController {
     @RequestMapping(value = "/review/save.items", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     public GenericResponse saveReviewItems(@RequestBody List<ReviewDTO> reviews,  HttpServletRequest request)
             throws ServiceException {
-        final JobRun jobRun = retrieveJobRunFromSession(request);
+        final AbstractJobRun jobRun = retrieveJobRunFromSession(request);
 
         LOG.debug("Received reviews for saving: {}", reviews);
 
@@ -101,11 +103,11 @@ public class ReviewController {
     @ResponseBody
     @RequestMapping(value = "/review/send.items", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     public GenericResponse sendReviewItems(@RequestBody List<ReviewDTO> reviews, HttpServletRequest request) throws ServiceException {
-        final JobRun jobRun = retrieveJobRunFromSession(request);
+        final AbstractJobRun jobRun = retrieveJobRunFromSession(request);
 
         LOG.debug("Received reviews for sending: {}", reviews);
 
-        approvementService.saveAndSendApproved(jobRun, reviews);
+        approvementService.saveAndSendApproved(jobRun, reviews, Boolean.FALSE);
         return new GenericResponse("OK");
     }
 
@@ -113,13 +115,11 @@ public class ReviewController {
     @RequestMapping(value = "/review/finish.items", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     public GenericResponse finishReviewItems(@RequestBody List<ReviewDTO> reviews, HttpServletRequest request)
             throws ServiceException {
-        final JobRun jobRun = retrieveJobRunFromSession(request);
+        final AbstractJobRun jobRun = retrieveJobRunFromSession(request);
 
         LOG.debug("Received reviews for finishing: {}", reviews);
 
-        approvementService.save(jobRun, reviews);
-        approvementService.finish(jobRun);
-
+        approvementService.saveAndSendApproved(jobRun, reviews, Boolean.TRUE);
         return new GenericResponse("OK");
     }
 
@@ -155,14 +155,14 @@ public class ReviewController {
         return new Date().after(validUntil);
     }
 
-    private JobRun retrieveJobRunFromSession(HttpServletRequest request) {
+    private AbstractJobRun retrieveJobRunFromSession(HttpServletRequest request) {
         final Long jobRunId = (Long) request.getSession().getAttribute("jobRunId");
         if(jobRunId == null) {
             LOG.error("Session does not contain 'jobRunId' attribute.");
             throw new BadTokenException();
         }
 
-        final JobRun jobRun = jobRunRepository.findOne(jobRunId);
+        final AbstractJobRun jobRun = jobRunRepository.findOne(jobRunId);
         if(jobRun == null || !JobRun.JobRunStatus.WAITING.equals(jobRun.getStatus())) {
             throw new ExecutionNotFoundException(jobRunId, "JobRun missing or not in WAITING state.");
         }

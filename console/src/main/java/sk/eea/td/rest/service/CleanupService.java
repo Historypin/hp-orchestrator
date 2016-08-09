@@ -15,8 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import sk.eea.td.console.model.AbstractJobRun;
 import sk.eea.td.console.model.Job;
-import sk.eea.td.console.model.JobRun;
 import sk.eea.td.console.repository.JobRepository;
 import sk.eea.td.console.repository.JobRunRepository;
 import sk.eea.td.util.PathUtils;
@@ -35,17 +35,23 @@ public class CleanupService {
     @Value("${storage.directory}")
     private String outputDirectory;
 
+    @Autowired
+    private JobRepository jobRepository;
+    
+    @Autowired
+    private JobRunRepository jobRunRepository;
+
 	private final class CleanFilesTask implements Runnable {
 		
-		private final List<JobRun> jobRuns;
+		private final List<AbstractJobRun> jobRuns;
 		
-		public CleanFilesTask(List<JobRun> jobRuns) {
+		public CleanFilesTask(List<AbstractJobRun> jobRuns) {
 			this.jobRuns = jobRuns;
 		}
 		
 		@Override
 		public void run() {
-			for(JobRun jobRun : jobRuns){
+			for(AbstractJobRun jobRun : jobRuns){
 				Path jobRunPath = PathUtils.getJobRunPath(Paths.get(outputDirectory), String.valueOf(jobRun.getId()));
 				if(jobRunPath.toFile().exists()){
 					LOG.debug("Deleting working directory for {}", jobRunPath);
@@ -65,19 +71,12 @@ public class CleanupService {
 			thread.start();
 		}
 	}
-
-	
-	@Autowired
-	JobRepository jobRepository;
-	
-	@Autowired
-	JobRunRepository jobRunRepository;
 	
 	/**
 	 * Cleanup JobRun working paths.
 	 * @param jobRuns
 	 */
-	public void cleanUp(List<JobRun> jobRuns) {
+	public void cleanUp(List<AbstractJobRun> jobRuns) {
 		new CleanFilesTask(jobRuns).start();
 	}
 	
@@ -86,7 +85,7 @@ public class CleanupService {
 	 * @param job
 	 */
 	public void delete(Job job) {
-		List<JobRun> jobRuns = jobRunRepository.findByJob(job);
+		List<AbstractJobRun> jobRuns = jobRunRepository.findByJob(job);
 		cleanUp(jobRuns);
 		jobRepository.delete(job);
 	}

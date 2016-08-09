@@ -1,5 +1,16 @@
 package sk.eea.td.console.controller;
 
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+import static sk.eea.td.util.PageUtils.getPageable;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +21,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import sk.eea.td.console.form.TaskForm;
 import sk.eea.td.console.form.TaskRow;
-import sk.eea.td.console.model.*;
+import sk.eea.td.console.model.AbstractJobRun;
+import sk.eea.td.console.model.Job;
+import sk.eea.td.console.model.JobRun;
+import sk.eea.td.console.model.Param;
 import sk.eea.td.console.model.datatables.DataTablesInput;
 import sk.eea.td.console.model.datatables.DataTablesOutput;
 import sk.eea.td.console.model.datatables.RemoveTaskRequest;
@@ -20,22 +35,13 @@ import sk.eea.td.console.model.datatables.RestartTaskRequest;
 import sk.eea.td.console.repository.JobRepository;
 import sk.eea.td.console.repository.JobRunRepository;
 import sk.eea.td.console.repository.ParamRepository;
-
-import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import static org.apache.commons.lang3.StringUtils.isEmpty;
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
-import static sk.eea.td.util.PageUtils.getPageable;
+import sk.eea.td.util.ParamUtils;
 
 @Controller
 @PreAuthorize("hasRole('ADMIN')")
 public class TaskListController {
 
-    private static final Logger LOG = LoggerFactory.getLogger(HomeController.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TaskListController.class);
 
     @Autowired
     private JobRepository jobRepository;
@@ -128,17 +134,15 @@ public class TaskListController {
     @ResponseBody
     @RequestMapping(value = "/tasks/restart.task", method = RequestMethod.POST)
     public String restartTask(@RequestBody RestartTaskRequest request) {
-        JobRun jobRun = jobRunRepository.findOne(request.getLastRunId());
+        AbstractJobRun jobRun = jobRunRepository.findOne(request.getLastRunId());
         if (jobRun != null) {
             Job job = jobRun.getJob();
             LOG.info("Restarting job id= {}.", job.getId());
             jobRun = new JobRun();
             jobRun.setJob(job);
             jobRun.setStatus(JobRun.JobRunStatus.NEW);
-            Set<Param> paramList = paramRepository.findByJob(job);
-            for (Param param : paramList) {
-                jobRun.addReadOnlyParam(new ReadOnlyParam(param));
-            }
+            Set<Param> params = paramRepository.findByJob(job);
+            ParamUtils.copyParamsIntoJobRun(params, jobRun);
             jobRunRepository.save(jobRun);
 
             job.setLastJobRun(null);
@@ -153,6 +157,7 @@ public class TaskListController {
         Job job = jobRepository.findOne(request.getJobId());
         if (job != null) {
             LOG.info("Deleting job id= {}.", job.getId());
+            jobRepository.delete(job);
         }
         return "{}";
     }

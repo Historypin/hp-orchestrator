@@ -1,10 +1,13 @@
 package sk.eea.td.console.model.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ReviewDTO {
 
     private Long id;
+    
+    private String externalId;
 
     private String caption;
 
@@ -16,15 +19,15 @@ public class ReviewDTO {
 
     private String localFilename;
 
-    private Boolean approved;
+    private Boolean approved = Boolean.FALSE;
 
-    private List<String> originalTags;
+    private List<String> originalTags = new ArrayList<>();
 
-    private List<String> approvedTags;
+    private List<String> approvedTags = new ArrayList<>();
 
-    private List<String> originalPlaces;
+    private List<String> originalPlaces = new ArrayList<>();
 
-    private List<String> approvedPlaces;
+    private List<String> approvedPlaces = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -113,7 +116,7 @@ public class ReviewDTO {
     public void setApprovedPlaces(List<String> approvedPlaces) {
         this.approvedPlaces = approvedPlaces;
     }
-
+    
     @Override
     public String toString() {
         return "ReviewDTO{" +
@@ -129,5 +132,13 @@ public class ReviewDTO {
                 ", originalPlaces=" + originalPlaces +
                 ", approvedPlaces=" + approvedPlaces +
                 '}';
+    }
+
+    public String getExternalId() {
+        return externalId;
+    }
+
+    public void setExternalId(String externalId) {
+        this.externalId = externalId;
     }
 }

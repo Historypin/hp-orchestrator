@@ -4,7 +4,9 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "param")
-public class Param {
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name="type",discriminatorType=DiscriminatorType.STRING)
+public abstract class Param {
 
     @Id
     @SequenceGenerator(name = "seq_param", sequenceName = "seq_param", initialValue = 1)
@@ -15,9 +17,6 @@ public class Param {
     @Enumerated(EnumType.STRING)
     private ParamKey key;
 
-    @Column
-    private String value;
-
     @ManyToOne
     @JoinColumn(name = "job_id", nullable = false)
     private Job job;
@@ -25,9 +24,13 @@ public class Param {
     public Param() {
     }
 
-    public Param(ParamKey key, String value) {
+    public Param(ParamKey key) {
         this.key = key;
-        this.value = value;
+    }
+
+    public Param(ParamKey key, Job job) {
+        this.key = key;
+        this.job = job;
     }
 
     public Long getId() {
@@ -46,29 +49,12 @@ public class Param {
         this.key = key;
     }
 
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
-
     public Job getJob() {
         return job;
     }
 
     public void setJob(Job job) {
         this.job = job;
-    }
-
-    @Override public String toString() {
-        return "Param{" +
-                "id=" + id +
-                ", key=" + key +
-                ", value='" + value + '\'' +
-                ", jobId=" + ((job != null) ? job.getId() : null) +
-                '}';
     }
 
     @Override

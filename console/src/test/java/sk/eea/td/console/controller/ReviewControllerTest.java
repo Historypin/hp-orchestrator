@@ -1,5 +1,10 @@
 package sk.eea.td.console.controller;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.lang.reflect.Field;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -14,16 +19,12 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.context.WebApplicationContext;
+
 import sk.eea.td.IntegrationTest;
 import sk.eea.td.console.model.Job;
 import sk.eea.td.console.model.JobRun;
 import sk.eea.td.console.repository.JobRepository;
 import sk.eea.td.console.repository.JobRunRepository;
-
-import java.lang.reflect.Field;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @Category(IntegrationTest.class)
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -62,6 +63,7 @@ public class ReviewControllerTest {
 
         JobRun jobRun = new JobRun();
         jobRun.setJob(job);
+        jobRun.setStatus(JobRun.JobRunStatus.WAITING);
         jobRun = jobRunRepository.save(jobRun);
 
         this.malformedButValidToken = keyBasedPersistenceTokenService.allocateToken("not jobRunId").getKey();

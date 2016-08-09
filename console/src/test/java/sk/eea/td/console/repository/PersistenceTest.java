@@ -1,5 +1,13 @@
 package sk.eea.td.console.repository;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static sk.eea.td.console.model.AbstractJobRun.JobRunStatus.NEW;
+import static sk.eea.td.console.model.AbstractJobRun.JobRunStatus.RUNNING;
+
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -7,17 +15,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
+
 import sk.eea.td.IntegrationTest;
 import sk.eea.td.config.PersistenceConfig;
+import sk.eea.td.console.model.Connector;
 import sk.eea.td.console.model.Job;
 import sk.eea.td.console.model.JobRun;
 import sk.eea.td.console.model.User;
-import sk.eea.td.console.model.Connector;
-
-import static org.hamcrest.CoreMatchers.*;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static sk.eea.td.console.model.JobRun.JobRunStatus.NEW;
-import static sk.eea.td.console.model.JobRun.JobRunStatus.RUNNING;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { PersistenceTestConfig.class, PersistenceConfig.class})
@@ -30,15 +34,6 @@ public class PersistenceTest {
 
     @Autowired
     private JobRunRepository jobRunRepository;
-
-    @Autowired
-    private LogRepository logRepository;
-
-    @Autowired
-    private ParamRepository paramRepository;
-
-    @Autowired
-    private ReadOnlyParamRepository readOnlyParamRepository;
 
     @Autowired
     private UsersRepository usersRepository;
@@ -102,13 +97,13 @@ public class PersistenceTest {
         // update
         jobRun.setStatus(RUNNING);
         jobRunRepository.save(jobRun);
-        JobRun sameJobRun = jobRunRepository.findOne(jobRun.getId());
+        JobRun sameJobRun = (JobRun)jobRunRepository.findOne(jobRun.getId());
         assertThat(sameJobRun, is(notNullValue(JobRun.class)));
         assertThat(sameJobRun.getStatus(), is(equalTo(RUNNING)));
 
         // delete
         jobRunRepository.delete(jobRun);
-        sameJobRun = jobRunRepository.findOne(jobRun.getId());
+        sameJobRun = (JobRun)jobRunRepository.findOne(jobRun.getId());
         assertThat(sameJobRun, is(nullValue()));
     }
 

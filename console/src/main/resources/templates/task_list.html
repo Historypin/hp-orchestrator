@@ -10,9 +10,9 @@
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css"
           th:href="@{/webjars/font-awesome/4.5.0/css/font-awesome.min.css}" rel="stylesheet"/>
 
-    <link href="../static/css/datatables.min.css" th:href="@{/static/css/datatables.min.css}" rel="stylesheet"/>
+    <link href="../static/css/datatables.min.css" th:href="@{/css/datatables.min.css}" rel="stylesheet"/>
 
-    <link href="../static/css/console.css" th:href="@{/static/css/console.css}" rel="stylesheet"/>
+    <link href="../static/css/console.css" th:href="@{/css/console.css}" rel="stylesheet"/>
 
     <meta name="_csrf" th:content="${_csrf.token}" />
     <meta name="_csrf_header" th:content="${_csrf.headerName}" />
@@ -86,8 +86,8 @@
 
 <script src="https://code.jquery.com/jquery-2.2.1.min.js" th:src="@{/webjars/jquery/2.2.1/jquery.min.js}"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" th:src="@{/webjars/bootstrap/3.3.6/js/bootstrap.min.js}"></script>
-<script src="../static/js/datatables.min.js" th:src="@{/static/js/datatables.min.js}"></script>
-<script src="../static/js/console.js" th:src="@{/static/js/console.js}"></script>
+<script src="../static/js/datatables.min.js" th:src="@{/js/datatables.min.js}"></script>
+<script src="../static/js/console.js" th:src="@{/js/console.js}"></script>
 <script th:inline="javascript">
     /* <![CDATA[ */
     var table; // datatable
@@ -139,7 +139,6 @@
             success : function(data) {
                 if(table != null) {
                     table.ajax.reload(null, false);
-
                 }
             }
         });

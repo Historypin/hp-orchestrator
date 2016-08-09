@@ -3,7 +3,7 @@ package sk.eea.td.flow.ativities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import sk.eea.td.console.model.JobRun;
+import sk.eea.td.console.model.AbstractJobRun;
 import sk.eea.td.flow.FlowException;
 import sk.eea.td.flow.activities.Activity;
 
@@ -21,7 +21,7 @@ public class SyncActivity implements Activity {
     }
 
     @Override
-    public ActivityAction execute(JobRun context) throws FlowException {
+    public ActivityAction execute(AbstractJobRun context) throws FlowException {
         LOG.info("execute sync activity");
         return sleepAfter? ActivityAction.SLEEP:ActivityAction.CONTINUE;
     }

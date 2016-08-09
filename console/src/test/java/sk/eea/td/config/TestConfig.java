@@ -18,9 +18,12 @@ import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
 @Configuration
 @ComponentScan(basePackages = {"sk.eea.td.flow", "sk.eea.td.rest", "sk.eea.td.mapper", "sk.eea.td.service"})
-@PropertySource({ "classpath:default.properties", "classpath:${spring.profiles.active:dev}.properties"})
+@PropertySource({ "classpath:default.properties", "classpath:integration.properties"})
 public class TestConfig {
 
+    @Value("${templateResolver.cacheable}")
+    Boolean cacheable;
+    
     @Bean
     public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
         return new PropertySourcesPlaceholderConfigurer();
@@ -32,10 +35,7 @@ public class TestConfig {
         templateResolver.setTemplateMode("HTML5");
         templateResolver.setPrefix("mail/");
         templateResolver.setSuffix(".html");
-
-        if ("dev".equalsIgnoreCase(System.getProperty("spring.profiles.active"))) {
-            templateResolver.setCacheable(false);
-        }
+        templateResolver.setCacheable(cacheable);
 
         return templateResolver;
     }

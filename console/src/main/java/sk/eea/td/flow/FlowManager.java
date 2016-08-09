@@ -1,6 +1,6 @@
 package sk.eea.td.flow;
 
-import sk.eea.td.console.model.JobRun;
+import sk.eea.td.console.model.AbstractJobRun;
 import sk.eea.td.console.model.Connector;
 import sk.eea.td.flow.activities.Activity;
 
@@ -8,16 +8,16 @@ public interface FlowManager {
 
 	/** 
 	 * Initialize and start flow
-	 * @param context Flow context 
+	 * @param context Flow context
 	 * @throws FlowException
 	 */
-	void startFlow(JobRun context);
+    AbstractJobRun startFlow(AbstractJobRun context);
 
 	/**
 	 * Persist state of flow.
 	 * @param config
 	 */
-	JobRun persistState(JobRun config);
+    AbstractJobRun persistState(AbstractJobRun config);
 
 	/**
 	 * Run trigger function.

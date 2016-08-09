@@ -46,34 +46,34 @@ public class HarvestActivityTest {
 		try {
 			Calendar cal = new GregorianCalendar(TimeZone.getTimeZone("UTC"));
 			cal.setTime(new Date(0));
-			Date date = harvestActivity.calculateFromDate(null, null);
+			Date date = DateUtils.calculateFromDate(null, null);
 			assertEquals(cal.getTime(), date);
 		
-			date = harvestActivity.calculateFromDate("2015-02-01T01:02:03Z", null);
+			date = DateUtils.calculateFromDate("2015-02-01T01:02:03Z", null);
 			assertEquals(Instant.from(DateUtils.SYSTEM_TIME_FORMAT.parse("2015-02-01T01:02:03Z")), date.toInstant() );
 
 			try{
-				date = harvestActivity.calculateFromDate("2015-02-01T01:02:03Z", "2015-02-01T03:02:02+0200");
+				date = DateUtils.calculateFromDate("2015-02-01T01:02:03Z", "2015-02-01T03:02:02+0200");
 				fail("Should fail here.");
 			}catch(DateTimeParseException e){
 				// this is ok
 			}
 
 			try{
-				date = harvestActivity.calculateFromDate("2015-02-01T01:02:03Z", "2015-02-02T01:59:59+02");
+				date = DateUtils.calculateFromDate("2015-02-01T01:02:03Z", "2015-02-02T01:59:59+02");
 				fail("Should fail here.");
 			}catch(DateTimeParseException e){
 				// this is ok
 			}
 			try{
-				date = harvestActivity.calculateFromDate("2015-02-01T01:02:03Z", "2015-02-02T02:00:05+02:00");
+				date = DateUtils.calculateFromDate("2015-02-01T01:02:03Z", "2015-02-02T02:00:05+02:00");
 				fail("Should fail here.");
 			}catch(DateTimeParseException e){
 				// this is ok
 			}
 
 			Instant instant = Instant.now();
-			date = harvestActivity.calculateFromDate(DateUtils.SYSTEM_TIME_FORMAT.format(instant), "2015-02-02T00:00:05Z");
+			date = DateUtils.calculateFromDate(DateUtils.SYSTEM_TIME_FORMAT.format(instant), "2015-02-02T00:00:05Z");
 //			cal.set(Calendar.MILLISECOND, cal.getActualMinimum(Calendar.MILLISECOND));
 			assertEquals(Date.from(instant), date);
 
@@ -92,25 +92,25 @@ public class HarvestActivityTest {
 			}
 			cal.add(Calendar.SECOND, -1);
 			Date yesterdayMidnight = cal.getTime();
-			Date date = harvestActivity.calculateUntilDate(null);
+			Date date = DateUtils.calculateUntilDate(null);
 			assertEquals(yesterdayMidnight, date);
 		
 			
-			date = harvestActivity.calculateUntilDate("2015-02-01T01:02:03Z");
+			date = DateUtils.calculateUntilDate("2015-02-01T01:02:03Z");
 			assertEquals(Instant.from(DateUtils.SYSTEM_TIME_FORMAT.parse("2015-02-01T01:02:03Z")), date.toInstant());
 
 			try{
-				date = harvestActivity.calculateUntilDate("2015-02-01T03:02:03+02:00");
+				date = DateUtils.calculateUntilDate("2015-02-01T03:02:03+02:00");
 				fail("Should throw exception");
 			}catch(DateTimeParseException e){
 				// this is ok
 			}
 
-			date = harvestActivity.calculateUntilDate(DateUtils.SYSTEM_TIME_FORMAT.format(new Date().toInstant()));
+			date = DateUtils.calculateUntilDate(DateUtils.SYSTEM_TIME_FORMAT.format(new Date().toInstant()));
 			assertEquals(yesterdayMidnight, date);
 
 			Instant yesterdaysEnd = Instant.now().truncatedTo(ChronoUnit.DAYS).minus(1, ChronoUnit.SECONDS);
-			date = harvestActivity.calculateUntilDate(DateUtils.SYSTEM_TIME_FORMAT.format(yesterdaysEnd));
+			date = DateUtils.calculateUntilDate(DateUtils.SYSTEM_TIME_FORMAT.format(yesterdaysEnd));
 			assertEquals(yesterdaysEnd, date.toInstant());
 
 		} catch (ParseException e) {

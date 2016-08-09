@@ -5,7 +5,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.token.KeyBasedPersistenceTokenService;
+import org.thymeleaf.spring4.SpringTemplateEngine;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -17,7 +19,7 @@ import sk.eea.td.rest.service.MailService;
 import sk.eea.td.rest.service.MintStoreService;
 
 @Configuration
-@PropertySource({ "classpath:default.properties", "classpath:${spring.profiles.active:prod}.properties"})
+@PropertySource({ "classpath:default.properties", "classpath:integration.properties"})
 @ComponentScan(basePackages = {"sk.eea.td.flow.activities"})
 public class TestConfig {
 	
@@ -42,6 +44,11 @@ public class TestConfig {
     @Bean
     public ObjectMapper getObjectMapper() {
         return new ObjectMapper();
+    }
+    
+    @Bean
+    public Tagapp2ApproveTransformActivity getTagapp2HPTransformActivity(){
+        return new Tagapp2ApproveTransformActivity();
     }
     
     @Bean
@@ -73,4 +80,24 @@ public class TestConfig {
     public MailService getMailService(){
         return EasyMock.createMock(MailService.class);
     }
+    @Bean
+    public SpringTemplateEngine getSpringTemplateEngine(){
+        return EasyMock.createMock(SpringTemplateEngine.class);
+    }
+    
+    @Bean
+    public JavaMailSender getJavaMailSender(){
+        return EasyMock.createMock(JavaMailSender.class);
+    }
+    
+    @Bean
+    public Approval2EU_ATransformActivity approval2EU_ATransformActivity(){
+        return new Approval2EU_ATransformActivity();
+    }
+
+    @Bean
+    public PrepareCSVActivity prepareCSVActivity(){
+        return new PrepareCSVActivity();
+    }
+
 }

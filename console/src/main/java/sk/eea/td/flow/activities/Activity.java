@@ -1,6 +1,6 @@
 package sk.eea.td.flow.activities;
 
-import sk.eea.td.console.model.JobRun;
+import sk.eea.td.console.model.AbstractJobRun;
 import sk.eea.td.flow.FlowException;
 
 public interface Activity {
@@ -20,7 +20,7 @@ public interface Activity {
 		NEXT_CYCLE;
 	};
 
-	ActivityAction execute(JobRun context) throws FlowException;
+	ActivityAction execute(AbstractJobRun context) throws FlowException;
 
 	String getName();
 

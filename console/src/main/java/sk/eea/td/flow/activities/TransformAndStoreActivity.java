@@ -1,13 +1,12 @@
 package sk.eea.td.flow.activities;
 
-import sk.eea.td.console.model.JobRun;
+import sk.eea.td.console.model.AbstractJobRun;
 import sk.eea.td.flow.FlowException;
-import sk.eea.td.flow.activities.Activity.ActivityAction;
 
 public class TransformAndStoreActivity implements Activity {
 
     @Override
-    public ActivityAction execute(JobRun context) throws FlowException {
+    public ActivityAction execute(AbstractJobRun context) throws FlowException {
         // TODO Auto-generated method stub
     	return ActivityAction.CONTINUE;
     }

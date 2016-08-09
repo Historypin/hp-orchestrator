@@ -33,14 +33,14 @@ public class EuropeanaAnnotationClientImpl implements EuropeanaAnnotationClient 
 	private String baseUrl;
 
 	private Client client;
-	
-	private final ObjectMapper objectMapper;
+
+    private ObjectMapper mapper;
 
 	public EuropeanaAnnotationClientImpl(String baseUrl, String apiKey2, String user) {
 		this.baseUrl = baseUrl;
 		this.apiKey = apiKey2;
 		this.apiUser = user;
-		this.objectMapper = new ObjectMapper();
+		this.mapper = new ObjectMapper();
 		this.client = ClientBuilder.newClient()
                 .register(JacksonFeature.class)
 				.register(new LoggingFilter(COMMONLOG, true));
@@ -51,10 +51,16 @@ public class EuropeanaAnnotationClientImpl implements EuropeanaAnnotationClient 
 		WebTarget target = client.target(this.baseUrl).path("annotation/").queryParam("wskey", apiKey).queryParam("indexOnCreate", "true").queryParam("userToken", apiUser);
 		Response response = target.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.entity(annotationJson, MediaType.APPLICATION_JSON));
 		String entity = response.readEntity(String.class);
-		JsonNode node = objectMapper.readTree(entity);
-		if(response.getStatus() == 201 && Boolean.valueOf(node.get("success").asText()) ){
-			LOG.debug("Annotation has been created.");
-			return entity.toString();
+		if(response.getStatus() == 201){
+		    String id = null;
+		    if(entity != null){
+    		    JsonNode node = mapper.readTree(entity);
+    		    if(node.has("id")){
+    		        id = node.get("id").asText();
+    		    }
+		    }
+	        LOG.debug("Annotation has been created with id: {}.", id);
+			return entity;
 		}
 		if(response.getStatus() == 401){
 			throw new IOException("User not logged in. Please check user credentials in config.");

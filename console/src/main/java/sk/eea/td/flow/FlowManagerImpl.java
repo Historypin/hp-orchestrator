@@ -1,23 +1,32 @@
 package sk.eea.td.flow;
 
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import sk.eea.td.console.model.*;
-import sk.eea.td.console.model.JobRun.JobRunResult;
-import sk.eea.td.console.model.JobRun.JobRunStatus;
+
+import sk.eea.td.console.model.AbstractJobRun;
+import sk.eea.td.console.model.AbstractJobRun.JobRunResult;
+import sk.eea.td.console.model.AbstractJobRun.JobRunStatus;
+import sk.eea.td.console.model.Connector;
+import sk.eea.td.console.model.Log;
+import sk.eea.td.console.model.ParamKey;
+import sk.eea.td.console.model.StringReadOnlyParam;
 import sk.eea.td.console.repository.JobRunRepository;
 import sk.eea.td.console.repository.LogRepository;
 import sk.eea.td.flow.activities.Activity;
 import sk.eea.td.flow.activities.Activity.ActivityAction;
 import sk.eea.td.rest.service.MailService;
 import sk.eea.td.util.DateUtils;
-
-import java.text.MessageFormat;
-import java.util.*;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 public class FlowManagerImpl implements FlowManager {
 
@@ -52,7 +61,7 @@ public class FlowManagerImpl implements FlowManager {
      * (non-Javadoc)
      * @see sk.eea.td.flow.FlowManager#startFlow(sk.eea.td.flow.model.FlowConfig)
      */
-    public void startFlow(JobRun context) {
+    public AbstractJobRun startFlow(AbstractJobRun context) {
         context.setStatus(JobRunStatus.RUNNING);
         List<Activity> activities = getActivities();
         try {
@@ -75,27 +84,34 @@ public class FlowManagerImpl implements FlowManager {
             log.setMessage(ExceptionUtils.getStackTrace(e));
             logRepository.save(log);
 
-            failFlow(context);
+            context = failFlow(context);
         } finally {
             persistState(context);
             LOG.debug("Finished a JobRun with id: {}.", context.getId());
         }
+        return context;
     }
 
-    protected void finishFlow(JobRun context) {
+    protected AbstractJobRun finishFlow(AbstractJobRun context) {
         context.setStatus(JobRunStatus.FINISHED);
         context.setResult(JobRunResult.OK);
+
+        context = persistState(context);
+
+        return context;
     }
 
-    protected void failFlow(JobRun context) {
+    protected AbstractJobRun failFlow(AbstractJobRun context) {
         context.setStatus(JobRunStatus.STOPPED);
         context.setResult(JobRunResult.FAILED);
         context = persistState(context);
 
-        reportFailure(context);
+        context = reportFailure(context);
+
+        return context;
     }
 
-    protected void reportFailure(JobRun context) {
+    protected AbstractJobRun reportFailure(AbstractJobRun context) {
         try {
             final Map<String, String> emailParams = new HashMap<>();
             // prepare required params for sending emails
@@ -111,12 +127,14 @@ public class FlowManagerImpl implements FlowManager {
         } catch (Exception e) {
             LOG.error("Exception occurred during reporting failure to user: ", e);
         }
+
+        return context;
     }
 
     public void trigger() {
         if (lock.tryLock()) {
             try {
-				JobRun jobRun = jobSelector.nextJobRun(source,target);
+				AbstractJobRun jobRun = jobSelector.nextJobRun(source,target);
                 if(jobRun != null){
                 	LOG.debug("Starting/resuming a JobRun with id: {}.", jobRun.getId());		
                 	resumeFlow(jobRun);
@@ -131,14 +149,14 @@ public class FlowManagerImpl implements FlowManager {
         }
     }
 
-    public void resumeFlow(JobRun context) {
+    public AbstractJobRun resumeFlow(AbstractJobRun context) {
 
         try {
         	context.setLastStarted(new Date());
             while (true) {
                 Activity activity = getNextActivity(context.getActivity(), context.getStatus());
                 if (activity == null) {
-                    finishFlow(context);
+                    context = finishFlow(context);
                     break;
                 }
                 context.setActivity(activity.getId());
@@ -166,7 +184,7 @@ public class FlowManagerImpl implements FlowManager {
                     }
                 }
             }
-            context.addReadOnlyParam(new ReadOnlyParam(ParamKey.LAST_SUCCESS, DateUtils.SYSTEM_TIME_FORMAT.format(context.getLastStarted().toInstant())));
+            context.addReadOnlyParam(new StringReadOnlyParam(ParamKey.LAST_SUCCESS, DateUtils.SYSTEM_TIME_FORMAT.format(context.getLastStarted().toInstant())));
         } catch (Throwable e) {
             LOG.error("Exception at executing flow:", e);
 
@@ -177,10 +195,12 @@ public class FlowManagerImpl implements FlowManager {
             log.setMessage(ExceptionUtils.getStackTrace(e));
             logRepository.save(log);
 
-            failFlow(context);
+            context = failFlow(context);
         } finally {
-            persistState(context);
+            context = persistState(context);
         }
+
+        return context;
     }
 
     private Activity getNextActivity(String id, JobRunStatus status) {
@@ -204,7 +224,7 @@ public class FlowManagerImpl implements FlowManager {
     }
     
     @Override
-    public JobRun persistState(JobRun config) {
+    public AbstractJobRun persistState(AbstractJobRun config) {
         return jobRunRepository.save(config);
     }
 
@@ -216,15 +236,15 @@ public class FlowManagerImpl implements FlowManager {
         activities.add(activity);
     }
 
-    private void logActivityStart(Activity activity, JobRun context) {
+    protected void logActivityStart(Activity activity, AbstractJobRun context) {
         logActivity(activity, "started", context);
     }
 
-    private void logActivityEnd(Activity activity, JobRun context) {
+    protected void logActivityEnd(Activity activity, AbstractJobRun context) {
         logActivity(activity, "ended", context);
     }
 
-    private void logActivity(Activity activity, String message, JobRun context) {
+    protected void logActivity(Activity activity, String message, AbstractJobRun context) {
         logRepository.save(new Log(new Date(), Log.LogLevel.INFO, String.format("%s has %s", activity.getName(), message), context));
     }
 

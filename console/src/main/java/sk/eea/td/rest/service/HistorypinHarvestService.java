@@ -13,7 +13,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.annotation.PostConstruct;
 import javax.ws.rs.core.Response;
@@ -26,16 +25,15 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import sk.eea.td.console.model.AbstractJobRun;
 import sk.eea.td.console.model.Connector;
-import sk.eea.td.console.model.JobRun;
 import sk.eea.td.console.model.ParamKey;
 import sk.eea.td.console.model.ReadOnlyParam;
-import sk.eea.td.console.repository.JobRepository;
-import sk.eea.td.console.repository.JobRunRepository;
+import sk.eea.td.console.model.StringReadOnlyParam;
+import sk.eea.td.flow.HarvestResponse;
 import sk.eea.td.hp_client.api.HPClient;
 import sk.eea.td.hp_client.impl.HPClientImpl;
 import sk.eea.td.util.PathUtils;
@@ -47,7 +45,7 @@ public class HistorypinHarvestService {
 
 	private static Logger LOG = LoggerFactory.getLogger(HistorypinHarvestService.class);
 
-    private static final AtomicBoolean CANCELLED = new AtomicBoolean();
+//    private static final AtomicBoolean CANCELLED = new AtomicBoolean();
 
     @Value("${historypin.base.url}")
     private String baseURL;
@@ -68,21 +66,15 @@ public class HistorypinHarvestService {
     	DATE_FORMAT.setTimeZone(TimeZone.getTimeZone("UTC"));
     }
 
-    @Autowired
-	private JobRepository jobRepository;
-
-    @Autowired
-	private JobRunRepository jobRunRepository;
-
     @PostConstruct
     public void init() {
         this.hpClient = new HPClientImpl(baseURL, apiKey, apiSecret);
     }
 
-    public Path harvest(String harvestId, String projectSlug) throws IOException, ParseException {
+    public HarvestResponse harvest(AbstractJobRun context, String projectSlug) throws IOException, ParseException {
     	boolean nextPage = true;
     	long page = 1;
-    	final Path harvestPath = PathUtils.createHarvestRunSubdir(Paths.get(outputDirectory), harvestId);
+    	final Path harvestPath = PathUtils.createHarvestRunSubdir(Paths.get(outputDirectory), context);
     	while(nextPage){
 	        Response response = hpClient.getProjectSlug(projectSlug, page);	        
 	        Path filename = PathUtils.createUniqueFilename(harvestPath, "hp_slug.json");
@@ -110,7 +102,7 @@ public class HistorypinHarvestService {
 			file.delete();
     	}
         LOG.info("Harvesting of projectSlug: " + projectSlug + " is completed.");
-        return harvestPath;
+        return new HarvestResponse(harvestPath, true);
     }
 
 	private JSONObject storeJson(Response response, Path filename) throws IOException, ParseException {
@@ -123,16 +115,15 @@ public class HistorypinHarvestService {
 		return object;
 	}
 
-	public Path harvestAnnotation(String harvestId, String jobId, String from, String until) throws IOException, java.text.ParseException, ParseException {
-    	final Path harvestPath = PathUtils.createHarvestRunSubdir(Paths.get(outputDirectory), harvestId);
-		JobRun jobRun = jobRunRepository.findNextJobRun(Connector.HISTORYPIN_ANNOTATION.name(), Connector.EUROPEANA_ANNOTATION.name());
+    public HarvestResponse harvestAnnotation(AbstractJobRun jobRun, String jobId, String from, String until) throws IOException, java.text.ParseException, ParseException {
+        final Path harvestPath = PathUtils.createHarvestRunSubdir(Paths.get(outputDirectory), jobRun);
 		String fromLocal = from;
 		String untilLocal;
 		if(jobRun != null){
 			String lastUntilParam = null;
-			for(ReadOnlyParam param : jobRun.getReadOnlyParams()){
+			for(ReadOnlyParam<?> param : jobRun.getReadOnlyParams()){
 				if(param.getKey().equals(ParamKey.HP_UNTIL_CURRENT)){
-					lastUntilParam = param.getValue();
+					lastUntilParam = ((StringReadOnlyParam) param).getStringValue();
 					break;
 				}
 			}
@@ -154,12 +145,12 @@ public class HistorypinHarvestService {
 		if(parseDate(fromLocal).after(parseDate(untilLocal))){
 			//finish flow
 			LOG.info("We have reached 'until' date. We are not harvesting.");
-			return harvestPath;
+			return new HarvestResponse(harvestPath, true);
 		}
 		Response response = hpClient.getAnnotations(fromLocal, untilLocal);
         Path filename = PathUtils.createUniqueFilename(harvestPath, Connector.HISTORYPIN_ANNOTATION.getFormatCode());
-        JSONObject object = storeJson(response, filename);
-		return harvestPath;
+        storeJson(response, filename);
+		return new HarvestResponse(harvestPath, true);
 	}
 
 	private Calendar parseDate(String lastUntilParam) throws java.text.ParseException {

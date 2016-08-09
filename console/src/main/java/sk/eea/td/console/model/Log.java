@@ -1,7 +1,18 @@
 package sk.eea.td.console.model;
 
-import javax.persistence.*;
 import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "log")
@@ -27,13 +38,13 @@ public class Log {
     private String message;
 
     @ManyToOne
-    @JoinColumn(name = "job_run_id")
-    private JobRun jobRun;
+    @JoinColumn(name = "job_run_id", nullable = false)
+    private AbstractJobRun jobRun;
 
     public Log() {
     }
 
-    public Log(Date timestamp, LogLevel level, String message, JobRun jobRun) {
+    public Log(Date timestamp, LogLevel level, String message, AbstractJobRun jobRun) {
         this.timestamp = timestamp;
         this.level = level;
         this.message = message;
@@ -72,11 +83,11 @@ public class Log {
         this.message = message;
     }
 
-    public JobRun getJobRun() {
+    public AbstractJobRun getJobRun() {
         return jobRun;
     }
 
-    public void setJobRun(JobRun jobRun) {
+    public void setJobRun(AbstractJobRun jobRun) {
         this.jobRun = jobRun;
     }
 

@@ -1,5 +1,12 @@
 package sk.eea.td.rest.service;
 
+import java.util.Locale;
+import java.util.Map;
+
+import javax.activation.DataSource;
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -7,11 +14,6 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring4.SpringTemplateEngine;
-
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-import java.util.Locale;
-import java.util.Map;
 
 @Component
 public class MailService {
@@ -61,9 +63,10 @@ public class MailService {
      * @param email   recipient email address
      * @param subject subject of email message
      * @param params  map of parameters used in template
+     * @param attachment attachment of email message, it can be null
      */
-    public void sendReportMail(String email, String subject, Map<String, String> params) {
-        this.sendMail(email, "report", subject, params);
+    public void sendReportMail(String email, String subject, Map<String, String> params, DataSource attachment) {
+        this.sendMail(email, "report", subject, params, attachment);
     }
 
     /**
@@ -92,7 +95,7 @@ public class MailService {
      * @param params  map of parameters used in template
      */
     public void sendReviewMail(String email, String subject, Map<String, String> params) {
-        this.sendMail(email, "review_request", subject, params);
+        this.sendMail(email, "review_request", subject, params, null);
     }
 
     /**
@@ -133,7 +136,7 @@ public class MailService {
      * @param params  map of parameters used in template
      */
     public void sendErrorMail(String email, String subject, Map<String, String> params) {
-        this.sendMail(email, "error", subject, params);
+        this.sendMail(email, "error", subject, params, null);
     }
     /**
      * Sends mail using given template name.
@@ -142,9 +145,11 @@ public class MailService {
      * @param templateName name of template to use
      * @param subject      subject of email message
      * @param params       map of parameters used in template
+     * @param attachment   attachment if email message, it can be null
      */
-    public void sendMail(String email, String templateName, String subject, Map<String, String> params) {
+    public void sendMail(String email, String templateName, String subject, Map<String, String> params, DataSource attachment) {
         // Prepare the evaluation context
+        boolean hasAttachment = attachment != null;
         final Context ctx = new Context(Locale.US);
         for (String key : params.keySet()) {
             ctx.setVariable(key, params.get(key));
@@ -155,13 +160,18 @@ public class MailService {
 
         // Prepare message using a Spring helper
         final MimeMessage mimeMessage = this.mailSender.createMimeMessage();
-        final MimeMessageHelper message = new MimeMessageHelper(mimeMessage, "UTF-8");
         try {
+            final MimeMessageHelper message = new MimeMessageHelper(mimeMessage, hasAttachment, "UTF-8");
             message.setSubject(subject);
             message.setFrom(mailFrom);
             message.setTo(email);
 
             message.setText(htmlContent, true); // true = isHtml
+
+            if (hasAttachment) {
+                message.addAttachment(attachment.getName(), attachment);
+                
+            }
         } catch (MessagingException ex) {
             throw new RuntimeException("Exception at sending email: ", ex);
         }

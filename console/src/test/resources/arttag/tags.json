@@ -1,0 +1,90 @@
+{
+ "position" : 0,
+ "totalCount" : 9,
+ "batchId" : 158,
+ "tags" :
+ 	[
+ 		{
+			"id" : 1,
+			"language" : "sk",
+			"value" : "tag10",
+			"culturalObjectId" : 10,
+			"culturalObjectExternalId" : "SNG/P1210",
+    		"culturalObjectDescription" : "Popis kulturneho objektu 1",
+    		"culturalObjectExternalUrl" : "http://localhost/url1"
+ 		},
+ 		{
+			"id" : 2,
+			"language" : "sk",
+			"value" : "tag20",
+			"culturalObjectId" : 20,
+			"culturalObjectExternalId" : "SNG/P1220",
+    		"culturalObjectDescription" : "Popis kulturneho objektu 2",
+    		"culturalObjectExternalUrl" : "http://localhost/url2"
+ 		},
+ 		{
+			"id" : 3,
+			"language" : "sk",
+			"value" : "tag30",
+			"culturalObjectId" : 30,
+			"culturalObjectExternalId" : "SNG/P1230",
+    		"culturalObjectDescription" : "Popis kulturneho objektu 3",
+    		"culturalObjectExternalUrl" : "http://localhost/url3"
+ 		},
+ 		{
+			"id" : 4,
+			"language" : "sk",
+			"value" : "tag11",
+			"culturalObjectId" : 10,
+			"culturalObjectExternalId" : "SNG/P1210",
+    		"culturalObjectDescription" : "Popis kulturneho objektu 4",
+    		"culturalObjectExternalUrl" : "http://localhost/url4"
+ 		},
+ 		{
+			"id" : 5,
+			"language" : "sk",
+			"value" : "tag21",
+			"culturalObjectId" : 20,
+			"culturalObjectExternalId" : "SNG/P1220",
+    		"culturalObjectDescription" : "Popis kulturneho objektu 5",
+    		"culturalObjectExternalUrl" : "http://localhost/url5"
+ 		},
+ 		{
+			"id" : 6,
+			"language" : "sk",
+			"value" : "tag31",
+			"culturalObjectId" : 30,
+			"culturalObjectExternalId" : "SNG/P1230",
+    		"culturalObjectDescription" : "Popis kulturneho objektu 6",
+    		"culturalObjectExternalUrl" : "http://localhost/url6"
+ 		},
+ 		{
+			"id" : 7,
+			"language" : "sk",
+			"value" : "tag12",
+			"culturalObjectId" : 10,
+			"culturalObjectExternalId" : "SNG/P1210",
+    		"culturalObjectDescription" : "Popis kulturneho objektu 7",
+    		"culturalObjectExternalUrl" : "http://localhost/url7"
+ 		},
+ 		{
+			"id" : 8,
+			"language" : "sk",
+			"value" : "tag22",
+			"culturalObjectId" : 20,
+			"culturalObjectExternalId" : "SNG/P1220",
+    		"culturalObjectDescription" : "Popis kulturneho objektu 8",
+    		"culturalObjectExternalUrl" : "http://localhost/url8"
+ 		},
+ 		{
+			"id" : 9,
+			"language" : "sk",
+			"value" : "tag32",
+			"culturalObjectId" : 30,
+			"culturalObjectExternalId" : "SNG/P1230",
+    		"culturalObjectDescription" : "Popis kulturneho objektu 9",
+    		"culturalObjectExternalUrl" : "http://localhost/url9"
+ 		}
+ 	],
+ "resumptionToken" : ""
+}

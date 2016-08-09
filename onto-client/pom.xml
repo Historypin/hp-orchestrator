@@ -52,6 +52,16 @@
             <groupId>org.openrdf.sesame</groupId>
             <artifactId>sesame-rio-jsonld</artifactId>
             <version>4.1.2</version>
+            <exclusions>
+            <exclusion>
+            	<artifactId>httpclient-osgi</artifactId>
+            	<groupId>org.apache.httpcomponents</groupId>
+            </exclusion>
+            <exclusion>
+            	<artifactId>httpcore-osgi</artifactId>
+            	<groupId>org.apache.httpcomponents</groupId>
+            </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- TESTING dependencies -->

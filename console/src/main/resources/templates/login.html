@@ -10,7 +10,7 @@
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css"
           th:href="@{/webjars/font-awesome/4.5.0/css/font-awesome.min.css}" rel="stylesheet"/>
 
-    <link href="../static/css/console.css" th:href="@{/static/css/console.css}" rel="stylesheet"/>
+    <link href="../static/css/console.css" th:href="@{/css/console.css}" rel="stylesheet"/>
 </head>
 <body>
 <div class="container">
@@ -29,10 +29,6 @@
 
                             <div class="alert alert-danger" role="alert" th:if="${param.error}" th:text="#{login.error}">
                                 Invalid username or password.
-                            </div>
-
-                            <div class="alert alert-danger" role="warning" th:if="${param.timeout}" th:text="#{login.timeout}">
-                                You have been logged out.
                             </div>
 
                             <div class="alert alert-success" role="warning" th:if="${param.logout}" th:text="#{login.logout}">

@@ -46,6 +46,7 @@ public class HP_A2EU_ATransformActivityTest {
 	}
 
 	@Test
+	@SuppressWarnings("unused")
 	public void test() throws URISyntaxException, JSONException, FileNotFoundException {
 		File historyPinFile = new File(ClassLoader.getSystemResource("hp/test_hpan.json").toURI());
 		File europeanaFile = new File(ClassLoader.getSystemResource("europeana/test_euan.json").toURI());
@@ -54,7 +55,7 @@ public class HP_A2EU_ATransformActivityTest {
 		jobContext.setJob(new Job());
 		jobContext.getJob().setTarget(Connector.EUROPEANA_ANNOTATION);
 		try {
-			activity.transform(Connector.HISTORYPIN_ANNOTATION.getFormatCode(), historyPinFile.toPath(), targetDir.toPath(), jobContext);
+			activity.transform(Connector.HISTORYPIN_ANNOTATION, historyPinFile.toPath(), targetDir.toPath(), jobContext);
 		} catch (IOException e) {
 			fail(e.toString());
 		}
