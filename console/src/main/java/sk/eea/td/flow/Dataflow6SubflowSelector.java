@@ -1,12 +1,11 @@
 package sk.eea.td.flow;
 
 import java.text.MessageFormat;
-import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAmount;
 import java.util.Date;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -42,9 +41,9 @@ public class Dataflow6SubflowSelector implements JobSelector {
     public AbstractJobRun nextJobRun(Connector source, Connector target) throws FlowException {
         if(Connector.TAGAPP.equals(source))
         {
-            Instant lastRun = Instant.now().truncatedTo(ChronoUnit.DAYS).minus(harvestPeriod);
-            
-            Page<AbstractJobRun> result = jobRunRepository.findDataflow6SubflowJobRun(Connector.TAGAPP, Date.from(lastRun), new PageRequest(0, 1));
+            LocalDate lastRun = LocalDate.now(ZoneOffset.UTC).minus(harvestPeriod);
+
+            Page<AbstractJobRun> result = jobRunRepository.findDataflow6SubflowJobRun(Connector.TAGAPP, Date.from(lastRun.atStartOfDay(ZoneOffset.UTC).toInstant()), new PageRequest(0, 1));
             AbstractJobRun jobRun = result.getContent().isEmpty() ? null : result.getContent().get(0);
             if(jobRun == null)
                 return null;
@@ -64,19 +63,19 @@ public class Dataflow6SubflowSelector implements JobSelector {
     private AbstractJobRun createNewSubRun4Harvest(JobRun jobRun) {
         Page<JobSubRun> subRuns = jobRunRepository.findByParentRunAndResultOrderByCreatedDesc(jobRun, JobRunResult.OK, new PageRequest(0, 1));
 
-        JobSubRun subRun = new JobSubRun();
+        final JobSubRun subRun = new JobSubRun();
         subRun.setJob(jobRun.getJob());
         subRun.setParentRun(jobRun);
         subRun.setStatus(JobRunStatus.NEW);
-        subRun.getReadOnlyParams().addAll(jobRun.getReadOnlyParams().stream().map((param) ->  param.newInstance()).collect(Collectors.toList()));
+        jobRun.getReadOnlyParams().forEach((param) ->  subRun.addReadOnlyParam(param.newInstance()));
         
         if(subRuns.hasContent()){
             subRun.addReadOnlyParam(new StringReadOnlyParam(ParamKey.LAST_SUCCESS, DateTimeFormatter.ISO_INSTANT.format(subRuns.getContent().get(0).getLastStarted().toInstant())));
         }
-        subRun = jobRunRepository.save(subRun);
-        jobRun.setLastJobRun(subRun);
+        JobSubRun newSubRun = jobRunRepository.save(subRun);
+        jobRun.setLastJobRun(newSubRun);
         jobRunRepository.save(jobRun);
-        return subRun;
+        return newSubRun;
     }
 
 }
