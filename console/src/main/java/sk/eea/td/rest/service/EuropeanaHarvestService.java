@@ -1,10 +1,10 @@
 package sk.eea.td.rest.service;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -123,11 +123,8 @@ public class EuropeanaHarvestService {
 
     private boolean harvestFromFile(AbstractJobRun context, Path harvestPath, Map<ParamKey, BlobReadOnlyParam> blobParamMap, Boolean fullSet) throws IOException, InterruptedException {
         final BlobReadOnlyParam blobReadOnlyParam = blobParamMap.get(ParamKey.EU_CSV_FILE);
-        final File file = new File(blobReadOnlyParam.getBlobName());
-        FileUtils.touch(file);
-        FileUtils.writeByteArrayToFile(file, blobReadOnlyParam.getBlobData());
         boolean allItemHarvested = true;
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(blobReadOnlyParam.getBlobData())))) {
             String line;
             while ((line = br.readLine()) != null) {
                 line = line.trim();
