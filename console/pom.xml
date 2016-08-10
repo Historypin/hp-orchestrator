@@ -27,31 +27,31 @@
         <dependency>
             <groupId>sk.eea.td</groupId>
             <artifactId>hp-client</artifactId>
-            <version>1.0.0</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>sk.eea.td</groupId>
             <artifactId>eu-client</artifactId>
-            <version>1.0.0</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>sk.eea.td</groupId>
             <artifactId>onto-client</artifactId>
-            <version>1.0.0</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>sk.eea.td</groupId>
             <artifactId>mint-client</artifactId>
-            <version>1.0.0</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>sk.eea.td</groupId>
             <artifactId>tagapp-client</artifactId>
-            <version>1.0.0</version>
+            <version>${project.version}</version>
         </dependency>
 
         <!-- External dependencies -->
