@@ -45,48 +45,48 @@ public class AppConfig implements SchedulingConfigurer {
     }
 
     @Schedules(
-            //@Scheduled(cron = "${europeana.flm.cron.expression}")
-            @Scheduled(fixedRate = 60000)
+            @Scheduled(cron = "${europeana.flm.cron.expression}")
+//            @Scheduled(fixedRate = 60000)
     )
     public void europeanaToHistorypinTimeSignal() {
         europeanaToHistorypinFlowManager.trigger();
     }
 
     @Schedules(
-            //@Scheduled(cron= "${ontotext.flm.cron.expression}")
-            @Scheduled(fixedRate = 60000)
+            @Scheduled(cron= "${ontotext.flm.cron.expression}")
+            //@Scheduled(fixedRate = 60000)
     )
     public void historypinOntotextTimeSignal() {
         historypinOntotextFlowManager.trigger();
     }
 
     @Schedules(
-            //@Scheduled(cron="${historypin.flm.cron.expression}")
-            @Scheduled(fixedRate = 60000)
+            @Scheduled(cron="${historypin.flm.cron.expression}")
+            //@Scheduled(fixedRate = 60000)
     )
     public void historypinToEuropeanaTimeSignal() {
         historypinToEuropeanaFlowManager.trigger();
     }
 
     @Schedules(
-    		//@Scheduled(cron="${historypinAnnotation.flm.cron.expression}
-    		@Scheduled(fixedRate=60000)
+    		@Scheduled(cron="${dataflow4.flm.cron.expression}
+    		//@Scheduled(fixedRate=60000)
 	)
     public void dataflow4Trigger(){
     	dataflow4.trigger();
     }
 
     @Schedules(
-            //@Scheduled(cron="${historypinAnnotation.flm.cron.expression}
-            @Scheduled(fixedRate=60000)
+            @Scheduled(cron="${dataflow6.flm.cron.expression}
+            //@Scheduled(fixedRate=60000)
     )
     public void dataflow6Trigger(){
         dataflow6.trigger();
     }
 
     @Schedules(
-            //@Scheduled(cron="${historypinAnnotation.flm.cron.expression}
-            @Scheduled(fixedRate=60000)
+            @Scheduled(cron="${dataflow6subflow.flm.cron.expression}
+            //@Scheduled(fixedRate=60000)
     )
     public void dataflow6SubflowTrigger(){
         dataflow6Subflow.trigger();
